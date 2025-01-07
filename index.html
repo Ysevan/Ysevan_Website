@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+
+		<title>书生 | 子白</title>
+		
+		
+		<link rel="icon" type="image/x-icon" href="favicon.ico" />
+		<link rel="alternative" href="atom.xml" type="application/atom+xml">
+		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+		<link rel="apple-touch-icon" href="apple-touch-icon.png">
+		<link rel="stylesheet" href="fancybox/jquery.fancybox.css">
+
+		<!-- 加载特效 -->
+		<script src="js/pace.js"></script>
+		<link href="css/pace/pace-theme-flash.css" rel="stylesheet" />
+	</head>
+	
+	
+	
+	
+	<body>
+		<div id="container">
+		<!--左半部分-->
+			<div class="left-col">
+				<div class="overlay"></div>
+				<div class="intrude-less">
+					<header id="header" class="inner">
+						<a href="#" class="profilepic">
+
+							<img src="img/head.jpg" class="js-avatar">
+
+						</a>
+						<hgroup>
+							<h1 class="header-author"><a href="#">书生 子白</a></h1>
+						</hgroup>
+
+
+						<form>
+							<input type="text" class="st-default-search-input search" id="local-search-input" placeholder="戳我搜索一下嗷"
+							 autocomplete="off">
+						</form>
+						<div id="local-search-result"></div>
+
+
+						<script type="text/javascript">
+							(function() {'use strict';function getMatchData(keyword, data) 
+										 {var matchData = [];for (var i = 0; i < data.length; i++){if(data[i].title.toLowerCase().indexOf(keyword)>=0)matchData.push(data[i])}return matchData;}
+										 var $input = $('#local-search-input');var $resultContent = $('#local-search-result');$input.keyup(function() {$.ajax({url: '/search.json',dataType: "json",success: function(json) 
+										 {var str = '<ul class=\"search-result-list\">';var keyword = $input.val().trim().toLowerCase();$resultContent.innerHTML = "";if ($input.val().trim().length <= 0) {$resultContent.empty();$('#switch-area').show();return;}var results = getMatchData(keyword, json);
+											if (results.length === 0) {$resultContent.empty();$('#switch-area').show();return;}for (var i = 0; i < results.length; i++) {str += "<li><a href='" + results[i].url + "' class='search-result-title'>" + results[i].title +"</a></li>";}str += "</ul>";$resultContent.empty();$resultContent.append(str);$('#switch-area').hide();}
+									});
+								});
+							})();
+						</script>
+
+
+						
+
+						<div id="switch-area" class="switch-area">
+							<div class="switch-wrap">
+								<section class="switch-part switch-part1">
+									<nav class="header-menu">
+										<ul>
+
+											<li>
+												<div id="binft"></div>
+												<script>
+													var binft = function(r) {
+														function t() {
+															return b[Math.floor(Math.random() * b.length)]
+														}
+
+														function e() {
+															return String.fromCharCode(94 * Math.random() + 33)
+														}
+
+														function n(r) {
+															for (var n = document.createDocumentFragment(), i = 0; r > i; i++) {
+																var l = document.createElement("span");
+																l.textContent = e(), l.style.color = t(), n.appendChild(l)
+															}
+															return n
+														}
+
+														function i() {
+															var t = o[c.skillI];
+															c.step ? c.step-- : (c.step = g, c.prefixP < l.length ? (c.prefixP >= 0 && (c.text += l[c.prefixP]), c.prefixP++) :
+																"forward" === c.direction ? c.skillP < t.length ? (c.text += t[c.skillP], c.skillP++) : c.delay ? c.delay--
+																: (c.direction = "backward", c.delay = a) : c.skillP > 0 ? (c.text = c.text.slice(0, -1), c.skillP--) :
+																(c.skillI = (c.skillI + 1) % o.length, c.direction = "forward")), r.textContent = c.text, r.appendChild(
+																n(c.prefixP < l.length ? Math.min(s, s + c.prefixP) : Math.min(s, t.length - c.skillP))), setTimeout(
+																i, d)}var l = "",o = ["青青陵上柏，磊磊涧中石。", "人生天地间，忽如远行客。", "斗酒相娱乐，聊厚不为薄。", "驱车策驽马，游戏宛与洛。", "洛中何郁郁，冠带自相索。", "长衢罗夹巷，王侯多第宅。",
+																"两宫遥相望，双阙百余尺。", "极宴娱心意，戚戚何所迫？"].map(function(r) {return r + ""
+															}),
+															a = 2,
+															g = 1,
+															s = 5,
+															d = 75,
+															b = ["rgb(110,64,170)", "rgb(150,61,179)", "rgb(191,60,175)", "rgb(228,65,157)", "rgb(254,75,131)",
+																"rgb(255,94,99)", "rgb(255,120,71)", "rgb(251,150,51)", "rgb(226,183,47)", "rgb(198,214,60)",
+																"rgb(175,240,91)", "rgb(127,246,88)", "rgb(82,246,103)", "rgb(48,239,130)", "rgb(29,223,163)",
+																"rgb(26,199,194)", "rgb(35,171,216)", "rgb(54,140,225)", "rgb(76,110,219)", "rgb(96,84,200)"
+															],
+															c = {
+																text: "",
+																prefixP: -s,
+																skillI: 0,
+																skillP: 0,
+																direction: "forward",
+																delay: a,
+																step: g
+															};
+														i()
+													};
+													binft(document.getElementById('binft'));
+												</script>
+											</li>
+
+											<li><a href="./Blog/Home.html">博客首页</a></li>
+
+											<li><a href="./game/Game.html">游戏中心</a></li>
+
+											<li><a href="./Lover/index.html" target="_blank" rel="noopener">幸福生活</a></li>
+
+											<li><a href="https://space.bilibili.com/" target="_blank" rel="noopener">哔哩哔哩</a></li>
+
+
+										</ul>
+									</nav>
+									<nav class="header-nav">
+										<ul class="social">
+
+											<a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=Z1ZeV1FQV1FWUicWFkkECAo"
+											 title="mail">mail</a>
+
+											<a class="fl github" target="_blank" href="https://github.com/YY6896098ss" title="github">github</a>
+
+											<a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/yan-xiao-qi-43-1"
+											 title="zhihu">zhihu</a>
+
+											<a class="fl weibo" target="_blank" href="https://weibo.com/u/7444569101" title="weibo">weibo</a>
+
+											<a class="fl rss" target="_blank" href="#" title="rss">rss</a>
+
+										</ul>
+									</nav>
+								</section>
+
+								
+
+
+						
+
+							</div>
+						</div>
+					</header>
+				</div>
+				
+			<!--视频链接-->
+				<div style="position: absolute;bottom:0px;left:20px;width:40px">
+					<iframe frameborder="no" border="0" marginwidth="0" marginheight="10" width=260 height=110 src="http://music.163.com/outchain/player?type=2&id=1455965526&auto=1&height=66"></iframe>
+				</div>
+			</div>
+			
+			<!--右半部分-->
+			<div class="mid-col">
+				
+				<div class="body-wrap">
+
+
+                           <!--上面部分小游戏-->
+					<section class="archives-wrap">
+						<div class="archive-year-wrap">
+							<a href="game-index/" class="archive-year">小游戏</a>
+						</div>
+						<div class="archives">
+
+							<article class="archive-article archive-type-post">
+								<div class="archive-article-inner">
+									<header class="archive-article-header">
+										<div class="article-meta">
+											<a href="2021/01/08/game/" class="archive-article-date">
+												<time datetime="2021-01-08T08:13:31.000Z" itemprop="datePublished">01-08</time>
+											</a>
+										</div>
+
+
+										<h1 itemprop="name">
+											<a class="archive-article-title" href="game/Catch-A-Mole.html">地鼠锤锤锤</a>
+										</h1>
+
+
+										<div class="article-info info-on-archive">
+
+
+
+											<div class="article-tag tagcloud">
+												<ul class="article-tag-list" itemprop="keywords">
+													<li class="article-tag-list-item"><a class="article-tag-list-link" href="game/Pokemon.html"
+														 rel="tag">精灵对战</a></li>
+												</ul>
+											</div>
+
+										</div>
+										<div class="clearfix"></div>
+									</header>
+								</div>
+							</article>
+						</div>
+					</section>
+
+                 
+                  <!--中间部分2020-->
+					<section class="archives-wrap">
+
+						<div class="archive-year-wrap">
+							<a href="#" class="archive-year">2020</a>
+						</div>
+
+						<div class="archives">
+
+							<article class="archive-article archive-type-post">
+								<div class="archive-article-inner">
+									<header class="archive-article-header">
+
+										<!--日期-->>
+										<div class="article-meta">
+											<a href="2020/05/06/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80-02/index.html" class="archive-article-date">
+												<time datetime="2020-05-06T08:13:31.000Z" itemprop="datePublished">05-06</time>
+											</a>
+										</div>
+                                        <!--标题-->>
+										<h1 itemprop="name">
+											<a class="archive-article-title" href="game/Game-Index">数据库基础(02)</a>
+										</h1>
+										<!--内容-->>
+										<div class="article-info info-on-archive">
+											<div class="article-tag tagcloud">
+												<ul class="article-tag-list" itemprop="keywords">
+													<li class="article-tag-list-item"><a class="article-tag-list-link" href="tags/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/index.html"
+														 rel="tag">MySQL数据库</a></li>
+												</ul>
+											</div>
+
+										</div>
+										<div class="clearfix"></div>
+									</header>
+								</div>
+							</article>
+
+						</div>
+					</section>
+
+                       <section class="archives-wrap">
+						<div class="archive-year-wrap">
+							<a href="#" class="archive-year">2022</a>
+						</div>
+			
+				</div>	
+				<footer id="footer">
+					<div class="outer">
+						<div id="footer-info">
+							<div class="footer-left">
+								&copy; 2021 Ysevan
+							</div>
+							<div class="footer-right">
+								<a href="#" target="_blank">Ysevan</a> Theme <a href="#" target="_blank">Ysevan</a>
+								by YanYiWei
+							</div>
+						</div>
+
+						<div class="visit">
+
+							<span id="busuanzi_container_site_pv" style='display:none'>
+								<span id="site-visit">海贼到访数:
+									<span id="busuanzi_value_site_uv"></span>
+								</span>
+							</span>
+
+
+							<span>, </span>
+
+
+							<span id="busuanzi_container_page_pv" style='display:none'>
+								<span id="page-visit">本页阅读量:
+									<span id="busuanzi_value_page_pv"></span>
+								</span>
+							</span>
+
+						</div>
+
+					</div>
+				</footer>
+			</div>
+			
+			<script src="./js/main.js"></script>
+
+<!--背景-->>
+			<script>
+				$(document).ready(function() {
+					var backgroundnum = 3;
+					var backgroundimg = "url(background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() *
+						backgroundnum));
+					$("#mobile-nav").css({
+						"background-image": backgroundimg,
+						"background-size": "cover",
+						"background-position": "center"
+					});
+					$(".left-col").css({
+						"background-image": backgroundimg,
+						"background-size": "cover",
+						"background-position": "center"
+					});
+				})
+			</script>
+
+<!--具有滚动功能的区域-->>
+			<div class="scroll" id="scroll">
+				<a href="#"><i class="fa fa-arrow-up"></i></a>   <!--链接的目标位置是当前页面的顶部-->>
+				<a href="#comments"><i class="fa fa-comments-o"></i></a>  <!--链接的目标位置是具有comments的ID的元素，通常是页面上的评论区域-->>
+				<a href="#footer"><i class="fa fa-arrow-down"></i></a>  <!--页面的底部-->>
+			</div>
+
+<!--文档加载完成后检查是否存在具有commentsID的元素。如果不存在，它将隐藏id为scroll的元素下的第二个子元素<a>，这样就隐藏了链接到评论区域的部分。-->>
+			<script>
+				$(document).ready(function() {
+					if ($("#comments").length < 1) {
+						$("#scroll > a:nth-child(2)").hide();
+					};
+				})
+			</script>
+
+			<button class="hide-labels">TAG 开关</button>
+			
+			<!--为所有的按钮元素添加了一个点击事件处理程序-->>
+			<script>
+				$(document).ready(function() {
+					$("button").click(function() {
+						$(".article-info").toggle(200);
+					});
+				});
+			</script>
+
+			<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+			</script>
+
+			<script language="javascript">
+				$(function() {
+					$("a[title]").each(function() {
+						var a = $(this);
+						var title = a.attr('title');
+						if (title == undefined || title == "") return;
+						a.data('title', title).removeAttr('title').hover(
+
+							function() {
+								var offset = a.offset();
+								$("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+									top: offset.top - a.outerHeight() - 15,
+									left: offset.left + a.outerWidth() / 2 + 1
+								}).fadeIn(function() {
+									var pop = $(this);
+									setTimeout(function() {
+										pop.remove();
+									}, pop.text().length * 800);
+								});
+							},
+							function() {
+								$("#anchortitlecontainer").remove();
+							});
+					});
+				});
+			</script>
+
+
+			<script type="text/javascript">
+				window.onload = function() {
+					document.getElementById("search").onclick = function() {
+						console.log("search")
+						search();
+					}
+				}
+
+				function search() {
+					(function(w, d, t, u, n, s, e) {
+						w['SwiftypeObject'] = n;
+						w[n] = w[n] || function() {
+							(w[n].q = w[n].q || []).push(arguments);
+						};
+						s = d.createElement(t);
+						e = d.getElementsByTagName(t)[0];
+						s.async = 1;
+						s.src = u;
+						e.parentNode.insertBefore(s, e);
+					})(window, document, 'script', '//s.swiftypecdn.com/install/v2/st.js', '_st');
+
+					_st('install', 'A1Pz-LKMXbrzcFg2FWi6', '2.0.0');
+				}
+			</script>
+
+		</div>
+		
+	</body>
+	<!-- 页面点击小红心 -->
+	<script type="text/javascript" src="./js/love.js"></script>
+</html>

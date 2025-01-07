@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://wanghao221.github.io/search.json/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="wanghao">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/wanghao221.github.io/http://oayoilchh.bkt.clouddn.com/2016/07/27/18:05:26%20">
+  
+  
+      
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+
+  
+  
+<link rel="stylesheet" href="/wanghao221.github.io/css/style.css">
+
+  <link rel="stylesheet" href="/wanghao221.github.io/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/wanghao221.github.io/apple-touch-icon.png">
+  
+    
+    
+  
+  
+      <link rel="stylesheet" href="/wanghao221.github.io/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/wanghao221.github.io/js/pace.js"></script>
+    <link href="/wanghao221.github.io/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/wanghao221.github.io/',
+          fancybox: true,
+          animate: true,
+          isHome: true,
+          isPost: false,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="img/head.jpg" class="js-avatar">
+            
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">wanghao</a></h1>
+        </hgroup>
+        
+        
+            <form>
+                <input type="text" class="st-default-search-input search" id="local-search-input" placeholder="搜索一下" autocomplete="off">
+            </form>
+            <div id="local-search-result"></div>
+        
+        
+            <script type="text/javascript">
+                (function() {
+                    'use strict';
+                    function getMatchData(keyword, data) {
+                        var matchData = [];
+                        for(var i =0;i<data.length;i++){
+                            if(data[i].title.toLowerCase().indexOf(keyword)>=0) 
+                                matchData.push(data[i])
+                        }
+                        return matchData;
+                    }
+                    var $input = $('#local-search-input');
+                    var $resultContent = $('#local-search-result');
+                    $input.keyup(function(){
+                        $.ajax({
+                            url: '/search.json',
+                            dataType: "json",
+                            success: function( json ) {
+                                var str='<ul class=\"search-result-list\">';                
+                                var keyword = $input.val().trim().toLowerCase();
+                                $resultContent.innerHTML = "";
+                                if ($input.val().trim().length <= 0) {
+                                    $resultContent.empty();
+                                    $('#switch-area').show();
+                                    return;
+                                }
+                                var results = getMatchData(keyword, json);
+                                if(results.length === 0){
+                                    $resultContent.empty();
+                                    $('#switch-area').show();
+                                    return;
+                                } 
+                                for(var i =0; i<results.length; i++){
+                                    str += "<li><a href='"+ results[i].url +"' class='search-result-title'>"+ results[i].title +"</a></li>";
+                                }
+                                str += "</ul>";
+                                $resultContent.empty();
+                                $resultContent.append(str);
+                                $('#switch-area').hide();
+                            }
+                        });
+                    });
+                })();
+            </script>
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a  href="http://wanghao221.github.io/">努力是为了  站在万人中央  成为别人的光</a></li>
+                        
+                            <li><a  href="http://wanghao221.github.io/">博客首页</a></li>
+                        
+                            <li><a  href="/wanghao221.github.io/archives">文章归档</a></li>
+                        
+                            <li><a  href="https://how2j.cn/" target="_blank" rel="noopener">学习导航</a></li>
+                        
+                            <li><a  href="https://m.job592.com/doc/latest.html?act=sou&pn=3" target="_blank" rel="noopener">个人简历</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail"  target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=opOakZSRlJKQlpXi09OMwc3P" title="mail">mail</a>
+                            
+                                <a class="fl github"  target="_blank" href="https://github.com/wanghao221" title="github">github</a>
+                            
+                                <a class="fl zhihu"  target="_blank" href="https://www.zhihu.com/people/6c87b396f57fc7e9e55a6a17cf25f9cd" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo"  target="_blank" href="https://weibo.com/u/5523704689" title="weibo">weibo</a>
+                            
+                                <a class="fl rss"  target="_blank" href="/wanghao221.github.io/atom.xml" title="rss">rss</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/wanghao221.github.io/tags/Java%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">Java学习</a> <a href="/wanghao221.github.io/tags/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 20px;">MySQL数据库</a> <a href="/wanghao221.github.io/tags/%E7%8E%9B%E5%8D%A1%E5%B7%B4%E5%8D%A1%E7%B1%B3%E5%8D%A1%E6%8B%89%E5%8D%A1%E5%97%A1/" style="font-size: 10px;">玛卡巴卡米卡拉卡嗡</a> <a href="/wanghao221.github.io/tags/%E7%B2%BE%E9%80%9Ahello-world/" style="font-size: 10px;">精通hello world</a> <a href="/wanghao221.github.io/tags/%E8%BD%AF%E4%BB%B6%E4%B8%8B%E8%BD%BD/" style="font-size: 10px;">软件下载</a>
+                    </div>
+                </section>
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://ring3.xyz/">Yllen</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://whereisk0shl.top/">K0sh1</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.jarviswang.me/">汪神_Jarvis</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://sh3ll.me/">Chu</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.hackfun.org/">Hackfun</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.cnblogs.com/iamstudy">L3m0n</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://o0xmuhe.me/">muhe</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://blog.nuptzj.cn/">_画船听雨</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.virzz.com/index.html">Virink</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.sqlsec.com/">国光</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.cizel.cn/">C1zel</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://1phan.cc">1phan</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.cnblogs.com/Ox9A82/">Ox9A82</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://blog.binklac.com">VeroFess</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.bendawang.site/">bendawang</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://blog.iret.xyz/list.aspx">Silver</a>
+                    
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">萌得不能再萌的萌新</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/wanghao221.github.io/" title="Me">wanghao</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/wanghao221.github.io/" class="profilepic">
+                
+                    <img lazy-src="/wanghao221.github.io/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/wanghao221.github.io/" title="Me">wanghao</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="http://wanghao221.github.io/">努力是为了  站在万人中央  成为别人的光</a></li>
+                
+                    <li><a href="http://wanghao221.github.io/">博客首页</a></li>
+                
+                    <li><a href="/wanghao221.github.io/archives">文章归档</a></li>
+                
+                    <li><a href="https://how2j.cn/" target="_blank" rel="noopener">学习导航</a></li>
+                
+                    <li><a href="https://m.job592.com/doc/latest.html?act=sou&pn=3" target="_blank" rel="noopener">个人简历</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=opOakZSRlJKQlpXi09OMwc3P" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/wanghao221" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/6c87b396f57fc7e9e55a6a17cf25f9cd" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/u/5523704689" title="weibo">weibo</a>
+                    
+                        <a class="rss" target="_blank" href="/wanghao221.github.io/atom.xml" title="rss">rss</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap">
+  
+    <article id="post-数据库基础-02" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/wanghao221.github.io/2020/05/06/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80-02/" class="article-date">
+      <time datetime="2020-05-06T08:13:31.000Z" itemprop="datePublished">2020-05-06</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/wanghao221.github.io/2020/05/06/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80-02/">数据库基础(02)</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>###课程回顾:</p>
+<ol>
+<li>数据库相关SQL</li>
+</ol>
+<ul>
+<li>查询所有 show databases;</li>
+<li>创建 create database db1 character set utf8/gbk;</li>
+<li>查询详情 show create database db1;</li>
+<li>删除数据库 drop database db1;</li>
+<li>使用数据库 use db1;</li>
+</ul>
+<ol start="2">
+<li>表相关SQL</li>
+</ol>
+<ul>
+<li>创建表 create table t1(name varchar(10),age int)charset=utf8/gbk;</li>
+<li>查询所有 show tables;</li>
+<li>查询表详情 show create table t1;</li>
+<li>查询表字段 desc t1;</li>
+<li>删除表  drop table t1;</li>
+<li>添加表字段 alter table t1 add 字段名 类型 first/after xxx;</li>
+<li>删除表字段 alter table t1 drop 字段名;</li>
+<li>修表字段  alter table t1 change 原名 新名 新类型;</li>
+</ul>
+<ol start="3">
+<li>数据相关SQL</li>
+</ol>
+<ul>
+<li>插入数据:  insert into t1(字段1,字段2) values(值1,值2),(值1,值2);</li>
+<li>查询数据:  select 字段信息 from t1 where 条件;</li>
+<li>修改数据:  update t1 set 字段=xxx,字段=xxx where 条件;</li>
+<li>删除数据:  delete from t1 where 条件;</li>
+</ul>
+<ol start="4">
+<li>数据类型</li>
+</ol>
+<ul>
+<li>整数: int 和 bigint  </li>
+<li>浮点数: double(m,d) m总长度 d小数长度     decimal(m,d)</li>
+<li>字符串: char(m)固定长度最大255    varchar(m)可变长度最大65535       text(m)可变长度最大65535</li>
+<li>日期: date年月日  time时分秒  datatime 默认值null 最大 9999-12-31  timestamp 默认值当前系统时间,最大2038-1-19<br>###练习:</li>
+</ul>
+<ol>
+<li>创建数据库mydb4 字符集utf8  并使用<br> create database mydb4 character set utf8;<br> use mydb4;</li>
+<li>在数据库中创建员工表emp 字段:id,name,sal,deptId(部门id) 字符集utf8<br> create table emp(id int,name varchar(10),sal int,deptId int)charset=utf8;</li>
+<li>创建部门表dept 字段:id,name,loc(部门地址) 字符集utf8<br> create table dept(id int,name varchar(10),loc varchar(20))charset=utf8;</li>
+<li>部门表插入以下数据: 1 神仙部 天庭       2 妖怪部  盘丝洞<br> insert into dept values(1,’神仙部’,’天庭’),(2,’妖怪部’,’盘丝洞’);</li>
+<li>员工表插入一下数据:  1 悟空 5000 1    ,   2 八戒  2000  1  ,  3 蜘蛛精 8000 2,  4 白骨精 9000 2<br> insert into emp values(1,’悟空’,5000,1),(2,’八戒’,2000,1),(3,’蜘蛛精’,8000,2),(4,’白骨精’,9000,2);</li>
+<li>查询工资6000以下的员工姓名和工资  select name,sal from emp where sal&lt;6000;</li>
+<li>修改神仙部的名字为取经部   update dept set name=’取经部’ where id=1;</li>
+<li>给员工添加奖金comm字段      alter table emp add comm int;</li>
+<li>修改部门id为1的部门奖金为500    update emp set comm=500 where deptId=1;</li>
+<li>把取经部的地址改成五台山    update dept set loc=’五台山’ where id=1;</li>
+<li>删除两个表         drop table emp;  drop table dept;<br>###主键约束 primary key</li>
+</ol>
+<ul>
+<li>主键: 表示数据唯一性的字段称为主键</li>
+<li>约束: 约束是创建表时给表字段添加的限制条件</li>
+<li>主键约束: 限制主键的值唯一且非空</li>
+<li>测试: <pre><code>create table t1(id int primary key,name varchar(10));
+insert into t1 values(1,&apos;aaa&apos;);
+insert into t1 values(1,&apos;bbb&apos;);   //报错 主键值不能重复 Duplicate entry &apos;1&apos; for key &apos;PRIMARY&apos;
+insert into t1 values(null,&apos;ccc&apos;);//报错 主键值不能为null Column &apos;id&apos; cannot be null</code></pre>###主键+自增 auto_increment</li>
+<li>自增规则:从历史最大值+1 </li>
+<li>测试:<pre><code>create table t2(id int primary key auto_increment,name varchar(10));
+insert into t2 values(null,&apos;aaa&apos;);           1
+insert into t2 values(null,&apos;bbb&apos;);           2
+insert into t2 values(10,&apos;ccc&apos;);             10
+insert into t2 values(null,&apos;ddd&apos;);           11
+delete from t2 where id&gt;=10;
+insert into t2 values(null,&apos;eee&apos;);           12 </code></pre>###导入*.sql文件</li>
+<li>把下载的emp.sql 放到d盘根目录<br>  source d:/emp.sql;</li>
+<li>如果导入后 执行select * from emp  发现有乱码 执行 set names gbk;<br>###去重distinct</li>
+</ul>
+<ol>
+<li>查询员工表中有哪些不同的工作<br> select distinct job from emp;<br>###is null 和 is not null</li>
+</ol>
+<ul>
+<li>判断某个字段的值为null时不能使用=</li>
+</ul>
+<ol>
+<li>查询没有上级领导的员工信息<br> select * from emp where mgr is null;</li>
+<li>查询有上级领导的员工姓名和上级领导编号<br> select ename,mgr from emp where mgr is not null;<br>###比较运算符 &gt; &lt; &gt;= &lt;= = !=和&lt;&gt;</li>
+<li>查询员工工资小于等于3000的员工姓名和工资<br> select ename,sal from emp where sal&lt;=3000;</li>
+<li>查询工作不是程序员的员工姓名和工作(两种写法)<br> select ename,job from emp where job!=’程序员’;<br> select ename,job from emp where job&lt;&gt;’程序员’;<h3 id="and-和-or"><a href="#and-和-or" class="headerlink" title="and 和 or"></a>and 和 or</h3></li>
+</ol>
+<ul>
+<li>如果查询数据时使用了多个条件,多个条件同时满足使用and, 多个条件满足一个就可以使用or</li>
+<li>and类似java中的&amp;&amp;     ,    or类似java中的||</li>
+</ul>
+<ol>
+<li>查询1号部门工资大于1500的员工信息<br> select * from emp where deptno=1 and sal&gt;1500;</li>
+<li>查询工作是人事或者工资大于3000的员工姓名,工作和工资.<br> select ename,job,sal from emp where job=’人事’ or sal&gt;3000;<br>###in(x,y,z)</li>
+</ol>
+<ul>
+<li>当查询某个字段的值为多个的时候使用in关键字</li>
+</ul>
+<ol>
+<li>查询工资为1500,3000,5000的员工信息<br> select * from emp where sal=1500 or sal=3000 or sal=5000;<br> select * from emp where sal in(1500,3000,5000);<br>###between x and y </li>
+<li>查询工资在1000到2000之间的员工信息(包括1000和2000)<br> select * from emp where sal&gt;=1000 and sal&lt;=2000;<br> select * from emp where sal between 1000 and 2000;</li>
+<li>查询工资在1000到2000以外的员工信息<br> select * from emp where sal not between 1000 and 2000;</li>
+<li>查询工资不等于5000,3000,800的员工信息<br> select * from emp where sal not in(800,3000,5000);</li>
+</ol>
+<p>###综合练习</p>
+<ol>
+<li>查询有上级领导并且是3号部门的员工信息<br> select * from emp where mgr is not null and deptno=3;</li>
+<li>查询2号部门工资在1000到2000之间的员工姓名 工资和部门编号<br> select ename,sal,deptno from emp where deptno=2 and sal between 1000 and 2000;</li>
+<li>查询1号部门工资为800和1600的员工信息<br> select * from emp where deptno=1 and sal in(800,1600);</li>
+<li>查询1号和2号部门工资高于2000的员工信息<br> select * from emp where deptno in(1,2) and sal&gt;2000;</li>
+<li>查询员工表中出现的部门编号有哪几个<br> select distinct deptno from emp;<br>###模糊查询like</li>
+</ol>
+<ul>
+<li>_:代表1个未知字符</li>
+<li>%:代表0或多个未知字符</li>
+<li>举例:<ol>
+<li>以x开头    x%</li>
+<li>以x结尾    %x</li>
+<li>包含x      %x%</li>
+<li>第二个字符是x    _x%</li>
+<li>倒数第三个是x    %x__</li>
+<li>以x开头 倒数第二个是y   x%y_</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li>查询员工表中姓孙的员工姓名<br> select ename from emp where ename like ‘孙%’;</li>
+<li>查询名字以精结尾的员工信息<br> select * from emp where ename like ‘%精’;</li>
+<li>查询工作中包含销售的员工姓名和工作<br> select ename,job from emp where job like ‘%销售%’;<br>###排序 order by</li>
+</ol>
+<ul>
+<li>格式: order by 字段 asc(默认升序)/desc降序 写在SQL语句的后面</li>
+</ul>
+<ol>
+<li>查询工资高于2000的员工信息,按照工资升序排序<br> select * from emp where sal&gt;2000 order by sal;</li>
+<li>查询每个员工的姓名,工资和部门编号,按照部门编号降序排序<br> select ename,sal,deptno from emp order by deptno desc;</li>
+</ol>
+<ul>
+<li>多字段排序,在order by后面写多个字段 通过逗号分隔</li>
+</ul>
+<ol start="3">
+<li>查询每个员工的姓名,工资和部门编号,按照部门编号降序排序,如果部门编号一致则按照工资降序排序<br> select ename,sal,deptno from emp order by deptno desc,sal desc;</li>
+<li>查询1号和2号部门的员工信息按照部门编号升序排序,如果部门编号一致则按照工资降序排序<br> select * from emp where deptno in(1,2) order by deptno, sal desc;<br>###分页查询</li>
+</ol>
+<ul>
+<li>格式: limit 跳过的条数,请求条数(也代表每页条数) , 写在SQL语句的最后</li>
+</ul>
+<ol>
+<li>请求员工表中按照工资降序排序前3条数据(请求第一页的3条数据)<br> select * from emp order by sal desc limit 0,3;</li>
+<li>查询员工表中工资降序排序的第4 5 6条数据<br> select * from emp order by sal desc limit 3,3;</li>
+<li>查询员工表中第三页的2条数据(请求第5和第6条数据)<br> select * from emp limit 4,2;</li>
+<li>查询工资最低的员工信息<br> select * from emp order by sal limit 0,1;</li>
+<li>查询员工表中工资升序第四页的2条数据<br> select * from emp order by sal limit 6,2;</li>
+</ol>
+<p>###综合练习题</p>
+<ol>
+<li>查询员工表中名字里第二个字是八的员工姓名和工资<br> select ename,sal from emp where ename like ‘_八%’;</li>
+<li>查询工作中包含售字的员工姓名和工作<br> select ename,job from emp where job like ‘%售%’;</li>
+<li>查询工资高于1000块钱的员工姓名和工资,按照工资降序排序,查询第二页的3条数据<br> select ename,sal from emp where sal&gt;1000 order by sal desc limit 3,3;<br>###数值计算+ - * /</li>
+<li>查询每个员工的姓名,工资和年终奖(3个月的工资)<br> select ename,sal,sal*3 from emp;<ul>
+<li>别名,可以对查询的字段起别名<br>select ename as ‘名字’,sal as ‘工资’,sal<em>3 as ‘年终奖’ from emp;<br>select ename ‘名字’,sal ‘工资’,sal</em>3 ‘年终奖’ from emp;<br>select ename 名字,sal 工资,sal*3 年终奖 from emp;</li>
+</ul>
+</li>
+<li>查询每个员工姓名,工资和涨薪5块钱之后的工资<br> select ename,sal,sal+5 涨薪后 from emp;<br>###聚合函数</li>
+</ol>
+<ul>
+<li>聚合函数是对查询的多条数据进行统计查询,包括:求平均值,最大值,最小值,求和,计数</li>
+<li>平均值avg<ol>
+<li>查询1号部门的平均工资<br> select avg(sal) from emp where deptno=1;</li>
+<li>查询程序员的平均工资<br> select avg(sal) from emp where job=’程序员’;</li>
+</ol>
+</li>
+<li>最大值max<ol>
+<li>查询3号部门的最高工资<br>select max(sal) from emp where deptno=3;</li>
+</ol>
+</li>
+<li>最小值min<ol>
+<li>查询销售的最低工资<br>select min(sal) from emp where job=’销售’;</li>
+</ol>
+</li>
+<li>求和sum<ol>
+<li>查询2号部门的工资总和<br>select sum(sal) from emp where deptno=2;</li>
+</ol>
+</li>
+<li>计数count<ol>
+<li>查询工资高于2000的员工人数<br>select count(*) from emp where sal&gt;2000;</li>
+<li>查询2号部门的人数<br>select count(*) from emp where deptno=2;<br>###练习题</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li>查询员工表中工资高于2000的员工姓名和工资,按照工资升序排序,查询第二页的2条数据<br> select ename,sal from emp where sal&gt;2000 order by sal  limit 2,2;</li>
+<li>查询和销售相关的工作的工资总和<br> select sum(sal) from emp where job like ‘%销售%’;        6625</li>
+<li>查询程序员人数<br> select count(*) from emp where job=’程序员’;           2</li>
+<li>查询1号部门中有领导的员工中的最高工资<br> select max(sal) from emp where deptno=1 and mgr is not null;</li>
+<li>查询2号部门的最高工资和最低工资 起别名<br> select max(sal) 最高工资,min(sal) 最低工资 from emp where deptno=2;</li>
+<li>查询1号部门里面名字中包含空字的员工姓名<br>select ename from emp where deptno=1 and ename like ‘%空%’;<br>###分组查询</li>
+</ol>
+<ul>
+<li>题目需求中每个xx 就以xx作为分组的字段</li>
+<li>查询员工表的平均工资<br>  select avg(sal) from emp;</li>
+<li>查询1号部门的平均工资<br>  select avg(sal) from emp where deptno=1;  </li>
+</ul>
+<ol>
+<li>查询每个部门的平均工资<br> select deptno,avg(sal) from emp group by deptno;</li>
+<li>查询每个工作的最高工资<br> select job,max(sal) from emp group by job;</li>
+<li>查询每个部门的人数<br> select deptno,count(*) from emp group by deptno;</li>
+<li>查询每种工作的工资总和<br> select job,sum(sal) from emp group by job;</li>
+<li>查询每个部门工资高于1000块钱的员工人数<br> select deptno,count(*) from emp where sal&gt;1000 group by deptno;</li>
+<li>查询1号和2号部门的最高工资<br> select deptno,max(sal) from emp where deptno in(1,2) group by deptno;</li>
+<li>查询1号和2号部门中每种工作的工资总和<br> select job,sum(sal) from emp where deptno in(1,2) group by job;<br>###having</li>
+</ol>
+<ul>
+<li>where后面只能写普通字段条件,聚合函数不能写在where后面</li>
+<li>having后面专门写聚合函数的条件,而且是和分组查询结合使用 </li>
+<li>各个关键字的顺序:  select …..from 表名 where 普通字段条件 group by 分组字段名  having 聚合函数条件 order by 排序字段名 limit …;</li>
+</ul>
+<ol>
+<li>查询每个部门的平均工资,只查询平均工资高于2000的信息<br> select deptno,avg(sal) from emp group by deptno having avg(sal)&gt;2000;</li>
+<li>查询每种工作的人数,只查询人数为1的信息<br> select job,count(<em>) from emp group by job having count(</em>)=1;</li>
+<li>查询每个部门的平均工资,只查询工资在1000到3000之间的,并且过滤掉平均工资低于2000的信息.<br> select deptno,avg(sal) from emp where sal between 1000 and 3000 group by deptno having avg(sal)&gt;=2000;</li>
+</ol>
+<p>###综合练习</p>
+<ol>
+<li>查询没有上级领导的员工编号empno，姓名，工资<br> <code>select empno,ename,sal from emp where mgr is null;</code></li>
+<li>查询有奖金的员工姓名和奖金<br> <code>select ename,comm from emp where comm&gt;0;</code></li>
+<li>查询名字中包含精的员工姓名和工资<br> <code>select ename,sal from emp where ename like &#39;%精%&#39;;</code></li>
+<li>查询名字中第二个字是八的员工信息<br> <code>select * from emp where ename like &#39;_八%&#39;;</code></li>
+<li>查询1号部门工资大于2000的员工信息<br> <code>select * from emp where deptno=1 and sal&gt;2000;</code></li>
+<li>查询2号部门或者工资低于1500的员工信息<br> <code>select * from emp where deptno=2 or sal&lt;1500;</code></li>
+<li>查询工资为3000，1500，5000的员工信息按照工资升序排序<br> <code>select * from emp where sal in(3000,1500,5000) order by sal;</code></li>
+<li>查询3号部门的工资总和<br> <code>select sum(sal) from emp where deptno=3;</code></li>
+<li>查询每个部门工资大于1000的员工人数，按照人数升序排序<br> <code>select deptno,count() from emp where sal&gt;1000 group by deptno order by count();</code></li>
+<li>查询每种工作中有领导的员工人数按照人数降序排序<br><code>select job,count() from emp where mgr is not null group by job order by count() desc;</code></li>
+<li>查询所有员工信息，按照部门编号升序排序，如果部门编号一致则工资降序<br><code>select * from emp order by deptno,sal desc;</code></li>
+<li>查询有领导的员工，每个部门的编号和最高工资<br><code>select deptno,max(sal) from emp where mgr is not null group by deptno;</code></li>
+<li>查询有领导的员工，按照工资升序排序，第3页的2条数据<br><code>select * from emp where mgr is not null order by sal limit 4,2;</code></li>
+<li>查询每个部门的工资总和，只查询有上级领导的员工并且要求工资总和大于5400，最后按照工资总和降序排序,只查询结果中的第一条数据<br><code>deptno,sum(sal) from emp where mgr is not null group by deptno having sum(sal)&gt;5400 order by sum(sal) desc limit 0,1;</code></li>
+</ol>
+
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/wanghao221.github.io/tags/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">MySQL数据库</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-数据库基础(01)" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/wanghao221.github.io/2020/04/30/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80(01)/" class="article-date">
+      <time datetime="2020-04-30T01:27:18.000Z" itemprop="datePublished">2020-04-30</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/wanghao221.github.io/2020/04/30/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80(01)/">数据库基础(01)</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>###数据库</p>
+<ul>
+<li><p>之前通过IO技术对数据进行增删改查 相当于自己写了一个简单版的数据库软件,只不过功能简陋效率低下,将来工作中任何一个项目都需要数据库软件,如果每个项目都自己写一遍数据库软件,开发效率极低,在互联网行业中只要是使用频繁并且繁琐的工作肯定会有一个通用的解决方案.</p>
+</li>
+<li><p>学习数据库就是学习如何和数据库软件进行交流,SQL语言就是用于程序员和数据库软件进行交流的语言.</p>
+</li>
+<li><p>DBMS:DataBaseManagementSystem 数据库管理系统(数据库软件),包括:MySQL/Oracle/SQLServer,DB2,SQLite等</p>
+</li>
+<li><p>常见DBMS介绍:</p>
+<ol>
+<li>MySQL:开源 Oracle公司产品,08年MySQL被Sun公司收购,09年Sun公司被Oracle, 原MySQL创始人离开Oracle创建新的数据库MariaDB    市场占有率第一</li>
+<li>Oracle:闭源 Oracle公司产品, 性能最高价格最贵的数据库. 市占率第二</li>
+<li>SQLServer:闭源 微软公司产品,应用在微软的整套解决方案中 市占率第三</li>
+<li>DB2:闭源  IBM公司产品,应用在IBM整套解决方案中.</li>
+<li>SQLite:轻量级数据库,只提供基础的增删改成操作.安装包几十k,主要应用在移动设备和嵌入式设备中.</li>
+</ol>
+</li>
+<li><p>网站的整套解决方案包括: 开发语言 操作系统 web服务器软件 数据库软件</p>
+</li>
+<li><p>开源和闭源</p>
+<ol>
+<li>开源:开发源代码 免费, 盈利方式:通过卖服务 , 会有程序员无偿的提供升级和维护</li>
+<li>闭源:不开放源代码    盈利方式:通过卖产品+卖服务, 会有技术大拿攻击,但是没关系闭源产品的公司会养着一群人负责维护和升级.<br>###SQL语言</li>
+</ol>
+</li>
+<li><p>Structured Query Language:结构化查询语言, 用于程序员和数据库软件(DBMS)进行交流</p>
+</li>
+<li><p>如何连接数据库软件: 检查mysql服务开启 window键+r  输入services.msc  </p>
+</li>
+<li><p>开始菜单中找到Mysql/MariaDB文件夹 里面的 Mysql Client   打开后直接输入密码 </p>
+</li>
+<li><p>如果是linux或mac系统  先打开终端 在终端中输入  mysql -u用户名 -p回车   回车后输入密码 回车  </p>
+</li>
+<li><p>断开连接: 关闭窗口 或执行 exit; </p>
+<pre><code>Access denied for user &apos;root&apos;@&apos;localhost&apos; (using password: YES)   密码错误</code></pre><p>####数据库相关SQL语句</p>
+</li>
+<li><p>往数据库软件中保存数据,需要先建库再建表,最后再操作表里面的数据</p>
+</li>
+</ul>
+<ol>
+<li>查询所有数据库</li>
+</ol>
+<ul>
+<li>格式: show databases;</li>
+</ul>
+<ol start="2">
+<li>创建数据库  </li>
+</ol>
+<ul>
+<li>格式: create database 数据库名;              使用默认字符集创建数据<br>  create database db1;</li>
+<li>指定字符集格式:  create database 数据库名 character set utf8/gbk;<br>  create database db2 character set utf8;<br>  create database db3 character set gbk;</li>
+</ul>
+<ol start="3">
+<li>查看数据库详情</li>
+</ol>
+<ul>
+<li>格式: show create database 数据库名;<br>  show create database db1;</li>
+</ul>
+<ol start="4">
+<li>删除数据库</li>
+</ol>
+<ul>
+<li>格式: drop database 数据库名;<br>  drop database db4;</li>
+</ul>
+<ol start="5">
+<li>使用数据库</li>
+</ol>
+<ul>
+<li>对表和数据进行操作时必须先使用了数据库才可以 不然会报错</li>
+<li>格式: use 数据库名;<br>  use db1;</li>
+</ul>
+<p>###数据库相关练习:</p>
+<ol>
+<li>分别创建mydb1和mydb2  第一个字符集utf8 第二个gbk<br> create database mydb1 character set utf8;<br> create database mydb2 character set gbk;</li>
+<li>查询所有数据库检查是否创建成功<br> show databases;</li>
+<li>分别查询两个数据库的字符集是否成功<br> show create database mydb1;<br> show create database mydb2;</li>
+<li>先使用mydb1  再使用mydb2<br> use mydb1;<br> use mydb2;</li>
+<li>删除两个数据库<br> drop database mydb1;<br> drop database mydb2;<br>###表相关的SQL </li>
+</ol>
+<ul>
+<li>操作表时一定保证已经使用了某个数据库  不然会报以下错:<br>  ERROR 1046 (3D000): No database selected</li>
+</ul>
+<ol>
+<li>创建表</li>
+</ol>
+<ul>
+<li>格式: create table 表名(字段名 字段类型,字段名 字段类型);<br>  create table student(name varchar(10),age int);    </li>
+<li>指定字符集格式: create table 表名(字段名 类型,字段名 类型) charset=utf8/gbk;<br>  create table person(name varchar(10),gender varchar(5))charset=gbk;</li>
+</ul>
+<ol start="2">
+<li>查询所有表</li>
+</ol>
+<ul>
+<li>格式: show tables;</li>
+</ul>
+<ol start="3">
+<li>查询表详情</li>
+</ol>
+<ul>
+<li>格式: show create table 表名;<br>  show create table person;</li>
+</ul>
+<ol start="4">
+<li>查看表字段</li>
+</ol>
+<ul>
+<li>格式: desc 表名;<br>  desc student;</li>
+</ul>
+<ol start="5">
+<li>删除表 </li>
+</ol>
+<ul>
+<li>格式: drop table 表名:<br>  drop table student;</li>
+</ul>
+<ol start="6">
+<li>修改表名</li>
+</ol>
+<ul>
+<li>格式: rename table 原名 to 新名;<br>  rename table person to t_person;</li>
+</ul>
+<ol start="7">
+<li>添加表字段</li>
+</ol>
+<ul>
+<li>最后添加格式: alter table 表名 add 字段名 类型;</li>
+<li>最前面添加:alter table 表名 add 字段名 类型 first;</li>
+<li>在某个字段后面添加 alter table 表名 add 字段名 类型 after xxx;<br>  alter table t_person add salary int;<br>  alter table t_person add id int first;<br>  alter table t_person add age int after name;</li>
+</ul>
+<ol start="8">
+<li>删除表字段</li>
+</ol>
+<ul>
+<li>格式: alter table 表名 drop 字段名;<br>  alter table t_person drop salary;</li>
+</ul>
+<ol start="9">
+<li>修改表字段</li>
+</ol>
+<ul>
+<li>格式: alter table 表名 change 原名 新名 新类型;<br>  alter table t_person change age salary int;<br>###表相关SQL语句回顾</li>
+</ul>
+<ol>
+<li>创建 create table t1(name varchar(10),age int)charset=utf8;</li>
+<li>查询所有  show tables;</li>
+<li>查询表详情 show create table t1;</li>
+<li>查询表字段 desc t1</li>
+<li>删除表 drop table t1;</li>
+<li>修改表名 rename table t1 to t2;</li>
+<li>添加表字段 alter table t1 add salary int first/ after xxx;</li>
+<li>删除表字段 alter table t1 drop salary;</li>
+<li>修改表字段 alter table t1 change 原名 新名 新类型;<br>####表相关练习题：<ul>
+<li>创建数据库mydb1 字符集utf8 并使用该数据库<br>create database mydb1 character set utf8;<br>use mydb1;</li>
+<li>在mydb1中创建员工表emp   字段有name   表字符集也是utf8<br>create table emp(name varchar(10)) charset=utf8;</li>
+<li>添加表字段age在最后<br>alter table emp add age int;</li>
+<li>添加id字段在最前面<br>alter table emp add id int first;</li>
+<li>添加性别gender在name后面<br>alter table emp add gender varchar(5) after name;</li>
+<li>修改gender为工资sal<br>alter table emp change gender sal int;</li>
+<li>删除age字段<br>alter table emp drop age;</li>
+<li>修改表名为t_emp<br>rename table emp to t_emp;</li>
+<li>删除t_emp表<br>drop table t_emp;</li>
+<li>删除数据库<br>drop database mydb1;<br>###数据相关SQL</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>执行数据相关的SQL 必须保证已经使用了某个数据库,并且存在数据所对应的表格<br>  create database mydb2 character set utf8;<br>  use mydb2;<br>  create table person(name varchar(10),age int)charset=utf8;</li>
+</ul>
+<ol>
+<li>插入数据</li>
+</ol>
+<ul>
+<li>全表插入格式(要求值的数量和顺序必须和表字段一致): insert into 表名 values(值1,值2,值3);<br>  insert into person values(‘Tom’,18);</li>
+<li>指定字段插入格式(要求值的数量和顺序必须和指定的一致): insert into 表名(字段名1,字段名2)values(值1,值2);<br>  insert into person(name)values(‘Jerry’);</li>
+<li>批量插入数据格式: 在values后面写多组值即可f<br>  insert into person values(‘Lucy’,20),(‘Lily’,21);<br>  insert into person(name)values(‘zhangsan’),(‘lisi’);</li>
+<li>插入中文:<br>  insert into person values(‘刘德华’,30);<br>  如果执行以上代码出现错误提示,提示里面包含16进制的错误信息 执行以下SQL<br>  set names gbk; </li>
+</ul>
+<ol start="2">
+<li>查询数据</li>
+</ol>
+<ul>
+<li>格式: select 字段信息 from 表名 where 条件;</li>
+<li>举例:<br>  查询person表中所有的名字<ol>
+<li>select name from person;<br>查询person表中年龄大于20的名字和年龄</li>
+<li>select name,age from person where age&gt;20;<br>查询person表中所有数据的所有字段信息</li>
+<li>select * from person;      </li>
+</ol>
+</li>
+</ul>
+<ol start="3">
+<li>修改数据</li>
+</ol>
+<ul>
+<li>格式: update 表名 set 字段名=xxx,字段名=xxx where 条件;</li>
+<li>举例:<br>  update person set age=8 where name=’Tom’;<br>  update person set age=10 where age is null;</li>
+</ul>
+<ol start="4">
+<li>删除数据</li>
+</ol>
+<ul>
+<li>格式: delete from 表名 where 条件;</li>
+<li>举例:<ol>
+<li>删除Tom<br>delete from person where name=’Tom’;</li>
+<li>删除年龄小于20岁的<br>delete from person where age&lt;20;</li>
+<li>删除所有数据<br>delete from person;</li>
+</ol>
+</li>
+</ul>
+<p>###增删改查回顾:</p>
+<ol>
+<li>插入数据    insert into 表名 values(值1,值2);</li>
+<li>查询数据    select 字段信息 from 表名 where 条件;</li>
+<li>修改数据    update 表名 set 字段名=xxx where 条件;</li>
+<li>删除数据    delete from 表名 where 条件;<br>###数据类型</li>
+<li>整数类型: int(m)和bigint(m)  bigint等效java中的long, m代表显示长度 需要结合zerofill关键字使用<br> create table t1(name varchar(10),age int(10) zerofill);<br> insert into t1 values(‘Tom’,18);<br> select * from t1;</li>
+<li>浮点数: double(m,d) m代表总长度  d代表小数长度    58.234 m=5  d=3   ,超高精度的浮点数decimal(m,d)只有涉及超高精度运算时使用.</li>
+<li>字符串:</li>
+</ol>
+<ul>
+<li>char(m): 固定长度  m=10 存”abc”  占10,执行效率略高 最大255</li>
+<li>varchar(m):可变长度 m=10 存”abc” 占3,更节省存储空间, 最大65535 超过255建议使用text</li>
+<li>text(m):可变长度,最大值65535.</li>
+</ul>
+<ol start="4">
+<li>日期:</li>
+</ol>
+<ul>
+<li>date: 只能保存年月日</li>
+<li>time: 只能保存时分秒</li>
+<li>datetime:保存年月日时分秒,默认值是null,最大值9999-12-31</li>
+<li>timestamp:时间戳(距离1970年毫秒数),保存年月日时分秒,默认值当前系统时间,最大值2038-1-19</li>
+<li>举例: <pre><code>create table t_date(t1 date,t2 time,t3 datetime,t4 timestamp);
+insert into t_date values(&apos;2020-1-18&apos;,null,null,null);
+insert into t_date values(null,&apos;17:35:18&apos;,&apos;2020-3-17 12:30:23&apos;,null);</code></pre>###课程回顾</li>
+</ul>
+<ol>
+<li>数据库相关</li>
+</ol>
+<ul>
+<li>创建数据库 create database db1 character set utf8/gbk;</li>
+<li>查询所有数据库 show databases;</li>
+<li>查询数据库详情  show create database db1;</li>
+<li>删除数据库 drop database db1;</li>
+<li>使用数据库  use db1;</li>
+</ul>
+<ol start="2">
+<li>表相关</li>
+</ol>
+<ul>
+<li>创建表 create table t1(name varchar(10),age int) charset=utf8/gbk;</li>
+<li>查询所有表  show tables;</li>
+<li>查询表详情 show create table t1;</li>
+<li>查询表字段 desc t1;</li>
+<li>删除表 drop table t1;</li>
+<li>修改表名 rename table t1 to t2;</li>
+<li>添加表字段 alter table t1 add 字段名 类型 first/after xxx;</li>
+<li>删除表字段 alter table t1 drop 字段名;</li>
+<li>修改表字段 alter table t1 change 原名 新名 新类型;</li>
+</ul>
+<ol start="3">
+<li>数据相关</li>
+</ol>
+<ul>
+<li>插入数据:<br>  insert into t1 values(‘tom’,18);<br>  insert into t1(name) values(‘tom’);<br>  insert into t1 values(‘tom’,18),(‘jerry’,28);</li>
+<li>查询数据:<br>  select 字段信息 from t1 where 条件;</li>
+<li>修改数据<br>  update t1 set name=’张三’,age=20 where name=’lisi’;</li>
+<li>删除数据<br>  delete from t1 where 条件;</li>
+</ul>
+
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/wanghao221.github.io/tags/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">MySQL数据库</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-JSD2002第一次月考" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/wanghao221.github.io/2020/04/25/JSD2002%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%9C%88%E8%80%83/" class="article-date">
+      <time datetime="2020-04-25T12:03:44.000Z" itemprop="datePublished">2020-04-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/wanghao221.github.io/2020/04/25/JSD2002%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%9C%88%E8%80%83/">JSD2002第一次月考</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <title>考试</title>
+    <link rel="stylesheet" href="http://tes.tmooc.cn/private/tesweb/css/style.css">
+    <link rel="stylesheet" href="http://tes.tmooc.cn/private/tesweb/css/iconfont.css">
+    <script>
+        document.domain="tmooc.cn";
+    </script>
+
+<body class="bg-f3f2f2">
+<div class="page-header md-2018121001-xxw">
+    <div class="clearfix container">
+        <div class="logo-box pull-left">
+            <img src="http://tes.tmooc.cn/private/tesweb/css/img/logo_xxw1.png">
+        </div>
+        <ul class="nav-xxw pull-left">
+            <li><a href="#">在线考试</a></li>
+        </ul>
+
+<pre><code>&lt;/div&gt;</code></pre></div>
+
+
+
+</div></body>
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/wanghao221.github.io/tags/Java%E5%AD%A6%E4%B9%A0/" rel="tag">Java学习</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Visio-2003-精简版-简体中文-免激活-百度云链接" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/" class="article-date">
+      <time datetime="2020-04-22T03:07:59.000Z" itemprop="datePublished">2020-04-22</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/">Visio 2003 精简版(简体中文,免激活)百度云链接</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>###Visio 2003 精简版(简体中文,免激活)百度云链接<br>:<a href="https://pan.baidu.com/s/1mb_sFt5Cgt8o6hvlA3uN3g" target="_blank" rel="noopener">https://pan.baidu.com/s/1mb_sFt5Cgt8o6hvlA3uN3g</a><br><br>提取码：prc5<br><br>自己在网上搜了Visio很多版本2019,2016,2013,2010,大的有2G多,小的<br>也有400多M,500多M,不过都用不了,有链接地址失效的,有的下载下来解压出错,还有安装的时候出错的,如图</p>
+<p><img src="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/1.png" alt></p>
+<hr>
+<pre><code>以下内容dalao请回避</code></pre><p>后来这个就是我在一个学习群里找到的低配版的,虽然只有64M,但供学习用也还可以,我就是用它来做一些用例图,ER图等.</p>
+<p>下载好了打开安装</p>
+<p><img src="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/2.png" alt></p>
+<p>这里的用户名和缩写自己设置一个就好了</p>
+<p><img src="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/3.png" alt></p>
+<p>我默认安装类型就是典型安装,安装路径我也默认在了C盘</p>
+<p><img src="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/4.png" alt></p>
+<p>然后就慢慢等待进度条吧</p>
+<p><img src="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/5.png" alt></p>
+<p><img src="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/6.png" alt></p>
+<p>最后找到文件所在位置,打开就可以用了</p>
+<p><img src="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/7.png" alt></p>
+<p><img src="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/8.png" alt></p>
+<p>最后，欢迎访问个人博客：<a href="https://wanghao221.github.io/">传送门</a>—  一个刚刚开启博客的小萌新！<br>如果还有什么问题可以发邮箱给我,在博客首页有.</p>
+
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/wanghao221.github.io/tags/%E8%BD%AF%E4%BB%B6%E4%B8%8B%E8%BD%BD/" rel="tag">软件下载</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Integer-ValueOf-引发的血案" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/wanghao221.github.io/2020/04/21/Integer-ValueOf-%E5%BC%95%E5%8F%91%E7%9A%84%E8%A1%80%E6%A1%88/" class="article-date">
+      <time datetime="2020-04-21T08:06:13.000Z" itemprop="datePublished">2020-04-21</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/wanghao221.github.io/2020/04/21/Integer-ValueOf-%E5%BC%95%E5%8F%91%E7%9A%84%E8%A1%80%E6%A1%88/">Integer.ValueOf()引发的血案</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><img src="https://img-blog.csdnimg.cn/20200421145859950.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzI3MTA4Ng==,size_16,color_FFFFFF,t_70" alt><br>这道题有的人或许做过，也可能选对，但是这其中的道理你却不一定理解，在这里大牛走过，小白留下一起学习。</p>
+<p>先来分析选型A，Integer i01 = 59，是一个装箱的过程，在进行i01 == i02的比较过程中，因为右边是整型，发生了拆箱的动作，所以进行了值得比较，所以返回true。</p>
+<p>在这里拿出Integer a = 59，Integer b = 59，这种又会出现什么状况呢，如果按照装箱和拆箱来看就是true，如果按照对象来看，就是false，在你举棋不定得时候你就应该看看源码了。</p>
+<pre><code>private static class IntegerCache {
+    static final int low = -128;
+    static final int high;
+    static final Integer cache[];
+
+    static {
+        // high value may be configured by property
+        int h = 127;
+        String integerCacheHighPropValue =
+            sun.misc.VM.getSavedProperty(&quot;java.lang.Integer.IntegerCache.high&quot;);
+        if (integerCacheHighPropValue != null) {
+            try {
+                int i = parseInt(integerCacheHighPropValue);
+                i = Math.max(i, 127);
+                // Maximum array size is Integer.MAX_VALUE
+                h = Math.min(i, Integer.MAX_VALUE - (-low) -1);
+            } catch( NumberFormatException nfe) {
+                // If the property cannot be parsed into an int, ignore it.
+            }
+        }
+        high = h;
+
+        cache = new Integer[(high - low) + 1];
+        int j = low;
+        for(int k = 0; k &lt; cache.length; k++)
+            cache[k] = new Integer(j++);
+
+        // range [-128, 127] must be interned (JLS7 5.1.7)
+        assert IntegerCache.high &gt;= 127;
+    }
+
+    private IntegerCache() {}
+}</code></pre><p>这个类是Integer类中的一个静态内部类，其中的静态代码块在类进行加载的时候就进行了-127-128这些数字的创建和保存，将他们的引用全部保存在Cache数组中。</p>
+<p>所以当用Integer 声明初始化变量时，会先判断所赋值的大小是否在-128到127之间，若在，则利用静态缓存中的空间并且返回对应cache数组中对应引用，存放到运行栈中，而不再重新开辟内存。</p>
+<p>这里你就懂了吧，Integer a = 59，Integer b = 59返回的就是true，Integer a = 300，Integer b = 300在判断完之后就会new出来一个新的对象，所以会返回false。<br>    public static Integer valueOf(int i) {<br>        if (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high)<br>            return IntegerCache.cache[i + (-IntegerCache.low)];<br>        return new Integer(i);<br>    }<br>和上面的一样，int进去之后首先进行判断，如果在-128-127之间就会返回引用，否则就在堆上new出来对象。所以B选项返回true。</p>
+<p>C选项i03返回的是Cache数组中的引用，而i04返回的是堆上对象的引用，所以返回的是false。</p>
+<p> System.out.println(i02== i04) i02是整型变量，i04是引用，这里又用到了解包，虚拟机会把i04指向的数据拆箱为整型变量再与之比较，所以比较的是数值，59==59，返回true.</p>
+<p>————————————————<br>版权声明：本文为CSDN博主「小白又开始整活了」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a href="https://blog.csdn.net/weixin_43271086/article/details/105658354" target="_blank" rel="noopener">https://blog.csdn.net/weixin_43271086/article/details/105658354</a></p>
+
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/wanghao221.github.io/tags/Java%E5%AD%A6%E4%B9%A0/" rel="tag">Java学习</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-优秀的程序员一定要有自己的博客" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/wanghao221.github.io/2020/04/20/%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/" class="article-date">
+      <time datetime="2020-04-20T12:35:34.000Z" itemprop="datePublished">2020-04-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/wanghao221.github.io/2020/04/20/%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/">优秀的程序员一定要有自己的博客!</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <ol>
+<li>文本标签</li>
+</ol>
+<ul>
+<li>内容标题h1-h6： 独占一行  自带上下间距  字体加粗    字体从大到小 </li>
+<li>段落标签p ： 独占一行  自带上下间距  </li>
+<li>换行 br</li>
+<li>水平分割线hr</li>
+<li>字体相关： b加粗 i斜体 small小字  s删除线  u下划线 </li>
+</ul>
+<ol start="2">
+<li>列表标签</li>
+</ol>
+<ul>
+<li>无序列表： ul：type li</li>
+<li>有序列表： ol：type start reversed  li</li>
+<li>列表嵌套： 有序和无序可以任意无限嵌套</li>
+</ul>
+<ol start="3">
+<li>图片标签img</li>
+</ol>
+<ul>
+<li>src：路径<br>  相对路径：访问站内资源时使用<pre><code>- 图片和页面在同一目录： 直接写图片名
+- 图片在页面的上级目录时：../图片名
+- 图片在页面的下级目录时：文件夹名/图片名  。。。...</code></pre>  绝对路径:访问站外资源时使用, 称为图片盗链,可以节省本站资源,但是有找不到图片的风险</li>
+<li>alt: 图片不显示时显示的文本</li>
+<li>title: 鼠标在图片上悬停时显示的文本</li>
+<li>width/height: 两种赋值方式:1. 像素  2.百分比  ,如果只设置宽度高度会自动等比例缩放</li>
+</ul>
+<ol start="4">
+<li>超链接a</li>
+</ol>
+<ul>
+<li>href: 路径, 可以指向页面或其它文件(浏览器支持浏览则浏览,不支持则下载)</li>
+<li>包裹文本就是文本超链接,包裹图片就是图片超链接</li>
+<li>页面内部跳转, <a href="#top">回到顶部</a>    <xxx id="top"></xxx></li>
+</ul>
+<ol start="5">
+<li>表格table</li>
+</ol>
+<ul>
+<li>标签: table  tr表示行  td表示列  th表头(加粗并居中)  caption表格标题</li>
+<li>属性: table:border边框  cellspacing单元格间距  cellpadding单元格距内容的距离</li>
+</ul>
+<ol start="6">
+<li>表单form</li>
+</ol>
+<ul>
+<li><p>学习表单就是学习表单中的各种控件</p>
+</li>
+<li><p>文本框 &lt;input type=”text” name placeholder占位文本 value值&gt;</p>
+</li>
+<li><p>密码框 <input type="password" name placeholder value></p>
+</li>
+<li><p>单选<input type="radio" name value checked="checked" id="abc"><lable for="abc">让文本也能点击</lable></p>
+</li>
+<li><p>多选<input type="checkbox" name value checked="checked"></p>
+</li>
+<li><p>文件选择器<input type="file" name></p>
+</li>
+<li><p>日期选择器<input type="date" name><br>###表单续</p>
+<pre><code>&lt;form action=&quot;http://www.tmooc.cn&quot; method=&quot;get&quot;&gt;
+    &lt;!-- 下拉选 --&gt;
+    所在城市:&lt;select name=&quot;city&quot;&gt;
+        &lt;option value=&quot;bj&quot;&gt;北京&lt;/option&gt;
+        &lt;!-- selected默认选中 --&gt;
+        &lt;option value=&quot;sh&quot; selected=&quot;selected&quot;&gt;上海&lt;/option&gt;
+        &lt;option value=&quot;gz&quot;&gt;广州&lt;/option&gt;
+    &lt;/select&gt;&lt;br&gt;
+    &lt;!-- 文本域 rows行  cols列--&gt;
+    自我介绍:&lt;textarea name=&quot;intro&quot; rows=&quot;3&quot; cols=&quot;20&quot;
+            placeholder=&quot;说点儿啥...&quot;&gt;&lt;/textarea&gt;
+    &lt;!-- 提交按钮 --&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;注册&quot;/&gt;
+    &lt;!-- 重置按钮 --&gt;
+    &lt;input type=&quot;reset&quot; /&gt;
+    &lt;!-- 自定义按钮 --&gt;
+    &lt;input type=&quot;button&quot; value=&quot;按钮&quot; /&gt;
+    &lt;button type=&quot;button&quot;&gt;按钮&lt;/button&gt;
+&lt;/form&gt;</code></pre><p>###实体引用(特殊字符)</p>
+</li>
+<li><p>空格:空格折叠现象就是多个空格连续出现只能识别一个   &nbsp;</p>
+</li>
+<li><p>小于号: &lt;</p>
+</li>
+<li><p>大于号: &gt;<br>###分区标签</p>
+</li>
+<li><p>分区标签可以理解成是一个容器,将多个有相关性的标签放进一个容器,可以对多个标签进行统一管理</p>
+</li>
+<li><p>div:块级分区元素,特点:独占一行</p>
+</li>
+<li><p>span:行内分区元素,特点:共占一行</p>
+</li>
+<li><p>html5标准中新增的分区标签 作用和div一样: header头  footer脚  article正文  nav导航  section区域</p>
+  <div>头</div>
+  <div>体</div>
+  <div>脚</div>
+
+  <header></header>
+  <nav></nav>
+  <article></article>或<section></section>
+  <footer></footer>
+
+</li>
+</ul>
+<p>###CSS</p>
+<ul>
+<li>Cascading Style Sheet:层叠样式表,作用:是用于美化页面的</li>
+<li>如何在html页面中添加CSS样式代码?<ol>
+<li>内联样式:在标签的style属性中添加样式代码,不可以复用 使用较少</li>
+<li>内部样式: 在head标签里面添加style标签 标签体内写样式代码，可以在当前页面复用,这种写法学习使用较多,工作中使用较少</li>
+<li>外部样式: 在单独的css样式文件中写样式代码,通过link标签引入,好处:可以多页面复用,可以将html和css代码分离开<br>###选择器</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li>标签名选择器</li>
+</ol>
+<ul>
+<li>格式: 标签名{样式代码}</li>
+<li>作用: 选取页面中所有同名标签</li>
+</ul>
+<ol start="2">
+<li>id选择器</li>
+</ol>
+<ul>
+<li>格式: #id{样式代码}</li>
+<li>作用: 选取页面中指定id的元素(id必须唯一)</li>
+</ul>
+<ol start="3">
+<li>class选择器</li>
+</ol>
+<ul>
+<li>格式: .class{样式代码}</li>
+<li>作用: 选取页面中指定class值得多个元素</li>
+</ul>
+<ol start="4">
+<li>分组选择器</li>
+</ol>
+<ul>
+<li>格式: div,#abc,.c1{样式代码}</li>
+<li>作用: 将多个选择器合并成一个选择器</li>
+</ul>
+<ol start="5">
+<li>属性选择器</li>
+</ol>
+<ul>
+<li>格式: 元素名[属性名=’值’]{样式代码}</li>
+<li>作用:选取页面中所有指定属性名和值得元素</li>
+</ul>
+<ol start="6">
+<li>任意元素选择器</li>
+</ol>
+<ul>
+<li>格式: *{样式代码}</li>
+<li>作用: 选取页面中所有的元素</li>
+</ul>
+<p>####练习要求</p>
+<ol>
+<li>水煮鱼为红色字</li>
+<li>红烧肉 水煮鱼 宫保鸡丁背景蓝色</li>
+<li>文本框背景绿色</li>
+<li>d2字体绿色</li>
+<li>d3 s3 h3 字体紫色purple</li>
+<li>d3 s3 h3 d2 s1 s2 s3 背景绿色</li>
+<li>所有元素添加蓝色实线边框<br>###选择器续</li>
+<li>子孙后代选择器</li>
+</ol>
+<ul>
+<li>格式: body div span{样式代码}</li>
+<li>作用:选取body里面div里面所有span(包括所有后代)</li>
+</ul>
+<ol start="2">
+<li>子元素选择器</li>
+</ol>
+<ul>
+<li>格式: body&gt;div&gt;span{样式代码}</li>
+<li>作用:选取body里面的div里面的所有子元素span</li>
+</ul>
+<ol start="3">
+<li>伪类选择器</li>
+</ol>
+<ul>
+<li>该选择器选择的是元素的状态: 鼠标悬停状态 点击状态 未访问状态 访问过</li>
+<li>格式: a:hover/active/link/visited{}<br>###选择器回顾</li>
+</ul>
+<ol>
+<li>id选择器    #id{}</li>
+<li>标签名选择器   div{}</li>
+<li>class选择器   .class{}</li>
+<li>分组选择器   #id,div,.class{}</li>
+<li>属性选择器   input[type=’button’]{}</li>
+<li>任意元素选择器   *{}</li>
+<li>子孙后代选择器  div span{}</li>
+<li>子元素选择器   div&gt;span{}</li>
+<li>伪类选择器   a:visited访问过/link未访问/hover悬停/active点击{}<br>###颜色赋值方式</li>
+</ol>
+<ul>
+<li>三原色: red green blue  任何颜色都是三原色组成,每个颜色的取值0-255    </li>
+</ul>
+<ol>
+<li>颜色单词赋值 red</li>
+<li>6位16进制赋值 每两位表示一个颜色  #ff0000</li>
+<li>3位16进制 每一位重复    #f00等效#ff0000</li>
+<li>3位10进制赋值     rgb(255,0,0)</li>
+<li>4位10进制赋值   rgba(255,0,0,0-1)  a=alpha透明度  值越小越透明<br>###背景图片</li>
+</ol>
+<ul>
+<li>设置背景图片<br>  background-image: url(../imgs/1.jpg);</li>
+<li>设置背景图片尺寸<br>  background-size: 100px 80px;  //只给宽度赋值 高度auto 可以保证图片原始宽高比</li>
+<li>禁止重复<br>  background-repeat:no-repeat;</li>
+<li>背景图片的位置<br>  background-position:横向百分比  纵向百分比<br>###元素的显示方式display</li>
+</ul>
+<ol>
+<li>block: 块级元素,独占一行,可以修改宽高 包括:div h1-h6 p hr</li>
+<li>inline:行内元素,共占一行,不能修改宽高 包括:span b i small s u  超链接a</li>
+<li>inline-block:行内块元素,共占一行,也可以修改宽高: 图片img input<br>###文本和字体相关样式</li>
+<li>*水平对齐方式 text-align:left/right/center</li>
+<li>*文本修饰:text-decoration: overline上划线/underline下划线/line-through删除线/none去掉文本修饰</li>
+<li>文本阴影:text-shadow: 颜色 x偏移值 y偏移值 浓度(值越小越清晰)</li>
+<li>*行高:line-height:30px; 可以通过行高实现文本垂直居中</li>
+<li>*文本颜色: color:red;</li>
+<li>*字体大小: font-size:20px;</li>
+<li>*加粗:  font-weight:bold/normal(去掉字体加粗)</li>
+<li>斜体:  font-style:italic;</li>
+<li>字体设置: font-family:xxx,xxx,xxx;    font:20px xxx,xxx,xxx; </li>
+</ol>
+
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/wanghao221.github.io/tags/%E7%8E%9B%E5%8D%A1%E5%B7%B4%E5%8D%A1%E7%B1%B3%E5%8D%A1%E6%8B%89%E5%8D%A1%E5%97%A1/" rel="tag">玛卡巴卡米卡拉卡嗡</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-前端学习" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/wanghao221.github.io/2020/04/20/%E5%89%8D%E7%AB%AF%E5%AD%A6%E4%B9%A0/" class="article-date">
+      <time datetime="2020-04-20T01:21:03.000Z" itemprop="datePublished">2020-04-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/wanghao221.github.io/2020/04/20/%E5%89%8D%E7%AB%AF%E5%AD%A6%E4%B9%A0/">定位方式4+1</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>###position定位</p>
+<ol>
+<li>静态定位(文档流定位):是元素的默认定位方式</li>
+</ol>
+<ul>
+<li>格式:position:static</li>
+<li>元素显示特点: 块级元素从上到下排列,行内或行内块元素从左向右排列,元素不易实现层叠效果</li>
+<li>如何控制元素的位置: 通过外边距.</li>
+</ul>
+<ol start="2">
+<li>相对定位</li>
+</ol>
+<ul>
+<li>格式:position:relative</li>
+<li>元素显示特点: 元素不脱离文档流(元素不管显示到什么位置 仍然占着原来的位置) </li>
+<li>如何控制元素的位置: 通过top/left/right/bottom控制元素的显示位置,坐标相对于初始位置</li>
+<li>应用场景: 当需要移动某个元素,但移动该元素时不影响其它元素的显示效果,这时使用相对定位,如果做位置微调使用相对定位</li>
+</ul>
+<ol start="3">
+<li>绝对定位</li>
+</ol>
+<ul>
+<li>格式: position:absolute</li>
+<li>元素显示特点: 元素脱离文档流(当元素设置为绝对定位时会让出自己所占的位置)</li>
+<li>如何控制元素的位置: 通过top/left/right/bottom控制元素位置,坐标相对于窗口(默认)或某一个上级元素(添加相对定位)</li>
+<li>应用场景:如果移动到的位置是某个上级元素的角落使用绝对定位,如果需要往页面中添加一个元素而且不希望影响现有的显示效果(也就是不在文档流里面)使用绝对定位</li>
+</ul>
+<ol start="4">
+<li>固定定位</li>
+</ol>
+<ul>
+<li>格式: position:fixed;</li>
+<li>元素显示特点: 元素脱离文档流</li>
+<li>如何控制位置: 通过top/left/rigth/bottom控制元素位置,坐标相对于窗口.</li>
+<li>应用场景: 需要将元素固定在窗口的某个位置,并且不随着内容位置改变而改变</li>
+</ul>
+<p>####浮动定位</p>
+<ul>
+<li>格式: float:left/right;</li>
+<li>显示特点: 元素脱离文档流,元素从当前行向左或向右浮动,当撞到上级元素边缘或其它浮动元素时停止</li>
+<li>如何控制元素位置: 通过外边距</li>
+<li>如果元素的所有子元素全部浮动,则元素自动识别的高度为0,通过给元素添加overflow:hidden解决.</li>
+<li>应用场景: 当需要将纵向排列的元素改成横向排列时使用浮动定位<br>###行内元素的对齐方式vertical-align</li>
+<li>top 顶部对齐</li>
+<li>bottom 底部对齐</li>
+<li>middle 中间对齐</li>
+<li>baseline 基线对齐(默认)<br>####布局练习步骤:</li>
+</ul>
+<ol>
+<li>给big设置宽度1000  并通过外边距0 auto居中</li>
+<li>第一行里的div设置宽高一个左边浮动 一个右边浮动</li>
+<li>第一行和第二行div都设置overflow:hidde</li>
+<li>第二行里面的div设置宽高,一个左边浮动,剩下3个<br>右边浮动</li>
+</ol>
+
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/wanghao221.github.io/2020/04/19/hello-world/" class="article-date">
+      <time datetime="2020-04-19T12:40:04.375Z" itemprop="datePublished">2020-04-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/wanghao221.github.io/2020/04/19/hello-world/">Hello World</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>欢迎 <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! 这是我的第一篇文章. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/wanghao221.github.io/tags/%E7%B2%BE%E9%80%9Ahello-world/" rel="tag">精通hello world</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+  
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2020 wanghao
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://hexo.io/themes/" target="_blank">Wh'blog</a> by wanghao
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+
+<script src="/wanghao221.github.io/js/main.js"></script>
+
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/wanghao221.github.io/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+    <script type="text/javascript">
+      window.onload = function(){
+        document.getElementById("search").onclick = function(){
+            console.log("search")
+            search();
+        }
+      }
+      function search(){
+        (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+        (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+        e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+        })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+        _st('install','A1Pz-LKMXbrzcFg2FWi6','2.0.0');
+      }
+    </script>
+
+  </div> 
+</body>
+<!-- 页面点击小红心 --> 
+ <script type="text/javascript" src="/js/love.js"></script>
+</html>
+

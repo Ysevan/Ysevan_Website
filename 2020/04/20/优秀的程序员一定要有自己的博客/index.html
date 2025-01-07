@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>优秀的程序员一定要有自己的博客! | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="文本标签   内容标题h1-h6： 独占一行  自带上下间距  字体加粗    字体从大到小  段落标签p ： 独占一行  自带上下间距   换行 br 水平分割线hr 字体相关： b加粗 i斜体 small小字  s删除线  u下划线    列表标签   无序列表： ul：type li 有序列表： ol：type start reversed  li 列表嵌套： 有序和无序可以任意无限嵌套">
+<meta property="og:type" content="article">
+<meta property="og:title" content="优秀的程序员一定要有自己的博客!">
+<meta property="og:url" content="http://wanghao221.github.io/2020/04/20/%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="文本标签   内容标题h1-h6： 独占一行  自带上下间距  字体加粗    字体从大到小  段落标签p ： 独占一行  自带上下间距   换行 br 水平分割线hr 字体相关： b加粗 i斜体 small小字  s删除线  u下划线    列表标签   无序列表： ul：type li 有序列表： ol：type start reversed  li 列表嵌套： 有序和无序可以任意无限嵌套">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-20T12:35:34.000Z">
+<meta property="article:modified_time" content="2020-04-20T13:33:36.922Z">
+<meta property="article:author" content="wanghao">
+<meta property="article:tag" content="玛卡巴卡米卡拉卡嗡">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+
+    <link rel="icon" type="image/x-icon" href="https://wanghao221.github.io/favicon.ico"/>
+  
+  
+      
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+
+  
+  
+<link rel="stylesheet" href="/wanghao221.github.io/css/style.css">
+
+  <link rel="stylesheet" href="/wanghao221.github.io/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/wanghao221.github.io/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/wanghao221.github.io/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/wanghao221.github.io/js/pace.js"></script>
+    <link href="/wanghao221.github.io/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/wanghao221.github.io/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="https://wanghao221.github.io/img/head.jpg" class="js-avatar">
+            
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">wanghao</a></h1>
+        </hgroup>
+        
+        
+            <form>
+                <input type="text" class="st-default-search-input search" id="local-search-input" placeholder="搜索一下" autocomplete="off">
+            </form>
+            <div id="local-search-result"></div>
+        
+        
+            <script type="text/javascript">
+                (function() {
+                    'use strict';
+                    function getMatchData(keyword, data) {
+                        var matchData = [];
+                        for(var i =0;i<data.length;i++){
+                            if(data[i].title.toLowerCase().indexOf(keyword)>=0) 
+                                matchData.push(data[i])
+                        }
+                        return matchData;
+                    }
+                    var $input = $('#local-search-input');
+                    var $resultContent = $('#local-search-result');
+                    $input.keyup(function(){
+                        $.ajax({
+                            url: '/search.json',
+                            dataType: "json",
+                            success: function( json ) {
+                                var str='<ul class=\"search-result-list\">';                
+                                var keyword = $input.val().trim().toLowerCase();
+                                $resultContent.innerHTML = "";
+                                if ($input.val().trim().length <= 0) {
+                                    $resultContent.empty();
+                                    $('#switch-area').show();
+                                    return;
+                                }
+                                var results = getMatchData(keyword, json);
+                                if(results.length === 0){
+                                    $resultContent.empty();
+                                    $('#switch-area').show();
+                                    return;
+                                } 
+                                for(var i =0; i<results.length; i++){
+                                    str += "<li><a href='"+ results[i].url +"' class='search-result-title'>"+ results[i].title +"</a></li>";
+                                }
+                                str += "</ul>";
+                                $resultContent.empty();
+                                $resultContent.append(str);
+                                $('#switch-area').hide();
+                            }
+                        });
+                    });
+                })();
+            </script>
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a  href="http://wanghao221.github.io/">努力是为了  站在万人中央  成为别人的光</a></li>
+                        
+                            <li><a  href="http://wanghao221.github.io/">博客首页</a></li>
+                        
+                            <li><a  href="/wanghao221.github.io/archives">文章归档</a></li>
+                        
+                            <li><a  href="https://how2j.cn/" target="_blank" rel="noopener">学习导航</a></li>
+                        
+                            <li><a  href="https://m.job592.com/doc/latest.html?act=sou&pn=3" target="_blank" rel="noopener">个人简历</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail"  target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=opOakZSRlJKQlpXi09OMwc3P" title="mail">mail</a>
+                            
+                                <a class="fl github"  target="_blank" href="https://github.com/wanghao221" title="github">github</a>
+                            
+                                <a class="fl zhihu"  target="_blank" href="https://www.zhihu.com/people/6c87b396f57fc7e9e55a6a17cf25f9cd" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo"  target="_blank" href="https://weibo.com/u/5523704689" title="weibo">weibo</a>
+                            
+                                <a class="fl rss"  target="_blank" href="/wanghao221.github.io/atom.xml" title="rss">rss</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/wanghao221.github.io/tags/Java%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">Java学习</a> <a href="/wanghao221.github.io/tags/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 20px;">MySQL数据库</a> <a href="/wanghao221.github.io/tags/%E7%8E%9B%E5%8D%A1%E5%B7%B4%E5%8D%A1%E7%B1%B3%E5%8D%A1%E6%8B%89%E5%8D%A1%E5%97%A1/" style="font-size: 10px;">玛卡巴卡米卡拉卡嗡</a> <a href="/wanghao221.github.io/tags/%E7%B2%BE%E9%80%9Ahello-world/" style="font-size: 10px;">精通hello world</a> <a href="/wanghao221.github.io/tags/%E8%BD%AF%E4%BB%B6%E4%B8%8B%E8%BD%BD/" style="font-size: 10px;">软件下载</a>
+                    </div>
+                </section>
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://ring3.xyz/">Yllen</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://whereisk0shl.top/">K0sh1</a>
+                    
+                     
+                    
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">萌得不能再萌的萌新</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/wanghao221.github.io/" title="Me">wanghao</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/wanghao221.github.io/" class="profilepic">
+                
+                    <img lazy-src="https://wanghao221.github.io/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/wanghao221.github.io/" title="Me">wanghao</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="http://wanghao221.github.io/">努力是为了  站在万人中央  成为别人的光</a></li>
+                
+                    <li><a href="http://wanghao221.github.io/">博客首页</a></li>
+                
+                    <li><a href="/wanghao221.github.io/archives">文章归档</a></li>
+                
+                    <li><a href="https://how2j.cn/" target="_blank" rel="noopener">学习导航</a></li>
+                
+                    <li><a href="https://m.job592.com/doc/latest.html?act=sou&pn=3" target="_blank" rel="noopener">个人简历</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=opOakZSRlJKQlpXi09OMwc3P" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/wanghao221" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/6c87b396f57fc7e9e55a6a17cf25f9cd" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="https://weibo.com/u/5523704689" title="weibo">weibo</a>
+                    
+                        <a class="rss" target="_blank" href="/wanghao221.github.io/atom.xml" title="rss">rss</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-优秀的程序员一定要有自己的博客" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/wanghao221.github.io/2020/04/20/%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/" class="article-date">
+      <time datetime="2020-04-20T12:35:34.000Z" itemprop="datePublished">2020-04-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      优秀的程序员一定要有自己的博客!
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/wanghao221.github.io/tags/%E7%8E%9B%E5%8D%A1%E5%B7%B4%E5%8D%A1%E7%B1%B3%E5%8D%A1%E6%8B%89%E5%8D%A1%E5%97%A1/" rel="tag">玛卡巴卡米卡拉卡嗡</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+     <div> <article class="markdown-body entry-content container-lg" itemprop="text"><p>@<a href="/wanghao221/wanghao221.github.io/blob/master/2020/04/20/%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/%E5%9F%BA%E4%BA%8EHexo%E5%92%8CGitHub%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2">TOC</a></p>
+       <p>首先给大家看一下我的成品：<a href="https://wanghao221.github.io/" rel="nofollow">https://wanghao221.github.io/</a>
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/1f498f5528f7585e061b61304c24d228ac81b14d0d319bf566c670d8b847c3d8/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f323032313031313131303535353232392e4a50473f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730237069635f63656e746572"><img src="https://camo.githubusercontent.com/1f498f5528f7585e061b61304c24d228ac81b14d0d319bf566c670d8b847c3d8/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f323032313031313131303535353232392e4a50473f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730237069635f63656e746572" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/2021011110555229.JPG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70#pic_center" style="max-width:100%;"></a>
+       搭建自己博客分为两类，一种是托管到github上的，以hexo为代表，另一种是需要自己租服务器，主要使用wordpress框架。有不花钱的效果也很不错，就没必要自己再购买服务器了，下边主要介绍下使用hexo搭建个人博客。</p>
+       <p>hexo支持Markdown，使用Markdown来编写文章，（推荐一个Markdown编辑工具typora，可从<a href="https://typora.io/" rel="nofollow">官网下载</a>，或者从我上传的资源中免费下载：<a href="https://download.csdn.net/download/qq_44273429/14109665" rel="nofollow">https://download.csdn.net/download/qq_44273429/14109665</a>）最终生成的是一个静态html页面，发布到服务端，访问效率有天然优势。</p>
+       <p>首先需要有GitHub账户，没有的可以注册：<a href="https://github.com/join">https://github.com/join</a></p>
+       <h1><a id="user-content-1下载git" class="anchor" aria-hidden="true" href="#1下载git"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>1.下载Git</h1>
+       <h2><a id="user-content-windows" class="anchor" aria-hidden="true" href="#windows"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>Windows：</h2>
+       <p><a href="https://git-scm.com/download/win" rel="nofollow">https://git-scm.com/download/win</a>（官网下载）
+       <a href="https://download.csdn.net/download/qq_44273429/14109903" rel="nofollow">https://download.csdn.net/download/qq_44273429/14109903</a>（上传在CSDN可免费下载）</p>
+       <h2><a id="user-content-linux" class="anchor" aria-hidden="true" href="#linux"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>linux：</h2>
+       <div class="highlight highlight-source-java"><pre>sudo apt<span class="pl-k">-</span>get install git</pre></div>
+       <p>安装好后，用右键Git Bash Here，<code>git --version</code> 来查看一下版本</p>
+       <p><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/e780b9304a7a31b028d81b1e6fd85d7198881acbbc84bdb3e124fb710b3993b4/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136323632393437342e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/e780b9304a7a31b028d81b1e6fd85d7198881acbbc84bdb3e124fb710b3993b4/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136323632393437342e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111162629474.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a></p>
+       <h1><a id="user-content-2安装nodejs" class="anchor" aria-hidden="true" href="#2安装nodejs"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>2.安装nodejs</h1>
+       <h2><a id="user-content-windows-1" class="anchor" aria-hidden="true" href="#windows-1"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>Windows：</h2>
+       <p><a href="https://nodejs.org/en/" rel="nofollow">https://nodejs.org/en/</a>（windows8以上版本官网下载）
+       <a href="https://download.csdn.net/download/qq_44273429/14110208" rel="nofollow">https://download.csdn.net/download/qq_44273429/14110208</a>（windows8及以上版本我上传在CSDN上的可免费下载）</p>
+       <p><a href="https://nodejs.org/download/release/v13.14.0/node-v13.14.0-x64.msi" rel="nofollow">https://nodejs.org/download/release/v13.14.0/node-v13.14.0-x64.msi</a>（windows7版本下载）
+       <a href="https://download.csdn.net/download/qq_44273429/14110197" rel="nofollow">https://download.csdn.net/download/qq_44273429/14110197</a>（windows7版本我上传在CSDN上的可免费下载）</p>
+       <h2><a id="user-content-linux-1" class="anchor" aria-hidden="true" href="#linux-1"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>linux：</h2>
+       <div class="highlight highlight-source-java"><pre>sudo apt<span class="pl-k">-</span>get install nodejs
+       sudo apt<span class="pl-k">-</span>get install npm</pre></div>
+       <p>安装完后随意找处位置右键Git Bash Here，显示版本号说明安装成功</p>
+       <p><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/0319538b35728f9161bbb0f9ea6f78970a3007940306091b70b5ca87df24f0eb/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136323434363436372e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/0319538b35728f9161bbb0f9ea6f78970a3007940306091b70b5ca87df24f0eb/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136323434363436372e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111162446467.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a></p>
+       <h1><a id="user-content-3安装hexo" class="anchor" aria-hidden="true" href="#3安装hexo"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>3.安装hexo</h1>
+       <p>前面git和nodejs安装好后，就可以安装hexo了，你可以先创建一个文件夹blog，然后cd到这个文件夹下（或者在这个文件夹下直接右键git bash打开）。</p>
+       <p>输入命令</p>
+       <div class="highlight highlight-source-java"><pre>npm install <span class="pl-k">-</span>g hexo<span class="pl-k">-</span>cli</pre></div>
+       <p>一开始没反应不要慌，等一会就会像我这样，显示花了35秒安装成功。
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/9476410129248df9bb3b5ab565401d204a99743236b8e3d45c1f5a7d62d95fe9/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136323831323334392e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/9476410129248df9bb3b5ab565401d204a99743236b8e3d45c1f5a7d62d95fe9/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136323831323334392e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111162812349.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a></p>
+       <p>然后用<code>hexo -v</code>查看一下版本
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/6bb1fbd667a040dfafacc88135d8f87f48f590c1c187b7205975401710ee4fd2/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136323834323231372e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/6bb1fbd667a040dfafacc88135d8f87f48f590c1c187b7205975401710ee4fd2/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136323834323231372e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111162842217.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a>
+       到这里需要安装的软件就全部安装完了。
+       先初始化一下hexo</p>
+       <div class="highlight highlight-source-java"><pre>hexo init hexoblog</pre></div>
+       <p>这个hexoblog可以自己随便取都行，然后</p>
+       <div class="highlight highlight-source-java"><pre>cd hexoblog <span class="pl-c"><span class="pl-c">//</span>进入hexoblog文件夹</span>
+       npm install</pre></div>
+       <p><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/6db25fcb1db57137abc4accc0624e2923d4bfdac7fdd0785c4f6a7ae969a56b3/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f323032313031313131363530333832372e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/6db25fcb1db57137abc4accc0624e2923d4bfdac7fdd0785c4f6a7ae969a56b3/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f323032313031313131363530333832372e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/2021011116503827.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a>
+       打开文件夹会看到如下目录
+       node_modules: 依赖包
+       public：存放生成的页面
+       scaffolds：生成文章的一些模板
+       source：用来存放你的文章
+       themes：主题
+       _config.yml: 博客的配置文件
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/6def0a0534c21a4e327baa0ea333fc684d91ce4ac46f5035ce1ac4bf8967363f/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136343935313739352e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/6def0a0534c21a4e327baa0ea333fc684d91ce4ac46f5035ce1ac4bf8967363f/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136343935313739352e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111164951795.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a></p>
+       <div class="highlight highlight-source-java"><pre>hexo g
+       hexo server</pre></div>
+       <p>然后在浏览器中输入<a href="http://localhost:4000%E5%8F%AF%E4%BB%A5%E6%98%BE%E7%A4%BA%E5%A6%82%E4%B8%8B%E5%86%85%E5%AE%B9" rel="nofollow">http://localhost:4000可以显示如下内容</a>
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/0677214189868af77c570273fd25ea568e5b1956d56ee88bb102bfd84904f8e6/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136353532353330392e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/0677214189868af77c570273fd25ea568e5b1956d56ee88bb102bfd84904f8e6/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313136353532353330392e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111165525309.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a>
+       使用ctrl+c可以把服务关掉</p>
+       <h1><a id="user-content-4-github创建个人仓库" class="anchor" aria-hidden="true" href="#4-github创建个人仓库"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>4. GitHub创建个人仓库</h1>
+       <p>在GitHub.com中看到一个New repository，新建仓库
+       创建一个和你用户名相同的仓库，后面加.github.io，只有这样，将来要部署到GitHub page的时候，才会被识别，也就是xxxx.github.io，其中xxx就是你注册GitHub的用户名。这里我新建了一个GitHub账号叫pai-daxing1
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/d0a5f6840b5e8263b31d2dabd676e836e85a9941030d4d40139ffca9164b3204/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137303730343834372e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/d0a5f6840b5e8263b31d2dabd676e836e85a9941030d4d40139ffca9164b3204/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137303730343834372e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111170704847.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a>
+       点击create repository。</p>
+       <p><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/f97757b185fa7e3494e24ee3512e69fe73a9dc83d21aaff444859c9b0ef7f88a/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131323038353730343334332e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/f97757b185fa7e3494e24ee3512e69fe73a9dc83d21aaff444859c9b0ef7f88a/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131323038353730343334332e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210112085704343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a>
+       忘了加.github.io我又重命名了一下，问题不大</p>
+       <h1><a id="user-content-5-生成ssh添加到github" class="anchor" aria-hidden="true" href="#5-生成ssh添加到github"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>5. 生成SSH添加到GitHub</h1>
+       <p>回到你的git bash中，</p>
+       <div class="highlight highlight-source-java"><pre>git config <span class="pl-k">--</span>global user<span class="pl-k">.</span>name <span class="pl-s"><span class="pl-pds">"</span>yourname<span class="pl-pds">"</span></span>
+       git config <span class="pl-k">--</span>global user<span class="pl-k">.</span>email <span class="pl-s"><span class="pl-pds">"</span>youremail<span class="pl-pds">"</span></span></pre></div>
+       <p>这里的yourname输入你的GitHub用户名，youremail输入你GitHub的邮箱。这样GitHub才能知道你是不是对应它的账户。这里我的用户名是pai-daxing1，邮箱是<a href="mailto:wh990314@Gmail.com">wh990314@Gmail.com</a>，像我这样输上去</p>
+       <div class="highlight highlight-source-java"><pre>git config <span class="pl-k">--</span>global user<span class="pl-k">.</span>name <span class="pl-s"><span class="pl-pds">"</span>pai-daxing1<span class="pl-pds">"</span></span>
+       git config <span class="pl-k">--</span>global user<span class="pl-k">.</span>email <span class="pl-s"><span class="pl-pds">"</span>wh990314@Gmail.com<span class="pl-pds">"</span></span></pre></div>
+       <p><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/671c614dcdb8f0a3f8e52756f2d774eca937f292f0b82dd20e7f6f8125fdc6d0/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137313133363233382e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/671c614dcdb8f0a3f8e52756f2d774eca937f292f0b82dd20e7f6f8125fdc6d0/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137313133363233382e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111171136238.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a>
+       然后创建SSH,一直回车就可以了</p>
+       <div class="highlight highlight-source-java"><pre>ssh<span class="pl-k">-</span>keygen <span class="pl-k">-</span>t rsa <span class="pl-k">-</span><span class="pl-smi">C</span> <span class="pl-s"><span class="pl-pds">"</span>youremail<span class="pl-pds">"</span></span></pre></div>
+       <p><code>youremail</code>别忘了换成自己的</p>
+       <div class="highlight highlight-source-java"><pre>ssh<span class="pl-k">-</span>keygen <span class="pl-k">-</span>t rsa <span class="pl-k">-</span><span class="pl-smi">C</span> <span class="pl-s"><span class="pl-pds">"</span>wh990314@Gmail.com<span class="pl-pds">"</span></span></pre></div>
+       <p><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/5b27fa94d0dabd4157052a1019a72f18e02dabfe0daf372d4dbde567bedee32b/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137313433393630312e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/5b27fa94d0dabd4157052a1019a72f18e02dabfe0daf372d4dbde567bedee32b/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137313433393630312e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111171439601.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a>
+       这个时候它会告诉你已经生成了.ssh的文件夹。在你的电脑中找到这个文件夹C:\Users\Administrator.ssh。</p>
+       <p>ssh，简单来讲，就是一个秘钥，其中，id_rsa是你这台电脑的私人秘钥，不能给别人看的，id_rsa.pub是公共秘钥，可以随便给别人看。把这个公钥放在GitHub上，这样当你链接GitHub自己的账户时，它就会根据公钥匹配你的私钥，当能够相互匹配时，才能够顺利的通过git上传你的文件到GitHub上。</p>
+       <p>而后在GitHub的setting中，找到SSH keys的设置选项，点击New SSH key</p>
+       <p><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/dd163f35247d10fed72b14e3a1f81277a6ce975bda511080d0fe6639891a527f/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137313734303639332e706e67"><img src="https://camo.githubusercontent.com/dd163f35247d10fed72b14e3a1f81277a6ce975bda511080d0fe6639891a527f/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137313734303639332e706e67" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111171740693.png" style="max-width:100%;"></a>
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/392da34e4302cbde9640924ddacfd8cfd2ce9d512ed72386694b9ef7aab2795e/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137313934353236392e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/392da34e4302cbde9640924ddacfd8cfd2ce9d512ed72386694b9ef7aab2795e/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137313934353236392e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111171945269.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a></p>
+       <p>把你的id_rsa.pub里面的信息复制进去。（右键以记事本方式打开）
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/69ab49791129616d4735afdcc6819b87c61d857d872ca1ccff38c830749736f2/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137323333313130392e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/69ab49791129616d4735afdcc6819b87c61d857d872ca1ccff38c830749736f2/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137323333313130392e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111172331109.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a>
+       点击Add SSH key，然后需要输入你的GitHub登陆密码，完了之后显示这样
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/2d52ec4ce7bc059676beeb864d985b84e7b730ef5ee184f9f55643f5fd83339e/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137323530363532362e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/2d52ec4ce7bc059676beeb864d985b84e7b730ef5ee184f9f55643f5fd83339e/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137323530363532362e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111172506526.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a></p>
+       <p>在gitbash中，查看是否成功</p>
+       <div class="highlight highlight-source-java"><pre>ssh <span class="pl-k">-</span><span class="pl-smi">T</span> git<span class="pl-k">@github</span><span class="pl-k">.</span>com</pre></div>
+       <p><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/7351819317acdf4f20e3b79a7c49658017606725db76aacf7d9fe628efede4bd/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137323735373133382e706e67"><img src="https://camo.githubusercontent.com/7351819317acdf4f20e3b79a7c49658017606725db76aacf7d9fe628efede4bd/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137323735373133382e706e67" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111172757138.png" style="max-width:100%;"></a>
+       中间问你是否确定，输入yes</p>
+       <h1><a id="user-content-6-将hexo部署到github" class="anchor" aria-hidden="true" href="#6-将hexo部署到github"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>6. 将hexo部署到GitHub</h1>
+       <p>这一步，我们就可以将hexo和GitHub关联起来，也就是将hexo生成的文章部署到GitHub上，打开站点配置文件 _config.yml，翻到最后，修改为
+       pai-daxing1就是你的GitHub账户</p>
+       <div class="highlight highlight-source-java"><pre>deploy<span class="pl-k">:</span>
+         type<span class="pl-k">:</span> git
+         repo<span class="pl-k">:</span> https<span class="pl-k">:</span><span class="pl-c"><span class="pl-c">//</span>github.com/pai-daxing1/pai-daxing1.github.io.git</span>
+         branch<span class="pl-k">:</span> master</pre></div>
+       <blockquote>
+       <p>==注意==：type:与gihub中间有空格。</p>
+       </blockquote>
+       <p>这个时候需要先安装deploy-git ，也就是部署的命令,这样你才能用命令部署到GitHub。</p>
+       <div class="highlight highlight-source-java"><pre>npm install hexo<span class="pl-k">-</span>deployer<span class="pl-k">-</span>git <span class="pl-k">--</span>save</pre></div>
+       <p>然后</p>
+       <div class="highlight highlight-source-java"><pre>hexo clean
+       hexo generate
+       hexo deploy</pre></div>
+       <p>其中 hexo clean清除了你之前生成的东西，也可以不加。
+       hexo generate 顾名思义，生成静态文章，可以用 hexo g缩写
+       hexo deploy 部署文章，可以用hexo d缩写</p>
+       <p>注意deploy时可能要你输入username和password。
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/df1640750d78c71511872bd565d6454ec3ad19a1a8675acfd98adce08734a90b/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137333631323536352e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/df1640750d78c71511872bd565d6454ec3ad19a1a8675acfd98adce08734a90b/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137333631323536352e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111173612565.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a>
+       我的电脑突然要我安装这个，我就安了，我记得第一次建的时候好像没这步。
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/05b4102420c084eeac9369609262e832d8574081df13a119712131b57f6e3910/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137343434333237362e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/05b4102420c084eeac9369609262e832d8574081df13a119712131b57f6e3910/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137343434333237362e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111174443276.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a></p>
+       <p>得到下图就说明部署成功了，过一会儿就可以在<a href="http://yourname.github.io" rel="nofollow">http://yourname.github.io</a> 这个网站看到你的博客了！！</p>
+       <p><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/09b17345f063bddc5dd3dc79db072a26481ee242ddcc34b31c7c8d24507c681d/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137353332363830352e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/09b17345f063bddc5dd3dc79db072a26481ee242ddcc34b31c7c8d24507c681d/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131313137353332363830352e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210111175326805.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a>
+       点击授权</p>
+       <p><a href="http://pai-daxing1.github.io" rel="nofollow">http://pai-daxing1.github.io</a>
+       打开就是这样了，后面我再说怎么优化美观，事实上我并不想用它写博客，只是想在上面放些自己想放的东西，比如说放一些HTML小游戏，当做图床，或者用它来做我的SEO层链等等。
+       github地址：<a href="https://github.com/pai-daxing1/pai-daxing1.github.io">https://github.com/pai-daxing1/pai-daxing1.github.io</a>
+       <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/2b61b930ef6172ed746d03bc9d9d3a949fe00dc4c4c73a8d6a670e7ad856b4f9/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131323039303334353630372e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730"><img src="https://camo.githubusercontent.com/2b61b930ef6172ed746d03bc9d9d3a949fe00dc4c4c73a8d6a670e7ad856b4f9/68747470733a2f2f696d672d626c6f672e6373646e696d672e636e2f32303231303131323039303334353630372e706e673f782d6f73732d70726f636573733d696d6167652f77617465726d61726b2c747970655f5a6d46755a33706f5a57356e6147567064476b2c736861646f775f31302c746578745f6148523063484d364c7939696247396e4c6d4e7a5a473475626d56304c334678587a51304d6a637a4e4449352c73697a655f31362c636f6c6f725f4646464646462c745f3730" alt="在这里插入图片描述" data-canonical-src="https://img-blog.csdnimg.cn/20210112090345607.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MjczNDI5,size_16,color_FFFFFF,t_70" style="max-width:100%;"></a></p>
+       <p>更多有趣、实用内容持续更新<br>
+       扫码关注或者微信搜索公众号：啦啦啦好想biu点什么</p>
+       <p><a target="_blank" rel="noopener noreferrer"><img src="https://s1.imagehub.cc/images/2021/01/20/qrcode_for_gh_93ed5d9da9fc_258.jpg" alt="啦啦啦好想biu点什么" data-canonical-src="https://img-blog.csdnimg.cn/20210118135732258.jpg#pic_center" style="max-width:100%;"></a></p>
+	   </article></div>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/wanghao221.github.io/2020/04/20/%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/">优秀的程序员一定要有自己的博客!</a></p>
+        <p><span>文章作者:</span><a href="/wanghao221.github.io/" title="访问 wanghao 的个人博客">wanghao</a></p>
+        <p><span>发布时间:</span>2020年04月20日 - 20时35分</p>
+        <p><span>最后更新:</span>2020年04月20日 - 21时33分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/wanghao221.github.io/2020/04/20/%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/" title="优秀的程序员一定要有自己的博客!">http://wanghao221.github.io/2020/04/20/%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://wanghao221.github.io/2020/04/20/%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/　　作者: wanghao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/wanghao221.github.io/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/wanghao221.github.io/2020/04/21/Integer-ValueOf-%E5%BC%95%E5%8F%91%E7%9A%84%E8%A1%80%E6%A1%88/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Integer.ValueOf()引发的血案
+        
+      </div>
+    </a>
+  
+  
+    <a href="/wanghao221.github.io/2020/04/20/%E5%89%8D%E7%AB%AF%E5%AD%A6%E4%B9%A0/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">定位方式4+1</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+    <style>
+        .toc {
+            white-space: nowrap;
+            overflow-x: hidden;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function() {
+            $(".toc li a").mouseover(function() {
+                var title = $(this).attr('href');
+                $(this).attr("title", title);
+            });
+        })
+    </script>
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/wanghao221.github.io/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <section id="comments">
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'swing'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</section>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/wanghao221.github.io/2020/04/21/Integer-ValueOf-%E5%BC%95%E5%8F%91%E7%9A%84%E8%A1%80%E6%A1%88/" title="上一篇: Integer.ValueOf()引发的血案">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/wanghao221.github.io/2020/04/20/%E5%89%8D%E7%AB%AF%E5%AD%A6%E4%B9%A0/" title="下一篇: 定位方式4+1">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/wanghao221.github.io/2020/05/06/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80-02/">数据库基础(02)</a></li><li class="post-list-item"><a class="post-list-link" href="/wanghao221.github.io/2020/04/30/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80(01)/">数据库基础(01)</a></li><li class="post-list-item"><a class="post-list-link" href="/wanghao221.github.io/2020/04/25/JSD2002%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%9C%88%E8%80%83/">JSD2002第一次月考</a></li><li class="post-list-item"><a class="post-list-link" href="/wanghao221.github.io/2020/04/22/Visio-2003-%E7%B2%BE%E7%AE%80%E7%89%88-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-%E5%85%8D%E6%BF%80%E6%B4%BB-%E7%99%BE%E5%BA%A6%E4%BA%91%E9%93%BE%E6%8E%A5/">Visio 2003 精简版(简体中文,免激活)百度云链接</a></li><li class="post-list-item"><a class="post-list-link" href="/wanghao221.github.io/2020/04/21/Integer-ValueOf-%E5%BC%95%E5%8F%91%E7%9A%84%E8%A1%80%E6%A1%88/">Integer.ValueOf()引发的血案</a></li><li class="post-list-item"><a class="post-list-link" href="/wanghao221.github.io/2020/04/20/%E4%BC%98%E7%A7%80%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/">优秀的程序员一定要有自己的博客!</a></li><li class="post-list-item"><a class="post-list-link" href="/wanghao221.github.io/2020/04/20/%E5%89%8D%E7%AB%AF%E5%AD%A6%E4%B9%A0/">定位方式4+1</a></li><li class="post-list-item"><a class="post-list-link" href="/wanghao221.github.io/2020/04/19/hello-world/">Hello World</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2021 wanghao
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://blog.csdn.net/qq_44273429" target="_blank">Wh'blog</a> by Wang Hao
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+
+<script src="https://wanghao221.github.io/js/main.js"></script>
+
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(https://wanghao221.github.io/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+    <script type="text/javascript">
+      window.onload = function(){
+        document.getElementById("search").onclick = function(){
+            console.log("search")
+            search();
+        }
+      }
+      function search(){
+        (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+        (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+        e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+        })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+        _st('install','A1Pz-LKMXbrzcFg2FWi6','2.0.0');
+      }
+    </script>
+
+  </div> 
+</body>
+<!-- 页面点击小红心 --> 
+ <script type="text/javascript" src="/js/love.js"></script>
+</html>
+
