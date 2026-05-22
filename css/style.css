@@ -5106,8 +5106,73 @@ body {
   background-attachment: fixed;
   color: #000;
 }
+:root {
+  --main-left-width: clamp(280px, 28vw, 420px);
+}
 #container .left-col {
+  width: var(--main-left-width);
   background: none !important;
+}
+#container .mid-col {
+  left: var(--main-left-width);
+}
+#container .hide-labels {
+  left: calc(var(--main-left-width) + 78px);
+}
+#post-nav-button {
+  left: var(--main-left-width);
+}
+
+.archives-wrap .archive-year-wrap a.game-archive-year {
+  color: #d8b56d;
+}
+
+.archives-wrap .archive-year-wrap a.game-archive-year:hover {
+  color: #f3d596;
+}
+.game-sidebar .archive-year-wrap {
+  top: 50%;
+  padding-top: 0;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.game-sidebar .archive-article-title {
+  color: #e8edf2;
+}
+.game-sidebar .archive-article-title:hover {
+  color: #fff;
+}
+.game-sidebar .article-tag:before {
+  color: #aeb8c5;
+}
+.game-sidebar .article-tag-list-link {
+  color: #aeb8c5;
+}
+.game-sidebar .article-tag-list-link:hover {
+  color: #e8edf2;
+}
+@media screen and (max-width: 800px) {
+  #container .left-col {
+    display: none;
+    width: 0;
+  }
+  #container .mid-col {
+    left: 0;
+  }
+  #container .hide-labels {
+    left: auto;
+    right: 14px;
+    top: 14px;
+  }
+  .game-sidebar .archive-year-wrap {
+    top: auto;
+    -webkit-transform: none;
+    -moz-transform: none;
+    -ms-transform: none;
+    transform: none;
+  }
 }
 .article-title {
   color: #000;
