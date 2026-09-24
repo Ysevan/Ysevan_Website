@@ -1,0 +1,17 @@
+{
+  "name": "刷刷",
+  "short_name": "刷刷",
+  "id": "zongfu-quiz-v2",
+  "version": "3.12.0",
+  "author": "Ysevan",
+  "description": "刷刷离线刷题工具",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F4F5F9",
+  "theme_color": "#F4F5F9"
+}
+
+
+
+

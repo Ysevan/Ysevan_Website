@@ -1,0 +1,25 @@
+刷刷 v3.12.0
+项目作者：Ysevan
+
+本项目仅限内部学习使用，请勿公开发布、上传或转发题库文件、学习记录或项目源码。
+程序代码中的作者与版本标识不得擅自移除。
+
+题库内容来源于用户提供的内部学习资料，其内容权利归原权利人所有；项目作者不主张题库原始内容的权利。
+静态网页中的作者标识和访问限制只能降低误传播风险，不能从技术上阻止有文件访问权限的人复制内容。
+
+第三方组件
+以下组件随刷刷一同分发，版权归各自权利人所有，按各自许可使用：
+
+- three.js（MIT 许可）
+  Copyright © 2010-2026 three.js authors
+  按需子集随刷刷分发于 vendor/three.subset.min.js，许可全文见该文件头。
+- GSAP（GreenSock 标准免费许可，https://gsap.com/standard-license ）
+  Copyright 2008-2026, GreenSock. All rights reserved.
+  核心文件随刷刷分发于 vendor/gsap-core.min.js，版权声明保留在该文件内。
+- Lucide 图标（ISC 许可）
+  lucide v1.8.0，随刷刷分发于 vendor/lucide.min.js，许可声明见该文件头。
+
+
+
+
+

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- 页面底色：浅色 #F4F5F9 / 深色 #0B0C10；theme.js 按当前模式改这一行。 -->
+  <meta name="theme-color" content="#F4F5F9">
+  <meta name="description" content="刷刷离线刷题工具">
+  <meta name="author" content="Ysevan">
+  <meta name="copyright" content="Ysevan">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="referrer" content="no-referrer">
+  <title>刷刷</title>
+  <!-- 外观预置：必须同步加载、必须排在样式表之前，样式表第一次生效时就已经是用户选的浅/深和强调色，不会闪色。
+       本站 CSP 是 script-src 'self'，内联脚本会被拦，所以它是一个独立文件。 -->
+  <script src="theme.js?v=3.12.0"></script>
+  <!-- PWA 清单由 theme.js 在 http(s) 下动态挂上：写死在这里的话，直接双击本文件（file://）打开时
+       浏览器会去取它、因跨源被拦，在控制台留两条红字，而 file:// 本来就没有 Service Worker。 -->
+  <link rel="stylesheet" href="styles.css?v=3.12.0&rev=5">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <!-- 品牌图标：强调色渐变圆角方块 + 白色线条图案。图案来自可替换的文件 assets/brand/brand-icon.svg
+             （也支持同目录的 brand-icon.png），屋主换手绘 logo 时直接覆盖那个文件即可。
+             内联的那份「两张叠卡 + 勾」是回落：两种文件都加载不出来时由 app.js 显示出来。 -->
+        <span class="brand-mark" aria-hidden="true"><img class="brand-icon-file" src="assets/brand/brand-icon.svg" alt="" decoding="async"><svg class="brand-icon-inline" viewBox="0 0 24 24" hidden><rect x="6.5" y="3.5" width="13" height="16" rx="3" opacity=".55"/><rect x="4" y="6.5" width="13" height="14" rx="3"/><path d="m7.6 13.6 2.3 2.3 4.4-4.6"/></svg></span>
+        <div><strong>刷刷</strong><span>离线刷题工具</span></div>
+      </div>
+      <nav id="main-nav" class="main-nav" aria-label="主导航"></nav>
+      <div class="sidebar-progress">
+        <div class="theme-switch" role="radiogroup" aria-label="界面明暗">
+          <button class="theme-option" type="button" data-action="setMode" data-mode="light" aria-pressed="true">浅色</button>
+          <button class="theme-option" type="button" data-action="setMode" data-mode="dark" aria-pressed="false">深色</button>
+          <button class="theme-option" type="button" data-action="setMode" data-mode="auto" aria-pressed="false">自动</button>
+        </div>
+        <span class="accent-label">强调色</span>
+        <div class="accent-switch" role="radiogroup" aria-label="强调色">
+          <button class="accent-option" type="button" data-action="setAccent" data-accent="blue" aria-pressed="true" aria-label="蓝"></button>
+          <button class="accent-option" type="button" data-action="setAccent" data-accent="green" aria-pressed="false" aria-label="绿"></button>
+          <button class="accent-option" type="button" data-action="setAccent" data-accent="indigo" aria-pressed="false" aria-label="靛"></button>
+          <button class="accent-option" type="button" data-action="setAccent" data-accent="orange" aria-pressed="false" aria-label="橙"></button>
+          <button class="accent-option" type="button" data-action="setAccent" data-accent="pink" aria-pressed="false" aria-label="粉"></button>
+          <button class="accent-option" type="button" data-action="setAccent" data-accent="teal" aria-pressed="false" aria-label="青"></button>
+        </div>
+        <div class="project-stamp" id="project-stamp">v3.12.0 · Ysevan</div>
+        <div class="sidebar-goal-line"><span>今日目标</span><strong id="sidebar-goal">0 / 30</strong></div>
+        <div class="progress-track"><span id="sidebar-progress-bar"></span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div id="view" class="view" aria-live="polite"></div>
+    </main>
+
+    <nav id="mobile-nav" class="mobile-nav" aria-label="手机导航"></nav>
+  </div>
+  <!-- 「更多」面板：600–900px 从顶栏下拉、≤600px 从底部导航上方弹出，两个断点共用这一个节点。 -->
+  <div id="more-layer"></div>
+
+  <dialog id="note-dialog" class="dialog">
+    <form method="dialog" id="note-form">
+      <div class="dialog-title"><h2>题目笔记</h2><button class="icon-button" value="cancel" aria-label="关闭" title="关闭"><i data-lucide="x"></i></button></div>
+      <textarea id="note-text" rows="7" maxlength="1000" placeholder="记录易错点、记忆口诀或相关知识……"></textarea>
+      <div class="dialog-actions"><button class="button secondary" value="cancel">取消</button><button class="button primary" id="save-note" value="default">保存笔记</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="answer-mode-dialog" class="dialog answer-mode-dialog">
+    <form method="dialog">
+      <div class="dialog-title"><div><h2>这次怎么刷？</h2><span>刷题过程中也能在题面上随时切换</span></div><button class="icon-button" data-action="dismissAnswerMode" type="button" aria-label="关闭" title="关闭"><i data-lucide="x"></i></button></div>
+      <div class="answer-mode-options">
+        <button class="answer-mode-option" id="answer-mode-fast" data-action="chooseAnswerMode" data-value="fast" type="button"><span class="answer-mode-head"><strong>背题快刷</strong><span class="answer-mode-last">上次</span></span><span class="answer-mode-note">点选项立刻出答案，不用再点提交。多选、填空、简答仍需提交。</span></button>
+        <button class="answer-mode-option" id="answer-mode-think" data-action="chooseAnswerMode" data-value="think" type="button"><span class="answer-mode-head"><strong>思考做题</strong><span class="answer-mode-last">上次</span></span><span class="answer-mode-note">选完再点提交，和原来一样。</span></button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="question-dialog" class="dialog question-dialog">
+    <form id="question-form">
+      <div class="dialog-title"><div><h2 id="question-dialog-title">编辑题目</h2><span id="question-dialog-subtitle"></span></div><button class="icon-button" id="close-question-dialog" type="button" aria-label="关闭" title="关闭"><i data-lucide="x"></i></button></div>
+      <div class="editor-grid">
+        <div class="field-group"><label class="field-label" for="question-type">题型</label><select id="question-type" name="type"><option>单选题</option><option>多选题</option><option>判断题</option><option>填空题</option><option>简答题</option></select></div>
+        <div class="field-group"><label class="field-label" for="question-difficulty">难度</label><select id="question-difficulty" name="difficulty"><option>低</option><option selected>中</option><option>高</option></select></div>
+      </div>
+      <div class="field-group"><label class="field-label" for="question-stem">题干</label><textarea id="question-stem" name="stem" rows="4" maxlength="2000" required></textarea></div>
+      <div class="field-group"><label class="field-label" for="question-options">选项</label><textarea id="question-options" name="options" rows="6" maxlength="4000" placeholder="选择题每行填写一个选项；填空题和简答题留空"></textarea><small class="field-help">选择题支持1至8个选项；填空题和简答题不需要选项。</small></div>
+      <div class="field-group"><label class="field-label" for="question-correct">正确答案或参考答案</label><textarea class="text-input" id="question-correct" name="correct" rows="3" maxlength="5000" required placeholder="选择题填写A或AC；填空题和简答题填写文字答案"></textarea><small class="field-help">选择题使用选项字母；填空题和简答题直接填写文字答案。</small></div>
+      <div class="field-group"><label class="field-label" for="question-explanation">简明解析</label><textarea id="question-explanation" name="explanation" rows="5" maxlength="4000" required></textarea></div>
+      <div class="dialog-actions"><button class="button secondary" id="cancel-question-edit" type="button">取消</button><button class="button primary" type="submit"><i data-lucide="save"></i>保存题目</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="bank-dialog" class="dialog">
+    <form id="bank-form">
+      <div class="dialog-title"><div><h2 id="bank-dialog-title">新建题库</h2><span id="bank-dialog-subtitle">题库和学习记录将独立保存</span></div><button class="icon-button" id="close-bank-dialog" type="button" aria-label="关闭" title="关闭"><i data-lucide="x"></i></button></div>
+      <div class="field-group"><label class="field-label" for="bank-name">题库名称</label><input class="text-input" id="bank-name" name="name" maxlength="60" required autocomplete="off" placeholder="例如：2026年岗位考试题库"></div>
+      <div class="dialog-actions"><button class="button secondary" id="cancel-bank-edit" type="button">取消</button><button class="button primary" type="submit"><i data-lucide="save"></i>保存</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+  <div id="update-notice" class="update-notice" role="status" hidden><span>刷刷已更新到新版本，刷新一次就能用上。</span><button class="button ghost" data-action="dismissUpdate" type="button">稍后</button><button class="button primary" data-action="reloadForUpdate" type="button">刷新</button></div>
+  <input id="backup-file" class="file-picker" type="file" accept="application/json,.json,text/json">
+  <input id="bank-file" class="file-picker" type="file" accept="application/json,.json,text/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx">
+
+  <script src="vendor/lucide.min.js"></script>
+  <script src="vendor/xlsx-import.js?v=3.12.0&rev=1"></script>
+  <script src="project.js?v=3.12.0"></script>
+  <script src="questions.js?v=3.12.0"></script>
+  <script src="annual-inspection-2026-questions.js?v=3.12.0"></script>
+  <script src="annual-inspection-2026-comparison.js?v=3.12.0"></script>
+  <script src="domestic-settlement-questions.js?v=3.12.0"></script>
+  <script src="bill-finance-questions.js?v=3.12.0"></script>
+  <script src="bank-acceptance-questions.js?v=3.12.0"></script>
+  <script src="counterfeit-currency-2023-questions.js?v=3.12.0"></script>
+  <script src="foreign-exchange-2026-questions.js?v=3.12.0&rev=2"></script>
+  <script src="warning-education-sanming-questions.js?v=3.12.0&rev=2"></script>
+  <script src="fx-level-one-questions.js?v=3.12.0"></script>
+  <script src="effects.js?v=3.12.0"></script>
+  <script src="app.js?v=3.12.0&rev=6"></script>
+</body>
+</html>

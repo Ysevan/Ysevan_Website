@@ -1,0 +1,100 @@
+{
+  "generatedBy": "scripts/release-check.mjs（勿手改，发版时重新生成）",
+  "version": "3.12.0",
+  "banks": 9,
+  "questions": 4877,
+  "byBank": [
+    {
+      "file": "questions.js",
+      "global": "QUESTION_BANK",
+      "questions": 1155,
+      "byType": {
+        "单选题": 477,
+        "多选题": 276,
+        "判断题": 402
+      }
+    },
+    {
+      "file": "annual-inspection-2026-questions.js",
+      "global": "ANNUAL_INSPECTION_2026_QUESTION_BANK",
+      "questions": 799,
+      "byType": {
+        "单选题": 271,
+        "多选题": 204,
+        "判断题": 324
+      }
+    },
+    {
+      "file": "domestic-settlement-questions.js",
+      "global": "DOMESTIC_SETTLEMENT_QUESTION_BANK",
+      "questions": 456,
+      "byType": {
+        "单选题": 224,
+        "多选题": 75,
+        "判断题": 157
+      }
+    },
+    {
+      "file": "bill-finance-questions.js",
+      "global": "BILL_FINANCE_QUESTION_BANK",
+      "questions": 147,
+      "byType": {
+        "单选题": 51,
+        "多选题": 12,
+        "判断题": 84
+      }
+    },
+    {
+      "file": "bank-acceptance-questions.js",
+      "global": "BANK_ACCEPTANCE_QUESTION_BANK",
+      "questions": 285,
+      "byType": {
+        "单选题": 109,
+        "多选题": 46,
+        "判断题": 130
+      }
+    },
+    {
+      "file": "counterfeit-currency-2023-questions.js",
+      "global": "COUNTERFEIT_CURRENCY_2023_QUESTION_BANK",
+      "questions": 1633,
+      "byType": {
+        "单选题": 789,
+        "多选题": 363,
+        "判断题": 481
+      }
+    },
+    {
+      "file": "foreign-exchange-2026-questions.js",
+      "global": "FOREIGN_EXCHANGE_2026_QUESTION_BANK",
+      "questions": 110,
+      "byType": {
+        "单选题": 42,
+        "多选题": 18,
+        "判断题": 50
+      }
+    },
+    {
+      "file": "warning-education-sanming-questions.js",
+      "global": "WARNING_EDUCATION_SANMING_QUESTION_BANK",
+      "questions": 123,
+      "byType": {
+        "单选题": 75,
+        "多选题": 20,
+        "判断题": 4,
+        "填空题": 22,
+        "简答题": 2
+      }
+    },
+    {
+      "file": "fx-level-one-questions.js",
+      "global": "FX_LEVEL_ONE_QUESTION_BANK",
+      "questions": 169,
+      "byType": {
+        "单选题": 58,
+        "多选题": 56,
+        "判断题": 55
+      }
+    }
+  ]
+}

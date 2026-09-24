@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>书生子白 | 网站素材</title>
+<style>
+/* 排版参照「Ysevan的小屋」（Ysevan_web/docs/xiaowu-ui-spec.md §2–§3、冻结小样的工具卡 .cd）：
+   暖纸底 + 橄榄墨、行楷标题、宋体名称、黑体正文；饱和色不用；夜里是同一间屋子的夜色。 */
+:root {
+  --paper: #F8F6F1;
+  --haze-warm: #F2EDE2;
+  --haze-cool: #E9EEEC;
+  --grey: #EDEAE3;
+  --card: #FDFCF9;
+  --card-line: #E8E4DA;
+  --line: #E4E0D6;
+  --divider: #DDD9CD;
+  --olive: #5E6144;
+  --olive-deep: #4A4D35;
+  --olive-2: #8B8C6D;
+  --olive-tint: #E1E0CE;
+  --ink: #2E2D28;
+  --ink-body: #3E3C35;
+  --ink-2: #6C6A61;
+  --ink-3: #6B685B;
+  --nav-bg: rgba(248, 246, 241, .82);
+  --shadow: 0 1px 2px rgba(74, 77, 53, .05), 0 8px 20px -10px rgba(74, 77, 53, .11);
+  --shadow-hover: 0 1px 2px rgba(74, 77, 53, .06), 0 14px 28px -14px rgba(74, 77, 53, .2);
+  --navh: 66px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #15171B;
+    --haze-warm: #231F18;
+    --haze-cool: #1A1D23;
+    --grey: #24272D;
+    --card: #1D2025;
+    --card-line: #353941;
+    --line: #353941;
+    --divider: #353941;
+    --olive: #CCBC8F;
+    --olive-deep: #E2D8B8;
+    --olive-2: #A69D82;
+    --olive-tint: #2E3138;
+    --ink: #E7E1D0;
+    --ink-body: #DED9C9;
+    --ink-2: #ACA69A;
+    --ink-3: #9F9A8E;
+    --nav-bg: rgba(21, 23, 27, .82);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .25), 0 8px 20px -10px rgba(0, 0, 0, .5);
+    --shadow-hover: 0 1px 2px rgba(0, 0, 0, .3), 0 14px 28px -14px rgba(0, 0, 0, .6);
+  }
+}
+
+* { box-sizing: border-box; }
+p, h1, h2, h3, h4 { margin: 0; }
+html { scroll-padding-top: calc(var(--navh) + 12px); }
+body {
+  margin: 0;
+  background:
+    radial-gradient(1020px 600px at 88% -14%, var(--haze-warm) 0%, transparent 62%),
+    radial-gradient(760px 520px at 2% 106%, var(--haze-cool) 0%, transparent 58%),
+    var(--paper);
+  background-attachment: fixed;
+  color: var(--ink-body);
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--olive); outline-offset: 4px; border-radius: 4px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 32px); }
+
+/* 顶栏：半透明纸 + 模糊，滚动后出一条发丝线 */
+.nav {
+  position: sticky; top: 0; z-index: 40;
+  min-height: var(--navh);
+  display: flex; align-items: center;
+  background: var(--nav-bg);
+  -webkit-backdrop-filter: saturate(1.35) blur(12px);
+  backdrop-filter: saturate(1.35) blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s ease;
+}
+.nav.is-stuck { border-bottom-color: var(--line); }
+.nav .wrap { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: clamp(16px, 3vw, 32px); }
+.mark { font-size: 15px; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.mark:hover { color: var(--olive-deep); }
+.links { display: flex; gap: clamp(16px, 2.4vw, 30px); }
+.links a {
+  color: var(--ink-2); text-decoration: none; font-size: 14.5px; white-space: nowrap;
+  padding-bottom: 3px; box-shadow: inset 0 -2px 0 transparent;
+  transition: color .25s ease, box-shadow .25s ease;
+}
+.links a:hover { color: var(--olive-deep); }
+.links a.is-here { color: var(--olive-deep); box-shadow: inset 0 -2px 0 var(--olive-2); }
+
+/* 页头：行楷标题 + 一句话 + 件数 */
+.page { padding-top: clamp(28px, 3.4vw, 44px); padding-bottom: clamp(40px, 5vw, 64px); }
+.head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px clamp(12px, 1.8vw, 20px); }
+.head__l { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px clamp(12px, 1.8vw, 20px); }
+.head h1 {
+  font-family: "Xingkai SC", "STXingkai", "华文行楷", "Kaiti SC", "STKaiti", "KaiTi", serif;
+  font-size: clamp(30px, 3vw, 38px); font-weight: 400; color: var(--ink); letter-spacing: .05em;
+}
+.head__l span { font-size: 14.5px; color: var(--ink-2); }
+.head__n { font-size: 12px; letter-spacing: .14em; color: var(--ink-3); white-space: nowrap; }
+.head__n b { font-weight: 500; color: var(--ink-2); font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+/* 每个大类一块灰毯，卡片放在毯子上 */
+.rug {
+  margin-top: clamp(26px, 3vw, 38px);
+  background: var(--grey);
+  border-radius: clamp(22px, 2.6vw, 30px);
+  padding: clamp(24px, 3.4vw, 42px) clamp(16px, 3.4vw, 44px) clamp(22px, 2.6vw, 34px);
+}
+.rug__head { display: flex; align-items: baseline; gap: 12px; margin-bottom: clamp(16px, 2vw, 22px); }
+.rug__head h2 {
+  font-family: "Songti SC", "STSong", "SimSun", serif;
+  font-size: clamp(21px, 2vw, 25px); font-weight: 600; color: var(--ink); letter-spacing: .05em;
+}
+.rug__head span { font-size: 12px; letter-spacing: .14em; color: var(--ink-3); }
+.sub { margin: clamp(20px, 2.4vw, 28px) 0 12px; font-size: 12px; letter-spacing: .16em; color: var(--ink-3); }
+.rug__head + .sub { margin-top: 0; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: clamp(12px, 1.6vw, 18px); }
+
+/* 卡片：沿用小屋工具卡 .cd 的纸、边、双层阴影和分区次序 */
+.cd {
+  display: flex; flex-direction: column; min-width: 0;
+  background: var(--card); border: 1px solid var(--card-line);
+  border-radius: clamp(14px, 1.6vw, 18px);
+  padding: clamp(16px, 1.8vw, 20px) clamp(16px, 1.8vw, 20px) clamp(14px, 1.6vw, 18px);
+  box-shadow: var(--shadow);
+  text-decoration: none; color: inherit;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+a.cd:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: var(--olive-2); }
+.cd__top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.cd__no { font-size: 11.5px; letter-spacing: .14em; color: var(--ink-3); font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+.cd__kind { font-size: 11.5px; letter-spacing: .06em; color: var(--ink-3); text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cd__name {
+  margin-top: 6px;
+  font-family: "Songti SC", "STSong", "SimSun", serif;
+  font-size: 19px; font-weight: 600; color: var(--ink); letter-spacing: .05em; line-height: 1.35;
+}
+.cd__say { flex: 1 1 auto; margin-top: 8px; font-size: 13.5px; line-height: 1.85; color: var(--ink-body); }
+.cd__for { margin-top: 12px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 8px; font-size: 12.5px; }
+.pill { color: var(--olive-deep); background: var(--olive-tint); border-radius: 999px; padding: 1px 9px; font-size: 11.5px; white-space: nowrap; }
+.pill--line { background: transparent; color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--divider); }
+.cd__who { color: var(--ink-2); }
+.cd__foot {
+  margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--divider);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+}
+.cd__tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.cd__open { font-size: 12.5px; color: var(--olive-deep); white-space: nowrap; }
+a.cd:hover .cd__open { text-decoration: underline; text-underline-offset: 3px; }
+.cd__open--off { color: var(--ink-3); }
+
+@media (max-width: 560px) {
+  .mark { font-size: 13.5px; }
+  .links a { font-size: 13.5px; }
+  .links { gap: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cd, .links a, .nav { transition: none; }
+  a.cd:hover { transform: none; }
+}
+</style>
+</head>
+<body>
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a class="mark" href="../Blog/Home.html">← 书生子白</a>
+    <div class="links" id="links"></div>
+  </div>
+</nav>
+
+<main class="page wrap">
+  <header>
+    <div class="head">
+      <div class="head__l">
+        <h1>网站素材</h1>
+        <span>当年为网站攒的节日页、特效和小游戏</span>
+      </div>
+      <div class="head__n">共 <b id="total">0</b> 件</div>
+    </div>
+  </header>
+  <div id="main"></div>
+</main>
+
+<script>
+// 每一项：[名称, 路径（相对本页，null 表示不是网页）, 效果, 原作者, 技术, 标签]
+// 标签：used:<站名> 用在了哪个站 / heavy 吃显卡 / private 私人 / file 不是网页 / server 要用「打开老站」
+var DATA = [
+  { cat: "节日与表白", id: "fest", groups: [
+    { title: "", items: [
+      ["国庆快乐", "节日与表白/国庆快乐/国庆快乐.html", "纯CSS画的五星红旗，点按钮放音乐、满屏烟花", "Ysevan", "CSS3"],
+      ["圣诞雪花", "节日与表白/圣诞雪花/圣诞树.html", "纯CSS的3D圣诞树，星星闪、雪花飘，配了圣诞歌", "Ysevan", "CSS3"],
+      ["圣诞树", "节日与表白/圣诞树/Christmas-line.html", "线条画出的圣诞树，配祝福语和音乐；2024年12月改了祝福语送人", "Ysevan", "GSAP + Canvas"],
+      ["跨年烟花", "节日与表白/跨年烟花/index.html", "满天烟花，金色主烟花炸出「2020」", "Ysevan", "Canvas 2D", ["used:书生子白·MIKU子站"]],
+      ["过年烟花", "节日与表白/过年烟花/index.html", "烟花碎片飞过去拼成一行字；现在拼的是素材站水印，改成祝福语就能用", "Ysevan", "Canvas 2D"],
+      ["生日祝福", "节日与表白/生日祝福/index.html", "一步步点按钮：开灯、放音乐、挂横幅、放气球、端蛋糕、点蜡烛，最后滚出祝福语", "AJLoveChina", "jQuery + CSS3"],
+      ["表白相册", "节日与表白/表白相册/相册.html", "立方体旋转相册，换成了真人照片", "Ysevan", "CSS3", ["private"]]
+    ]},
+    { title: "心跳合集", items: [
+      ["心跳1·彩虹心", "节日与表白/心跳合集/心跳1/index.html", "心形线上的彩色粒子，形状会变", "Ysevan", "Canvas 2D"],
+      ["心跳2·线条心", "节日与表白/心跳合集/心跳2/index.html", "线条组成的心形", "Johan Karlsson", "Canvas 2D"],
+      ["心跳3·汇聚彩心", "节日与表白/心跳合集/心跳3/index.html", "粒子从四周慢慢汇聚成彩色心形，开头几秒是黑的", "Ysevan", "Canvas 2D"],
+      ["心跳4·粒子心", "节日与表白/心跳合集/心跳4/demo.html", "粉色粒子从心形轮廓不断喷出", "Ysevan", "Canvas 2D"],
+      ["心跳5·霓虹心", "节日与表白/心跳合集/心跳5/index.html", "霓虹发光的心形", "Ysevan", "WebGL着色器"],
+      ["心跳6·点赞", "节日与表白/心跳合集/心跳6/index.html", "点赞按钮，小爱心沿路径飞散", "Ysevan", "anime.js + SVG", ["used:EV's world·Blog"]]
+    ]},
+    { title: "不是网页", items: [
+      ["表白小程序", null, "网上流传的Windows表白程序：节日与表白/表白小程序.exe", "Ysevan", "VB6", ["file"]]
+    ]}
+  ]},
+  { cat: "特效", id: "fx", groups: [
+    { title: "星空宇宙", items: [
+      ["璀璨群星", "特效/星空宇宙/璀璨群星/index.html", "多层彩色星空向前推进", "The Art of Code星空教程", "WebGL"],
+      ["超光速粒子", "特效/星空宇宙/超光速粒子/index.html", "星空，按住鼠标就跃迁进超空间", "Jhey Tompkins（推测）", "Canvas 2D"],
+      ["银河系星云", "特效/星空宇宙/银河系星云/index.html", "4万个点组成的旋臂星系，可以拖动视角", "Kevin Levron", "three.js", ["heavy"]],
+      ["绘制银河", "特效/星空宇宙/绘制银河/demo.html", "动鼠标，划过的地方撒出星星，连成银河", "Ysevan", "Canvas 2D", ["used:EV's world·MIKU子站"]],
+      ["能量射线", "特效/星空宇宙/能量射线/index.html", "中心向外喷发彩色光线，按住鼠标会变", "Jack Rugile（推测）", "Canvas 2D"],
+      ["火焰传送门", "特效/星空宇宙/传送门/火焰传送门.html", "一圈旋转加速的火花，像奇异博士的传送门", "Ysevan", "p5.js"],
+      ["时空隧道", "特效/星空宇宙/时空隧道/时空隧道.html", "粒子组成的隧道，带雾", "Ysevan", "three.js"],
+      ["时间隧道", "特效/星空宇宙/时间隧道/时间隧道.html", "360条彩虹线组成不停缩放的隧道", "Ysevan", "Canvas 2D"]
+    ]},
+    { title: "粒子", items: [
+      ["粒子旋涡", "特效/粒子/粒子旋涡/demo.html", "3D粒子漩涡，镜头绕着转", "cantelope（推测）", "Canvas 2D"],
+      ["粒子爆炸", "特效/粒子/粒子爆炸/index.html", "100万粒子，点击爆开再聚拢", "Ysevan", "three.js GPU计算", ["heavy"]],
+      ["离子清理工", "特效/粒子/离子清理工/index.html", "鼠标吸引或排斥粒子，靠近了会连线", "Ysevan", "Canvas 2D"],
+      ["花里胡哨的粒子", "特效/粒子/花里胡哨的粒子/demo.html", "点一下，粒子在球、环、锥、花瓶之间变形", "Ikeda Ryou（推测）", "Canvas 2D"],
+      ["喷泉", "特效/粒子/喷泉/index.html", "100万粒子的彩色喷泉", "Caleb Miller（推测）", "WebGL + regl", ["heavy"]],
+      ["粒子烟火", "特效/粒子/粒子烟火/粒子烟火.html", "看不见的方块边转边喷粒子，再炸成子粒子", "Ysevan", "Babylon.js", ["heavy"]]
+    ]},
+    { title: "其他", items: [
+      ["线条花", "特效/其他/线条花/花.html", "彩虹色的万花尺花纹一直在变", "Ysevan", "Canvas 2D·约2KB"],
+      ["喂鱼啦", "特效/其他/喂鱼啦/喂鱼啦.html", "点一下撒鱼食，字母小鱼游过来", "Ysevan", "Canvas 2D·约2KB"],
+      ["闪电风暴雨", "特效/其他/闪电风暴雨/闪电风暴雨.html", "雨丝、溅水和随机闪电，背景跟着闪", "Ysevan", "Canvas 2D"],
+      ["图片爆炸轮播", "特效/其他/图片爆炸轮播/index.html", "图片碎成小块飞散，切到下一张", "Ysevan", "CSS3 3D"],
+      ["图片立方体轮播", "特效/其他/图片立方体轮播/立方体轮播.html", "内外两层3D立方体旋转，每面一张图", "Ysevan", "CSS3", ["used:书生子白·MIKU子站"]],
+      ["费米悖论", "特效/费米悖论-64k-demo/screenshot.png", "Mercury小组2016年的64KB实时渲染demo；点开看截图，程序是同目录的exe", "Mercury", "Windows程序", ["file"]]
+    ]}
+  ]},
+  { cat: "小游戏", id: "games", groups: [
+    { title: "", items: [
+      ["打飞机", "小游戏/打飞机/index.html", "竖屏飞行射击，有商店和道具", "Piponga（2014）", "Construct 2", ["server"]],
+      ["立方体跳跃", "小游戏/立方体跳跃/HTML5/index.html", "点屏幕让方块跳台阶；带工程源文件", "DoonDookStudio", "Construct 2", ["server"]],
+      ["箭头防御", "小游戏/箭头防御/箭头防御.html", "炮台自动射箭，拦截落下的红箭头，鼠标可以接管", "Ysevan", "Canvas 2D"],
+      ["箭头雨", "小游戏/箭头雨/箭头雨.html", "黑客帝国风格的绿色箭头雨", "Ysevan", "Canvas 2D"],
+      ["解压小游戏", "小游戏/解压小游戏/解压小游戏.html", "鼠标经过粒子会变大，点一下炸开", "Ysevan", "GSAP + Canvas 2D"],
+      ["金山打字", "小游戏/金山打字小游戏/index.html", "字母往下掉，按对应的键消掉；缺三张背景图，能玩", "Ysevan", "jQuery"]
+    ]}
+  ]}
+];
+
+var TAG_TEXT = { heavy: "吃显卡", private: "私人", file: "不是网页", server: "要用打开老站" };
+
+function el(tag, cls, text) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+
+var main = document.getElementById("main");
+var links = document.getElementById("links");
+var total = 0;
+
+DATA.forEach(function (section) {
+  var count = 0, no = 0;
+  section.groups.forEach(function (g) { count += g.items.length; });
+  total += count;
+
+  var nav = el("a", null, section.cat);
+  nav.href = "#" + section.id;
+  nav.dataset.target = section.id;
+  links.appendChild(nav);
+
+  var rug = el("section", "rug");
+  rug.id = section.id;
+  var head = el("div", "rug__head");
+  head.appendChild(el("h2", null, section.cat));
+  head.appendChild(el("span", null, count + "件"));
+  rug.appendChild(head);
+
+  section.groups.forEach(function (g) {
+    if (g.title) rug.appendChild(el("h3", "sub", g.title));
+    var grid = el("div", "grid");
+    g.items.forEach(function (it) {
+      no++;
+      var name = it[0], path = it[1], say = it[2], who = it[3], tech = it[4], tags = it[5] || [];
+      var card = el(path ? "a" : "div", "cd");
+      if (path) { card.href = encodeURI(path); card.target = "_blank"; card.rel = "noopener"; }
+
+      var top = el("div", "cd__top");
+      top.appendChild(el("span", "cd__no", (no < 10 ? "0" : "") + no));
+      top.appendChild(el("span", "cd__kind", tech));
+      card.appendChild(top);
+      card.appendChild(el("h4", "cd__name", name));
+      card.appendChild(el("p", "cd__say", say));
+
+      var forRow = el("div", "cd__for");
+      forRow.appendChild(el("span", "pill", "原作者"));
+      forRow.appendChild(el("span", "cd__who", who));
+      card.appendChild(forRow);
+
+      var foot = el("div", "cd__foot");
+      var tagBox = el("div", "cd__tags");
+      tags.forEach(function (t) {
+        if (t.indexOf("used:") === 0) tagBox.appendChild(el("span", "pill", "用在" + t.slice(5)));
+        else if (TAG_TEXT[t]) tagBox.appendChild(el("span", "pill pill--line", TAG_TEXT[t]));
+      });
+      foot.appendChild(tagBox);
+      var isImage = path && /\.png$/i.test(path);
+      foot.appendChild(el("span", "cd__open" + (path ? "" : " cd__open--off"), path ? (isImage ? "看截图 →" : "打开 →") : "文件"));
+      card.appendChild(foot);
+      grid.appendChild(card);
+    });
+    rug.appendChild(grid);
+  });
+  main.appendChild(rug);
+});
+document.getElementById("total").textContent = total;
+
+// 顶栏：滚动后出发丝线；当前所在的大类在导航里标下划线
+var navEl = document.getElementById("nav");
+function onScroll() { navEl.classList.toggle("is-stuck", window.scrollY > 4); }
+window.addEventListener("scroll", onScroll, { passive: true });
+onScroll();
+if ("IntersectionObserver" in window) {
+  var navLinks = links.querySelectorAll("a");
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      navLinks.forEach(function (a) { a.classList.toggle("is-here", a.dataset.target === e.target.id); });
+    });
+  }, { rootMargin: "-40% 0px -55% 0px" });
+  DATA.forEach(function (s) { io.observe(document.getElementById(s.id)); });
+}
+</script>
+</body>
+</html>

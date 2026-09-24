@@ -1,0 +1,71 @@
+# 刷刷 行尾规则
+# 本仓库此前没有 .gitattributes，行尾长期处于混合状态（例如 app.js 是 2718 行 CRLF + 33 行 LF），
+# 导致任何一次真实改动都会被 git 报成三到四倍的虚高 diff，全是行尾翻转噪音。
+# 下面按「文件由谁读取」来决定行尾，而不是按「谁编辑的」。
+
+# ── 打底：未在下面显式列出的文件，由 git 自动判定文本/二进制；判定为文本的一律以 LF 入库 ──
+* text=auto
+
+# ── 仓库自身的元数据文件：由 git 和跨平台脚本读取，固定 LF ──
+.gitattributes text eol=lf
+.gitignore     text eol=lf
+VERSION        text eol=lf
+
+# ── Windows 专用脚本：cmd.exe 对 LF 行尾的批处理解析不可靠（标签跳转、多行 if/for 块会出错），
+#    PowerShell 也以 CRLF 为原生约定。这类文件只在 Windows 上执行，固定 CRLF。 ──
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# ── Unix 脚本：内核读 shebang 时会把行尾的 \r 一并算进解释器路径，
+#    CRLF 会直接导致 "bad interpreter: /bin/bash^M"，双击启动器当场失效。必须 LF。 ──
+*.command text eol=lf
+*.sh      text eol=lf
+
+# ── 网页与源码：由浏览器、Node、Python 读取，三个平台都接受 LF，统一 LF 消除 diff 噪音 ──
+*.js          text eol=lf
+*.mjs         text eol=lf
+*.cjs         text eol=lf
+*.css         text eol=lf
+*.html        text eol=lf
+*.svg         text eol=lf
+*.json        text eol=lf
+*.webmanifest text eol=lf
+*.md          text eol=lf
+*.py          text eol=lf
+*.yml         text eol=lf
+*.yaml        text eol=lf
+
+# ── 容器构建与服务端配置：只由 Linux 上的 docker、nginx 读取，CRLF 会让 RUN 指令和
+#    nginx 指令末尾多出 \r 而解析失败。固定 LF。 ──
+Dockerfile    text eol=lf
+.dockerignore text eol=lf
+*.conf        text eol=lf
+
+# ── 纯文本说明：默认 LF（robots.txt 由 Web 服务器读取）；
+#    但随发布包分发、给 Windows 用户用记事本打开的两份中文说明用 CRLF，避免显示成一整行。 ──
+*.txt        text eol=lf
+使用说明.txt   text eol=crlf
+NOTICE.txt   text eol=crlf
+
+# ── 二进制：显式标记，禁止任何行尾转换和文本 diff。
+#    Excel 模板等文件内部本来就含有 CR/LF 字节，一旦被当文本规范化就会永久损坏。 ──
+*.xlsx  binary
+*.xls   binary
+*.xlsm  binary
+*.docx  binary
+*.doc   binary
+*.pdf   binary
+*.zip   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.mp3   binary
+*.mp4   binary

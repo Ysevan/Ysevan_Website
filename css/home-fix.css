@@ -1,0 +1,202 @@
+/* 首页补丁（2026-09-25）：搜索结果样式、手机端布局、背景音乐播放器、高清背景图。
+   只给 index.html 用；主题原来的 style.css 一行没动。 */
+
+/* ---- 背景图换高清版：原图 p1543.jpg 只有 1920×1200，大屏（2040 宽 @1.25 倍、2552 宽 @1.5 倍）会糊。
+        p1543-4k.jpg 是用 Real-ESRGAN（x4plus-anime 模型）放大到 3840×2400 的同一张图，颜色已核对无偏差。
+        原图留着，没删。 ---- */
+body { background-image: url("../img/p1543-4k.jpg"); }
+
+/* ---- 搜索结果 ---- */
+#local-search-result {
+  width: 68%;
+  margin: 8px auto 0;
+  text-align: left;
+}
+#local-search-result .search-result-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 42vh;
+  overflow-y: auto;
+  background: rgba(20, 22, 28, .55);
+  border-radius: 8px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+#local-search-result .search-result-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 12px;
+  color: #f2f2f2;
+  font-size: 14px;
+  line-height: 1.4;
+  text-decoration: none;
+}
+#local-search-result .search-result-title span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#local-search-result .search-result-title em {
+  flex: none;
+  font-style: normal;
+  font-size: 12px;
+  color: #b8bcc6;
+}
+#local-search-result .search-result-title:hover,
+#local-search-result .search-result-title.is-active {
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+}
+#local-search-result .search-empty {
+  padding: 8px 12px;
+  color: #c9ccd4;
+  font-size: 13px;
+}
+
+/* ---- 手机端（主题原来在 800px 以下把左栏整个藏掉，靠一个需要 jQuery 的 #mobile-nav 顶上，
+        而页面从来没加载 jQuery，于是手机上什么都没有。这里改成左栏铺满整屏、内容竖排）---- */
+@media screen and (max-width: 800px) {
+  html, body, #container { height: auto; }
+  body { background-position: 62% center; }
+
+  #container .left-col {
+    display: block !important;
+    position: relative;
+    width: 100% !important;
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+  #container .left-col .overlay {
+    top: 0; left: 0; right: 0; bottom: 0;
+    height: auto;
+  }
+  #container .left-col .intrude-less {
+    position: relative;
+    left: auto; top: auto;
+    -webkit-transform: none;
+    transform: none;
+    width: 100%;
+    margin: 0 auto;
+    padding: 12vh 16px 200px;
+    overflow: visible;
+    box-sizing: border-box;
+  }
+  #container #header .header-menu ul li a { font-size: 16px; }
+  #container #header .header-nav { position: relative; }
+  .search { width: 80%; height: 26px; font-size: 15px; }
+  #local-search-result { width: 86%; }
+
+
+  /* 页脚：贴在整屏底部，两段居中叠放 */
+  #container .mid-col {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    min-height: 0;
+    overflow: visible;
+  }
+  #container .mid-col .body-wrap { display: none; }
+  #footer { position: static; padding: 0 0 14px; }
+  #footer .outer { padding: 0 16px; }
+  #footer .footer-left,
+  #footer .footer-right { float: none; text-align: center; line-height: 1.8; }
+}
+
+/* ---- 背景音乐播放器（js/bgm.js）：左下角一张半透明小卡，能调音量 ---- */
+#container .left-col .music-box {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  width: 260px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 10px 10px;
+  box-sizing: border-box;
+  background: rgba(20, 22, 28, .55);
+  border-radius: 12px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #eee;
+  font-size: 12px;
+}
+#container .left-col .music-box.is-fallback {
+  width: 330px;
+  max-width: calc(100vw - 32px);
+  padding: 0;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.bgm-cover {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.music-box.is-playing .bgm-cover { animation: bgm-breath 4s ease-in-out infinite; }
+@keyframes bgm-breath { 50% { opacity: .82; } }
+.bgm-main { flex: 1 1 auto; min-width: 0; }
+.bgm-title {
+  font-size: 13px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.bgm-title span { color: #b8bcc6; font-size: 12px; }
+.bgm-row { display: flex; align-items: center; gap: 6px; height: 20px; }
+.bgm-play, .bgm-mute {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #f2f2f2;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 20px;
+}
+.bgm-play:hover, .bgm-mute:hover { color: #fff; }
+.bgm-time { flex: none; color: #b8bcc6; font-size: 11px; font-variant-numeric: tabular-nums; }
+.bgm-progress, .bgm-volume {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 3px;
+  margin: 0;
+  background: rgba(255, 255, 255, .28);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+.bgm-volume { flex: 0 1 90px; }
+.bgm-progress::-webkit-slider-thumb, .bgm-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: #fff;
+}
+.bgm-progress::-moz-range-thumb, .bgm-volume::-moz-range-thumb {
+  width: 11px; height: 11px; border: 0; border-radius: 50%;
+  background: #fff;
+}
+.bgm-play:focus-visible, .bgm-mute:focus-visible, .bgm-progress:focus-visible, .bgm-volume:focus-visible {
+  outline: 2px solid #fff; outline-offset: 2px;
+}
+
+/* 手机端：播放器挪到底部正中（必须写在播放器基础样式后面，否则会被盖掉） */
+@media screen and (max-width: 800px) {
+  #container .left-col .music-box {
+    left: 50%;
+    bottom: 84px;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
+}
