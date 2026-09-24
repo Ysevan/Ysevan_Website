@@ -1,0 +1,16 @@
+这两个压缩包太大（网站托管 Cloudflare Pages 单个文件上限 25 MB），切成了 20 MB 一块：
+
+  编程导航-code-nav-master.zip.part-a … part-e   （拼回后 94 MB）
+  海拥的博客-wanghao221.github.io-master.zip.part-a、part-b   （拼回后 36 MB）
+
+拼回原来的 zip（在本文件夹里执行）：
+
+  Mac / Linux 终端：
+    cat 编程导航-code-nav-master.zip.part-* > 编程导航-code-nav-master.zip
+    cat 海拥的博客-wanghao221.github.io-master.zip.part-* > 海拥的博客-wanghao221.github.io-master.zip
+
+  Windows 命令提示符（cmd）：
+    copy /b 编程导航-code-nav-master.zip.part-a+编程导航-code-nav-master.zip.part-b+编程导航-code-nav-master.zip.part-c+编程导航-code-nav-master.zip.part-d+编程导航-code-nav-master.zip.part-e 编程导航-code-nav-master.zip
+    copy /b 海拥的博客-wanghao221.github.io-master.zip.part-a+海拥的博客-wanghao221.github.io-master.zip.part-b 海拥的博客-wanghao221.github.io-master.zip
+
+拼回的 zip 不要提交回仓库（超过 25 MB 网站就部署不上）。
