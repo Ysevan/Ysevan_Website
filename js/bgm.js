@@ -3,7 +3,7 @@
 // 音源按顺序试：本地 music/阿拉斯加海湾.flac（无损，音质最好）→ 本地 .mp3；
 // 都没有就退回网易云外链播放器（音质由网易云决定，调不了；也调不了音量）。
 // 网易云播放器会拖进来一整套网易云的 CSS/JS，打开页面就加载会让首页慢好几秒，
-// 所以等访客第一次点页面/按键时才插进去（浏览器本来也要等这一下才允许出声）。
+// 所以等访客第一次点页面/按键时才插进去（浏览器本来也要等这一下才允许出声）；离开页面前再摘掉（见文末）。
 // （网易云的「外链音频地址」这首歌返回 404，已从音源里去掉，省掉一次必失败的请求。）
 // 浏览器不允许「没点过页面就出声」：打开时先试着播，被拦就在访客第一次点页面/按键时开始播。
 (function () {
@@ -128,6 +128,25 @@
       audio.muted = true;
     }
   });
+
+  // 离开页面前先摘掉网易云播放器（2026-09-27）：它插进来后还在加载的那一阵，首页上的跳转会被它拖住
+  // 零点几秒到一秒多才走（量出来的，没有它时几十毫秒）。必须挂 beforeunload：pagehide 来得太晚，量过不管用。
+  // 这里不 preventDefault、不设 returnValue，不会弹「确定离开？」；新标签页打开的链接和 # 锚点不触发它。
+  // 别在这里先把 src 换成 about:blank 再摘：走 http 时量过，地址栏打开、刷新会卡死不走（2026-09-28）。
+  // 万一没走成（跳转被取消），3 秒后放回去；从「后退」回到这页（往返缓存）时也放回去。
+  var parked = null;
+  function unpark() {
+    if (parked && !parked.parentNode) box.appendChild(parked);
+    parked = null;
+  }
+  window.addEventListener('beforeunload', function () {
+    var f = box.querySelector('iframe');
+    if (!f) return;
+    parked = f;
+    f.parentNode.removeChild(f);
+    setTimeout(unpark, 3000);
+  });
+  window.addEventListener('pageshow', function (ev) { if (ev.persisted) unpark(); });
 
   audio.volume = readVolume();
   vol.value = String(Math.round(audio.volume * 100));
