@@ -1,5 +1,5 @@
 /**
- * 刷刷 v3.13.0
+ * 刷刷 v3.13.1
  * 2026 年检题库与 2023 版题库的重点差异，来源：确认答案变化工作表。
  */
 window.ANNUAL_INSPECTION_2026_COMPARISONS = Object.freeze([

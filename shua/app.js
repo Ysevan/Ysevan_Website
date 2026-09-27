@@ -1,5 +1,5 @@
 /**
- * 刷刷 v3.13.0
+ * 刷刷 v3.13.1
  * Author: Ysevan
  * 仅限内部学习使用，请勿公开发布题库或源码。
  */
@@ -7,7 +7,7 @@
   "use strict";
 
   const projectInfo = window.PROJECT_INFO || {
-    version: "3.13.0",
+    version: "3.13.1",
     releaseDate: "2026-09-22",
     author: "Ysevan",
     classification: "仅限内部学习使用",
@@ -836,19 +836,23 @@
     const activeMode = currentMode();
     const activeAccent = currentAccent();
     const modes = modeList()
-      .map((id) => `<button class="theme-option" type="button" data-action="setMode" data-mode="${escapeHtml(id)}" aria-pressed="${id === activeMode}">${escapeHtml(MODE_LABELS[id] || id)}</button>`)
+      .map((id) => `<button class="theme-option" type="button" role="radio" data-action="setMode" data-mode="${escapeHtml(id)}" aria-checked="${id === activeMode}" tabindex="${id === activeMode ? 0 : -1}">${escapeHtml(MODE_LABELS[id] || id)}</button>`)
       .join("");
     const accents = accentList()
       .map((id) => `<button class="accent-option" type="button" data-action="setAccent" data-accent="${escapeHtml(id)}" aria-pressed="${id === activeAccent}" aria-label="${escapeHtml(ACCENT_LABELS[id] || id)}"></button>`)
       .join("");
-    return `<div class="theme-switch" role="radiogroup" aria-label="界面明暗">${modes}</div><span class="accent-label">强调色</span><div class="accent-switch" role="radiogroup" aria-label="强调色">${accents}</div>`;
+    return `<div class="theme-switch" role="radiogroup" aria-label="界面明暗">${modes}</div><span class="accent-label">强调色</span><div class="accent-switch" role="group" aria-label="强调色">${accents}</div>`;
   }
 
   function syncThemeControls() {
     const activeMode = currentMode();
     const activeAccent = currentAccent();
+    // 明暗是单选（radiogroup + radio + aria-checked），只有选中那项留在 Tab 序列里，组内用方向键换；
+    // 强调色是一组 aria-pressed 按钮（SPEC §3），每个都能 Tab 到。
     document.querySelectorAll(".theme-switch [data-mode]").forEach((button) => {
-      button.setAttribute("aria-pressed", String(button.dataset.mode === activeMode));
+      const checked = button.dataset.mode === activeMode;
+      button.setAttribute("aria-checked", String(checked));
+      button.tabIndex = checked ? 0 : -1;
     });
     document.querySelectorAll(".accent-switch [data-accent]").forEach((button) => {
       button.setAttribute("aria-pressed", String(button.dataset.accent === activeAccent));
@@ -4032,11 +4036,11 @@
     }
   });
 
-  // 外观控件的键盘操作，只在控件内部生效：←/→ 在本组内循环并把焦点带过去，Home/End 跳首尾。
-  // 两组分别是浅/深/自动分段控件和六个强调色圆点；Enter/Space 由 <button> 自己处理。
+  // 外观控件的键盘操作，只在控件内部生效：←/→ 在本组内循环并把焦点带过去，Home/End 跳首尾；
+  // 明暗那组是 radiogroup，↑/↓ 同样能换。两组分别是浅/深/自动分段控件和六个强调色圆点；Enter/Space 由 <button> 自己处理。
   document.addEventListener("keydown", (event) => {
     if (event.altKey || event.ctrlKey || event.metaKey) return;
-    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
     const modeTarget = event.target?.closest?.(".theme-switch [data-mode]");
     const accentTarget = event.target?.closest?.(".accent-switch [data-accent]");
     const group = modeTarget
@@ -4045,6 +4049,8 @@
         ? { button: accentTarget, list: accentList(), value: accentTarget.dataset.accent, apply: setAccent, root: ".accent-switch", attribute: "data-accent" }
         : null;
     if (!group) return;
+    // ↑/↓ 只归明暗那个 radiogroup（APG 单选组的约定）；色点是普通按钮组，上下键留给页面滚动。
+    if ((event.key === "ArrowUp" || event.key === "ArrowDown") && !modeTarget) return;
     const index = group.list.indexOf(group.value);
     if (index < 0) return;
     event.preventDefault();
@@ -4052,7 +4058,7 @@
       ? 0
       : event.key === "End"
         ? group.list.length - 1
-        : (index + (event.key === "ArrowRight" ? 1 : -1) + group.list.length) % group.list.length;
+        : (index + (event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1) + group.list.length) % group.list.length;
     group.apply(group.list[next]);
     group.button.closest(group.root)?.querySelector(`[${group.attribute}="${group.list[next]}"]`)?.focus();
   });
