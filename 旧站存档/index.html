@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>书生子白 | 网站素材</title>
+<title>Ysevan | 旧站存档</title>
 <style>
-/* 排版参照「Ysevan的小屋」（Ysevan_web/docs/xiaowu-ui-spec.md §2–§3、冻结小样的工具卡 .cd）：
+/* 旧站存档（2026-09-27）：书生子白四页和游戏中心删掉以后，这些旧页从首页进来的总入口。
+   版式、配色、卡片和按压倾斜整套照搬「网站素材」总览页（网站素材/index.html），改那边的样式时这边一起改。
+   排版参照「Ysevan的小屋」（Ysevan_web/docs/xiaowu-ui-spec.md §2–§3、冻结小样的工具卡 .cd）：
    暖纸底 + 橄榄墨、行楷标题、宋体名称、黑体正文；饱和色不用；夜里是同一间屋子的夜色。 */
 :root {
   --paper: #F8F6F1;
@@ -208,81 +210,38 @@ a.cd:hover .cd__open { text-decoration: underline; text-underline-offset: 3px; }
   <header>
     <div class="head">
       <div class="head__l">
-        <h1>网站素材</h1>
-        <span>当年为网站攒的节日页、特效和小游戏</span>
+        <h1>旧站存档</h1>
+        <span>早年做过的个人站和旧页面，原样留着</span>
       </div>
-      <div class="head__n">共 <b id="total">0</b> 件</div>
+      <div class="head__n">共 <b id="total">0</b> 页</div>
     </div>
   </header>
   <div id="main"></div>
 </main>
 
 <script>
-// 每一项：[名称, 路径（相对本页，null 表示不是网页）, 效果, 原作者, 技术, 标签]
-// 标签：used:<站名> 用在了哪个站 / heavy 吃显卡 / private 私人 / file 不是网页 / server 要用「打开老站」
+// 每一项：[名称, 路径（相对本页）, 一句话是什么, 年份, 原来从哪进（原入口）]。只收 old 里现有的页面，不新写内容
 var DATA = [
-  { cat: "节日与表白", id: "fest", groups: [
+  { cat: "书生子白", id: "szb", note: "2021–2022", groups: [
     { title: "", items: [
-      ["国庆快乐", "节日与表白/国庆快乐/国庆快乐.html", "纯CSS画的五星红旗，点按钮放音乐、满屏烟花", "Ysevan", "CSS3"],
-      ["圣诞雪花", "节日与表白/圣诞雪花/圣诞树.html", "纯CSS的3D圣诞树，星星闪、雪花飘，配了圣诞歌", "Ysevan", "CSS3"],
-      ["圣诞树", "节日与表白/圣诞树/Christmas-line.html", "线条画出的圣诞树，配祝福语和音乐；2024年12月改了祝福语送人", "Ysevan", "GSAP + Canvas"],
-      ["跨年烟花", "节日与表白/跨年烟花/index.html", "满天烟花，金色主烟花炸出「2020」", "Ysevan", "Canvas 2D", ["used:书生子白·MIKU子站"]],
-      ["过年烟花", "节日与表白/过年烟花/index.html", "烟花碎片飞过去拼成一行字；现在拼的是素材站水印，改成祝福语就能用", "Ysevan", "Canvas 2D"],
-      ["生日祝福", "节日与表白/生日祝福/index.html", "一步步点按钮：开灯、放音乐、挂横幅、放气球、端蛋糕、点蜡烛，最后滚出祝福语", "AJLoveChina", "jQuery + CSS3"]
-    ]},
-    { title: "心跳合集", items: [
-      ["心跳1·彩虹心", "节日与表白/心跳合集/心跳1/index.html", "心形线上的彩色粒子，形状会变", "Ysevan", "Canvas 2D"],
-      ["心跳2·线条心", "节日与表白/心跳合集/心跳2/index.html", "线条组成的心形", "Johan Karlsson", "Canvas 2D"],
-      ["心跳3·汇聚彩心", "节日与表白/心跳合集/心跳3/index.html", "粒子从四周慢慢汇聚成彩色心形，开头几秒是黑的", "Ysevan", "Canvas 2D"],
-      ["心跳4·粒子心", "节日与表白/心跳合集/心跳4/demo.html", "粉色粒子从心形轮廓不断喷出", "Ysevan", "Canvas 2D"],
-      ["心跳5·霓虹心", "节日与表白/心跳合集/心跳5/index.html", "霓虹发光的心形", "Ysevan", "WebGL着色器"],
-      ["心跳6·点赞", "节日与表白/心跳合集/心跳6/index.html", "点赞按钮，小爱心沿路径飞散", "Ysevan", "anime.js + SVG", ["used:EV's world·Blog"]]
-    ]},
-    { title: "不是网页", items: [
-      ["表白小程序", null, "网上流传的Windows表白程序：节日与表白/表白小程序.exe", "Ysevan", "VB6", ["file"]]
+      ["Blog2", "../Blog/Blog2/Blog2.html", "Hipster Cards 卡片风的博客页；卡片上的按钮能进压扁小鸟、心跳6 两个小游戏", "2022", "书生子白的 Blog 页"],
+      ["MIKU的避风港", "../Blog/miku1/miku.html", "初音未来主题的子站，放着跨年烟花、绘制银河、图片立方体轮播三个特效", "2021–2022", "ACGN 页的 MIKU 横条"],
+      ["高一二班回忆录", "../Blog/2class/index.html", "高一（2）班的班级博客，记的是 2019 年 8 月到 2020 年 7 月的高一", "2020", "Explore 页的友链"]
     ]}
   ]},
-  { cat: "特效", id: "fx", groups: [
-    { title: "星空宇宙", items: [
-      ["璀璨群星", "特效/星空宇宙/璀璨群星/index.html", "多层彩色星空向前推进", "The Art of Code星空教程", "WebGL"],
-      ["超光速粒子", "特效/星空宇宙/超光速粒子/index.html", "星空，按住鼠标就跃迁进超空间", "Jhey Tompkins（推测）", "Canvas 2D"],
-      ["银河系星云", "特效/星空宇宙/银河系星云/index.html", "4万个点组成的旋臂星系，可以拖动视角", "Kevin Levron", "three.js", ["heavy"]],
-      ["绘制银河", "特效/星空宇宙/绘制银河/demo.html", "动鼠标，划过的地方撒出星星，连成银河", "Ysevan", "Canvas 2D", ["used:EV's world·MIKU子站"]],
-      ["能量射线", "特效/星空宇宙/能量射线/index.html", "中心向外喷发彩色光线，按住鼠标会变", "Jack Rugile（推测）", "Canvas 2D"],
-      ["火焰传送门", "特效/星空宇宙/传送门/火焰传送门.html", "一圈旋转加速的火花，像奇异博士的传送门", "Ysevan", "p5.js"],
-      ["时空隧道", "特效/星空宇宙/时空隧道/时空隧道.html", "粒子组成的隧道，带雾", "Ysevan", "three.js"],
-      ["时间隧道", "特效/星空宇宙/时间隧道/时间隧道.html", "360条彩虹线组成不停缩放的隧道", "Ysevan", "Canvas 2D"]
-    ]},
-    { title: "粒子", items: [
-      ["粒子旋涡", "特效/粒子/粒子旋涡/demo.html", "3D粒子漩涡，镜头绕着转", "cantelope（推测）", "Canvas 2D"],
-      ["粒子爆炸", "特效/粒子/粒子爆炸/index.html", "100万粒子，点击爆开再聚拢", "Ysevan", "three.js GPU计算", ["heavy"]],
-      ["离子清理工", "特效/粒子/离子清理工/index.html", "鼠标吸引或排斥粒子，靠近了会连线", "Ysevan", "Canvas 2D"],
-      ["花里胡哨的粒子", "特效/粒子/花里胡哨的粒子/demo.html", "点一下，粒子在球、环、锥、花瓶之间变形", "Ikeda Ryou（推测）", "Canvas 2D"],
-      ["喷泉", "特效/粒子/喷泉/index.html", "100万粒子的彩色喷泉", "Caleb Miller（推测）", "WebGL + regl", ["heavy"]],
-      ["粒子烟火", "特效/粒子/粒子烟火/粒子烟火.html", "看不见的方块边转边喷粒子，再炸成子粒子", "Ysevan", "Babylon.js", ["heavy"]]
-    ]},
-    { title: "其他", items: [
-      ["线条花", "特效/其他/线条花/花.html", "彩虹色的万花尺花纹一直在变", "Ysevan", "Canvas 2D·约2KB"],
-      ["喂鱼啦", "特效/其他/喂鱼啦/喂鱼啦.html", "点一下撒鱼食，字母小鱼游过来", "Ysevan", "Canvas 2D·约2KB"],
-      ["闪电风暴雨", "特效/其他/闪电风暴雨/闪电风暴雨.html", "雨丝、溅水和随机闪电，背景跟着闪", "Ysevan", "Canvas 2D"],
-      ["图片爆炸轮播", "特效/其他/图片爆炸轮播/index.html", "图片碎成小块飞散，切到下一张", "Ysevan", "CSS3 3D"],
-      ["图片立方体轮播", "特效/其他/图片立方体轮播/立方体轮播.html", "内外两层3D立方体旋转，每面一张图", "Ysevan", "CSS3", ["used:书生子白·MIKU子站"]],
-      ["费米悖论", "特效/费米悖论-64k-demo/screenshot.png", "Mercury小组2016年的64KB实时渲染demo；点开看截图，程序是同目录的exe", "Mercury", "Windows程序", ["file"]]
+  { cat: "EV's world", id: "ev", note: "2021", groups: [
+    { title: "", items: [
+      ["Explore", "../EVa/2021-EVs-world/Explore/Explore.html", "第一个个人站（2021-08-29 建，当时的域名是 evyan.top）的探索页：友链，还能进 EV 版的 blog 和 MIKU 子站", "2021", "evyan.top 的导航栏"],
+      ["Blog", "../EVa/2021-EVs-world/Blog/index Blog.html", "EV's world 的博客页，也是 Hipster Cards 卡片风，卡片按钮进压扁小鸟、心跳6", "2021", "evyan.top 的导航栏"],
+      ["ACGN", "../EVa/2021-EVs-world/ACGN/index ACGN.html", "EV's world 的二次元页；页上的 MIKU 横条在这份存档里指不到地方，MIKU 子站从 Explore 进", "2021", "evyan.top 的导航栏"]
     ]}
   ]},
-  { cat: "小游戏", id: "games", groups: [
+  { cat: "其他", id: "misc", note: "", groups: [
     { title: "", items: [
-      ["打飞机", "小游戏/打飞机/index.html", "竖屏飞行射击，有商店和道具", "Piponga（2014）", "Construct 2", ["server"]],
-      ["立方体跳跃", "小游戏/立方体跳跃/HTML5/index.html", "点屏幕让方块跳台阶；带工程源文件", "DoonDookStudio", "Construct 2", ["server"]],
-      ["箭头防御", "小游戏/箭头防御/箭头防御.html", "炮台自动射箭，拦截落下的红箭头，鼠标可以接管", "Ysevan", "Canvas 2D"],
-      ["箭头雨", "小游戏/箭头雨/箭头雨.html", "黑客帝国风格的绿色箭头雨", "Ysevan", "Canvas 2D"],
-      ["解压小游戏", "小游戏/解压小游戏/解压小游戏.html", "鼠标经过粒子会变大，点一下炸开", "Ysevan", "GSAP + Canvas 2D"],
-      ["金山打字", "小游戏/金山打字小游戏/index.html", "字母往下掉，按对应的键消掉；缺三张背景图，能玩", "Ysevan", "jQuery"]
+      ["404 页", "../404.html", "三体文案加一个小恐龙跳跃游戏；网站上找不到页面时显示的就是它", "年份不详", "找不到页面时自动显示"]
     ]}
   ]}
 ];
-
-var TAG_TEXT = { heavy: "吃显卡", private: "私人", file: "不是网页", server: "要用打开老站" };
 
 function el(tag, cls, text) {
   var e = document.createElement(tag);
@@ -309,7 +268,7 @@ DATA.forEach(function (section) {
   rug.id = section.id;
   var head = el("div", "rug__head");
   head.appendChild(el("h2", null, section.cat));
-  head.appendChild(el("span", null, count + "件"));
+  head.appendChild(el("span", null, (section.note ? section.note + " · " : "") + count + "页"));
   rug.appendChild(head);
 
   section.groups.forEach(function (g) {
@@ -317,31 +276,25 @@ DATA.forEach(function (section) {
     var grid = el("div", "grid");
     g.items.forEach(function (it) {
       no++;
-      var name = it[0], path = it[1], say = it[2], who = it[3], tech = it[4], tags = it[5] || [];
-      var card = el(path ? "a" : "div", "cd");
-      if (path) { card.href = encodeURI(path); card.target = "_blank"; card.rel = "noopener"; }
+      var name = it[0], path = it[1], say = it[2], year = it[3], from = it[4];
+      var card = el("a", "cd");
+      card.href = encodeURI(path); card.target = "_blank"; card.rel = "noopener";
 
       var top = el("div", "cd__top");
       top.appendChild(el("span", "cd__no", (no < 10 ? "0" : "") + no));
-      top.appendChild(el("span", "cd__kind", tech));
+      top.appendChild(el("span", "cd__kind", year));
       card.appendChild(top);
       card.appendChild(el("h4", "cd__name", name));
       card.appendChild(el("p", "cd__say", say));
 
       var forRow = el("div", "cd__for");
-      forRow.appendChild(el("span", "pill", "原作者"));
-      forRow.appendChild(el("span", "cd__who", who));
+      forRow.appendChild(el("span", "pill", "原入口"));
+      forRow.appendChild(el("span", "cd__who", from));
       card.appendChild(forRow);
 
       var foot = el("div", "cd__foot");
-      var tagBox = el("div", "cd__tags");
-      tags.forEach(function (t) {
-        if (t.indexOf("used:") === 0) tagBox.appendChild(el("span", "pill", "用在" + t.slice(5)));
-        else if (TAG_TEXT[t]) tagBox.appendChild(el("span", "pill pill--line", TAG_TEXT[t]));
-      });
-      foot.appendChild(tagBox);
-      var isImage = path && /\.png$/i.test(path);
-      foot.appendChild(el("span", "cd__open" + (path ? "" : " cd__open--off"), path ? (isImage ? "看截图 →" : "打开 →") : "文件"));
+      foot.appendChild(el("div", "cd__tags"));
+      foot.appendChild(el("span", "cd__open", "打开 →"));
       card.appendChild(foot);
       grid.appendChild(card);
     });

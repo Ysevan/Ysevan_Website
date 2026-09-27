@@ -1,4 +1,4 @@
-﻿# 由「打开老站.bat」调用（文件名用英文，免得 .bat 读中文路径出错）：在本机起一个只读的本地服务器，打开书生子白首页。关掉窗口就停了。
+﻿# 由「打开老站.bat」调用（文件名用英文，免得 .bat 读中文路径出错）：在本机起一个只读的本地服务器，打开老站首页（old/index.html）。关掉窗口就停了。
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $port = 8766
 while (Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) { $port++ }
@@ -10,7 +10,7 @@ $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$port/")
 $listener.Start()
 Write-Host "老站已在 http://localhost:$port 打开，关掉这个窗口就停止。"
-Start-Process "http://localhost:$port/Blog/Home.html"
+Start-Process "http://localhost:$port/index.html"
 while ($listener.IsListening) {
   $ctx = $listener.GetContext()
   $rel = [Uri]::UnescapeDataString($ctx.Request.Url.AbsolutePath).TrimStart('/')
