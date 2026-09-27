@@ -44,12 +44,21 @@
     return out.slice(0, 10).map(function (x) { return x.e; });
   }
 
+  // 结果浮层叠在导航原来那块区域上：导航只隐身不撤走，左栏高度不变，头像就不会跟着重新居中往下掉
+  function place() {
+    if (!nav || !box.classList.contains('is-open')) return;
+    box.style.top = nav.offsetTop + 'px';
+    box.style.height = nav.offsetHeight + 'px';
+  }
+
   function setExpanded(open) {
     input.setAttribute('aria-expanded', open ? 'true' : 'false');
     box.classList.toggle('is-open', open);
-    if (nav) nav.style.display = open ? 'none' : '';
-    if (!open) { active = -1; input.removeAttribute('aria-activedescendant'); }
+    if (nav) nav.style.visibility = open ? 'hidden' : '';
+    if (open) place();
+    else { active = -1; input.removeAttribute('aria-activedescendant'); box.style.height = ''; }
   }
+  window.addEventListener('resize', place);
 
   function collapse() {
     setExpanded(false);

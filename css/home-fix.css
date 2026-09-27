@@ -6,17 +6,25 @@
         原图留着，没删。 ---- */
 body { background-image: url("../img/p1543-4k.jpg"); }
 
-/* ---- 搜索结果 ---- */
+/* ---- 搜索结果 ----
+   搜索时导航只隐身不撤走（js 设 visibility:hidden），结果浮层叠在导航原来那块区域上、高度就是那块的高度，
+   多了在里面滚动。这样左栏内容高度不变，头像和站名在搜索前后纹丝不动（原来导航 display:none、内容变少，
+   整块按新高度重新垂直居中，头像往下掉一百多像素）。位置和高度由 js 按导航区域量出来写上。 */
+#header { position: relative; }
 #local-search-result {
+  position: absolute;
+  left: 0; right: 0;
   width: 68%;
-  margin: 8px auto 0;
+  margin: 0 auto;
   text-align: left;
+  z-index: 2;
 }
 #local-search-result .search-result-list {
   list-style: none;
   margin: 0;
   padding: 4px 0;
-  max-height: 42vh;
+  max-height: 100%;
+  box-sizing: border-box;
   overflow-y: auto;
   background: rgba(20, 22, 28, .55);
   border-radius: 8px;
@@ -202,6 +210,15 @@ body { background-image: url("../img/p1543-4k.jpg"); }
 }
 .bgm-play:focus-visible, .bgm-mute:focus-visible, .bgm-progress:focus-visible, .bgm-volume:focus-visible {
   outline: 2px solid #fff; outline-offset: 2px;
+}
+
+/* 桌面：左栏内容在「左栏顶 → 播放器上沿」这段里居中，而不是在整栏里居中（原来整块偏下 93px，底下压着播放器）。
+   播放器连底边距占 97px（bottom 20 + 卡片 77）；主题原来的 margin-top 40px 去掉，否则又往下推 40px。 */
+@media screen and (min-width: 801px) {
+  #container .left-col .intrude-less {
+    margin-top: 0;
+    top: calc((100% - 97px) / 2);
+  }
 }
 
 /* 手机端：播放器挪到底部正中（必须写在播放器基础样式后面，否则会被盖掉） */
