@@ -387,6 +387,16 @@ html[data-mode="dark"] .accent-option[data-accent="teal"] { --dot: var(--c-teal-
 .mode-chev { flex: 0 0 auto; color: var(--label3); }
 .mode-chev svg { width: calc(18 * var(--u)); height: calc(18 * var(--u)); stroke: currentColor; }
 .mode-grid { display: block; }
+/* 首页「练习方式」入口行的按压反馈（3.13.0）：动画由 app.js 用 WAAPI 驱动、只动 transform / opacity，这里只管光斑的样子和层叠。
+   光斑 .mode-glow 每个分组列表一个（app.js 的 MODE_GLOW，放在列表末尾），z-index: -1 垫在面板玻璃底之上、所有行之下：
+   不压任何一行的字（相邻行也不压），hover 的 --fill 盖在它上面；轮廓只被 .list-panel 的圆角裁一次。
+   不放进行里：放进去就得在行上裁切，光斑上下被切成平边；行按下时带透视变换、里面再有一个在动的层，裁切还会让整行
+   先画进中间纹理再投影，手机 3.5 倍屏上字明显发虚（实测文字边缘平均梯度 28，挪出来后 48，与不带光斑时相同）。
+   光斑盒子与面板同宽、高 108（约 1.7 个行高），closest-side 径向渐变在它上面是一个扁椭圆，JS 把横向缩到「高 / 宽」
+   就成了正圆：铺满这一行的淡椭圆 → 触点处的小圆，只靠 transform 完成。两层 --accent-soft（SPEC 指定给光晕用的半透明档）
+   叠出柔和的中心，浅色约 .24、深色约 .36；不用 backdrop-filter。 */
+.quick-start .list-panel { position: relative; }
+.mode-glow { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; height: calc(108 * var(--u)); margin-top: calc(-54 * var(--u)); background: radial-gradient(closest-side, var(--accent-soft), transparent), radial-gradient(closest-side, var(--accent-soft), transparent 62%); opacity: 0; pointer-events: none; }
 /* 两列列表各自按内容高度收住，不互相拉平——右列多一行时左列不该跟着空出一截玻璃。 */
 .two-column { display: grid; align-items: start; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(calc(320 * var(--u)), 1fr)); }
 /* 「练习方式」（3.11.2 前叫「快速开始」）永远是上下两块（第一组列表在上、两列列表在下），任何宽度下构图都和 1440 一样。
@@ -548,23 +558,6 @@ textarea { padding: calc(12 * var(--u)); line-height: 1.6; resize: vertical; }
 .explanation strong { display: flex; align-items: center; gap: calc(7 * var(--u)); font-size: calc(13 * var(--u)); }
 .explanation strong svg { width: calc(16 * var(--u)); height: calc(16 * var(--u)); stroke: currentColor; color: var(--orange-text); }
 .explanation p { margin: calc(7 * var(--u)) 0 0; font-size: calc(13 * var(--u)); line-height: 1.75; }
-.beginner-explanation { margin-top: calc(11 * var(--u)); padding: calc(13 * var(--u)); border-radius: var(--r-sm); background: var(--glass-strong); color: var(--label); }
-.beginner-explanation > strong, .beginner-explanation > strong svg { color: var(--accent-text); }
-.beginner-explanation p { margin: calc(7 * var(--u)) 0 0; }
-.memory-anchor { margin-top: calc(10 * var(--u)); padding: calc(9 * var(--u)) calc(11 * var(--u)); border-radius: var(--r-xs); background: var(--orange-tint); color: var(--orange-text); font-size: calc(13 * var(--u)); line-height: 1.65; }
-.memory-anchor strong { display: inline; margin: 0; color: inherit; }
-.term-guide, .source-explanation, .glossary-library { margin-top: calc(10 * var(--u)); border-radius: var(--r-sm); background: var(--glass-strong); color: var(--label); }
-.term-guide summary, .source-explanation summary, .glossary-library summary { min-height: calc(40 * var(--u)); padding: 0 calc(11 * var(--u)); display: flex; align-items: center; justify-content: space-between; gap: calc(10 * var(--u)); cursor: pointer; list-style: none; font-size: calc(13 * var(--u)); font-weight: 600; }
-.term-guide summary::-webkit-details-marker, .source-explanation summary::-webkit-details-marker, .glossary-library summary::-webkit-details-marker { display: none; }
-.term-guide summary span, .glossary-library summary span { display: inline-flex; align-items: center; gap: calc(7 * var(--u)); }
-.term-guide summary svg, .glossary-library summary svg { width: calc(16 * var(--u)); height: calc(16 * var(--u)); stroke: currentColor; color: var(--accent-text); }
-.term-guide summary > svg, .glossary-library summary > svg { color: var(--label2); transition: transform .18s ease; }
-.term-guide[open] summary > svg, .glossary-library[open] summary > svg { transform: rotate(180deg); }
-.term-guide dl, .glossary-library dl { margin: 0; padding: 0 calc(11 * var(--u)) calc(11 * var(--u)); }
-.term-guide dl div, .glossary-library dl div { padding: calc(10 * var(--u)) 0; border-top: 1px solid var(--sep); }
-.term-guide dt, .glossary-library dt { color: var(--accent-text); font-weight: 600; font-size: calc(13 * var(--u)); }
-.term-guide dd, .glossary-library dd { margin: calc(5 * var(--u)) 0 0; color: var(--label); font-size: calc(13 * var(--u)); line-height: 1.7; }
-.source-explanation p { margin: 0; padding: 0 calc(11 * var(--u)) calc(11 * var(--u)); color: var(--label2); font-size: calc(13 * var(--u)); line-height: 1.75; }
 .question-footer { margin-top: auto; padding-top: calc(22 * var(--u)); display: flex; align-items: center; justify-content: space-between; gap: calc(12 * var(--u)); }
 .question-footer > div { display: flex; gap: calc(9 * var(--u)); }
 .swipe-hint { display: none; margin: calc(12 * var(--u)) 0 0; text-align: center; color: var(--label2); font-size: calc(12 * var(--u)); }
@@ -603,6 +596,50 @@ textarea { padding: calc(12 * var(--u)); line-height: 1.6; resize: vertical; }
 .search-form { display: flex; align-items: center; gap: calc(10 * var(--u)); }
 .search-form .search-box { flex: 1 1 calc(360 * var(--u)); }
 .search-form select { width: min(calc(260 * var(--u)), 100%); height: calc(40 * var(--u)); }
+/* 搜题框（3.13.0）：标签和输入框同在一个框里，底色从输入框挪到框上；标签多了换行，框随之长高。
+   只作用于搜题页的 .question-search-box，错题与标记、题库管理两页的 .search-box 不变（1440 / 417 实测几何逐项相同）。
+   框长高时下拉和按钮贴顶（原来是居中，框一长高它们会跟着往下漂）；按钮 38 比框 40 矮 2px，margin-top 1px 保持单行时位置与原来一样。
+   面板提一层：浮层会伸出面板盖在结果卡上，而结果卡各自带 backdrop-filter、自成层叠上下文，不提会被后面的卡盖住。 */
+.search-panel { position: relative; z-index: 2; }
+.search-form { align-items: flex-start; }
+.search-form > .button { margin-top: calc(1 * var(--u)); }
+.search-box.question-search-box { display: flex; flex-wrap: wrap; align-items: center; align-content: flex-start; gap: calc(6 * var(--u)); min-height: calc(40 * var(--u)); padding: calc(5 * var(--u)) calc(6 * var(--u)) calc(5 * var(--u)) calc(34 * var(--u)); border-radius: var(--r-sm); background: var(--fill); cursor: text; }
+/* 输入框文字起点仍在 38px（框 34 + 自己 4），和改版前一样。 */
+.search-box.question-search-box input { flex: 1 1 calc(100 * var(--u)); width: auto; min-width: calc(100 * var(--u)); height: calc(30 * var(--u)); padding: 0 calc(4 * var(--u)); border-radius: 0; background: transparent; }
+@supports selector(:has(*)) {
+  .search-box.question-search-box input:focus-visible { outline: none; }
+  .search-box.question-search-box:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+  /* 框里已经有标签时不再显示「例如：票据贴现…」的占位示例。 */
+  .search-box.question-search-box:has(.search-tag) input::placeholder { color: transparent; }
+}
+/* 标签：底色单独一层（.search-tag-bg），删除时它缩成圆点大小并淡掉、中心的 .search-tag-dot 淡入再缩没——只动 transform / opacity。 */
+.search-tag { position: relative; isolation: isolate; display: inline-flex; align-items: center; gap: calc(4 * var(--u)); max-width: 100%; min-width: 0; height: calc(28 * var(--u)); padding: 0 calc(3 * var(--u)) 0 calc(10 * var(--u)); border-radius: calc(999 * var(--u)); color: var(--label); font-size: calc(13 * var(--u)); font-weight: 600; line-height: 1; cursor: default; }
+.search-tag-bg { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--glass-strong); box-shadow: 0 1px calc(3 * var(--u)) rgba(0, 0, 0, .12); }
+.search-tag-dot { position: absolute; top: 50%; left: 50%; width: calc(8 * var(--u)); height: calc(8 * var(--u)); margin: calc(-4 * var(--u)) 0 0 calc(-4 * var(--u)); border-radius: 50%; background: var(--label2); opacity: 0; pointer-events: none; }
+.search-tag.is-bank { color: var(--accent-text); padding-left: calc(8 * var(--u)); }
+.search-tag.is-bank .search-tag-bg { background: var(--accent-tint); box-shadow: none; }
+.search-tag.is-bank .search-tag-dot { background: var(--accent); }
+.search-tag.is-removing { pointer-events: none; }
+.search-tag-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-box .search-tag svg { position: static; width: calc(14 * var(--u)); height: calc(14 * var(--u)); flex: 0 0 auto; stroke: currentColor; color: inherit; }
+.search-tag-remove { position: relative; flex: 0 0 auto; width: calc(22 * var(--u)); height: calc(22 * var(--u)); padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--label2); display: inline-grid; place-items: center; }
+.search-tag.is-bank .search-tag-remove { color: var(--accent-text); }
+.search-tag-remove:hover { background: var(--fill); color: var(--label); }
+.search-tag.is-bank .search-tag-remove:hover { color: var(--accent-text); }
+/* 叉号本身 22px，点击区向四周各扩 4px。 */
+.search-tag-remove::after { content: ""; position: absolute; inset: calc(-4 * var(--u)); }
+/* 联想浮层：实底（强玻璃色压在页面底色上，得到不透明的面），不加 backdrop-filter；left 由 app.js 按光标位置写。 */
+.search-suggest { position: absolute; top: calc(100% + calc(6 * var(--u))); left: 0; z-index: 5; width: min(calc(340 * var(--u)), 100%); padding: calc(6 * var(--u)); display: grid; gap: calc(4 * var(--u)); border-radius: var(--r-md); background: linear-gradient(var(--glass-strong), var(--glass-strong)), var(--bg); box-shadow: var(--shadow-lifted); cursor: default; }
+.search-suggest[hidden] { display: none; }
+.search-suggest-group + .search-suggest-group { padding-top: calc(4 * var(--u)); border-top: 1px solid var(--sep); }
+.search-suggest-label { padding: calc(4 * var(--u)) calc(10 * var(--u)) calc(2 * var(--u)); color: var(--label2); font-size: calc(11 * var(--u)); font-weight: 600; letter-spacing: .04em; }
+.search-suggest-option { display: flex; align-items: center; justify-content: space-between; gap: calc(10 * var(--u)); min-height: calc(36 * var(--u)); padding: 0 calc(10 * var(--u)); border-radius: var(--r-xs); color: var(--label); font-size: calc(14 * var(--u)); cursor: pointer; }
+.search-suggest-option:hover { background: var(--fill); }
+.search-suggest-option.is-active { background: var(--accent-tint); color: var(--accent-text); }
+.search-suggest-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-suggest-text mark { background: none; color: inherit; font-weight: 700; }
+.search-suggest-count { flex: 0 0 auto; color: var(--label2); font-size: calc(12 * var(--u)); font-variant-numeric: tabular-nums; }
+.search-suggest-option.is-active .search-suggest-count { color: var(--accent-text); }
 .search-result-count { color: var(--label2); font-size: calc(13 * var(--u)); }
 .question-search-results { margin-top: calc(18 * var(--u)); display: grid; gap: calc(12 * var(--u)); }
 .search-question-card { padding: var(--pad); }
@@ -610,10 +647,8 @@ textarea { padding: calc(12 * var(--u)); line-height: 1.6; resize: vertical; }
 .search-options { margin: 0; padding-left: calc(24 * var(--u)); display: grid; gap: calc(7 * var(--u)); line-height: 1.55; }
 .search-options li { padding: calc(7 * var(--u)) calc(9 * var(--u)); border-radius: var(--r-xs); }
 .search-options li.is-correct { color: var(--green-text); background: var(--green-tint); font-weight: 600; }
-.search-answer, .search-explanation { margin-top: calc(13 * var(--u)); padding: calc(11 * var(--u)) calc(12 * var(--u)); border-radius: var(--r-sm); line-height: 1.6; }
+.search-answer { margin-top: calc(13 * var(--u)); padding: calc(11 * var(--u)) calc(12 * var(--u)); border-radius: var(--r-sm); line-height: 1.6; }
 .search-answer { color: var(--green-text); background: var(--green-tint); }
-.search-explanation { background: var(--fill); color: var(--label2); }
-.search-explanation > .beginner-explanation { margin-top: calc(9 * var(--u)); }
 .search-card-actions { display: flex; justify-content: flex-end; margin-top: calc(13 * var(--u)); }
 .comparison-summary { margin-bottom: calc(18 * var(--u)); padding: calc(18 * var(--u)) calc(20 * var(--u)); display: grid; grid-template-columns: auto auto minmax(calc(220 * var(--u)), 1fr); gap: calc(16 * var(--u)); align-items: center; }
 .comparison-summary > div { min-width: calc(108 * var(--u)); padding-right: calc(16 * var(--u)); border-right: 1px solid var(--sep); }
@@ -885,10 +920,13 @@ html[data-mode="dark"] .bank-chip:not(.is-more) { color: var(--chip-d); backgrou
   .question-footer > div { flex: 1; }
   .question-footer .button { flex: 1; }
   .swipe-hint { display: block; }
-  .form-footer { position: fixed; right: calc(12 * var(--u)); bottom: calc(12 * var(--u)); left: calc(12 * var(--u)); z-index: 18; margin: 0; padding: calc(10 * var(--u)) calc(12 * var(--u)); align-items: center; flex-direction: row; border-top: 0; border-radius: var(--r-md); background: var(--glass-strong); box-shadow: var(--shadow-lifted); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
-  .form-footer span { min-width: 0; flex: 1; }
+  /* 专项练习的底栏用 sticky，不用 fixed：它在玻璃面板里，面板的 backdrop-filter 会让 fixed 改以面板为参照（不再贴着屏幕），
+     3.11.0–3.12.0 手机上滚动中看不到「开始练习」、滚到底又盖住最后一组 36px。sticky 滚动时贴底、到表单末尾落回原位，不压内容。 */
+  .form-footer { position: sticky; bottom: calc(12 * var(--u)); z-index: 18; margin: calc(20 * var(--u)) calc(-1 * var(--pad)) 0; padding: calc(10 * var(--u)) calc(12 * var(--u)); align-items: center; flex-direction: row; border-top: 0; border-radius: var(--r-md); background: var(--glass-strong); box-shadow: var(--shadow-lifted); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+  /* 负边距抵掉面板内边距，底栏和原来的 fixed 版一样宽；上边距 20u 让表单总高和原来（96u 预留 + fixed 底栏）逐像素相同。
+     两行时尽量等长，不剩一个「题」字单独一行。 */
+  .form-footer span { min-width: 0; flex: 1; text-wrap: balance; }
   .form-footer .button { width: auto; flex: 0 0 auto; }
-  #practice-form { padding-bottom: calc(96 * var(--u)); }
   .quiz-jump-bar { align-items: stretch; flex-wrap: wrap; }
   .quiz-jump-bar label { width: 100%; }
   .quiz-jump-input { flex: 1 1 100%; }
@@ -914,6 +952,13 @@ html[data-mode="dark"] .bank-chip:not(.is-more) { color: var(--chip-d); backgrou
   .search-box { min-width: 0; grid-column: 1 / -1; }
   .search-box input { height: calc(42 * var(--u)); }
   .search-box svg { top: calc(13 * var(--u)); }
+  .search-box.question-search-box { min-height: calc(42 * var(--u)); }
+  .search-box.question-search-box input { height: calc(32 * var(--u)); }
+  /* 触屏上叉号加大：按钮 26、点击区四周各扩 6 → 38px；扩出去的部分落在标签自己和 6px 间隙里，碰不到相邻标签。 */
+  .search-tag { height: calc(30 * var(--u)); }
+  .search-tag-remove { width: calc(26 * var(--u)); height: calc(26 * var(--u)); }
+  .search-tag-remove::after { inset: calc(-6 * var(--u)); }
+  .search-form > .button { margin-top: 0; }
   .question-row { padding: calc(13 * var(--u)) calc(14 * var(--u)); grid-template-columns: minmax(0, 1fr) auto; }
   .row-index { display: none; }
   .bank-toolbar { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
@@ -991,7 +1036,8 @@ html[data-mode="dark"] .bank-chip:not(.is-more) { color: var(--chip-d); backgrou
   .search-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(8 * var(--u)); }
   .search-form .search-box, .search-form .button { grid-column: 1 / -1; }
   .search-form select { width: 100%; min-width: 0; text-overflow: ellipsis; }
-  .search-explanation { display: none; }
+  /* 手机上联想浮层与搜索框同宽（app.js 这一档把 left 固定为 0）。 */
+  .search-suggest { width: 100%; }
   .summary-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(8 * var(--u)); }
   .project-meta { grid-template-columns: minmax(0, 1fr); }
   .accent-switch { gap: calc(10 * var(--u)); }

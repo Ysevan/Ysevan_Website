@@ -1,6 +1,6 @@
 {
   "generatedBy": "scripts/release-check.mjs（勿手改，发版时重新生成）",
-  "version": "3.12.0",
+  "version": "3.13.0",
   "banks": 9,
   "questions": 4877,
   "byBank": [

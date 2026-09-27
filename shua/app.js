@@ -1,5 +1,5 @@
 /**
- * 刷刷 v3.12.0
+ * 刷刷 v3.13.0
  * Author: Ysevan
  * 仅限内部学习使用，请勿公开发布题库或源码。
  */
@@ -7,7 +7,7 @@
   "use strict";
 
   const projectInfo = window.PROJECT_INFO || {
-    version: "3.12.0",
+    version: "3.13.0",
     releaseDate: "2026-09-22",
     author: "Ysevan",
     classification: "仅限内部学习使用",
@@ -133,49 +133,51 @@
   // 单独存一个键，不进 state.preferences，这样切题库不会变、导出备份也不会带走它。
   const ANSWER_MODE_KEY = "shua-answer-mode";
   const emptyBankState = () => ({ version: 1, overrides: {}, custom: [], disabled: [] });
-  const BEGINNER_GLOSSARY = Object.freeze({
-    "信用报告": "记录个人信用借还、还款等情况的‘信用档案’，银行会据此判断风险。",
-    "个人信息主体": "信息所对应的那个人，也就是这份个人信息的本人。",
-    "公平交易权": "消费者有权获得价格、质量和条款都公平的服务，不能被不合理条款占便宜。",
-    "消费者权益保护": "银行在销售和服务时保障客户知情、选择、公平交易和信息安全等权利。",
-    "小额账户": "日常余额较低的账户；题库中的具体标准要按题干给出的金额和时间口径记。",
-    "日均余额": "把一段时间内每天的账户余额相加，再除以天数得到的平均数。",
-    "见证服务": "银行作为第三方到场或核验相关行为、文件，证明某件事在约定条件下发生。",
-    "核心银行系统": "银行处理账户、存款、转账等核心账务的后台系统，可理解为银行的‘总账大脑’。",
-    "特殊账号": "按客户约定预留或定制的账号，通常用于识别、收款或管理方便。",
-    "票据贴现": "企业把未到期票据提前交给银行换现金；银行会扣除从贴现日到到期日的利息。",
-    "贴现利息": "票据提前变现时付出的资金成本，通常与金额、利率和剩余期限有关。",
-    "商业汇票": "由企业签发、承兑或使用的付款凭证，到期由承兑人付款。",
-    "承兑": "付款人或银行在票据上作出‘到期我来付款’的正式承诺。",
-    "承兑人": "作出到期付款承诺的人或机构，是票据到期付款的核心责任方。",
-    "银行承兑汇票": "由银行承诺到期付款的商业汇票，信用主要看承兑银行。",
-    "商业承兑汇票": "由企业承诺到期付款的商业汇票，信用主要看承兑企业。",
-    "持票人": "合法持有票据、并有权要求付款的人。",
-    "付款请求权": "持票人到期后，首先向应付款人要求付款的权利。",
-    "追索权": "票据到期未获付款时，持票人可按规则向前手等相关责任人要求偿还。",
-    "背书": "在票据背面签章并交付他人，用来转让票据权利或作担保。",
-    "保证金": "为保证合同或业务能履行而预先存入、冻结的一笔钱。",
-    "保证金台账": "逐笔记录保证金缴存、冻结、变动和余额的明细账本。",
-    "承兑行": "办理并承诺付款的银行；在银行承兑汇票业务中，它承担承兑责任。",
-    "账户行": "为客户或业务开立、管理账户并提供账户服务的银行。",
-    "电子商业汇票": "以电子数据形式签发、流转和兑付的商业汇票，不依赖纸质票面。",
-    "结算账户": "用于收付款、转账、资金清算等结算用途的银行账户。",
-    "清算": "不同账户或不同银行之间把应收应付金额算清，并完成资金划拨的过程。",
-    "账单日": "银行定期汇总本期交易并生成账单的日期。",
-    "还款日": "本期账单应当还款的最后日期；超过后可能产生费用或影响信用。",
-    "最低还款额": "本期至少需要偿还的金额；只还最低额通常不等于免息，也不等于已结清。",
-    "分期付款": "把一笔应付金额拆成多期偿还，通常会涉及手续费或利息。",
-    "授信": "银行根据客户资质核定可使用的信用额度或融资额度。",
-    "普惠金融": "面向小微企业、个体经营者和普通居民等群体提供更可得、负担得起的金融服务。",
-    "贷款资金": "银行发放给借款人、并应按约定用途使用的借款金额。",
-    "自主支付": "贷款资金先发到借款人账户，再由借款人按合同约定自行向交易对手付款。",
-    "受托支付": "借款人提出支付申请后，由银行按合同约定直接把贷款资金付给交易对手。",
-    "抵押": "借款人用房产等财产作担保，但一般仍占有和使用该财产。",
-    "质押": "借款人把权利凭证、存单等交由债权人控制作为担保。",
-    "反洗钱": "金融机构识别、报告和防范利用金融渠道掩饰违法资金来源的工作。",
-    "客户身份识别": "银行核实客户是谁、替谁办业务、资金用途是否合理的基础工作。",
-    "可疑交易": "金额、频率、路径或用途明显异常，可能需要进一步核查和报告的交易。",
-  });
+  // 搜题联想的关键词来源：41 个常见业务术语，联想里只出词和题数。3.13.0 前每个词还带一段解释，
+  // 屋主说不要了，解释正文全部删掉，只留术语名。
+  const SEARCH_KEYWORDS = Object.freeze([
+    "信用报告",
+    "个人信息主体",
+    "公平交易权",
+    "消费者权益保护",
+    "小额账户",
+    "日均余额",
+    "见证服务",
+    "核心银行系统",
+    "特殊账号",
+    "票据贴现",
+    "贴现利息",
+    "商业汇票",
+    "承兑",
+    "承兑人",
+    "银行承兑汇票",
+    "商业承兑汇票",
+    "持票人",
+    "付款请求权",
+    "追索权",
+    "背书",
+    "保证金",
+    "保证金台账",
+    "承兑行",
+    "账户行",
+    "电子商业汇票",
+    "结算账户",
+    "清算",
+    "账单日",
+    "还款日",
+    "最低还款额",
+    "分期付款",
+    "授信",
+    "普惠金融",
+    "贷款资金",
+    "自主支付",
+    "受托支付",
+    "抵押",
+    "质押",
+    "反洗钱",
+    "客户身份识别",
+    "可疑交易",
+  ]);
 
   function normalizeQuestion(question, forcedId = null) {
     const type = QUESTION_TYPES.includes(question?.type) ? question.type : "单选题";
@@ -194,7 +196,7 @@
       options,
       correct,
       ...(subjective ? { answer } : {}),
-      explanation: String(question.explanation || "").trim() || "请结合正确答案理解并记忆本题知识点。",
+      explanation: String(question.explanation || "").trim(),
       ...(question.sourceRow ? { sourceRow: question.sourceRow } : {}),
     };
   }
@@ -688,6 +690,33 @@
     return String(value ?? "").replace(/[&<>"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[char]));
   }
 
+  // 3.13.0 起几处交互动效共用：系统开了「减弱动态效果」时一律瞬间变化。
+  const prefersReducedMotion = () => Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches);
+
+  // 「撑开 / 补位」统一走 FLIP：先量这些元素的旧位置，执行 mutate() 改 DOM，再量新位置，
+  // 用 transform 从旧位置滑回新位置。只动 transform（合成层完成），不逐帧改 width / height。
+  // 返回 mutate() 的返回值；减弱动态效果时只执行 mutate()，不做动画。
+  // 连点时上一轮补位可能还在播：旧位置照「此刻屏幕上的样子」量（含那段位移），量完先撤掉上一轮，
+  // 新位置才量得准；不撤的话新位置里还带着上一轮的位移，会一帧跳一截。
+  const flipAnimations = new WeakMap();
+  function flipMove(elements, mutate, { duration = 240, easing = "cubic-bezier(.2, .8, .2, 1)" } = {}) {
+    const items = [...elements].filter(Boolean);
+    const before = new Map(items.map((element) => [element, element.getBoundingClientRect()]));
+    items.forEach((element) => flipAnimations.get(element)?.cancel());
+    const result = mutate();
+    if (prefersReducedMotion() || typeof Element.prototype.animate !== "function") return result;
+    items.forEach((element) => {
+      if (!element.isConnected) return;
+      const from = before.get(element);
+      const to = element.getBoundingClientRect();
+      const dx = from.left - to.left;
+      const dy = from.top - to.top;
+      if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
+      flipAnimations.set(element, element.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }], { duration, easing }));
+    });
+    return result;
+  }
+
   function icons() {
     if (window.lucide) window.lucide.createIcons({ attrs: { "stroke-width": 1.9 } });
   }
@@ -903,6 +932,10 @@
     };
   }
 
+  // 按压光斑层（3.13.0）：「练习方式」每个分组列表末尾一个，垫在所有行底下，平时 opacity 0、不占版面；
+  // 放在末尾是为了不改变 .mode-button:first-child。怎么动见下面「首页入口行的按压反馈」。
+  const MODE_GLOW = '<span class="mode-glow" aria-hidden="true"></span>';
+
   function renderHome() {
     const stats = aggregate();
     const today = state.daily[localDate()] || { answered: 0, correct: 0 };
@@ -973,10 +1006,11 @@
         <section class="mode-grid list-panel">
           ${modeButton("book-open-check", brushActive || state.brush.completed ? "继续连续刷题" : "开始连续刷题", "按题库顺序练习，自动保存每一步", "startBrush", "", "accent", `${brushIndex + 1} / ${questions.length}`)}
           ${modeButton("book-open", reviewBadge ? "继续自动看题" : "自动看题", "显示答案和解析 · 默认每15秒翻页", "startAutoReview", "", "orange", reviewBadge)}
+          ${MODE_GLOW}
         </section>
         <div class="two-column">
-          <section class="mode-grid list-panel">${typeRows}</section>
-          <section class="mode-grid list-panel">${markRows}</section>
+          <section class="mode-grid list-panel">${typeRows}${MODE_GLOW}</section>
+          <section class="mode-grid list-panel">${markRows}${MODE_GLOW}</section>
         </div>
       </div>`;
     icons();
@@ -1468,7 +1502,8 @@
     icons();
     document.getElementById("review-speed")?.addEventListener("change", changeReviewSpeed);
     document.getElementById("quiz-jump")?.addEventListener("change", jumpToSessionQuestion);
-    document.getElementById("quiz-jump-number")?.addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); jumpToQuestionNumber(); } });
+    // 输入法组字时的回车是选词，不是「跳转」。
+    document.getElementById("quiz-jump-number")?.addEventListener("keydown", (event) => { if (event.isComposing || event.keyCode === 229) return; if (event.key === "Enter") { event.preventDefault(); jumpToQuestionNumber(); } });
     enableQuizSwipe();
     stopQuizTimers();
     scheduleAutoAdvance();
@@ -1769,32 +1804,19 @@
     return `<button class="option ${chosen ? "selected" : ""} ${correct ? "correct" : ""} ${wrong ? "wrong" : ""}" data-action="selectOption" data-index="${index}" type="button" ${mode === "review" || (graded && mode !== "exam") ? "disabled" : ""}><span class="option-key">${optionLetters[index]}</span><span>${escapeHtml(option)}</span>${mark}</button>`;
   }
 
-  function beginnerTerms(question) {
-    const haystack = `${question.stem} ${question.options.join(" ")} ${question.answer || ""} ${question.explanation || ""}`;
-    return Object.entries(BEGINNER_GLOSSARY)
-      .filter(([term]) => haystack.includes(term))
-      .sort(([left], [right]) => right.length - left.length)
-      .slice(0, 3);
+  // 题库自带的解析（去掉开头的【考查点】这类标签）；没有就返回空串，不补一句空话。
+  // 3.13.0 前导入解析为空的题会被存成下面这句占位，读到它也当作没有。
+  const EMPTY_EXPLANATION_FILLER = "请结合正确答案理解并记忆本题知识点。";
+  function sourceExplanation(question) {
+    const text = String(question?.explanation || "").trim();
+    if (!text || text === EMPTY_EXPLANATION_FILLER) return "";
+    return text.replace(/^【[^】]+】/, "").trim();
   }
 
-  function beginnerStudyTip(question) {
-    const answer = questionAnswer(question);
-    if (question.type === "填空题") return "按题干顺序逐空填写，每一空分别核对；内容和位置都要对应。";
-    if (question.type === "简答题") return "先写出你能想到的要点，再对照参考答案补漏。本题按完成作答记录，不自动判断表述是否完全一致。";
-    const hasNegative = /不正确|错误|不包括|除外|不符合|不得|不能/.test(question.stem);
-    const hasNumber = /多少|几次|期限|年|月|日|工作日|比例|金额|数量|上限|下限|费率|余额/.test(question.stem) || /\d/.test(answer);
-    if (question.type === "多选题") return "把每个选项当成一条独立的小判断：只有同时符合题干条件的选项才选。多选题最怕凭感觉少选或多选，先逐项核对再组合答案。";
-    if (question.type === "判断题") return "判断题不要只看一句话顺不顺。把它拆成“谁在什么条件下做什么事、结果是什么”，其中任何一处被偷换，整句话就可能是错的。";
-    if (hasNegative) return "先圈出题干里的“不正确、错误、除外”等反向词。题目要找的是不符合规则的那一项，避免把正确说法误选进去。";
-    if (hasNumber) return "这是口径题：数字一定要和单位、时间点或适用条件一起记，例如“多少次/哪个期限/什么余额”，只记数字很容易混淆。";
-    return `把题目翻成白话：在题干给定的业务场景下，应该记住的结论就是“${answer}”。复习时优先抓住主体、业务动作和限制条件。`;
-  }
-
-  function renderLearningExplanation(question) {
-    const terms = beginnerTerms(question);
-    const source = String(question.explanation || "本题请结合正确答案记忆题干中的业务规则。")
-      .replace(/^【[^】]+】/, "").trim();
-    return `<div class="beginner-explanation"><strong><i data-lucide="graduation-cap"></i>新手先这样理解</strong><p>${escapeHtml(beginnerStudyTip(question))}</p><div class="memory-anchor"><strong>速记结论：</strong>${escapeHtml(questionAnswer(question))}</div></div>${terms.length ? `<details class="term-guide" open><summary><span><i data-lucide="book-open-text"></i>专有名词小贴士（${terms.length}个）</span><i data-lucide="chevron-down"></i></summary><dl>${terms.map(([term, definition]) => `<div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(definition)}</dd></div>`).join("")}</dl></details>` : ""}<details class="source-explanation"><summary>答题依据与原解析</summary><p>${escapeHtml(source)}</p></details>`;
+  // 答题反馈、自动看题用：有原解析才出这一块。
+  function renderSourceExplanation(question) {
+    const text = sourceExplanation(question);
+    return text ? `<div class="explanation"><strong><i data-lucide="lightbulb"></i>答题依据与原解析</strong><p>${escapeHtml(text)}</p></div>` : "";
   }
 
   // fastNextLabel 只在背题快刷下有值：思考做题传空串，反馈块的结构与原来完全一致。
@@ -1802,12 +1824,12 @@
     const answer = questionAnswer(question);
     const subjectiveLabel = question.type === "简答题" ? "已提交，请对照参考答案检查要点" : (isCorrect ? "关键词匹配" : "请对照参考答案补漏");
     const resultLabel = isSubjectiveQuestion(question) ? subjectiveLabel : (isCorrect ? "回答正确" : "回答错误");
-    return `<div class="feedback ${isCorrect ? "good" : "bad"}"><div class="feedback-top"><div><strong>${resultLabel}</strong><span>参考答案：${escapeHtml(answer)}</span></div>${record.streak >= 3 && (record.wrong || record.hard) && !record.mastered ? '<button class="button secondary" data-action="markMastered" type="button"><i data-lucide="badge-check"></i>标记已掌握</button>' : ""}${fastNextLabel ? `<button class="button primary fast-next" data-action="next" type="button">${fastNextLabel}<i data-lucide="chevron-right"></i></button>` : ""}</div><div class="explanation"><strong><i data-lucide="lightbulb"></i>学习讲解</strong>${renderLearningExplanation(question)}</div></div>`;
+    return `<div class="feedback ${isCorrect ? "good" : "bad"}"><div class="feedback-top"><div><strong>${resultLabel}</strong><span>参考答案：${escapeHtml(answer)}</span></div>${record.streak >= 3 && (record.wrong || record.hard) && !record.mastered ? '<button class="button secondary" data-action="markMastered" type="button"><i data-lucide="badge-check"></i>标记已掌握</button>' : ""}${fastNextLabel ? `<button class="button primary fast-next" data-action="next" type="button">${fastNextLabel}<i data-lucide="chevron-right"></i></button>` : ""}</div>${renderSourceExplanation(question)}</div>`;
   }
 
   function renderReviewFeedback(question) {
     const answer = questionAnswer(question);
-    return `<div class="feedback review-feedback"><div class="feedback-top"><div><strong>正确答案</strong><span>${escapeHtml(answer)}</span></div></div><div class="explanation"><strong><i data-lucide="lightbulb"></i>学习讲解</strong>${renderLearningExplanation(question)}</div></div>`;
+    return `<div class="feedback review-feedback"><div class="feedback-top"><div><strong>正确答案</strong><span>${escapeHtml(answer)}</span></div></div>${renderSourceExplanation(question)}</div>`;
   }
 
   function scheduleAutoAdvance() {
@@ -2083,7 +2105,7 @@
         ? (String(item.answer || "").trim() || "未作答")
         : (selected.length ? selected.map((answer) => `${optionLetters[answer] || "?"}. ${question.options[answer] || ""}`).join("；") : "未作答");
     const optionList = isSubjectiveQuestion(question) ? "" : `<ol class="search-options">${question.options.map((option, optionIndex) => `<li class="${question.correct.includes(optionIndex) ? "is-correct" : ""}"><b>${optionLetters[optionIndex]}.</b> ${escapeHtml(option)}</li>`).join("")}</ol>`;
-    return `<details class="summary-wrong-item" ${index === 0 ? "open" : ""}><summary><span><strong>第${index + 1}道错题</strong><small>${escapeHtml(context.meta.name)} · ${escapeHtml(question.type)}</small></span><i data-lucide="chevron-down"></i></summary><div class="summary-wrong-body"><h3>${escapeHtml(question.stem)}</h3>${optionList}<div class="summary-answer wrong"><strong>你的答案：</strong>${escapeHtml(yourAnswer)}</div><div class="summary-answer correct"><strong>参考答案：</strong>${escapeHtml(questionAnswer(question))}</div><div class="summary-explanation"><strong>解析：</strong>${renderLearningExplanation(question)}</div></div></details>`;
+    return `<details class="summary-wrong-item" ${index === 0 ? "open" : ""}><summary><span><strong>第${index + 1}道错题</strong><small>${escapeHtml(context.meta.name)} · ${escapeHtml(question.type)}</small></span><i data-lucide="chevron-down"></i></summary><div class="summary-wrong-body"><h3>${escapeHtml(question.stem)}</h3>${optionList}<div class="summary-answer wrong"><strong>你的答案：</strong>${escapeHtml(yourAnswer)}</div><div class="summary-answer correct"><strong>参考答案：</strong>${escapeHtml(questionAnswer(question))}</div>${sourceExplanation(question) ? `<div class="summary-explanation"><strong>答题依据与原解析：</strong>${escapeHtml(sourceExplanation(question))}</div>` : ""}</div></details>`;
   }
 
   function renderLibrary() {
@@ -2108,16 +2130,405 @@
       const available = getBankContext(bank.id)?.questions.length || 0;
       return `<option value="${bank.id}" ${bank.id === currentBank.id ? "selected" : ""}>${escapeHtml(bank.name)}（${available}道）</option>`;
     }).join("");
+    // 标签与联想只活在这一页：每次进搜题页从空白开始，和输入框本身一样。
+    questionSearchTags = [];
+    questionSearchShown = false;
+    questionSuggest = { items: [], active: -1, composing: false };
+    clearTimeout(questionSearchRefreshHandle);
+    glossaryCountCache.clear();
     view.innerHTML = `
       <div class="page-header"><div>${pageTitle("搜题")}<p>输入题干、选项或解析中的关键词，系统会直接展示有关题目和正确答案；搜索不会影响做题记录。</p></div></div>
-      <section class="panel">
-        <div class="search-form"><div class="search-box"><i data-lucide="search"></i><input id="question-search-keyword" type="search" placeholder="例如：票据贴现、结算、保证金" autocomplete="off"></div><select id="question-search-bank" aria-label="搜索范围"><option value="all">全部题库</option>${bankChoices}</select><select id="question-search-type" aria-label="题型筛选"><option value="all">全部题型</option>${QUESTION_TYPES.map((type) => `<option value="${type}">${type}</option>`).join("")}</select><button class="button primary" data-action="searchQuestions" type="button"><i data-lucide="search"></i>搜题</button></div>
-        <small class="field-help">支持多个关键词；每个关键词都需出现在题干、选项或解析中。记不清原文时可以只打个大概，允许几个错字，近似结果会排在完全匹配之后。</small>
+      <section class="panel search-panel">
+        <div class="search-form"><div class="search-box question-search-box" id="question-search-box"><i data-lucide="search"></i><input id="question-search-keyword" type="search" placeholder="例如：票据贴现、结算、保证金" autocomplete="off" aria-label="题目关键词" role="combobox" aria-expanded="false" aria-controls="question-search-suggest" aria-autocomplete="list"><div class="search-suggest" id="question-search-suggest" role="listbox" aria-label="搜索联想" hidden></div></div><select id="question-search-bank" aria-label="搜索范围"><option value="all">全部题库</option>${bankChoices}</select><select id="question-search-type" aria-label="题型筛选"><option value="all">全部题型</option>${QUESTION_TYPES.map((type) => `<option value="${type}">${type}</option>`).join("")}</select><button class="button primary" data-action="searchQuestions" type="button"><i data-lucide="search"></i>搜题</button></div>
+        <small class="field-help">支持多个关键词；每个关键词都需出现在题干、选项或解析中。输入时会联想题库名和常用术语，选中后变成可删除的标签。记不清原文时可以只打个大概，允许几个错字，近似结果会排在完全匹配之后。</small>
       </section>
-      <div id="question-search-results" class="question-search-results"><div class="list-panel empty-state"><i data-lucide="search"></i><div>输入关键词后开始搜题</div></div></div>`;
-    document.getElementById("question-search-keyword").addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); renderQuestionSearchResults(); } });
+      <div id="question-search-results" class="question-search-results">${QUESTION_SEARCH_EMPTY}</div>`;
+    bindQuestionSearchBox();
     icons();
   }
+
+  const QUESTION_SEARCH_EMPTY = '<div class="list-panel empty-state"><i data-lucide="search"></i><div>输入关键词后开始搜题</div></div>';
+
+  // ── 搜题框：输入联想 + 可删除的标签（3.13.0） ─────────────────────────────
+  // 标签两种：关键词标签（选常用术语得到，和手打的词一样参与「每个都要出现」的搜索）；
+  // 题库标签（选题库名得到，最多一个，和 #question-search-bank 下拉双向同步）。
+  // 联想只用已有的两样：题库名（全名或短名包含输入）和常用术语表 SEARCH_KEYWORDS（术语包含输入、且当前范围里至少一道题出现）。
+  let questionSearchTags = [];
+  let questionSearchShown = false;
+  let questionSuggest = { items: [], active: -1, composing: false };
+  let questionSearchRefreshHandle = null;
+  let questionSearchHoldToken = 0;
+  const QUESTION_SUGGEST_LIMIT = 8;
+  const questionHaystackCache = new WeakMap();
+  const glossaryCountCache = new Map();
+  // 标签里的两个小图标直接内联（lucide 的 x 与 library），不为它们整页重跑一遍 createIcons。
+  const TAG_ICON_X = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+  const TAG_ICON_BANK = '<svg class="search-tag-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>';
+  // 输入法组字时的按键不算数（回车是选词、上下键是翻候选）：keydown 一律先判这个。
+  const isImeKey = (event) => event.isComposing || event.keyCode === 229;
+
+  function questionHaystack(question) {
+    let haystack = questionHaystackCache.get(question);
+    if (haystack === undefined) {
+      haystack = `${question.stem} ${question.options.join(" ")} ${question.answer || ""} ${question.explanation || ""}`.toLocaleLowerCase();
+      questionHaystackCache.set(question, haystack);
+    }
+    return haystack;
+  }
+
+  // 当前搜索范围：题库下拉 + 题型下拉。搜题和术语题数用同一份口径。
+  function questionSearchScope() {
+    const bankId = document.getElementById("question-search-bank")?.value || "all";
+    const type = document.getElementById("question-search-type")?.value || "all";
+    const contexts = bankId === "all" ? bankRegistry.banks.map((bank) => getBankContext(bank.id)).filter(Boolean) : [getBankContext(bankId)].filter(Boolean);
+    return { key: `${bankId}|${type}`, type, contexts };
+  }
+
+  function keywordQuestionCount(term, scope) {
+    const key = `${scope.key}|${term}`;
+    if (glossaryCountCache.has(key)) return glossaryCountCache.get(key);
+    const needle = term.toLocaleLowerCase();
+    let count = 0;
+    scope.contexts.forEach((context) => context.questions.forEach((question) => {
+      if ((scope.type === "all" || question.type === scope.type) && questionHaystack(question).includes(needle)) count += 1;
+    }));
+    glossaryCountCache.set(key, count);
+    return count;
+  }
+
+  // 关键词 = 标签里的关键词 + 输入框里剩下的文字（按空格拆）。
+  function questionSearchKeywords() {
+    const typed = (document.getElementById("question-search-keyword")?.value || "").trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    const tagged = questionSearchTags.filter((tag) => tag.kind === "keyword").map((tag) => tag.value.toLocaleLowerCase());
+    return [...new Set([...tagged, ...typed])];
+  }
+
+  // 光标所在的那一段（两边到空格为止）就是「正在打的文字」：联想按它匹配，选中后删掉的也是它。
+  function questionSearchToken(input) {
+    const value = input.value;
+    const caret = input.selectionStart ?? value.length;
+    const start = caret - value.slice(0, caret).match(/\S*$/)[0].length;
+    const end = caret + value.slice(caret).match(/^\S*/)[0].length;
+    return { text: value.slice(start, end), start, end };
+  }
+
+  function questionSuggestions(token) {
+    const needle = token.trim().toLocaleLowerCase();
+    if (!needle) return [];
+    const bankTag = questionSearchTags.find((tag) => tag.kind === "bank");
+    const banks = bankRegistry.banks
+      .filter((bank) => bank.id !== bankTag?.value)
+      .map((bank) => ({ bank, short: bankChipMeta(bank).short }))
+      .filter(({ bank, short }) => String(bank.name).toLocaleLowerCase().includes(needle) || short.toLocaleLowerCase().includes(needle))
+      .slice(0, QUESTION_SUGGEST_LIMIT)
+      .map(({ bank, short }) => ({ kind: "bank", value: bank.id, label: String(bank.name), short, count: getBankContext(bank.id)?.questions.length || 0 }));
+    if (banks.length >= QUESTION_SUGGEST_LIMIT) return banks;
+    const taken = new Set(questionSearchTags.filter((tag) => tag.kind === "keyword").map((tag) => tag.value));
+    const scope = questionSearchScope();
+    const terms = SEARCH_KEYWORDS
+      .filter((term) => !taken.has(term) && term.toLocaleLowerCase().includes(needle))
+      .map((term) => ({ kind: "keyword", value: term, label: term, count: keywordQuestionCount(term, scope) }))
+      .filter((item) => item.count > 0)
+      // 以输入开头的排前面，其次题多的在前。
+      .sort((left, right) => (Number(right.label.startsWith(needle)) - Number(left.label.startsWith(needle))) || right.count - left.count);
+    return [...banks, ...terms.slice(0, QUESTION_SUGGEST_LIMIT - banks.length)];
+  }
+
+  function highlightMatch(text, token) {
+    const needle = token.trim().toLocaleLowerCase();
+    const index = needle ? text.toLocaleLowerCase().indexOf(needle) : -1;
+    if (index < 0) return escapeHtml(text);
+    return `${escapeHtml(text.slice(0, index))}<mark>${escapeHtml(text.slice(index, index + needle.length))}</mark>${escapeHtml(text.slice(index + needle.length))}`;
+  }
+
+  function questionSuggestOpen() {
+    const list = document.getElementById("question-search-suggest");
+    return Boolean(list && !list.hidden);
+  }
+
+  function closeQuestionSuggest() {
+    const input = document.getElementById("question-search-keyword");
+    const list = document.getElementById("question-search-suggest");
+    questionSuggest.items = [];
+    questionSuggest.active = -1;
+    if (list) { list.hidden = true; list.innerHTML = ""; }
+    if (input) { input.setAttribute("aria-expanded", "false"); input.removeAttribute("aria-activedescendant"); }
+  }
+
+  function updateQuestionSuggest({ highlightFirst = false } = {}) {
+    const input = document.getElementById("question-search-keyword");
+    const list = document.getElementById("question-search-suggest");
+    if (!input || !list || questionSuggest.composing) return;
+    const token = questionSearchToken(input).text;
+    const items = questionSuggestions(token);
+    if (!items.length) return closeQuestionSuggest();
+    const wasOpen = !list.hidden;
+    questionSuggest.items = items;
+    questionSuggest.active = highlightFirst ? 0 : -1;
+    const group = (kind, label) => {
+      const members = items.map((item, index) => ({ item, index })).filter(({ item }) => item.kind === kind);
+      if (!members.length) return "";
+      return `<div class="search-suggest-group" role="group" aria-label="${label}"><div class="search-suggest-label" aria-hidden="true">${label}</div>${members.map(({ item, index }) => `<div class="search-suggest-option" role="option" id="question-search-option-${index}" data-index="${index}" aria-selected="false"${item.kind === "bank" ? ` title="${escapeHtml(item.label)}"` : ""}><span class="search-suggest-text">${highlightMatch(item.label, token)}</span><span class="search-suggest-count">${item.count} 题</span></div>`).join("")}</div>`;
+    };
+    list.innerHTML = group("bank", "题库") + group("keyword", "常用术语");
+    list.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+    setQuestionSuggestActive(questionSuggest.active);
+    positionQuestionSuggest();
+    if (!wasOpen && !prefersReducedMotion() && typeof list.animate === "function") {
+      list.animate([{ opacity: 0, transform: `translateY(${-4}px) scale(.98)` }, { opacity: 1, transform: "none" }], { duration: 140, easing: "cubic-bezier(.2, .8, .2, 1)" });
+    }
+  }
+
+  function setQuestionSuggestActive(index) {
+    const input = document.getElementById("question-search-keyword");
+    const list = document.getElementById("question-search-suggest");
+    if (!input || !list) return;
+    questionSuggest.active = index;
+    list.querySelectorAll("[role='option']").forEach((option) => {
+      const selected = Number(option.dataset.index) === index;
+      option.setAttribute("aria-selected", selected ? "true" : "false");
+      option.classList.toggle("is-active", selected);
+    });
+    if (index >= 0) input.setAttribute("aria-activedescendant", `question-search-option-${index}`);
+    else input.removeAttribute("aria-activedescendant");
+  }
+
+  // 浮层在搜索框正下方，左端对齐到输入框里光标的横坐标：用 canvas 量光标前那段文字的宽度。
+  // 不超出搜索框右缘和屏幕右缘；手机（≤600）浮层与搜索框同宽，直接贴左。
+  function positionQuestionSuggest() {
+    const box = document.getElementById("question-search-box");
+    const input = document.getElementById("question-search-keyword");
+    const list = document.getElementById("question-search-suggest");
+    if (!box || !input || !list || list.hidden) return;
+    if (window.matchMedia?.("(max-width: 600px)")?.matches) { list.style.left = "0px"; return; }
+    const style = getComputedStyle(input);
+    const context = (positionQuestionSuggest.canvas ||= document.createElement("canvas")).getContext("2d");
+    context.font = style.font || `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const before = input.value.slice(0, input.selectionStart ?? input.value.length);
+    const inputRect = input.getBoundingClientRect();
+    const boxRect = box.getBoundingClientRect();
+    const caretX = inputRect.left + parseFloat(style.borderLeftWidth || 0) + parseFloat(style.paddingLeft || 0) + context.measureText(before).width - input.scrollLeft;
+    const width = list.offsetWidth;
+    const maxLeft = Math.min(box.clientWidth - width, document.documentElement.clientWidth - 8 - boxRect.left - width);
+    list.style.left = `${Math.round(Math.max(0, Math.min(caretX - boxRect.left, maxLeft)))}px`;
+  }
+
+  function questionSearchTagHtml(tag) {
+    const bank = tag.kind === "bank";
+    const label = bank ? `删除题库筛选：${tag.label}` : `删除关键词：${tag.label}`;
+    return `<span class="search-tag${bank ? " is-bank" : ""}" data-kind="${tag.kind}" data-value="${escapeHtml(tag.value)}"><span class="search-tag-bg" aria-hidden="true"></span><span class="search-tag-dot" aria-hidden="true"></span>${bank ? TAG_ICON_BANK : ""}<span class="search-tag-text"${bank ? ` title="${escapeHtml(tag.title || tag.label)}"` : ""}>${escapeHtml(tag.label)}</span><button class="search-tag-remove" type="button" aria-label="${escapeHtml(label)}">${TAG_ICON_X}</button></span>`;
+  }
+
+  function createQuestionSearchTag(tag) {
+    const holder = document.createElement("span");
+    holder.innerHTML = questionSearchTagHtml(tag);
+    return holder.firstElementChild;
+  }
+
+  // 在 box 里 mutate 之后，排在 anchor 后面的标签和输入框用 flipMove 依次补位（每个晚 24ms 起步，最多晚 96ms）。
+  // 行数变少时，搜索框先保持原高度（一次性写 min-height，不逐帧改），补位滑完再一次性放开、直接收缩。
+  function reflowQuestionSearchBox(box, followers, mutate) {
+    const heightBefore = box.offsetHeight;
+    const previous = new Map(followers.map((element) => [element, new Set(element.getAnimations?.() || [])]));
+    flipMove(followers, mutate, { duration: 240 });
+    let delay = 0;
+    if (!prefersReducedMotion()) {
+      followers.forEach((element) => {
+        const fresh = (element.getAnimations?.() || []).filter((animation) => !previous.get(element).has(animation));
+        if (!fresh.length) return;
+        delay = Math.min(delay + 24, 120);
+        fresh.forEach((animation) => animation.effect?.updateTiming({ delay: delay - 24, fill: "backwards" }));
+      });
+    }
+    box.style.minHeight = "";
+    const token = ++questionSearchHoldToken;
+    if (!prefersReducedMotion() && box.offsetHeight < heightBefore) {
+      box.style.minHeight = `${heightBefore}px`;
+      setTimeout(() => { if (token === questionSearchHoldToken) box.style.minHeight = ""; }, 240 + delay);
+    }
+    return 240 + delay;
+  }
+
+  function addQuestionSearchTag(tag) {
+    const box = document.getElementById("question-search-box");
+    const input = document.getElementById("question-search-keyword");
+    if (!box || !input) return;
+    if (tag.kind === "bank") {
+      const bankSelect = document.getElementById("question-search-bank");
+      if (bankSelect) bankSelect.value = tag.value;
+      const existing = questionSearchTags.find((item) => item.kind === "bank");
+      if (existing) {
+        // 最多一个题库标签：再选别的题库就原地替换，后面的标签随宽度变化补位。
+        Object.assign(existing, tag);
+        const element = box.querySelector(".search-tag[data-kind='bank']:not(.is-removing)");
+        if (element) {
+          const followers = [...box.querySelectorAll(".search-tag, #question-search-keyword")].filter((item) => element.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING);
+          const settle = reflowQuestionSearchBox(box, followers, () => element.replaceWith(createQuestionSearchTag(existing)));
+          return questionSearchTagsChanged(prefersReducedMotion() ? 0 : settle);
+        }
+        questionSearchTags = questionSearchTags.filter((item) => item !== existing);
+      }
+    }
+    questionSearchTags.push(tag);
+    const element = createQuestionSearchTag(tag);
+    const settle = reflowQuestionSearchBox(box, [input], () => box.insertBefore(element, input));
+    if (!prefersReducedMotion() && typeof element.animate === "function") {
+      element.animate([{ opacity: 0, transform: "scale(.6)" }, { opacity: 1, transform: "none" }], { duration: 180, easing: "cubic-bezier(.2, .8, .2, 1)" });
+    }
+    questionSearchTagsChanged(prefersReducedMotion() ? 0 : settle);
+  }
+
+  // 点叉号 / 空输入框退格 / 下拉改回「全部题库」：标签先缩成小圆点再移除，后面的标签依次补位。
+  function removeQuestionSearchTag(element, { fromSelect = false } = {}) {
+    const box = document.getElementById("question-search-box");
+    const input = document.getElementById("question-search-keyword");
+    if (!box || !input || !element || element.classList.contains("is-removing")) return;
+    const { kind, value } = element.dataset;
+    questionSearchTags = questionSearchTags.filter((tag) => !(tag.kind === kind && tag.value === value));
+    if (kind === "bank" && !fromSelect) {
+      const bankSelect = document.getElementById("question-search-bank");
+      if (bankSelect) bankSelect.value = "all";
+    }
+    const hadFocus = element.contains(document.activeElement);
+    element.classList.add("is-removing");
+    element.setAttribute("aria-hidden", "true");
+    const button = element.querySelector(".search-tag-remove");
+    if (button) { button.disabled = true; button.tabIndex = -1; }
+    if (hadFocus) input.focus();
+    // 条件立刻变（联想列表马上按新条件更新）；结果区等圆点和补位走完再重排。
+    clearTimeout(questionSearchRefreshHandle);
+    if (questionSuggestOpen()) updateQuestionSuggest();
+    const finish = () => {
+      if (!element.isConnected) return;
+      const followers = [...box.querySelectorAll(".search-tag, #question-search-keyword")].filter((item) => element.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING);
+      const settle = reflowQuestionSearchBox(box, followers, () => element.remove());
+      questionSearchTagsChanged(prefersReducedMotion() ? 0 : settle, { suggest: false });
+    };
+    if (prefersReducedMotion() || typeof element.animate !== "function") return finish();
+    // 缩成圆点：文字和叉号先淡出，底色（只动 transform）缩到一个圆点大小并淡掉，同时中心的圆点淡入、再缩没。
+    const width = element.offsetWidth || 1;
+    const height = element.offsetHeight || 1;
+    const dot = element.querySelector(".search-tag-dot");
+    const dotSize = dot?.offsetWidth || 8;
+    const easing = "cubic-bezier(.4, 0, .2, 1)";
+    element.querySelectorAll(".search-tag-text, .search-tag-remove, .search-tag-icon").forEach((part) => part.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 100, easing, fill: "forwards" }));
+    element.querySelector(".search-tag-bg")?.animate([{ transform: "none", opacity: 1 }, { transform: `scale(${dotSize / width}, ${dotSize / height})`, opacity: 0 }], { duration: 170, easing, fill: "forwards" });
+    const last = dot?.animate([{ opacity: 0, transform: "scale(1)" }, { opacity: 1, transform: "scale(1)", offset: .55 }, { opacity: 0, transform: "scale(.2)" }], { duration: 240, easing, fill: "forwards" });
+    if (last) last.finished.then(finish, finish);
+    else finish();
+  }
+
+  function questionSearchTagsChanged(delay, { suggest = true } = {}) {
+    if (suggest && questionSuggestOpen()) updateQuestionSuggest();
+    // 页面上已经有搜索结果才自动重搜；等标签动画走完再重排结果，免得几十张卡片的重排压在补位动画上。
+    if (!questionSearchShown) return;
+    clearTimeout(questionSearchRefreshHandle);
+    questionSearchRefreshHandle = setTimeout(() => renderQuestionSearchResults({ auto: true }), delay);
+  }
+
+  function chooseQuestionSuggestion(index) {
+    const item = questionSuggest.items[index];
+    const input = document.getElementById("question-search-keyword");
+    if (!item || !input) return;
+    // 删掉正在打的那一段，左右两边剩下的文字之间只留一个空格。
+    const { start, end } = questionSearchToken(input);
+    const left = input.value.slice(0, start).replace(/\s+$/, "");
+    const right = input.value.slice(end).replace(/^\s+/, "");
+    input.value = left && right ? `${left} ${right}` : left || right;
+    const caret = left ? left.length + (right ? 1 : 0) : 0;
+    closeQuestionSuggest();
+    input.focus();
+    input.setSelectionRange(caret, caret);
+    addQuestionSearchTag(item.kind === "bank" ? { kind: "bank", value: item.value, label: item.short, title: item.label } : { kind: "keyword", value: item.value, label: item.label });
+  }
+
+  function bindQuestionSearchBox() {
+    const box = document.getElementById("question-search-box");
+    const input = document.getElementById("question-search-keyword");
+    const list = document.getElementById("question-search-suggest");
+    const bankSelect = document.getElementById("question-search-bank");
+    const typeSelect = document.getElementById("question-search-type");
+    if (!box || !input || !list) return;
+    input.addEventListener("keydown", (event) => {
+      if (isImeKey(event)) return;
+      const open = questionSuggestOpen();
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        // 上下键在列表里移动高亮，首尾循环；列表收着时按 ↓ 打开并高亮第一项。
+        if (!open) {
+          if (event.key !== "ArrowDown") return;
+          updateQuestionSuggest({ highlightFirst: true });
+          if (questionSuggestOpen()) event.preventDefault();
+          return;
+        }
+        event.preventDefault();
+        const count = questionSuggest.items.length;
+        const step = event.key === "ArrowDown" ? 1 : -1;
+        const current = questionSuggest.active;
+        setQuestionSuggestActive(current < 0 ? (step > 0 ? 0 : count - 1) : (current + step + count) % count);
+        document.getElementById(`question-search-option-${questionSuggest.active}`)?.scrollIntoView({ block: "nearest" });
+        return;
+      }
+      if (event.key === "Enter") {
+        event.preventDefault();
+        // 有高亮项时回车选中它；没有高亮项时回车照旧执行搜索。
+        if (open && questionSuggest.active >= 0) return chooseQuestionSuggestion(questionSuggest.active);
+        closeQuestionSuggest();
+        renderQuestionSearchResults();
+        return;
+      }
+      if (event.key === "Escape") {
+        // 收起浮层；再按一次也不做别的（也不让 type=search 原生的 Esc 清空输入框）。
+        event.preventDefault();
+        if (open) closeQuestionSuggest();
+        return;
+      }
+      if (event.key === "Backspace" && !input.value) {
+        const tags = [...box.querySelectorAll(".search-tag:not(.is-removing)")];
+        if (!tags.length) return;
+        event.preventDefault();
+        removeQuestionSearchTag(tags[tags.length - 1]);
+      }
+    });
+    input.addEventListener("input", (event) => {
+      if (event.isComposing || questionSuggest.composing) return;
+      updateQuestionSuggest();
+    });
+    // 输入法组字期间列表不跟着变，组完（compositionend）立刻按最终文字更新一次。
+    input.addEventListener("compositionstart", () => { questionSuggest.composing = true; });
+    input.addEventListener("compositionend", () => { questionSuggest.composing = false; updateQuestionSuggest(); });
+    input.addEventListener("blur", closeQuestionSuggest);
+    input.addEventListener("click", positionQuestionSuggest);
+    input.addEventListener("keyup", (event) => { if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) positionQuestionSuggest(); });
+    // 按下时阻止默认，输入框不失焦（浮层不会先被 blur 收掉）；点完再选中。
+    list.addEventListener("mousedown", (event) => event.preventDefault());
+    list.addEventListener("click", (event) => {
+      const option = event.target.closest("[role='option']");
+      if (option) chooseQuestionSuggestion(Number(option.dataset.index));
+    });
+    // 点搜索框里的空白或标签文字等于点输入框；点叉号不抢焦点（手机上不会因此弹出或收起键盘）。
+    box.addEventListener("mousedown", (event) => {
+      if (event.target === input || list.contains(event.target)) return;
+      event.preventDefault();
+      if (!event.target.closest(".search-tag-remove")) input.focus();
+    });
+    box.addEventListener("click", (event) => {
+      const button = event.target.closest(".search-tag-remove");
+      if (button) removeQuestionSearchTag(button.closest(".search-tag"));
+    });
+    // 下拉 → 标签：已有题库标签时，改成别的题库就换、改回「全部题库」就删；没有题库标签时照旧只改下拉。
+    bankSelect?.addEventListener("change", () => {
+      const tag = questionSearchTags.find((item) => item.kind === "bank");
+      if (!tag) return questionSuggestOpen() && updateQuestionSuggest();
+      if (bankSelect.value === "all") return removeQuestionSearchTag(box.querySelector(".search-tag[data-kind='bank']:not(.is-removing)"), { fromSelect: true });
+      const bank = bankRegistry.banks.find((item) => item.id === bankSelect.value);
+      if (bank && bank.id !== tag.value) addQuestionSearchTag({ kind: "bank", value: bank.id, label: bankChipMeta(bank).short, title: String(bank.name) });
+    });
+    typeSelect?.addEventListener("change", () => { if (questionSuggestOpen()) updateQuestionSuggest(); });
+  }
+
+  // 窗口宽度变了（转屏、拖窗口）浮层跟着光标重新对齐；浮层收着时 positionQuestionSuggest 直接返回。
+  window.addEventListener("resize", () => positionQuestionSuggest());
 
   function sourceQuestionByNumber(bankId, number) {
     const definition = builtInBankMap.get(bankId);
@@ -2198,20 +2609,26 @@
     return false;
   }
 
-  function renderQuestionSearchResults() {
+  // auto：标签增删触发的自动重搜。那时关键词可能已经删光，就回到初始的空状态，不弹「请输入题目关键词」。
+  function renderQuestionSearchResults({ auto = false } = {}) {
     const keywordInput = document.getElementById("question-search-keyword");
     const container = document.getElementById("question-search-results");
     if (!keywordInput || !container) return;
-    const keywords = keywordInput.value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-    if (!keywords.length) return showToast("请输入题目关键词");
-    const bankId = document.getElementById("question-search-bank").value;
-    const type = document.getElementById("question-search-type").value;
-    const contexts = bankId === "all" ? bankRegistry.banks.map((bank) => getBankContext(bank.id)).filter(Boolean) : [getBankContext(bankId)].filter(Boolean);
+    clearTimeout(questionSearchRefreshHandle);
+    const keywords = questionSearchKeywords();
+    if (!keywords.length) {
+      if (!auto) return showToast("请输入题目关键词");
+      questionSearchShown = false;
+      container.innerHTML = QUESTION_SEARCH_EMPTY;
+      return icons();
+    }
+    const { type, contexts } = questionSearchScope();
     const tolerances = keywords.map(searchTolerance);
+    questionSearchShown = true;
     const candidates = contexts.flatMap((context) => context.questions.map((question) => ({ context, question })))
       .filter(({ question }) => type === "all" || question.type === type)
       .map(({ context, question }) => {
-        const haystack = `${question.stem} ${question.options.join(" ")} ${question.answer || ""} ${question.explanation || ""}`.toLocaleLowerCase();
+        const haystack = questionHaystack(question);
         const exact = keywords.every((keyword) => haystack.includes(keyword));
         if (exact) return { context, question, exact: true };
         // 精确匹配不到时才退回模糊匹配，常见情况不受影响。
@@ -2225,7 +2642,7 @@
       container.innerHTML = '<div class="list-panel empty-state"><i data-lucide="search-x"></i><div>没有找到有关题目，请换一个更短或更准确的关键词</div></div>';
       return icons();
     }
-    container.innerHTML = `<p class="search-result-count">找到${results.length}${results.length === 60 ? "+" : ""}道有关题目，答案已直接展开。${approximate ? `其中${approximate}道是近似匹配，已排在完全匹配之后。` : ""}</p>${results.map(({ context, question, exact }) => `<article class="search-question-card"><div class="tags"><span class="tag type">${question.type}</span>${exact ? "" : '<span class="tag approximate">近似匹配</span>'}<span class="tag">题号${question.number || "-"}</span><span class="tag bank-source">题库：${escapeHtml(context.meta.name)}</span></div><h2>${escapeHtml(question.stem)}</h2><ol class="search-options">${question.options.map((option, index) => `<li class="${question.correct.includes(index) ? "is-correct" : ""}"><b>${optionLetters[index]}.</b> ${escapeHtml(option)}</li>`).join("")}</ol><div class="search-answer"><strong>正确答案：</strong>${escapeHtml(questionAnswer(question))}</div><div class="search-explanation"><strong>新手讲解：</strong>${renderLearningExplanation(question)}</div><div class="search-card-actions"><button class="button secondary" data-action="practiceSearchQuestion" data-bank-id="${escapeHtml(context.meta.id)}" data-id="${escapeHtml(question.id)}" type="button"><i data-lucide="play"></i>练这道题</button></div></article>`).join("")}`;
+    container.innerHTML = `<p class="search-result-count">找到${results.length}${results.length === 60 ? "+" : ""}道有关题目，答案已直接展开。${approximate ? `其中${approximate}道是近似匹配，已排在完全匹配之后。` : ""}</p>${results.map(({ context, question, exact }) => `<article class="search-question-card"><div class="tags"><span class="tag type">${question.type}</span>${exact ? "" : '<span class="tag approximate">近似匹配</span>'}<span class="tag">题号${question.number || "-"}</span><span class="tag bank-source">题库：${escapeHtml(context.meta.name)}</span></div><h2>${escapeHtml(question.stem)}</h2><ol class="search-options">${question.options.map((option, index) => `<li class="${question.correct.includes(index) ? "is-correct" : ""}"><b>${optionLetters[index]}.</b> ${escapeHtml(option)}</li>`).join("")}</ol><div class="search-answer"><strong>正确答案：</strong>${escapeHtml(questionAnswer(question))}</div><div class="search-card-actions"><button class="button secondary" data-action="practiceSearchQuestion" data-bank-id="${escapeHtml(context.meta.id)}" data-id="${escapeHtml(question.id)}" type="button"><i data-lucide="play"></i>练这道题</button></div></article>`).join("")}`;
     icons();
   }
 
@@ -2893,7 +3310,7 @@
         <div class="data-section"><h2>连续刷题进度</h2><p>当前将从第${Math.min(Math.max(0, Number(state.brush.index) || 0), questions.length - 1) + 1}题继续，已累计完成${state.brush.completed}题。重置只影响连续刷题位置，不会删除错题、收藏或答题统计。</p><button class="button secondary" data-action="resetBrush"><i data-lucide="rotate-ccw"></i>从第1题重新开始</button></div>
         <div class="data-section"><h2>每日目标</h2><p>电脑端首页会按目标显示当天完成进度；手机端可在本页查看并修改每日目标。</p><div class="data-line"><div><label class="field-label" for="daily-goal">每天计划完成的题量</label><input class="number-input" id="daily-goal" type="number" min="1" max="1000" value="${state.preferences.dailyGoal}"></div><button class="button primary" data-action="saveGoal">保存目标</button></div></div>
         <div class="data-section"><h2>界面动效</h2><p>该设置只保存在本机浏览器，不随备份迁移。</p><div class="backup-parts"><label><input type="checkbox" id="fx-toggle" ${fxStatus?.preference === "on" ? "checked" : ""} ${fxStatus ? "" : "disabled"}>在首页、做题和结算页使用3D纸卡效果</label></div><p>${escapeHtml(fxStatusText(fxStatus))}</p>${fxProbeText(fxStatus) ? `<p>${escapeHtml(fxProbeText(fxStatus))}</p>` : ""}</div>
-        <details class="data-section data-notes"><summary><i data-lucide="chevron-right"></i><h2>使用说明</h2><span>手机与平板浏览器 · 金融新手小词典 · 离线使用</span></summary><div class="data-note"><h3>手机与平板浏览器</h3><p>${mobileUsage}</p></div><div class="data-note"><h3>金融新手小词典</h3><p>术语解释用于帮助理解题目中的专业表达，不替代银行制度、合同或业务操作规程。</p><details class="glossary-library"><summary><span><i data-lucide="book-open-text"></i>查看${Object.keys(BEGINNER_GLOSSARY).length}个常见术语</span><i data-lucide="chevron-down"></i></summary><dl>${Object.entries(BEGINNER_GLOSSARY).map(([term, definition]) => `<div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(definition)}</dd></div>`).join("")}</dl></details></div><div class="data-note"><h3>离线使用</h3><p>${fileProtocol ? "当前通过文件方式打开，核心刷题功能可用。通过“打开刷刷”运行后，还可以安装到桌面并使用离线缓存。" : "当前已通过本地服务运行。浏览器支持时，可从地址栏将本应用安装到桌面；安装后无需联网。"}</p></div></details>
+        <details class="data-section data-notes"><summary><i data-lucide="chevron-right"></i><h2>使用说明</h2><span>手机与平板浏览器 · 离线使用</span></summary><div class="data-note"><h3>手机与平板浏览器</h3><p>${mobileUsage}</p></div><div class="data-note"><h3>离线使用</h3><p>${fileProtocol ? "当前通过文件方式打开，核心刷题功能可用。通过“打开刷刷”运行后，还可以安装到桌面并使用离线缓存。" : "当前已通过本地服务运行。浏览器支持时，可从地址栏将本应用安装到桌面；安装后无需联网。"}</p></div></details>
         <div class="data-section project-info"><div class="project-title"><div><h2>项目与版本</h2><p>每次发布均记录版本号和变更内容，点击版本即可查看详情。</p></div><span class="version-badge">v${escapeHtml(projectInfo.version)}</span></div>${(projectInfo.changes || [])[0] ? `<p class="version-brief">本次更新：${escapeHtml(projectInfo.changes[0])}</p>` : ""}<details class="version-more"><summary>查看全部版本记录与项目信息</summary><dl class="project-meta"><div><dt>项目作者</dt><dd>${escapeHtml(projectInfo.author)}</dd></div><div><dt>发布日期</dt><dd>${escapeHtml(projectInfo.releaseDate)}</dd></div><div><dt>使用范围</dt><dd>${escapeHtml(projectInfo.classification)}</dd></div></dl><h3>本次更新</h3><ul class="change-list">${projectInfo.changes.map((change) => `<li>${escapeHtml(change)}</li>`).join("")}</ul><div class="release-history"><h3>版本更新记录</h3>${releases.map((release, index) => `<details class="release-item" ${index === 0 ? "open" : ""}><summary><span><strong>v${escapeHtml(release.version)}</strong><small>${escapeHtml(release.date)} · ${escapeHtml(release.title || "版本更新")}</small></span><i data-lucide="chevron-down"></i></summary><ul class="change-list">${(release.changes || []).map((change) => `<li>${escapeHtml(change)}</li>`).join("")}</ul></details>`).join("")}</div></details><p class="distribution-notice"><i data-lucide="shield-alert"></i><span>${escapeHtml(projectInfo.distributionNotice)}</span></p></div>
         <div class="data-section"><h2>清空当前题库记录</h2><p>此操作只会删除“${escapeHtml(currentBank.name)}”的答题记录和标记，不影响其他题库，题目本身也不会删除。</p><button class="button danger" data-action="resetProgress"><i data-lucide="trash-2"></i>清空当前题库记录</button></div>
       </section>`;
@@ -3369,6 +3786,209 @@
       updatePracticeScopeControls();
       updatePoolCount();
     }
+  });
+
+  /* ── 首页入口行的按压反馈（3.13.0）──────────────────────────────────────────
+     只作用于首页「练习方式」里的 .mode-button（.quick-start 之内）。按下：朝触点方向轻微倾斜（按哪边哪边往下沉）
+     并缩小一点，行背后的光斑从铺满这一行的淡椭圆向触点聚拢；松手：带一点过冲弹回，光斑淡出。
+     全部用 WAAPI 只动 transform / opacity，不拦点击、不 preventDefault、不碰 touch-action：点击分发、
+     「会顶掉半截练习」的确认、答题方式弹窗、页面滚动一概照旧。手指按下后开始滚动，浏览器发 pointercancel，当场快速复原（不过冲）。
+
+     幅度：触屏 / 触控笔最大 3°、缩到 0.97；鼠标克制，最大 1°、缩到 0.985。
+     行很宽（1440 下 1138、2552 下 2134），同一个角度在长行两端产生的位移 δ ≈ a²·sinθ / d（a 半宽、d 透视距离）
+     随行宽平方增长：固定 1°、d = 800 时 1138 宽的行两端要晃 7px。所以左右倾角（rotateY）再按行宽压：
+     两端因倾斜产生的位移不超过行高的 1/16（触屏）或 1/32（鼠标），即 sinθ ≤ 比例 × 行高 × d / a²；
+     透视距离取行高的 12 倍，整套数字都跟行高走，--u 等比放大时角度不变。落到实处（鼠标）：1440 / 2040 的半宽行 1°、
+     通栏行约 0.3°，2552 半宽行约 0.7°、通栏约 0.2°；手机 390 / 417 触屏 3°。上下倾角（rotateX）只动行高那一截，
+     两端位移不到 1px，不再压，直接用上限。
+     缩放按上面的数整行等比缩，不按行宽压：等比缩放两端对称，看着是「按进去」，不是晃。
+
+     光斑不放在行里，而是每个分组列表（.list-panel）一个、垫在所有行底下（见 styles.css 的 .mode-glow）：
+     放在行里就得在行上裁切，一来光斑在行的上下边被切成平边，二来行按下时带透视变换、里面又有一个在动的层，
+     裁切会让整行先画进一张中间纹理再投影，手机 3.5 倍屏上字明显发虚。垫在面板里只被面板的圆角裁，轮廓自然，也不压到任何一行的字。
+
+     键盘（焦点在行上按空格或回车）按「中心按下」：不倾斜，只按鼠标那档缩小、光斑落在这一行的中心；松开键复原。
+     原生 button 的点击时机（回车在 keydown、空格在 keyup）不动，这里既不调 click() 也不拦默认行为。
+     减弱动态效果：不倾斜、不缩放，光斑直接落在触点，只做淡入淡出。 */
+  const PRESS_SELECTOR = ".quick-start .mode-button";
+  const PRESS_PROFILES = {
+    touch: { maxDeg: 3, scale: 0.97, edgeRatio: 1 / 16 },
+    mouse: { maxDeg: 1, scale: 0.985, edgeRatio: 1 / 32 },
+  };
+  const PRESS_PERSPECTIVE_PER_HEIGHT = 12;
+  const PRESS_REST = { rx: 0, ry: 0, s: 1 };
+  const PRESS_IN = { duration: 150, easing: "cubic-bezier(.2, .8, .2, 1)" };
+  const GLOW_IN = { duration: 260, easing: "cubic-bezier(.2, .8, .2, 1)" };
+  const PRESS_OUT = { duration: 420, easing: "cubic-bezier(.34, 1.56, .64, 1)" };
+  const PRESS_CANCEL = { duration: 160, easing: "cubic-bezier(.2, .8, .2, 1)" };
+  const GLOW_OUT = { duration: 320, easing: "cubic-bezier(.2, .8, .2, 1)" };
+  const GLOW_FADE = { duration: 140, easing: "linear" };
+  const tiltTracks = new WeakMap(); // 行 → { track, depth, pressed }
+  const glowTracks = new WeakMap(); // 光斑 → { track, width }
+  let pointerPress = null; // { row, pointerId }
+  let keyPress = null; // row
+
+  const clampPress = (value, min, max) => Math.min(max, Math.max(min, value));
+  // 写进 transform 字符串前统一取 4 位小数：极小的数不会被拼成 1e-7 这种指数写法。
+  const pressNum = (value) => Number(value.toFixed(4));
+  const tiltTransform = (depth, tilt) => `perspective(${pressNum(depth)}px) rotateX(${pressNum(tilt.rx)}deg) rotateY(${pressNum(tilt.ry)}deg) scale(${pressNum(tilt.s)})`;
+  const glowTransform = (glow, width) => `translate(${pressNum(glow.x - width / 2)}px, ${pressNum(glow.y)}px) scale(${pressNum(glow.sx)}, ${pressNum(glow.sy)})`;
+
+  // 某条轨道此刻的值：按动画的缓动后进度在起止之间插值，被打断时从这里接着走，不跳。
+  function pressTrackNow(track) {
+    if (!track?.animation) return null;
+    const progress = track.animation.effect?.getComputedTiming?.().progress;
+    const p = typeof progress === "number" ? progress : track.animation.playState === "finished" ? 1 : 0;
+    const now = {};
+    Object.keys(track.to).forEach((key) => { now[key] = track.from[key] + (track.to[key] - track.from[key]) * p; });
+    return now;
+  }
+
+  function stopPressTrack(track) {
+    if (!track?.animation) return;
+    track.animation.onfinish = null;
+    track.animation.cancel();
+    track.animation = null;
+  }
+
+  function runPressTrack(element, track, keyframes, timing, { settle = false } = {}) {
+    track.animation = element.animate(keyframes, { ...timing, fill: "forwards" });
+    // 松手那一段播完就撤掉动画：行回到 transform: none、光斑回到样式表的 opacity 0，不留合成层。
+    if (settle) track.animation.onfinish = () => { stopPressTrack(track); track.done?.(); };
+    return track;
+  }
+
+  function pressGlow(glow, panel, row, point, reduce) {
+    const state = glowTracks.get(glow) || { track: null, width: 0 };
+    glowTracks.set(glow, state);
+    const from = pressTrackNow(state.track);
+    stopPressTrack(state.track);
+    glow.style.transform = "";
+    const panelRect = panel.getBoundingClientRect();
+    const rowRect = row.getBoundingClientRect();
+    const width = panel.clientWidth;
+    const left = panelRect.left + panel.clientLeft;
+    const top = panelRect.top + panel.clientTop;
+    const to = {
+      x: clampPress(point.x - left, 0, width),
+      y: clampPress(point.y - top, rowRect.top - top, rowRect.bottom - top),
+      sx: Math.min(1, glow.offsetHeight / Math.max(width, 1)),
+      sy: 1,
+      o: 1,
+    };
+    state.width = width;
+    if (reduce) {
+      glow.style.transform = glowTransform(to, width);
+      const o = from?.o || 0;
+      state.track = runPressTrack(glow, { from: { o }, to: { o: 1 } }, [{ opacity: o }, { opacity: 1 }], GLOW_FADE);
+      return;
+    }
+    // 上一次的光斑还没淡完就接着它聚拢；它若是减弱动态效果那种只有透明度的轨道，就从铺满这一行的淡椭圆重来。
+    const spread = { x: width / 2, y: rowRect.top - top + rowRect.height / 2, sx: 0.9, sy: 1.1, o: 0.35 };
+    const start = from && "x" in from && from.o > 0.01 ? from : spread;
+    state.track = runPressTrack(glow, { from: start, to }, [{ transform: glowTransform(start, width), opacity: start.o }, { transform: glowTransform(to, width), opacity: 1 }], GLOW_IN);
+  }
+
+  function releaseGlow(glow, cancelled) {
+    const state = glow && glowTracks.get(glow);
+    const from = pressTrackNow(state?.track);
+    if (!from) return;
+    stopPressTrack(state.track);
+    const clear = () => { glow.style.transform = ""; };
+    if (!("x" in from)) {
+      // 减弱动态效果：只淡出。
+      state.track = runPressTrack(glow, { from, to: { o: 0 }, done: clear }, [{ opacity: from.o }, { opacity: 0 }], GLOW_FADE, { settle: true });
+      return;
+    }
+    const to = { ...from, sx: from.sx * 1.6, sy: from.sy * 1.3, o: 0 };
+    state.track = runPressTrack(glow, { from, to }, [{ transform: glowTransform(from, state.width), opacity: from.o }, { transform: glowTransform(to, state.width), opacity: 0 }], cancelled ? PRESS_CANCEL : GLOW_OUT, { settle: true });
+  }
+
+  function pressRow(row, { clientX, clientY, profile, center }) {
+    if (typeof row.animate !== "function") return;
+    const state = tiltTracks.get(row) || { track: null, depth: 0, pressed: false };
+    tiltTracks.set(row, state);
+    const tiltFrom = pressTrackNow(state.track) || PRESS_REST;
+    stopPressTrack(state.track);
+    state.track = null;
+    state.pressed = true;
+    // 动画撤掉之后再量，量到的是未变换的盒子。
+    const rect = row.getBoundingClientRect();
+    const half = { x: rect.width / 2, y: rect.height / 2 };
+    const point = center ? { x: rect.left + half.x, y: rect.top + half.y } : { x: clientX, y: clientY };
+    const reduce = prefersReducedMotion();
+    const panel = row.closest(".list-panel");
+    const glow = panel?.querySelector(":scope > .mode-glow");
+    if (glow) pressGlow(glow, panel, row, point, reduce);
+    if (reduce) return;
+    state.depth = rect.height * PRESS_PERSPECTIVE_PER_HEIGHT;
+    const sinY = profile.edgeRatio * rect.height * state.depth / Math.max(half.x * half.x, 1);
+    const maxY = Math.min(profile.maxDeg, Math.asin(Math.min(1, sinY)) * 180 / Math.PI);
+    const tiltTo = {
+      rx: -profile.maxDeg * clampPress((point.y - rect.top - half.y) / Math.max(half.y, 1), -1, 1),
+      ry: maxY * clampPress((point.x - rect.left - half.x) / Math.max(half.x, 1), -1, 1),
+      s: profile.scale,
+    };
+    state.track = runPressTrack(row, { from: tiltFrom, to: tiltTo }, [{ transform: tiltTransform(state.depth, tiltFrom) }, { transform: tiltTransform(state.depth, tiltTo) }], PRESS_IN);
+  }
+
+  function releaseRow(row, { cancelled = false } = {}) {
+    const state = row && tiltTracks.get(row);
+    if (!state?.pressed) return;
+    state.pressed = false;
+    const tiltFrom = pressTrackNow(state.track);
+    stopPressTrack(state.track);
+    state.track = null;
+    // 行已经被点击后的重渲染换掉了：动画随元素一起丢掉即可。
+    if (!row.isConnected || typeof row.animate !== "function") return;
+    releaseGlow(row.closest(".list-panel")?.querySelector(":scope > .mode-glow"), cancelled);
+    if (!tiltFrom) return;
+    state.track = runPressTrack(row, { from: tiltFrom, to: PRESS_REST }, [{ transform: tiltTransform(state.depth, tiltFrom) }, { transform: tiltTransform(state.depth, PRESS_REST) }], cancelled ? PRESS_CANCEL : PRESS_OUT, { settle: true });
+  }
+
+  function releasePointerPress(event, cancelled = false) {
+    if (!pointerPress || (event && event.pointerId !== pointerPress.pointerId)) return;
+    const { row } = pointerPress;
+    pointerPress = null;
+    row.removeEventListener("pointerleave", onPressPointerLeave);
+    releaseRow(row, { cancelled });
+  }
+  function onPressPointerLeave(event) { releasePointerPress(event); }
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!event.isPrimary || event.button !== 0) return;
+    const row = event.target?.closest?.(PRESS_SELECTOR);
+    if (!row) return;
+    if (pointerPress) releasePointerPress();
+    pointerPress = { row, pointerId: event.pointerId };
+    row.addEventListener("pointerleave", onPressPointerLeave);
+    pressRow(row, { clientX: event.clientX, clientY: event.clientY, profile: event.pointerType === "mouse" ? PRESS_PROFILES.mouse : PRESS_PROFILES.touch, center: false });
+  }, { passive: true });
+  document.addEventListener("pointerup", (event) => releasePointerPress(event), { capture: true, passive: true });
+  document.addEventListener("pointercancel", (event) => releasePointerPress(event, true), { capture: true, passive: true });
+  document.addEventListener("lostpointercapture", (event) => releasePointerPress(event), { capture: true, passive: true });
+
+  const isPressKey = (event) => event.key === " " || event.key === "Spacebar" || event.key === "Enter";
+  const releaseKeyPress = () => {
+    if (!keyPress) return;
+    const row = keyPress;
+    keyPress = null;
+    releaseRow(row);
+  };
+  document.addEventListener("keydown", (event) => {
+    if (event.isComposing || event.keyCode === 229) return;
+    if (event.repeat || event.altKey || event.ctrlKey || event.metaKey || !isPressKey(event)) return;
+    const row = event.target?.closest?.(PRESS_SELECTOR);
+    if (!row) return;
+    if (keyPress !== row) releaseKeyPress();
+    keyPress = row;
+    pressRow(row, { profile: PRESS_PROFILES.mouse, center: true });
+  });
+  document.addEventListener("keyup", (event) => { if (isPressKey(event)) releaseKeyPress(); });
+  document.addEventListener("focusout", (event) => { if (keyPress && event.target === keyPress) releaseKeyPress(); });
+  window.addEventListener("blur", () => {
+    releasePointerPress(null, true);
+    releaseKeyPress();
   });
 
   document.addEventListener("visibilitychange", () => {
