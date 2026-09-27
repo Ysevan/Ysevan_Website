@@ -29,6 +29,7 @@
   --shadow: 0 1px 2px rgba(74, 77, 53, .05), 0 8px 20px -10px rgba(74, 77, 53, .11);
   --shadow-hover: 0 1px 2px rgba(74, 77, 53, .06), 0 14px 28px -14px rgba(74, 77, 53, .2);
   --navh: 66px;
+  --glow: rgba(233, 208, 150, .34);
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -51,6 +52,7 @@
     --nav-bg: rgba(21, 23, 27, .82);
     --shadow: 0 1px 2px rgba(0, 0, 0, .25), 0 8px 20px -10px rgba(0, 0, 0, .5);
     --shadow-hover: 0 1px 2px rgba(0, 0, 0, .3), 0 14px 28px -14px rgba(0, 0, 0, .6);
+    --glow: rgba(204, 188, 143, .16);
   }
 }
 
@@ -137,9 +139,28 @@ a { color: inherit; }
   padding: clamp(16px, 1.8vw, 20px) clamp(16px, 1.8vw, 20px) clamp(14px, 1.6vw, 18px);
   box-shadow: var(--shadow);
   text-decoration: none; color: inherit;
+  /* 按压倾斜（2026-09-27）：位移、倾斜、缩放都经这几个变量进同一个 transform，动画只动 transform 和 opacity */
+  position: relative; overflow: hidden; isolation: isolate;
+  --lift: 0px; --rx: 0deg; --ry: 0deg; --s: 1;
+  --gx: 0px; --gy: 0px;   /* 柔光相对卡片中心的偏移 */
+  transform: perspective(800px) translateY(var(--lift)) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--s));
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  -webkit-tap-highlight-color: transparent;
 }
-a.cd:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: var(--olive-2); }
+a.cd:hover { --lift: -2px; box-shadow: var(--shadow-hover); border-color: var(--olive-2); }
+/* 纸面上的柔光：平时摊开、看不见；按下时从四周聚拢到触点，松手再散开淡掉 */
+a.cd::before {
+  content: ""; position: absolute; z-index: -1; left: 50%; top: 50%;
+  width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 50%;
+  background: radial-gradient(closest-side, var(--glow), transparent);
+  pointer-events: none;
+  transform: translate(var(--gx), var(--gy)) scale(1.9);
+  opacity: 0;
+  transition: transform .45s ease, opacity .45s ease;
+}
+a.cd.is-pressed { --lift: 0px; transition: transform .16s cubic-bezier(.2, .7, .3, 1), box-shadow .25s ease, border-color .25s ease; }
+a.cd.is-pressed::before { transform: translate(var(--gx), var(--gy)) scale(1); opacity: 1; transition: transform .22s cubic-bezier(.2, .7, .3, 1), opacity .16s ease-out; }
+a.cd.is-releasing { transition: transform .6s cubic-bezier(.34, 1.56, .64, 1), box-shadow .25s ease, border-color .25s ease; }
 .cd__top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .cd__no { font-size: 11.5px; letter-spacing: .14em; color: var(--ink-3); font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
 .cd__kind { font-size: 11.5px; letter-spacing: .06em; color: var(--ink-3); text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -169,7 +190,9 @@ a.cd:hover .cd__open { text-decoration: underline; text-underline-offset: 3px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cd, .links a, .nav { transition: none; }
-  a.cd:hover { transform: none; }
+  .cd, a.cd:hover, a.cd.is-pressed, a.cd.is-releasing { transform: none; transition: none; }
+  /* 减弱动效：卡片不动，柔光只在触点处淡入淡出 */
+  a.cd::before, a.cd.is-pressed::before { transform: translate(var(--gx), var(--gy)); transition: opacity .2s linear; }
 }
 </style>
 </head>
@@ -343,6 +366,89 @@ if ("IntersectionObserver" in window) {
   }, { rootMargin: "-40% 0px -55% 0px" });
   DATA.forEach(function (s) { io.observe(document.getElementById(s.id)); });
 }
+
+// 按压倾斜卡片（2026-09-27）：按下时朝触点方向轻微倾斜、缩小一点，背后的柔光聚拢到触点；松手弹性复原。
+// 鼠标、触屏（Pointer Events）和键盘（回车 / 空格）都能触发；键盘按下时按在卡片正中。
+// 减弱动效：只让柔光在触点淡入淡出，卡片不倾斜不缩放（CSS 那边也兜着）。
+(function () {
+  var MAX_TILT = 5;      // 度
+  var PRESS_SCALE = 0.975;
+  var reduce = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
+
+  function aim(card, x, y) {
+    var r = card.getBoundingClientRect();
+    // 用未变形的尺寸算：按下后 transform 会让 getBoundingClientRect 变小一点，这里只要比例
+    var w = card.offsetWidth || r.width, h = card.offsetHeight || r.height;
+    var px = Math.min(Math.max((x - r.left) / r.width, 0), 1);
+    var py = Math.min(Math.max((y - r.top) / r.height, 0), 1);
+    card.style.setProperty("--gx", ((px - 0.5) * w).toFixed(1) + "px");
+    card.style.setProperty("--gy", ((py - 0.5) * h).toFixed(1) + "px");
+    if (reduce.matches) return;
+    // 触点那一侧往里压：右边按下 → 右边后退（rotateY 为正），上边按下 → 上边后退（rotateX 为正）。
+    // 正负号是量出来的（验收探针把四角按 transform 投影、比左右边高），别凭直觉改
+    card.style.setProperty("--ry", ((px - 0.5) * 2 * MAX_TILT).toFixed(2) + "deg");
+    card.style.setProperty("--rx", ((0.5 - py) * 2 * MAX_TILT).toFixed(2) + "deg");
+    card.style.setProperty("--s", String(PRESS_SCALE));
+  }
+
+  function press(card, x, y) {
+    card.classList.remove("is-releasing");
+    card.classList.add("is-pressed");
+    if (x == null) {
+      var r = card.getBoundingClientRect();
+      x = r.left + r.width / 2; y = r.top + r.height / 2;
+    }
+    aim(card, x, y);
+  }
+
+  function release(card) {
+    if (!card.classList.contains("is-pressed")) return;
+    card.classList.remove("is-pressed");
+    card.classList.add("is-releasing");
+    card.style.setProperty("--rx", "0deg");
+    card.style.setProperty("--ry", "0deg");
+    card.style.setProperty("--s", "1");
+  }
+
+  document.querySelectorAll("a.cd").forEach(function (card) {
+    var pointer = null, raf = 0, last = null;
+    card.addEventListener("pointerdown", function (ev) {
+      if (ev.pointerType === "mouse" && ev.button !== 0) return;
+      pointer = ev.pointerId;
+      press(card, ev.clientX, ev.clientY);
+    });
+    card.addEventListener("pointermove", function (ev) {
+      if (ev.pointerId !== pointer) return;
+      last = ev;
+      if (!raf) raf = requestAnimationFrame(function () { raf = 0; if (pointer != null && last) aim(card, last.clientX, last.clientY); });
+    });
+    function end(ev) {
+      if (ev && ev.pointerId !== pointer) return;
+      pointer = null; last = null;
+      release(card);
+    }
+    card.addEventListener("pointerup", end);
+    card.addEventListener("pointercancel", end);   // 触屏上开始滚动页面时浏览器会发这个
+    card.addEventListener("pointerleave", end);
+    card.addEventListener("keydown", function (ev) {
+      if (ev.isComposing || ev.keyCode === 229 || ev.repeat) return;
+      if (ev.key === "Enter" || ev.key === " ") {
+        if (ev.key === " ") ev.preventDefault();   // 空格别滚页面；松开时当点击
+        press(card);
+      }
+    });
+    card.addEventListener("keyup", function (ev) {
+      if (ev.key !== "Enter" && ev.key !== " ") return;
+      var was = card.classList.contains("is-pressed");
+      release(card);
+      if (ev.key === " " && was) card.click();
+    });
+    card.addEventListener("blur", function () { release(card); });
+    card.addEventListener("transitionend", function (ev) {
+      if (ev.target === card && ev.propertyName === "transform") card.classList.remove("is-releasing");
+    });
+  });
+})();
 </script>
 </body>
 </html>

@@ -56,6 +56,19 @@ body { background-image: url("../img/p1543-4k.jpg"); }
   color: #c9ccd4;
   font-size: 13px;
 }
+#local-search-result .search-result-list li[role="option"] { cursor: pointer; }
+/* 联想浮层入场：只动透明度和位移；边打字边筛选不重播（js 只在从收起到展开时加 .is-entering） */
+#local-search-result.is-entering .search-result-list {
+  animation: search-pop .16s ease-out both;
+}
+@keyframes search-pop {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes search-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  #local-search-result.is-entering .search-result-list { animation-name: search-fade; }
+}
 
 /* ---- 手机端（主题原来在 800px 以下把左栏整个藏掉，靠一个需要 jQuery 的 #mobile-nav 顶上，
         而页面从来没加载 jQuery，于是手机上什么都没有。这里改成左栏铺满整屏、内容竖排）---- */
