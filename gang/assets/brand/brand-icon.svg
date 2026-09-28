@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="岗岗">
+  <g fill="none" stroke="#fff" stroke-width="78" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M512 274C438 215 342 208 230 244v548c110-36 205-29 282 30"/>
+    <path d="M512 274c74-59 170-66 282-30v548c-110-36-205-29-282 30"/>
+    <path d="M512 274v548"/>
+    <path d="M286 405c72-24 135-18 206 18M286 540c72-24 135-18 206 18M286 675c72-24 135-18 206 18" stroke-width="52"/>
+    <path d="M738 405c-72-24-135-18-206 18M738 540c-72-24-135-18-206 18M738 675c-72-24-135-18-206 18" stroke-width="52"/>
+  </g>
+</svg>

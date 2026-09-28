@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 标签页图标（§10.14c）。**不是可换的那一枚**：屋主的 assets/brand/brand-icon.svg 是透明底白线，
+     直接当 favicon 在浅色标签栏上是看不见的，所以这里另做一枚「渐变圆角方块 + 白线」。
+     线条路径与屋主那份逐字一致（内联进来，不用 use、不外链，favicon 必须自包含）。
+     底是默认蓝那一组令牌的亮渐变（accent #007AFF → accent-2 #5AC8FA，135°，与主按钮、品牌方块同一条）；
+     这只是**首帧**的样子，app.js 起来后会按当前强调色换成 data URI，见 app.js 的 syncFavicon。
+     圆角 229 = 1024 × 22.37%，iOS 图标的圆角比例，16px 下约合 3.6px。
+     线条整块缩到 84% 居中（transform 里的 .84 与 81.92 = (1024 × 0.16) ÷ 2），与页面里 .brand-icon 同一比例。
+
+     **改这段注释时当心**：这是 XML，注释里不许出现两个连字符连写，写成 CSS 令牌那种形式会让整份文件
+     解析失败、浏览器连图都解不出来（2026-09-23 实测踩过，所以上面的令牌名一律写成不带前缀的样子）。 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="gang-favicon-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#007AFF"/>
+      <stop offset="1" stop-color="#5AC8FA"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="229" fill="url(#gang-favicon-grad)"/>
+  <g transform="translate(81.92 81.92) scale(.84)" fill="none" stroke="#fff" stroke-width="78" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M512 274C438 215 342 208 230 244v548c110-36 205-29 282 30"/>
+    <path d="M512 274c74-59 170-66 282-30v548c-110-36-205-29-282 30"/>
+    <path d="M512 274v548"/>
+    <path d="M286 405c72-24 135-18 206 18M286 540c72-24 135-18 206 18M286 675c72-24 135-18 206 18" stroke-width="52"/>
+    <path d="M738 405c-72-24-135-18-206 18M738 540c-72-24-135-18-206 18M738 675c-72-24-135-18-206 18" stroke-width="52"/>
+  </g>
+</svg>

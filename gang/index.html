@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN" class="reading-first">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- 顶栏色＝页面底色（SPEC §3）：浅 #F4F5F9 / 深 #0B0C10。切外观时 app.js 的 syncThemeColor 就地改写它。 -->
+  <meta name="theme-color" content="#F4F5F9">
+  <meta name="description" content="新员工业务手册：按业务、单据或交易码查阅办理指引">
+  <title>新员工业务手册</title>
+  <!-- 标签页图标（§10.14c）：自带渐变圆角方块底，浅色与深色标签栏下都看得清。
+       这里挂的是**静态那一枚**（默认蓝），负责首帧；app.js 的 syncFavicon 起来后会按当前强调色
+       把 href 换成 data URI。刻意不用屋主那枚 brand-icon.svg——它是透明底白线，浅色标签栏上等于隐形。
+       favicon.svg 是独立自包含的一份，删掉 brand-icon.svg/.png 也不影响它。 -->
+  <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg?v=1.8.2">
+  <!-- 外观与强调色预置：只做一件事——在样式表生效之前把 html[data-mode] / html[data-accent] 摆好，
+       **刻意排在 <link rel="stylesheet"> 之前**：这样属性在样式表开始下载之前就已经在 <html> 上，
+       首帧一定拿到正确的那一套令牌——深色下不会先白一下，切过强调色后刷新也不会闪一下别的色。
+       权威状态仍在 app.js（读同一组 hb:mode / hb:accent），两边校验口径逐字一致：
+       三个外观值与六个强调色名都白名单校验，非法值一律落默认（light + blue）。
+       "auto" 也**显式写属性**，深浅那一档仍整个交给 prefers-color-scheme。
+       迁移：hb:mode 缺失时读一次旧的 hb:theme（auto/light/dark）当初值并写回 hb:mode；
+       旧的 hb:palette（六套粉彩）一律忽略，强调色从 blue 重新开始。
+       file:// 下读 localStorage 可能直接抛 SecurityError，因此整段包在同一个 try 里，抛了就走默认。 -->
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var mode = "light";
+      var accent = "blue";
+      try {
+        var saved = window.localStorage.getItem("hb:mode");
+        if (["light", "dark", "auto"].indexOf(saved) >= 0) mode = saved;
+        else {
+          var legacy = window.localStorage.getItem("hb:theme");
+          if (["light", "dark", "auto"].indexOf(legacy) >= 0) mode = legacy;
+          window.localStorage.setItem("hb:mode", mode);
+        }
+        var saveAccent = window.localStorage.getItem("hb:accent");
+        if (["blue", "green", "indigo", "orange", "pink", "teal"].indexOf(saveAccent) >= 0) accent = saveAccent;
+      } catch (error) { /* 读不到就走默认（浅色 + 蓝），页面功能一行不受影响 */ }
+      root.setAttribute("data-mode", mode);
+      root.setAttribute("data-accent", accent);
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css?v=1.8.2">
+</head>
+<body>
+  <a class="skip-link" href="#reader-main">跳到正文</a>
+  <div id="live-region" class="sr-only" role="status" aria-live="polite"></div>
+  <!-- 阅读布局：轻量顶栏、业务目录入口与当前环节下拉；工具按需打开。 -->
+  <header class="workbench-head" id="workbench-head">
+    <div class="head-top" id="head-top">
+      <a class="brand" href="#top" aria-label="回到手册首页"><span class="brand-full">岗岗 · 业务手册</span><span class="brand-short">岗岗</span></a>
+      <button type="button" class="head-btn head-search-toggle" id="head-search-toggle" aria-expanded="false" aria-controls="global-search" aria-label="展开搜索框">搜索</button>
+      <form class="global-search" id="global-search" role="search">
+        <label class="sr-only" for="global-search-input">搜索业务、交易码或单据</label>
+        <input id="global-search-input" type="search" autocomplete="off" placeholder="搜索业务、交易码、单据，例如：开户、结算卡、8201200" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-suggest">
+        <!-- 清空按钮：框里有字才出现；只清框内文字并把焦点还回输入框，不改结果页（与 Esc 在框内的行为一致）。 -->
+        <button type="button" class="search-clear" id="global-search-clear" aria-label="清空搜索框" hidden>×</button>
+        <button type="submit">搜索</button>
+        <!-- 搜索联想浮层（design-proposal.md §11）：边输边出，由 app.js「搜索联想浮层」一节驱动开合与内容，默认关闭。
+             焦点始终留在输入框里，选项不可聚焦，当前项靠输入框的 aria-activedescendant 指过来；
+             说明行只在零结果时出现。放在表单里，打印样式隐藏整个工作台头时它自动一起消失。 -->
+        <div class="search-suggest" id="search-suggest-pop">
+          <p class="suggest-note" hidden></p>
+          <ul id="search-suggest" role="listbox" aria-label="搜索联想"></ul>
+        </div>
+      </form>
+      <button type="button" class="head-btn head-tools-toggle" id="tools-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="tools-drawer">工具</button>
+      <nav class="category-tabs" id="category-tabs" aria-label="业务分类"></nav>
+    </div>
+    <div class="reading-nav">
+      <button type="button" class="head-btn head-drawer-open" id="toc-drawer-open" aria-expanded="false" aria-controls="toc-drawer" aria-label="打开业务目录">目录</button>
+      <p class="head-biz" id="head-biz"></p>
+      <div class="head-rail" id="stage-rail-host"></div>
+    </div>
+  </header>
+  <main id="top" class="manual-shell"></main>
+  <dialog id="lightbox" class="lightbox" aria-label="原始图片查看"></dialog>
+  <!-- 快捷键说明：纯静态列表，按 ? 打开，Esc 或「关闭」退出，焦点归还给打开它的元素。 -->
+  <dialog id="hotkey-help" class="hotkey-help" aria-labelledby="hotkey-help-title">
+    <div class="hotkey-inner">
+      <div class="hotkey-top">
+        <h2 id="hotkey-help-title">键盘快捷键</h2>
+        <button type="button" class="hotkey-close" data-hotkey="close">关闭</button>
+      </div>
+      <dl class="hotkey-list">
+        <dt><kbd>/</kbd></dt><dd>聚焦顶部搜索框</dd>
+        <dt><kbd>?</kbd></dt><dd>打开或关闭本说明</dd>
+        <dt><kbd>Esc</kbd></dt><dd>逐层退出：关灯箱 › 关本说明 › 关目录或工具抽屉 › 收起搜索联想 › 清空搜索框内文字 › 退出专注模式（目录过滤框内有过滤词时只清过滤）</dd>
+        <dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>定位到上一个 / 下一个办理环节</dd>
+        <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>在目录条目、搜索联想或搜索结果之间移动</dd>
+        <dt><kbd>Enter</kbd></dt><dd>打开当前聚焦的目录条目、选中的联想或搜索结果</dd>
+        <dt><kbd>Space</kbd></dt><dd>勾选或取消勾选当前聚焦的材料项</dd>
+        <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>图片放大查看时切换上一张 / 下一张</dd>
+        <dt><kbd>+</kbd> <kbd>-</kbd></dt><dd>图片放大查看时放大 / 缩小</dd>
+        <dt><kbd>Tab</kbd></dt><dd>逐项移动焦点；进入页面后的第一个Tab是「跳到正文」</dd>
+      </dl>
+      <p class="hotkey-note">在搜索框、过滤框等输入位置内，除Esc与搜索联想展开时的↑↓、Enter外不会劫持按键；输入法选词时的按键一律归输入法。</p>
+    </div>
+  </dialog>
+  <div id="print-sheet" aria-hidden="true"></div>
+  <footer>新员工业务手册 · v1.8.2 · 仅供内部学习参考 · 手册版本2026-02-05 · 实际办理请以最新制度、系统提示及所在机构要求为准</footer>
+  <!-- 两个模块都是普通同步脚本（file:// 下 type="module" 会因 CORS 直接加载失败），
+       各自只挂一个全局名；任一缺失时 app.js 都会优雅降级，不白屏也不报错。 -->
+  <script src="employee-handbook.js"></script>
+  <script src="search-module.js?v=1.8.2"></script>
+  <script src="visit-store.js?v=1.8.2"></script>
+  <!-- 阅读布局不加载装饰性 3D 手册；本地 desk-book.js 保留，业务功能无依赖。 -->
+  <script src="app.js?v=1.8.2"></script>
+</body>
+</html>

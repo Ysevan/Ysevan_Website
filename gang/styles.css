@@ -1,0 +1,2080 @@
+/* ================= 设计令牌 =================
+   v1.7.0 的配色是**苹果液态玻璃风**（真源 design/apple-glass/，四个工具通用），
+   它**替代**了此前的六套粉彩（sky/mint/lilac/candy/mist/meadow 整组作废）与更早的刷刷黑红版——
+   两版都被屋主否掉、都没有发布过。落法与全部核算见 design-proposal.md §10。
+
+   两个属性驱动全部换色，选择器与布局一行不动：
+   - html[data-mode="light|dark|auto"]：auto 也**显式写属性**，但深浅那一档整个交给 prefers-color-scheme；
+   - html[data-accent="blue|green|indigo|orange|pink|teal"]：默认 blue，默认值也显式写。
+   存 hb:mode / hb:accent；hb:mode 缺失时读一次旧的 hb:theme 当初值并写回，旧的 hb:palette 一律忽略。
+
+   **层次由玻璃、投影与分隔线承担，不用边框分层**（SPEC §1）：
+   --glass .62（深 .55）= 工作台头 / 目录栏 / 抽屉 / 吸底条 / tab bar，**只有这几处挂 backdrop-filter**；
+   --glass-strong .78（深 .72）= 阅读栏 / 右栏 / 卡片，**一律不挂 backdrop-filter**——
+   它们是随正文长的面，长业务上高到近两万像素，会撞显卡纹理上限（§10.11，2026-09-22 真机实测）。
+   页面底是三团 radial-gradient 光晕（--blob1 跟强调色、--blob2 暖、--blob3 冷），由 body::before 画。
+
+   **每个色相分两档**（§10.6）：
+   - 填充档 --accent / --red / --amber / --green：SPEC §2 的苹果系统色原值，只作底色、渐变、图形；
+   - 文字档 --accent-ink / --red-ink / --amber-ink / --green-ink：**凡是作文字色的一律引这一档**，
+     取值是控制室下发的四家统一值（苹果 HIG「增强对比度」系统色），逐个核过压玻璃叠光晕四角、
+     压自己的浅底与压实色面，比值见 §10 表 D。
+
+   **两处 SPEC 值在岗岗落不下去，已按 §10.9 记录例外**：
+   ① 浅底 --accent-soft / --*-pale 由「12–20% 半透明」改为**实色兑白 11%**（深色兑深底 20%）。
+      半透明浅底会把底下的光晕一起吃进来，同色相文字档压它只有 3.9–4.4，够不着 4.5；
+      实色把这一格从「随光晕变」变成确定值，文字档因此能原封不动用四家统一值。
+   ② 浅色次级字 rgba(60,60,67,**.76**)，控制室裁定**四家统一一个值**（取岗岗六套光晕里测出的最不利值定下）：
+      .73 只在蓝光晕下过线（4.51），靛的 blob1 最深，要到 .76 才过 4.5。六个强调色都从这里继承同一个值，
+      不做按强调色的表。深色那一支 SPEC 的 .62 直接达标，不动。
+   --ink-3 与 --ink-2 取同一个值：SPEC 的三级 .32 只作装饰，而岗岗的 --ink-3 要服务占位符与
+   「未单列」环节这类必须读得出来的文字（§6.4），不能用装饰档。
+   --mat* 是截图底板：深色态下**保持浅色**，免得 114 张白底截图在深底上刺眼突兀。
+   --raised / --sunken / --chip / --table-zebra 四个是**实色**：冻结表头与冻结首列是 sticky 的，
+   半透明会让滚到底下的行透出来；计数胶囊与分段轨道上的中性字也需要一个确定的底。 */
+:root {
+  --ink:#1C1C1E; --ink-2:rgba(60,60,67,.76); --ink-3:rgba(60,60,67,.76); --ink-disabled:rgba(60,60,67,.45);
+  --line:rgba(60,60,67,.12); --line-soft:rgba(60,60,67,.07); --line-strong:#6e6e73; --line-field:#6e6e73; --line-mute:#8e8e93;
+  --rail-line:rgba(60,60,67,.18);
+  --glass:rgba(255,255,255,.62); --glass-strong:rgba(255,255,255,.78); --glass-edge:rgba(255,255,255,.9);
+ 
+  --paper:var(--glass-strong); --panel:var(--glass-strong); --ground:#F4F5F9; --sunken:#f3f3f4; --chip:#f3f3f4;
+  --raised:#ffffff; --table-zebra:#f6f7fa; --paper-veil:rgba(255,255,255,.88);
+  --head-bg:var(--glass); --toc-bg:var(--glass); --toc-sel-bg:var(--glass-strong); --toc-line:var(--glass-edge);
+  --mat:#ffffff; --mat-2:#f3f4f8; --mat-hover:#e9eaf1; --mat-line:#c6c6cc;
+  --indigo-fill:#5856D6;
+  --red:#FF3B30; --red-ink:#D70015; --red-pale:#ffe9e8;
+  --amber:#FF9500; --amber-ink:#C93400; --amber-pale:#fff3e3;
+  --green:#34C759; --green-ink:#1F7A36; --green-pale:#e9f9ed;
+  --mark-bg:#fff3e3; --mark-ink:#C93400;
+  --scrim:rgba(28,28,30,.32); --backdrop:rgba(28,28,30,.55);
+  --shadow-rgb:20,30,60; --focus-halo:#ffffff; --on-accent:#ffffff;
+  --book-page:#FDFDFD; --book-edge:#e3e3ea; --book-ink:#6e6e73; --book-shadow:rgba(20,30,60,.18);
+  --accent:#007AFF; --accent-2:#5AC8FA; --accent-ink:#0040DD;
+  --accent-soft:#e3f0ff; --accent-soft-2:#f1f8ff; --accent-line:#007AFF;
+  --accent-btn-1:#007AFF; --accent-btn-2:#5AC8FA; --accent-btn-h1:#006be0; --accent-btn-h2:#4fb0dc;
+  --accent-edge:#007AFF; --focus-rgb:0,122,255;
+  --blob1:rgba(90,200,250,0.55); --blob2:rgba(255,214,170,0.55); --blob3:rgba(175,160,255,0.45);
+  --book-cover:#007AFF; --book-spine:#0058b8; --book-ribbon:#0058b8; --book-shade:#5AC8FA;
+  --dot-blue:linear-gradient(135deg,#007AFF,#5AC8FA);
+  --dot-green:linear-gradient(135deg,#34C759,#A8E063);
+  --dot-indigo:linear-gradient(135deg,#5856D6,#BF5AF2);
+  --dot-orange:linear-gradient(135deg,#FF9500,#FFD60A);
+  --dot-pink:linear-gradient(135deg,#FF2D55,#FF9AA2);
+  --dot-teal:linear-gradient(135deg,#30B0C7,#64D2FF);
+  --accent-grad:linear-gradient(135deg,var(--accent-btn-1),var(--accent-btn-2));
+  --accent-grad-hover:linear-gradient(135deg,var(--accent-btn-h1),var(--accent-btn-h2));
+  /* 焦点环＝2px 强调色 + 2px 偏移的 box-shadow 等价写法，环色走 --accent-line：
+     填充档原值压玻璃面 ≥3:1 的直接用原值，够不着的那几格退到文字档（§10 表 D 标了是哪几格）。 */
+  --focus-w:4px; --focus-w-inset:2px;
+  --focus-ring:0 0 0 2px var(--focus-halo), 0 0 0 var(--focus-w) var(--accent-line);
+  --focus-ring-inset:inset 0 0 0 var(--focus-w-inset) var(--accent-line), inset 0 0 0 var(--focus-w) var(--focus-halo);
+  --shadow:0 4px 16px rgba(var(--shadow-rgb),.08), inset 0 1px 0 var(--glass-edge);
+  --shadow-pop:0 10px 30px rgba(var(--shadow-rgb),.12), inset 0 1px 0 var(--glass-edge);
+  --blur:blur(30px) saturate(160%);
+  --r-xs:10px; --r-sm:12px; --r-md:14px; --r-lg:18px; --r-xl:20px; --r-pill:999px;
+  --mono:ui-monospace,"SF Mono",Consolas,"Courier New",monospace;
+  /* ---- 图标 data URI（SPEC §5b：真 SVG 线条图、stroke 1.9、圆头圆角）----
+     上面两枚给 mask-image 用（形状色无所谓，统一写 %23000），颜色由 background:currentColor 决定，
+     所以它们**不随主题/强调色/高对比变**，整份只在 :root 写一次；
+     下面四枚是「带底块」那几节的白色线条图，直接当背景图叠在分类色实底上，颜色固定白。
+     手机 tab bar 的三枚图标不在这里——那三个按钮是 index.html 里的静态 DOM，
+     直接写内联 SVG 更合 §5b（放大镜那枚与样张 shua-glass.html 同一份路径，四工具同源）。 */
+  --ic-doc:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7.4 3.6h6.2L18 8v10.9a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 18.9V5.1a1.5 1.5 0 0 1 1.4-1.5z'/%3E%3Cpath d='M13.4 3.6v4.6H18'/%3E%3Cpath d='M9 12.6h6M9 16h4'/%3E%3C/svg%3E");
+  --ic-chevron:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9.8 6.2 5.8 5.8-5.8 5.8'/%3E%3C/svg%3E");
+  --ic-code:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.4 4.6 7.6 19.4M16.4 4.6l-1.8 14.8M4.6 9.3h14.6M3.9 14.7h14.6'/%3E%3C/svg%3E");
+  --ic-check:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 7.6 2 2 3.4-3.8'/%3E%3Cpath d='m4 16.4 2 2 3.4-3.8'/%3E%3Cpath d='M12.6 8.4h7.4M12.6 17.2h7.4'/%3E%3C/svg%3E");
+  --ic-alert:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4.9 20.8 19.4H3.2z'/%3E%3Cpath d='M12 10.2v4.3'/%3E%3Cpath d='M12 17.2v.01'/%3E%3C/svg%3E");
+  --ic-photo:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.6' y='5.6' width='16.8' height='12.8' rx='2.4'/%3E%3Ccircle cx='8.6' cy='10.2' r='1.3'/%3E%3Cpath d='m4.6 16.6 4.2-4 2.7 2.6 3.2-3.4 4.7 4.8'/%3E%3C/svg%3E");
+  /* 流式尺度（SPEC §4，照样张 :root 那一组）：字号、间距、侧栏宽全部随视口插值，
+     浏览器缩放（⌘+/-）等价于视口变窄，所以不需要另设缩放分支。 */
+  /* ≤1440 这一组照抄样张 shua-glass.html 的 :root（侧栏按岗岗原来的 296px 收口），
+     1440 及以下逐像素与改前相同；1440 以上由下面的 --u 等比放大（SPEC §4 大屏规则）。 */
+  --fs-title:clamp(26px, 1.4vw + 14px, 36px); --fs-h2:clamp(18px, .8vw + 10px, 24px); --fs-body:clamp(13px, .35vw + 10px, 15px);
+  --gap:clamp(10px, 1vw, 16px); --pad:clamp(14px, 1.2vw, 20px); --side-w:clamp(220px, 20.5556vw, 296px);
+  /* 左右内边距；速查卡列宽；正文行宽上限（居中于阅读栏）。 */
+  --edge:clamp(24px, 2vw, 28.8px); --aside-w:clamp(220px, 17vw, 244.8px); --measure:880px;
+  /* ---- 大屏等比放大（SPEC §4，2026-09-23 改定，四个工具同一套机制）----
+     **≥1600 不加列、不改构图**：1440 的三栏原样放大，不在剩余空间里居中成窄柱。
+
+     `--scale-max` 是**唯一的旋钮**：改这一行，全站的字号、间距、侧栏宽、圆角、图标、控件、
+     行宽一起跟着变。封顶暂定 1.45，屋主正在 Windows 大屏实地看，嫌小就把这一个数抬上去。
+
+     `--scale` 是「视口 ÷ 1440」这个**无单位比值**：CSS 里没有直接把长度相除的写法，
+     标准做法是借三角函数绕一圈——`atan2(100vw, 1440px)` 得到一个角，它的正切正好是两者之比，
+     `tan()` 再取回来就是纯数。clamp 把它夹在 1 与 --scale-max 之间，所以 ≤1440 恒为 1。
+
+     `--u` 只是 `1px × --scale` 的写法糖：组件层写 `calc(N * var(--u))` 时，N 就是该尺寸
+     **在 1440 下的像素值**，读起来直观；1440 及以下 --scale 为 1，算出来与原来逐像素相同，
+     所以低分辨率下是零改动。
+
+     **刻意不用 CSS zoom，也不用 transform 缩放**：那两种会把边框宽度、文字光栅化与
+     sticky/fixed 的定位一起拖下水（zoom 还不是标准属性）。
+
+     **--scale 只管「东西多大」，不管「版心多宽」**：宽屏一律**铺满视口**，不给整个壳设上限、
+     不居中留白（屋主最初抱怨的就是「左右两大块空白」）。1.45 封顶下 1440×1.45 = 2088 < 2560，
+     严格等比与铺满本来就不可兼得，这里取铺满：多出来的宽度**只许被中间那一列吸收**——
+     不加列、不改字号/图标/间距/行高。 */
+  --scale-max:1.45;
+  --scale:clamp(1, tan(atan2(100vw, 1440px)), var(--scale-max));
+  --u:calc(1px * var(--scale));
+  --tabbar-h:56px;
+  color-scheme:light;
+  --head-h:128px;
+}
+/* ---- 另外五套强调色（浅色，§10 表 A）：只差强调色组 + 三团光晕，面/线/字/圆角/阴影全部共用 ---- */
+:root[data-accent="green"] {
+  --accent:#34C759; --accent-2:#A8E063; --accent-ink:#1F7A36;
+  --accent-soft:#e9f9ed; --accent-soft-2:#f4fcf6; --accent-line:#1F7A36;
+  --accent-btn-1:#34C759; --accent-btn-2:#A8E063; --accent-btn-h1:#2eaf4e; --accent-btn-h2:#94c557;
+  --accent-edge:#1F7A36; --focus-rgb:31,122,54;
+  --blob1:rgba(52,199,89,0.4); --blob2:rgba(255,214,170,0.55); --blob3:rgba(48,176,199,0.35);
+  --book-cover:#34C759; --book-spine:#258f40; --book-ribbon:#258f40; --book-shade:#A8E063;
+}
+:root[data-accent="indigo"] {
+  --accent:#5856D6; --accent-2:#BF5AF2; --accent-ink:#3634A3;
+  --accent-soft:#edecfa; --accent-soft-2:#f6f6fd; --accent-line:#5856D6;
+  --accent-btn-1:#5856D6; --accent-btn-2:#BF5AF2; --accent-btn-h1:#4d4cbc; --accent-btn-h2:#a84fd5;
+  --accent-edge:#5856D6; --focus-rgb:88,86,214;
+  --blob1:rgba(88,86,214,0.4); --blob2:rgba(255,45,85,0.25); --blob3:rgba(175,160,255,0.45);
+  --book-cover:#5856D6; --book-spine:#3f3e9a; --book-ribbon:#3f3e9a; --book-shade:#BF5AF2;
+}
+:root[data-accent="orange"] {
+  --accent:#FF9500; --accent-2:#FFD60A; --accent-ink:#C93400;
+  --accent-soft:#fff3e3; --accent-soft-2:#fff9f1; --accent-line:#C93400;
+  --accent-btn-1:#FF9500; --accent-btn-2:#FFD60A; --accent-btn-h1:#e08300; --accent-btn-h2:#e0bc09;
+  --accent-edge:#C93400; --focus-rgb:201,52,0;
+  --blob1:rgba(255,149,0,0.4); --blob2:rgba(255,214,170,0.55); --blob3:rgba(255,59,48,0.25);
+  --book-cover:#FF9500; --book-spine:#b86b00; --book-ribbon:#b86b00; --book-shade:#FFD60A;
+}
+:root[data-accent="pink"] {
+  --accent:#FF2D55; --accent-2:#FF9AA2; --accent-ink:#D30F45;
+  --accent-soft:#ffe8ec; --accent-soft-2:#fff3f6; --accent-line:#D30F45;
+  --accent-btn-1:#FF2D55; --accent-btn-2:#FF9AA2; --accent-btn-h1:#e0284b; --accent-btn-h2:#e0888f;
+  --accent-edge:#D30F45; --focus-rgb:211,15,69;
+  --blob1:rgba(255,45,85,0.25); --blob2:rgba(255,214,170,0.55); --blob3:rgba(191,90,242,0.3);
+  --book-cover:#FF2D55; --book-spine:#b8203d; --book-ribbon:#b8203d; --book-shade:#FF9AA2;
+}
+:root[data-accent="teal"] {
+  --accent:#30B0C7; --accent-2:#64D2FF; --accent-ink:#0071A4;
+  --accent-soft:#e8f6f9; --accent-soft-2:#f4fbfc; --accent-line:#0071A4;
+  --accent-btn-1:#30B0C7; --accent-btn-2:#64D2FF; --accent-btn-h1:#2a9baf; --accent-btn-h2:#58b9e0;
+  --accent-edge:#0071A4; --focus-rgb:0,113,164;
+  --blob1:rgba(48,176,199,0.44); --blob2:rgba(52,199,89,0.3); --blob3:rgba(175,160,255,0.45);
+  --book-cover:#30B0C7; --book-spine:#237f8f; --book-ribbon:#237f8f; --book-shade:#64D2FF;
+}
+:root[data-accent="blue"] {
+  --accent:#007AFF; --accent-2:#5AC8FA; --accent-ink:#0040DD;
+  --accent-soft:#e3f0ff; --accent-soft-2:#f1f8ff; --accent-line:#007AFF;
+  --accent-btn-1:#007AFF; --accent-btn-2:#5AC8FA; --accent-btn-h1:#006be0; --accent-btn-h2:#4fb0dc;
+  --accent-edge:#007AFF; --focus-rgb:0,122,255;
+  --blob1:rgba(90,200,250,0.55); --blob2:rgba(255,214,170,0.55); --blob3:rgba(175,160,255,0.45);
+  --book-cover:#007AFF; --book-spine:#0058b8; --book-ribbon:#0058b8; --book-shade:#5AC8FA;
+}
+
+/* 没有 backdrop-filter 的浏览器，以及显式要求减少透明度的用户：玻璃一律提到 .9 兜底（SPEC §5）。
+   探针**必须把带前缀的写法一起测**：iOS Safari 18 以前只认 -webkit-backdrop-filter，
+   只测无前缀那条的话 not 恒真，iPhone 上的玻璃会被整体打到 .9 兜底档。外层那对括号不能省——
+   `not (a) or (b)` 是非法条件，整条 @supports 会被浏览器丢掉。
+   声明侧同理：凡是挂磨砂的地方一律「-webkit- 在前、标准在后」成对写（全站 8 对）。 */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  :root { --glass:rgba(255,255,255,.9); --glass-strong:rgba(255,255,255,.94); }
+}
+@media (prefers-reduced-transparency:reduce) {
+  :root { --glass:rgba(255,255,255,.9); --glass-strong:rgba(255,255,255,.94); }
+}
+
+/* ---- >1440：上面那几个 clamp 换成「它们在 1440 处的值 × --scale」，构图原样放大 ----
+   每个数字都是对应令牌在 1440 视口下的用值（1.4vw+14 → 34.16，1vw → 14.4，依此类推），
+   所以 1441px 处与 1440px 处连续（差 <0.05px），再往上按比例放大到 --scale-max 封顶。
+   圆角一并放大，否则大屏上卡片会显得「棱角变硬」。 */
+@media (min-width:1441px) {
+  :root {
+    --fs-title:calc(34.16px * var(--scale)); --fs-h2:calc(21.52px * var(--scale)); --fs-body:calc(15px * var(--scale));
+    --gap:calc(14.4px * var(--scale)); --pad:calc(17.28px * var(--scale)); --edge:calc(28.8px * var(--scale));
+    --side-w:calc(296px * var(--scale)); --aside-w:calc(244.8px * var(--scale)); --measure:calc(880px * var(--scale));
+    --r-xs:calc(10px * var(--scale)); --r-sm:calc(12px * var(--scale)); --r-md:calc(14px * var(--scale));
+    --r-lg:calc(18px * var(--scale)); --r-xl:calc(20px * var(--scale));
+  }
+}
+
+/* ---- 不支持三角函数的内核（双击 file:// 打开的那台 Windows 机浏览器可能偏旧）----
+   探针**必须写成 `scale:`，不能写 `width:`**：三角函数算出来是无单位数，
+   `width: <number>` 本来就非法，所以 `@supports (width: tan(atan2(1px,1px)))` 在 Chrome 实测也是 false，
+   拿它取反会恒真、把上面那条平滑公式整个盖掉（plan 那边实测踩到过）。
+   `scale` 接受无单位数，所以 `@supports not (scale: tan(...))` 才真正只在**不支持**时命中。
+   兜底里 --scale 退成常数，再用六档媒体查询给台阶，老内核上也能放大，只是不连续。
+   档位照 SPEC §4b 那张表（1600/1800/2000/2200/2400/2560 → 1.11/1.25/1.39/1.45/1.45/1.45），2200 起三档都是封顶，
+   写成 var(--scale-max)（= 1.45），旋钮仍只有一处。2026-09-27 由三档（1600/1920/2088）补成六档：
+   三档在屋主台式机 2040 那一档给 1.33，六档给 1.39，离平滑公式的 1.417 差 6% 对 2%；笔记本 2552 两种写法都是封顶 1.45。 */
+@supports not (scale: tan(atan2(1px, 1px))) {
+  :root { --scale:1; }
+  @media (min-width:1600px) { :root { --scale:1.11; } }
+  @media (min-width:1800px) { :root { --scale:1.25; } }
+  @media (min-width:2000px) { :root { --scale:1.39; } }
+  @media (min-width:2200px) { :root { --scale:var(--scale-max); } }
+  @media (min-width:2400px) { :root { --scale:var(--scale-max); } }
+  @media (min-width:2560px) { :root { --scale:var(--scale-max); } }
+}
+
+/* ---- 深色：六套共用的夜版（§10 表 B）----
+   「自动」也写 data-mode="auto"，深浅仍由 prefers-color-scheme 决定，所以这里是
+   :root:not([data-mode="light"])——显式选浅色时把系统深色挡在门外。
+   下面属性段 :root[data-mode="dark"] 与这里同值，靠源序压过「系统浅色 + 手选深色」那一格。
+   深色只换值，不换任何形态；主按钮在深浅两套里都是「强调色亮渐变 + 白字」。 */
+@media (prefers-color-scheme:dark) {
+  :root:not([data-mode="light"]) {
+    --ink:#F2F2F7; --ink-2:rgba(235,235,245,.62); --ink-3:rgba(235,235,245,.62); --ink-disabled:rgba(235,235,245,.38);
+    --line:rgba(84,84,88,.5); --line-soft:rgba(84,84,88,.3); --line-strong:#8e8e93; --line-field:#98989d; --line-mute:#6c6c70;
+    --rail-line:rgba(235,235,245,.24);
+    --glass:rgba(40,42,52,.55); --glass-strong:rgba(44,46,58,.72); --glass-edge:rgba(255,255,255,.12);
+   
+    --paper:var(--glass-strong); --panel:var(--glass-strong); --ground:#0B0C10; --sunken:#1c1e26; --chip:#2c2e38;
+    --raised:#2e3037; --table-zebra:#24262f; --paper-veil:rgba(20,21,27,.9);
+    --head-bg:var(--glass); --toc-bg:var(--glass); --toc-sel-bg:var(--glass-strong); --toc-line:var(--glass-edge);
+    --mat:#ffffff; --mat-2:#f3f4f8; --mat-hover:#e9eaf1; --mat-line:#c6c6cc;
+    --indigo-fill:#5E5CE6;
+    --red:#FF453A; --red-ink:#FF6961; --red-pale:#482428;
+    --amber:#FF9F0A; --amber-ink:#FFB340; --amber-pale:#48361f;
+    --green:#30D158; --green-ink:#30DB5B; --green-pale:#1e402e;
+    --mark-bg:#48361f; --mark-ink:#FFB340;
+    --scrim:rgba(0,0,0,.5); --backdrop:rgba(0,0,0,.7);
+    --shadow-rgb:0,0,0; --focus-halo:#0B0C10; --on-accent:#ffffff;
+    --book-page:#2C2C2E; --book-edge:#48484a; --book-ink:rgba(235,235,245,.62); --book-shadow:rgba(0,0,0,.45);
+    --accent:#0A84FF; --accent-2:#64D2FF; --accent-ink:#409CFF;
+    --accent-soft:#173150; --accent-soft-2:#18263a; --accent-line:#0A84FF;
+    --accent-btn-1:#0A84FF; --accent-btn-2:#64D2FF; --accent-btn-h1:#0974e0; --accent-btn-h2:#58b9e0;
+    --accent-edge:#0A84FF; --focus-rgb:10,132,255;
+    --blob1:rgba(10,132,255,0.35); --blob2:rgba(255,159,10,0.22); --blob3:rgba(94,92,230,0.35);
+    --book-cover:#075cb3; --book-spine:#054281; --book-ribbon:#054281; --book-shade:#4189a6;
+    --dot-blue:linear-gradient(135deg,#0A84FF,#64D2FF);
+    --dot-green:linear-gradient(135deg,#30D158,#A8E063);
+    --dot-indigo:linear-gradient(135deg,#5E5CE6,#BF5AF2);
+    --dot-orange:linear-gradient(135deg,#FF9F0A,#FFD60A);
+    --dot-pink:linear-gradient(135deg,#FF375F,#FF9AA2);
+    --dot-teal:linear-gradient(135deg,#40C8E0,#64D2FF);
+    color-scheme:dark;
+    --shadow:0 4px 16px rgba(var(--shadow-rgb),.35), inset 0 1px 0 var(--glass-edge);
+    --shadow-pop:0 10px 30px rgba(var(--shadow-rgb),.45), inset 0 1px 0 var(--glass-edge);
+}
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+    :root:not([data-mode="light"]) { --glass:rgba(40,42,52,.9); --glass-strong:rgba(44,46,58,.94); }
+  }
+  :root:not([data-mode="light"])[data-accent="green"] {
+    --accent:#30D158; --accent-2:#A8E063; --accent-ink:#30DB5B;
+    --accent-soft:#1e402e; --accent-soft-2:#1c2e29; --accent-line:#30D158;
+    --accent-btn-1:#30D158; --accent-btn-2:#A8E063; --accent-btn-h1:#2ab84d; --accent-btn-h2:#94c557;
+    --accent-edge:#30D158; --focus-rgb:48,209,88;
+    --blob1:rgba(48,209,88,0.28); --blob2:rgba(255,159,10,0.22); --blob3:rgba(64,200,224,0.26);
+    --book-cover:#22923e; --book-spine:#18692d; --book-ribbon:#18692d; --book-shade:#6d9240;
+  }
+  :root:not([data-mode="light"])[data-accent="indigo"] {
+    --accent:#5E5CE6; --accent-2:#BF5AF2; --accent-ink:#8E8BFF;
+    --accent-soft:#28294b; --accent-soft-2:#212237; --accent-line:#8E8BFF;
+    --accent-btn-1:#5E5CE6; --accent-btn-2:#BF5AF2; --accent-btn-h1:#5351ca; --accent-btn-h2:#a84fd5;
+    --accent-edge:#8E8BFF; --focus-rgb:142,139,255;
+    --blob1:rgba(94,92,230,0.32); --blob2:rgba(255,55,95,0.18); --blob3:rgba(191,90,242,0.26);
+    --book-cover:#4240a1; --book-spine:#302e74; --book-ribbon:#302e74; --book-shade:#7c3b9d;
+  }
+  :root:not([data-mode="light"])[data-accent="orange"] {
+    --accent:#FF9F0A; --accent-2:#FFD60A; --accent-ink:#FFB340;
+    --accent-soft:#48361f; --accent-soft-2:#312921; --accent-line:#FF9F0A;
+    --accent-btn-1:#FF9F0A; --accent-btn-2:#FFD60A; --accent-btn-h1:#e08c09; --accent-btn-h2:#e0bc09;
+    --accent-edge:#FF9F0A; --focus-rgb:255,159,10;
+    --blob1:rgba(255,159,10,0.26); --blob2:rgba(255,159,10,0.22); --blob3:rgba(255,69,58,0.2);
+    --book-cover:#b36f07; --book-spine:#815005; --book-ribbon:#815005; --book-shade:#a68b07;
+  }
+  :root:not([data-mode="light"])[data-accent="pink"] {
+    --accent:#FF375F; --accent-2:#FF9AA2; --accent-ink:#FF6482;
+    --accent-soft:#482130; --accent-soft-2:#311f2a; --accent-line:#FF375F;
+    --accent-btn-1:#FF375F; --accent-btn-2:#FF9AA2; --accent-btn-h1:#e03054; --accent-btn-h2:#e0888f;
+    --accent-edge:#FF375F; --focus-rgb:255,55,95;
+    --blob1:rgba(255,55,95,0.26); --blob2:rgba(255,159,10,0.2); --blob3:rgba(191,90,242,0.28);
+    --book-cover:#b32743; --book-spine:#811c30; --book-ribbon:#811c30; --book-shade:#a66469;
+  }
+  :root:not([data-mode="light"])[data-accent="teal"] {
+    --accent:#40C8E0; --accent-2:#64D2FF; --accent-ink:#5AC8F5;
+    --accent-soft:#223e4a; --accent-soft-2:#1e2d37; --accent-line:#40C8E0;
+    --accent-btn-1:#40C8E0; --accent-btn-2:#64D2FF; --accent-btn-h1:#38b0c5; --accent-btn-h2:#58b9e0;
+    --accent-edge:#40C8E0; --focus-rgb:64,200,224;
+    --blob1:rgba(64,200,224,0.3); --blob2:rgba(52,199,89,0.22); --blob3:rgba(94,92,230,0.3);
+    --book-cover:#2d8c9d; --book-spine:#206571; --book-ribbon:#206571; --book-shade:#4189a6;
+  }
+  :root:not([data-mode="light"])[data-accent="blue"] {
+    --accent:#0A84FF; --accent-2:#64D2FF; --accent-ink:#409CFF;
+    --accent-soft:#173150; --accent-soft-2:#18263a; --accent-line:#0A84FF;
+    --accent-btn-1:#0A84FF; --accent-btn-2:#64D2FF; --accent-btn-h1:#0974e0; --accent-btn-h2:#58b9e0;
+    --accent-edge:#0A84FF; --focus-rgb:10,132,255;
+    --blob1:rgba(10,132,255,0.35); --blob2:rgba(255,159,10,0.22); --blob3:rgba(94,92,230,0.35);
+    --book-cover:#075cb3; --book-spine:#054281; --book-ribbon:#054281; --book-shade:#4189a6;
+  }
+}
+:root[data-mode="dark"] {
+    --ink:#F2F2F7; --ink-2:rgba(235,235,245,.62); --ink-3:rgba(235,235,245,.62); --ink-disabled:rgba(235,235,245,.38);
+    --line:rgba(84,84,88,.5); --line-soft:rgba(84,84,88,.3); --line-strong:#8e8e93; --line-field:#98989d; --line-mute:#6c6c70;
+    --rail-line:rgba(235,235,245,.24);
+    --glass:rgba(40,42,52,.55); --glass-strong:rgba(44,46,58,.72); --glass-edge:rgba(255,255,255,.12);
+   
+    --paper:var(--glass-strong); --panel:var(--glass-strong); --ground:#0B0C10; --sunken:#1c1e26; --chip:#2c2e38;
+    --raised:#2e3037; --table-zebra:#24262f; --paper-veil:rgba(20,21,27,.9);
+    --head-bg:var(--glass); --toc-bg:var(--glass); --toc-sel-bg:var(--glass-strong); --toc-line:var(--glass-edge);
+    --mat:#ffffff; --mat-2:#f3f4f8; --mat-hover:#e9eaf1; --mat-line:#c6c6cc;
+    --indigo-fill:#5E5CE6;
+    --red:#FF453A; --red-ink:#FF6961; --red-pale:#482428;
+    --amber:#FF9F0A; --amber-ink:#FFB340; --amber-pale:#48361f;
+    --green:#30D158; --green-ink:#30DB5B; --green-pale:#1e402e;
+    --mark-bg:#48361f; --mark-ink:#FFB340;
+    --scrim:rgba(0,0,0,.5); --backdrop:rgba(0,0,0,.7);
+    --shadow-rgb:0,0,0; --focus-halo:#0B0C10; --on-accent:#ffffff;
+    --book-page:#2C2C2E; --book-edge:#48484a; --book-ink:rgba(235,235,245,.62); --book-shadow:rgba(0,0,0,.45);
+  --accent:#0A84FF; --accent-2:#64D2FF; --accent-ink:#409CFF;
+  --accent-soft:#173150; --accent-soft-2:#18263a; --accent-line:#0A84FF;
+  --accent-btn-1:#0A84FF; --accent-btn-2:#64D2FF; --accent-btn-h1:#0974e0; --accent-btn-h2:#58b9e0;
+  --accent-edge:#0A84FF; --focus-rgb:10,132,255;
+  --blob1:rgba(10,132,255,0.35); --blob2:rgba(255,159,10,0.22); --blob3:rgba(94,92,230,0.35);
+  --book-cover:#075cb3; --book-spine:#054281; --book-ribbon:#054281; --book-shade:#4189a6;
+  --dot-blue:linear-gradient(135deg,#0A84FF,#64D2FF);
+  --dot-green:linear-gradient(135deg,#30D158,#A8E063);
+  --dot-indigo:linear-gradient(135deg,#5E5CE6,#BF5AF2);
+  --dot-orange:linear-gradient(135deg,#FF9F0A,#FFD60A);
+  --dot-pink:linear-gradient(135deg,#FF375F,#FF9AA2);
+  --dot-teal:linear-gradient(135deg,#40C8E0,#64D2FF);
+  color-scheme:dark;
+  --shadow:0 4px 16px rgba(var(--shadow-rgb),.35), inset 0 1px 0 var(--glass-edge);
+  --shadow-pop:0 10px 30px rgba(var(--shadow-rgb),.45), inset 0 1px 0 var(--glass-edge);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  :root[data-mode="dark"] { --glass:rgba(40,42,52,.9); --glass-strong:rgba(44,46,58,.94); }
+}
+@media (prefers-reduced-transparency:reduce) {
+  :root[data-mode="dark"] { --glass:rgba(40,42,52,.9); --glass-strong:rgba(44,46,58,.94); }
+  @media (prefers-color-scheme:dark) { :root:not([data-mode="light"]) { --glass:rgba(40,42,52,.9); --glass-strong:rgba(44,46,58,.94); } }
+}
+:root[data-mode="dark"][data-accent="green"] {
+  --accent:#30D158; --accent-2:#A8E063; --accent-ink:#30DB5B;
+  --accent-soft:#1e402e; --accent-soft-2:#1c2e29; --accent-line:#30D158;
+  --accent-btn-1:#30D158; --accent-btn-2:#A8E063; --accent-btn-h1:#2ab84d; --accent-btn-h2:#94c557;
+  --accent-edge:#30D158; --focus-rgb:48,209,88;
+  --blob1:rgba(48,209,88,0.28); --blob2:rgba(255,159,10,0.22); --blob3:rgba(64,200,224,0.26);
+  --book-cover:#22923e; --book-spine:#18692d; --book-ribbon:#18692d; --book-shade:#6d9240;
+}
+:root[data-mode="dark"][data-accent="indigo"] {
+  --accent:#5E5CE6; --accent-2:#BF5AF2; --accent-ink:#8E8BFF;
+  --accent-soft:#28294b; --accent-soft-2:#212237; --accent-line:#8E8BFF;
+  --accent-btn-1:#5E5CE6; --accent-btn-2:#BF5AF2; --accent-btn-h1:#5351ca; --accent-btn-h2:#a84fd5;
+  --accent-edge:#8E8BFF; --focus-rgb:142,139,255;
+  --blob1:rgba(94,92,230,0.32); --blob2:rgba(255,55,95,0.18); --blob3:rgba(191,90,242,0.26);
+  --book-cover:#4240a1; --book-spine:#302e74; --book-ribbon:#302e74; --book-shade:#7c3b9d;
+}
+:root[data-mode="dark"][data-accent="orange"] {
+  --accent:#FF9F0A; --accent-2:#FFD60A; --accent-ink:#FFB340;
+  --accent-soft:#48361f; --accent-soft-2:#312921; --accent-line:#FF9F0A;
+  --accent-btn-1:#FF9F0A; --accent-btn-2:#FFD60A; --accent-btn-h1:#e08c09; --accent-btn-h2:#e0bc09;
+  --accent-edge:#FF9F0A; --focus-rgb:255,159,10;
+  --blob1:rgba(255,159,10,0.26); --blob2:rgba(255,159,10,0.22); --blob3:rgba(255,69,58,0.2);
+  --book-cover:#b36f07; --book-spine:#815005; --book-ribbon:#815005; --book-shade:#a68b07;
+}
+:root[data-mode="dark"][data-accent="pink"] {
+  --accent:#FF375F; --accent-2:#FF9AA2; --accent-ink:#FF6482;
+  --accent-soft:#482130; --accent-soft-2:#311f2a; --accent-line:#FF375F;
+  --accent-btn-1:#FF375F; --accent-btn-2:#FF9AA2; --accent-btn-h1:#e03054; --accent-btn-h2:#e0888f;
+  --accent-edge:#FF375F; --focus-rgb:255,55,95;
+  --blob1:rgba(255,55,95,0.26); --blob2:rgba(255,159,10,0.2); --blob3:rgba(191,90,242,0.28);
+  --book-cover:#b32743; --book-spine:#811c30; --book-ribbon:#811c30; --book-shade:#a66469;
+}
+:root[data-mode="dark"][data-accent="teal"] {
+  --accent:#40C8E0; --accent-2:#64D2FF; --accent-ink:#5AC8F5;
+  --accent-soft:#223e4a; --accent-soft-2:#1e2d37; --accent-line:#40C8E0;
+  --accent-btn-1:#40C8E0; --accent-btn-2:#64D2FF; --accent-btn-h1:#38b0c5; --accent-btn-h2:#58b9e0;
+  --accent-edge:#40C8E0; --focus-rgb:64,200,224;
+  --blob1:rgba(64,200,224,0.3); --blob2:rgba(52,199,89,0.22); --blob3:rgba(94,92,230,0.3);
+  --book-cover:#2d8c9d; --book-spine:#206571; --book-ribbon:#206571; --book-shade:#4189a6;
+}
+:root[data-mode="dark"][data-accent="blue"] {
+  --accent:#0A84FF; --accent-2:#64D2FF; --accent-ink:#409CFF;
+  --accent-soft:#173150; --accent-soft-2:#18263a; --accent-line:#0A84FF;
+  --accent-btn-1:#0A84FF; --accent-btn-2:#64D2FF; --accent-btn-h1:#0974e0; --accent-btn-h2:#58b9e0;
+  --accent-edge:#0A84FF; --focus-rgb:10,132,255;
+  --blob1:rgba(10,132,255,0.35); --blob2:rgba(255,159,10,0.22); --blob3:rgba(94,92,230,0.35);
+  --book-cover:#075cb3; --book-spine:#054281; --book-ribbon:#054281; --book-shade:#4189a6;
+}
+
+/* ---- prefers-contrast: more —— 浅深两套（SPEC 没写这一档，是岗岗 §6.4 自己的承诺）----
+   ① 玻璃一律转实色、光晕整组 transparent、--blur 归 none；② 辅助字提到主字色；
+   ③ 四色相文字档再调一档到 ≥7:1；④ 边框族整体加重；⑤ 焦点环加粗一档。
+   只改令牌值与三条环宽，选择器与形态一行不动。 */
+@media (prefers-contrast:more) {
+  :root {
+  --blur:none;
+  --ink:#000000; --ink-2:#000000; --ink-3:#000000; --ink-disabled:#3a3a3c;
+  --line:#3a3a3c; --line-soft:#3a3a3c; --line-strong:#3a3a3c; --line-field:#1c1c1e; --line-mute:#3a3a3c;
+  --rail-line:#3a3a3c;
+  --glass:#ffffff; --glass-strong:#ffffff; --glass-edge:#3a3a3c;
+  --ground:#ffffff; --sunken:#ffffff; --chip:#ffffff; --raised:#ffffff; --paper-veil:#ffffff; --table-zebra:#ffffff;
+  --toc-sel-bg:#e5e5ea; --blob1:transparent; --blob2:transparent; --blob3:transparent;
+  --on-accent:#ffffff; --indigo-fill:#3634a3;
+  --red:#b50012; --red-ink:#b50012; --red-pale:#ffe9e8;
+  --amber:#a62b00; --amber-ink:#a62b00; --amber-pale:#fff3e3;
+  --green:#1a652d; --green-ink:#1a652d; --green-pale:#e9f9ed;
+  --mark-bg:#fff3e3; --mark-ink:#000000;
+  --mat-line:#3a3a3c; --focus-halo:#ffffff; --focus-w:6px; --focus-w-inset:3px;
+  --accent:#003cd1; --accent-2:#003cd1; --accent-ink:#003cd1; --accent-line:#003cd1; --accent-edge:#003cd1;
+  --accent-soft:#e3f0ff; --accent-soft-2:#e3f0ff;
+  --accent-btn-1:#003cd1; --accent-btn-2:#003cd1; --accent-btn-h1:#0031ab; --accent-btn-h2:#0031ab;
+  --focus-rgb:0,60,209;
+  --book-cover:#003cd1; --book-spine:#002b96; --book-ribbon:#002b96;
+  }
+  :root[data-accent="green"] {
+    --accent:#185f2a; --accent-2:#185f2a; --accent-ink:#185f2a; --accent-line:#185f2a; --accent-edge:#185f2a;
+    --accent-soft:#e9f9ed; --accent-soft-2:#e9f9ed;
+    --accent-btn-1:#185f2a; --accent-btn-2:#185f2a; --accent-btn-h1:#144e22; --accent-btn-h2:#144e22;
+    --focus-rgb:24,95,42;
+    --book-cover:#185f2a; --book-spine:#11441e; --book-ribbon:#11441e;
+  }
+  :root[data-accent="indigo"] {
+    --accent:#3634a3; --accent-2:#3634a3; --accent-ink:#3634a3; --accent-line:#3634a3; --accent-edge:#3634a3;
+    --accent-soft:#edecfa; --accent-soft-2:#edecfa;
+    --accent-btn-1:#3634a3; --accent-btn-2:#3634a3; --accent-btn-h1:#2c2b86; --accent-btn-h2:#2c2b86;
+    --focus-rgb:54,52,163;
+    --book-cover:#3634a3; --book-spine:#272575; --book-ribbon:#272575;
+  }
+  :root[data-accent="orange"] {
+    --accent:#9c2800; --accent-2:#9c2800; --accent-ink:#9c2800; --accent-line:#9c2800; --accent-edge:#9c2800;
+    --accent-soft:#fff3e3; --accent-soft-2:#fff3e3;
+    --accent-btn-1:#9c2800; --accent-btn-2:#9c2800; --accent-btn-h1:#802100; --accent-btn-h2:#802100;
+    --focus-rgb:156,40,0;
+    --book-cover:#9c2800; --book-spine:#701d00; --book-ribbon:#701d00;
+  }
+  :root[data-accent="pink"] {
+    --accent:#9e0b34; --accent-2:#9e0b34; --accent-ink:#9e0b34; --accent-line:#9e0b34; --accent-edge:#9e0b34;
+    --accent-soft:#ffe8ec; --accent-soft-2:#ffe8ec;
+    --accent-btn-1:#9e0b34; --accent-btn-2:#9e0b34; --accent-btn-h1:#82092b; --accent-btn-h2:#82092b;
+    --focus-rgb:158,11,52;
+    --book-cover:#9e0b34; --book-spine:#720825; --book-ribbon:#720825;
+  }
+  :root[data-accent="teal"] {
+    --accent:#00577e; --accent-2:#00577e; --accent-ink:#00577e; --accent-line:#00577e; --accent-edge:#00577e;
+    --accent-soft:#e8f6f9; --accent-soft-2:#e8f6f9;
+    --accent-btn-1:#00577e; --accent-btn-2:#00577e; --accent-btn-h1:#004767; --accent-btn-h2:#004767;
+    --focus-rgb:0,87,126;
+    --book-cover:#00577e; --book-spine:#003f5b; --book-ribbon:#003f5b;
+  }
+  :root[data-accent="blue"] {
+    --accent:#003cd1; --accent-2:#003cd1; --accent-ink:#003cd1; --accent-line:#003cd1; --accent-edge:#003cd1;
+    --accent-soft:#e3f0ff; --accent-soft-2:#e3f0ff;
+    --accent-btn-1:#003cd1; --accent-btn-2:#003cd1; --accent-btn-h1:#0031ab; --accent-btn-h2:#0031ab;
+    --focus-rgb:0,60,209;
+    --book-cover:#003cd1; --book-spine:#002b96; --book-ribbon:#002b96;
+  }
+  @media (prefers-color-scheme:dark) {
+    :root:not([data-mode="light"]) {
+    --blur:none;
+    --ink:#ffffff; --ink-2:#ffffff; --ink-3:#ffffff; --ink-disabled:#c7c7cc;
+    --line:#c7c7cc; --line-soft:#c7c7cc; --line-strong:#c7c7cc; --line-field:#e5e5ea; --line-mute:#c7c7cc;
+    --rail-line:#c7c7cc;
+    --glass:#0d0f16; --glass-strong:#0d0f16; --glass-edge:#c7c7cc;
+    --ground:#0d0f16; --sunken:#0d0f16; --chip:#2c2c2e; --raised:#2c2c2e; --paper-veil:#0d0f16; --table-zebra:#0d0f16;
+    --toc-sel-bg:#2c2c2e; --blob1:transparent; --blob2:transparent; --blob3:transparent;
+    --on-accent:#0d0f16; --indigo-fill:#9491ff;
+    --red:#ff7068; --red-ink:#ff7068; --red-pale:#3d1a1d;
+    --amber:#ffb340; --amber-ink:#ffb340; --amber-pale:#3d2c14;
+    --green:#30db5b; --green-ink:#30db5b; --green-pale:#143623;
+    --mark-bg:#3d2c14; --mark-ink:#ffffff;
+    --mat-line:#3a3a3c; --focus-halo:#0d0f16; --focus-w:6px; --focus-w-inset:3px;
+      --accent:#47a0ff; --accent-2:#47a0ff; --accent-ink:#47a0ff; --accent-line:#47a0ff; --accent-edge:#47a0ff;
+      --accent-soft:#0c2645; --accent-soft-2:#0c2645;
+      --accent-btn-1:#47a0ff; --accent-btn-2:#47a0ff; --accent-btn-h1:#68b1ff; --accent-btn-h2:#68b1ff;
+      --focus-rgb:71,160,255;
+      --book-cover:#47a0ff; --book-spine:#3373b8; --book-ribbon:#3373b8;
+    }
+    :root:not([data-mode="light"])[data-accent="green"] {
+      --accent:#30db5b; --accent-2:#30db5b; --accent-ink:#30db5b; --accent-line:#30db5b; --accent-edge:#30db5b;
+      --accent-soft:#143623; --accent-soft-2:#143623;
+      --accent-btn-1:#30db5b; --accent-btn-2:#30db5b; --accent-btn-h1:#55e179; --accent-btn-h2:#55e179;
+      --focus-rgb:48,219,91;
+      --book-cover:#30db5b; --book-spine:#239e42; --book-ribbon:#239e42;
+    }
+    :root:not([data-mode="light"])[data-accent="indigo"] {
+      --accent:#9491ff; --accent-2:#9491ff; --accent-ink:#9491ff; --accent-line:#9491ff; --accent-edge:#9491ff;
+      --accent-soft:#1d1e40; --accent-soft-2:#1d1e40;
+      --accent-btn-1:#9491ff; --accent-btn-2:#9491ff; --accent-btn-h1:#a7a5ff; --accent-btn-h2:#a7a5ff;
+      --focus-rgb:148,145,255;
+      --book-cover:#9491ff; --book-spine:#6b68b8; --book-ribbon:#6b68b8;
+    }
+    :root:not([data-mode="light"])[data-accent="orange"] {
+      --accent:#ffb340; --accent-2:#ffb340; --accent-ink:#ffb340; --accent-line:#ffb340; --accent-edge:#ffb340;
+      --accent-soft:#3d2c14; --accent-soft-2:#3d2c14;
+      --accent-btn-1:#ffb340; --accent-btn-2:#ffb340; --accent-btn-h1:#ffc162; --accent-btn-h2:#ffc162;
+      --focus-rgb:255,179,64;
+      --book-cover:#ffb340; --book-spine:#b8812e; --book-ribbon:#b8812e;
+    }
+    :root:not([data-mode="light"])[data-accent="pink"] {
+      --accent:#ff6c89; --accent-2:#ff6c89; --accent-ink:#ff6c89; --accent-line:#ff6c89; --accent-edge:#ff6c89;
+      --accent-soft:#3d1725; --accent-soft-2:#3d1725;
+      --accent-btn-1:#ff6c89; --accent-btn-2:#ff6c89; --accent-btn-h1:#ff869e; --accent-btn-h2:#ff869e;
+      --focus-rgb:255,108,137;
+      --book-cover:#ff6c89; --book-spine:#b84e63; --book-ribbon:#b84e63;
+    }
+    :root:not([data-mode="light"])[data-accent="teal"] {
+      --accent:#5ac8f5; --accent-2:#5ac8f5; --accent-ink:#5ac8f5; --accent-line:#5ac8f5; --accent-edge:#5ac8f5;
+      --accent-soft:#17343e; --accent-soft-2:#17343e;
+      --accent-btn-1:#5ac8f5; --accent-btn-2:#5ac8f5; --accent-btn-h1:#78d2f7; --accent-btn-h2:#78d2f7;
+      --focus-rgb:90,200,245;
+      --book-cover:#5ac8f5; --book-spine:#4190b0; --book-ribbon:#4190b0;
+    }
+    :root:not([data-mode="light"])[data-accent="blue"] {
+      --accent:#47a0ff; --accent-2:#47a0ff; --accent-ink:#47a0ff; --accent-line:#47a0ff; --accent-edge:#47a0ff;
+      --accent-soft:#0c2645; --accent-soft-2:#0c2645;
+      --accent-btn-1:#47a0ff; --accent-btn-2:#47a0ff; --accent-btn-h1:#68b1ff; --accent-btn-h2:#68b1ff;
+      --focus-rgb:71,160,255;
+      --book-cover:#47a0ff; --book-spine:#3373b8; --book-ribbon:#3373b8;
+    }
+  }
+  :root[data-mode="dark"] {
+    --blur:none;
+    --ink:#ffffff; --ink-2:#ffffff; --ink-3:#ffffff; --ink-disabled:#c7c7cc;
+    --line:#c7c7cc; --line-soft:#c7c7cc; --line-strong:#c7c7cc; --line-field:#e5e5ea; --line-mute:#c7c7cc;
+    --rail-line:#c7c7cc;
+    --glass:#0d0f16; --glass-strong:#0d0f16; --glass-edge:#c7c7cc;
+    --ground:#0d0f16; --sunken:#0d0f16; --chip:#2c2c2e; --raised:#2c2c2e; --paper-veil:#0d0f16; --table-zebra:#0d0f16;
+    --toc-sel-bg:#2c2c2e; --blob1:transparent; --blob2:transparent; --blob3:transparent;
+    --on-accent:#0d0f16; --indigo-fill:#9491ff;
+    --red:#ff7068; --red-ink:#ff7068; --red-pale:#3d1a1d;
+    --amber:#ffb340; --amber-ink:#ffb340; --amber-pale:#3d2c14;
+    --green:#30db5b; --green-ink:#30db5b; --green-pale:#143623;
+    --mark-bg:#3d2c14; --mark-ink:#ffffff;
+    --mat-line:#3a3a3c; --focus-halo:#0d0f16; --focus-w:6px; --focus-w-inset:3px;
+    --accent:#47a0ff; --accent-2:#47a0ff; --accent-ink:#47a0ff; --accent-line:#47a0ff; --accent-edge:#47a0ff;
+    --accent-soft:#0c2645; --accent-soft-2:#0c2645;
+    --accent-btn-1:#47a0ff; --accent-btn-2:#47a0ff; --accent-btn-h1:#68b1ff; --accent-btn-h2:#68b1ff;
+    --focus-rgb:71,160,255;
+    --book-cover:#47a0ff; --book-spine:#3373b8; --book-ribbon:#3373b8;
+  }
+  :root[data-mode="dark"][data-accent="green"] {
+    --accent:#30db5b; --accent-2:#30db5b; --accent-ink:#30db5b; --accent-line:#30db5b; --accent-edge:#30db5b;
+    --accent-soft:#143623; --accent-soft-2:#143623;
+    --accent-btn-1:#30db5b; --accent-btn-2:#30db5b; --accent-btn-h1:#55e179; --accent-btn-h2:#55e179;
+    --focus-rgb:48,219,91;
+    --book-cover:#30db5b; --book-spine:#239e42; --book-ribbon:#239e42;
+  }
+  :root[data-mode="dark"][data-accent="indigo"] {
+    --accent:#9491ff; --accent-2:#9491ff; --accent-ink:#9491ff; --accent-line:#9491ff; --accent-edge:#9491ff;
+    --accent-soft:#1d1e40; --accent-soft-2:#1d1e40;
+    --accent-btn-1:#9491ff; --accent-btn-2:#9491ff; --accent-btn-h1:#a7a5ff; --accent-btn-h2:#a7a5ff;
+    --focus-rgb:148,145,255;
+    --book-cover:#9491ff; --book-spine:#6b68b8; --book-ribbon:#6b68b8;
+  }
+  :root[data-mode="dark"][data-accent="orange"] {
+    --accent:#ffb340; --accent-2:#ffb340; --accent-ink:#ffb340; --accent-line:#ffb340; --accent-edge:#ffb340;
+    --accent-soft:#3d2c14; --accent-soft-2:#3d2c14;
+    --accent-btn-1:#ffb340; --accent-btn-2:#ffb340; --accent-btn-h1:#ffc162; --accent-btn-h2:#ffc162;
+    --focus-rgb:255,179,64;
+    --book-cover:#ffb340; --book-spine:#b8812e; --book-ribbon:#b8812e;
+  }
+  :root[data-mode="dark"][data-accent="pink"] {
+    --accent:#ff6c89; --accent-2:#ff6c89; --accent-ink:#ff6c89; --accent-line:#ff6c89; --accent-edge:#ff6c89;
+    --accent-soft:#3d1725; --accent-soft-2:#3d1725;
+    --accent-btn-1:#ff6c89; --accent-btn-2:#ff6c89; --accent-btn-h1:#ff869e; --accent-btn-h2:#ff869e;
+    --focus-rgb:255,108,137;
+    --book-cover:#ff6c89; --book-spine:#b84e63; --book-ribbon:#b84e63;
+  }
+  :root[data-mode="dark"][data-accent="teal"] {
+    --accent:#5ac8f5; --accent-2:#5ac8f5; --accent-ink:#5ac8f5; --accent-line:#5ac8f5; --accent-edge:#5ac8f5;
+    --accent-soft:#17343e; --accent-soft-2:#17343e;
+    --accent-btn-1:#5ac8f5; --accent-btn-2:#5ac8f5; --accent-btn-h1:#78d2f7; --accent-btn-h2:#78d2f7;
+    --focus-rgb:90,200,245;
+    --book-cover:#5ac8f5; --book-spine:#4190b0; --book-ribbon:#4190b0;
+  }
+  :root[data-mode="dark"][data-accent="blue"] {
+    --accent:#47a0ff; --accent-2:#47a0ff; --accent-ink:#47a0ff; --accent-line:#47a0ff; --accent-edge:#47a0ff;
+    --accent-soft:#0c2645; --accent-soft-2:#0c2645;
+    --accent-btn-1:#47a0ff; --accent-btn-2:#47a0ff; --accent-btn-h1:#68b1ff; --accent-btn-h2:#68b1ff;
+    --focus-rgb:71,160,255;
+    --book-cover:#47a0ff; --book-spine:#3373b8; --book-ribbon:#3373b8;
+  }
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:calc(var(--head-h) + 8px); }
+/* 字体栈：这一条是刷刷、岗岗、小屋主站三个项目共用的「Ysevan家族契约」，基准原文写在刷刷的 shua/styles.css，
+   本项目必须与它逐字一致——要改就三处一起改，别只在这里单独「优化」，否则三个站的中文正文会长得不一样。
+   顺位理由：苹方打头（Mac与iOS上直接命中系统默认中文字体），冬青黑接住苹方缺字的那部分；Windows无苹方，
+   自然回退到雅黑；Linux上思源黑体在fontconfig里注册的名字是"Noto Sans CJK SC"，不是Google Fonts的发行名
+   "Noto Sans SC"，写后者在多数Linux机器上不命中；末尾按基准用-apple-system与BlinkMacSystemFont而不是
+   system-ui，三个项目在同一台机器上才会解析到同一款字体。全程不引入任何网络字体。 */
+body { min-width:320px; margin:0; color:var(--ink); background:var(--ground); font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, sans-serif; font-size:var(--fs-body); line-height:1.72; }
+/* 页面底＝固定视口的三团光晕（SPEC §2）：blob1 跟强调色、blob2 暖、blob3 冷。
+   **刻意不用 background-attachment:fixed**：iOS Safari 不支持固定附着，
+   背景会被拉伸成整页文档高，越往下越跑偏。改用 body 的固定定位伪元素
+   （伪元素不进 DOM，不违反「本轮不动 DOM」）。z-index:-1 让它压在正文之下、
+   又盖在 body 自身底色之上——--ground 因此退化为「伪元素画不出来时」的纯色兜底。
+   blur(10px) 只是把三团的边界再糊软一档；它是静止的，没有任何动画，
+   所以 prefers-reduced-motion 下本来就不动（那一段另把全站 transition 关掉）。
+   高对比下三个 --blob* 令牌整组归 transparent，这里一行不改。打印段里整条 display:none。 */
+body::before { content:""; position:fixed; z-index:-1; inset:0; pointer-events:none; filter:blur(10px);
+  background:
+    radial-gradient(38vw 38vw at 12% 8%, var(--blob1), transparent 60%),
+    radial-gradient(34vw 34vw at 92% 18%, var(--blob2), transparent 60%),
+    radial-gradient(40vw 40vw at 70% 100%, var(--blob3), transparent 60%); }
+button, input { font:inherit; }
+button { cursor:pointer; }
+/* 焦点环＝outline:2px solid var(--accent) + outline-offset:2px 的 box-shadow 等价写法：
+   内层 2px --focus-halo 晕圈（浅色白 / 深色深底）+ 外层 2px --accent-ink（三套都 ≥4.7:1）。
+   晕圈刻意走独立令牌而不是 --paper：--paper 现在是半透明的，拿它当晕圈会漏出底下的渐变，环就断了。
+   目录栏不再另开一套白环——粉彩的目录栏本身就是浅的，通用环直接能用。
+   transparent outline 供高对比度模式兜底。 */
+button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
+  outline:2px solid transparent; outline-offset:2px; box-shadow:var(--focus-ring);
+}
+/* 目录与分类条自身有 overflow，外扩的环会被裁掉，改用同样双层的内描边。 */
+.toc-item:focus-visible, .category-tabs button:focus-visible { box-shadow:var(--focus-ring-inset); }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.skip-link { position:fixed; z-index:60; top:8px; left:8px; padding:10px 16px; border:1px solid var(--accent-edge); border-radius:var(--r-sm); color:var(--on-accent); background:var(--accent-grad); font-weight:700; text-decoration:none; transform:translateY(calc(-100% - 16px)); transition:transform .14s ease; }
+.skip-link:focus { transform:none; }
+
+
+/* ================= 图标（SPEC §5b） =================
+   硬规则：一律真 SVG 线条图标，stroke 1.9、圆头圆角（round），导航 20px / 列表 18px；
+   **不用字符也不用 emoji 凑图标**，不留灰色空方块占位。
+   岗岗这一轮不动 DOM，所以图标全部画在伪元素上，两种画法：
+   ① **跟随文字色的线条图标** = ::before + mask-image(内联 SVG data URI) + background:currentColor。
+      mask 只取形状，颜色永远等于元素自己的 color——换强调色、换深浅、进高对比都自动跟上，
+      也不必为每种主题各备一份图标文件。
+   ② **带底块的图标**（速查卡分组标题、品牌）= 一个 ::before 叠三层背景：
+      最上是白色线条 SVG（颜色固定白，不需要 mask）、中间 22%→0 的高光渐变、最下分类色实底；
+      再加顶边 1px 内亮线与轻投影，就是 iOS 设置里那种 32px 圆角方块。
+   全部是 data URI，不走网络，file:// 下双击打开照常（CLAUDE.md 第二条）。
+   路径来源：搜索放大镜取自样张 shua-glass.html（四工具同源），
+   其余（打开的书、业务条目、编号、材料、风险、截图、工具、目录）按同一笔触自画，见 §10 表 E。 */
+/* --brand-box 是渐变方块的边长：::before 与那枚可换图标都按它算，改一处两处同步。 */
+.brand { --brand-box:calc(34 * var(--u)); position:relative; display:inline-flex; align-items:center; gap:10px; }
+/* 品牌图标：34px 圆角方块（强调色渐变）+ 白色线条「打开的书」。压缩态与 ≤900px 一并缩到 28px。 */
+.brand::before { content:""; flex:0 0 auto; width:var(--brand-box); height:var(--brand-box); border-radius:10px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 7v12.5'/%3E%3Cpath d='M12 7C10.4 5.6 8.4 4.9 6 4.9H3.6v12.6H6c2.4 0 4.4.7 6 2'/%3E%3Cpath d='M12 7c1.6-1.4 3.6-2.1 6-2.1h2.4v12.6H18c-2.4 0-4.4.7-6 2'/%3E%3C/svg%3E") center / 22px 22px no-repeat,
+    linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0)),
+    linear-gradient(135deg,var(--accent),var(--accent-2));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45), 0 6px 14px var(--accent-soft); transition:width .12s ease, height .12s ease; }
+.workbench-head.is-condensed .brand { --brand-box:calc(28 * var(--u)); }
+.workbench-head.is-condensed .brand::before { border-radius:8px; background-size:19px 19px, auto, auto; }
+/* ---- 可换的品牌图标（§10.14b）----
+   放 assets/brand/brand-icon.svg（或 .png）即生效：app.js 注入一个 <img class="brand-icon">，
+   加载成功时给 .brand 挂上 .has-brand-file，这里据此把 ::before 上那一层**内置的白色线条图**撤掉
+   （渐变方块与内亮线、投影全部保留），再把 img 绝对定位盖在方块正中。
+   84% 直接按方块边长算：宽高都是 --brand-box 的 84%，左边偏移 8%，正好居中。
+   **刻意不用百分比 padding**：绝对定位元素的百分比内边距参照的是**包含块的宽度**（这里是 .brand，
+   连着品牌文字约 200px 宽），照百分比写会把图标压成 4px 左右——2026-09-23 实测踩过。
+   object-fit:contain 保证非方形的图也不会被拉变形。文件不存在时 app.js 把 img 摘掉，这两条规则不命中。 */
+.brand-icon { position:absolute; top:50%; left:calc(var(--brand-box) * .08); width:calc(var(--brand-box) * .84); height:calc(var(--brand-box) * .84); transform:translateY(-50%); object-fit:contain; pointer-events:none; }
+.brand.has-brand-file::before {
+  background-image:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0)), linear-gradient(135deg,var(--accent),var(--accent-2));
+}
+
+/* 工作台头：品牌 + 搜索 + 分类为第一行，四步锚点条为第二行，整体一个 sticky 容器；
+   滚动超阈值加 .is-condensed 收紧纵向空间（搜索框始终可用，只是品牌与行高变小）。 */
+/* 吸顶头是全站唯一一条「始终压在正文之上」的面，所以给它最厚的一档半透明（.82）＋ 磨砂：
+   往下滚时底下的渐变与正文在它背后糊开，既保住玻璃观感，又不让文字互相干扰。 */
+.workbench-head { position:sticky; z-index:50; top:0; border-bottom:1px solid var(--glass-edge); background:var(--head-bg); -webkit-backdrop-filter:var(--blur); backdrop-filter:var(--blur); box-shadow:0 1px 0 var(--line), 0 6px 20px rgba(var(--shadow-rgb),.05); }
+/* 四格：品牌 / 当前业务名 / 搜索 / 分类。业务名一格可压到 0（长名走省略号），
+   富余宽度全部给搜索那一格的 1fr，桌面与中屏都不会把分类控件挤出去。 */
+.head-top { min-height:calc(60 * var(--u)); padding:8px var(--edge); display:grid; grid-template-columns:minmax(0,auto) minmax(0,auto) minmax(260px,1fr) auto; align-items:center; gap:20px; }
+.workbench-head.is-condensed .head-top { min-height:calc(48 * var(--u)); padding:4px var(--edge); }
+.brand { color:var(--ink); font-size:clamp(17px,.7vw + 12px,21px); font-weight:700; letter-spacing:-.4px; text-decoration:none; white-space:nowrap; transition:font-size .12s ease; }
+.workbench-head.is-condensed .brand { font-size:calc(17 * var(--u)); }
+/* 品牌字号用的是自己那条 clamp（上限 21px），不是 N×u 的写法，>1440 时就不会跟着放大——
+   2040 对照图里它是全站 60 类文字里唯一没放大的一个。这里只在 >1440 时改成「1440 处的 21px × --scale」，
+   1440 及以下一个像素都不变（压缩态那条特异性更高，仍是 17 × u）。 */
+@media (min-width:1441px) { .brand { font-size:calc(21 * var(--u)); } }
+/* 压缩态品牌缩为短标识：横向让出的这一截给业务名与搜索框，跟纵向收紧是同一件事的两个方向。 */
+.brand-short { display:none; }
+.workbench-head.is-condensed .brand-full { display:none; }
+.workbench-head.is-condensed .brand-short { display:inline; }
+/* 当前业务名：桌面与中屏常驻（吸顶后仍答得出「现在看的是哪个业务」），压缩态一并保留，只缩一档字号。 */
+.head-biz { min-width:0; max-width:min(30ch,24vw); margin:0; overflow:hidden; color:var(--ink-2); font-size:calc(15 * var(--u)); font-weight:700; line-height:1.3; text-overflow:ellipsis; white-space:nowrap; }
+.workbench-head.is-condensed .head-biz { font-size:calc(14 * var(--u)); }
+/* 两枚吸顶栏按钮：只有 601–900px 的单吸附栏形态用得到，其余断点一律不渲染、不占位（≤600 交给 tab bar）。 */
+.head-btn { display:none; }
+/* 占位符文字也是文字，同样吃 4.5:1（SC 1.4.3）：不写这一条就落到浏览器默认灰（Chrome #757575），
+   深色底下只有 3.77:1。统一挂到 --ink-3 #5e6276——六套共用一个值（浅色压面 .82 合成色 ≥5.77:1、
+   压目录栏 .35 合成色 ≥5.09:1、**直压六套渐变最不利的那一角 ≥4.63:1**，最低的一套是海雾；
+   深色另走 #a3a8c0，压面 5.88:1）。目录栏与正文用同一档文字色，
+   不再像上一轮那样在 .toc 里把 --ink-3 就地改指侧栏标签色。
+   opacity 归 1 是给 Firefox 的——它默认给占位符再压一层透明度，
+   不归位等于把刚调好的对比度又拿掉一半。 */
+::placeholder { color:var(--ink-3); opacity:1; }
+.global-search { min-width:0; display:flex; align-items:stretch; }
+.global-search input { min-width:0; width:100%; height:calc(40 * var(--u)); padding:0 14px; border:1px solid var(--line-field); border-right:0; border-radius:var(--r-sm) 0 0 var(--r-sm); color:var(--ink); background:var(--raised); outline:0; }
+.global-search input:focus { border-color:var(--accent-ink); box-shadow:0 0 0 3px rgba(var(--focus-rgb),.11); }
+.global-search input:focus-visible { box-shadow:var(--focus-ring); }
+.global-search button[type="submit"] { min-width:80px; border:1px solid var(--accent-edge); border-radius:0 var(--r-sm) var(--r-sm) 0; color:var(--on-accent); background:var(--accent-grad); font-weight:600; box-shadow:0 6px 14px var(--accent-soft); }
+.global-search button[type="submit"]:hover { background:var(--accent-grad-hover); }
+/* 清空按钮（×）：框里有字才出现（app.js 切 hidden 属性），只清框内文字并把焦点还回输入框。 */
+.search-clear { flex:0 0 auto; width:calc(34 * var(--u)); border:1px solid var(--line-field); border-left:0; border-right:0; color:var(--ink-3); background:var(--raised); font-size:calc(19 * var(--u)); line-height:1; }
+.search-clear:hover { color:var(--accent-ink); }
+.search-clear[hidden] { display:none; }
+/* Chrome / Edge / Safari 会给 type=search 自带一枚清除钮（外加一块放大镜装饰位），和上面那枚 .search-clear 并排就是两个「×」
+   （2026-09-27 截图坐实，电脑与手机都有）。这里只藏顶栏搜索框的：我们自己那枚还要管「只清字、焦点还回框里、收浮层」。
+   目录过滤框没有自己的 ×，自带那枚是它唯一的清除钮，所以不动它。 */
+.global-search input::-webkit-search-cancel-button,
+.global-search input::-webkit-search-decoration { -webkit-appearance:none; appearance:none; }
+.workbench-head.is-condensed .global-search input, .workbench-head.is-condensed .global-search button { height:34px; }
+
+/* ---- 搜索联想浮层（design-proposal.md §11）----
+   挂在搜索表单里、绝对定位压在正文之上（表单补一个 position:relative 当定位参照，原有的 flex 不动）；
+   打印样式隐藏整个工作台头，它跟着一起不出现。≤900px 表单收起时它也随之 display:none。
+   **实色面：不挂 backdrop-filter，也不拿半透明玻璃令牌当底**——它压在正文上，要实色才读得清；
+   模糊在没显卡的机器上会拖垮整页（§10.11）。颜色一律走令牌，深色 / 高对比 / 六个强调色自动跟着换。
+   开合只过渡 transform 与 opacity：关时 visibility 延到淡出结束才隐藏、开时立即可见（与目录抽屉同一写法）；
+   条目随输入整片替换、瞬间到位，不过渡任何布局属性。减弱动效下由文末那条全站规则把过渡归零，这里不另写。
+   选项里没有 button：上面那几条「.global-search button」的定高规则碰不到它。 */
+.global-search { position:relative; }
+/* 高度上限只是兜底（正常条数下不出滚动条）：跟着 --u 放大，否则 2552 那档（×1.45）6 条就顶破 28rem；
+   用 svh 不用 vh——手机地址栏露着时的小视口才是最坏情况（前一条 vh 给不认 svh 的旧内核）。 */
+.search-suggest { position:absolute; z-index:10; top:calc(100% + 6px); left:0; right:0; max-height:min(70vh, calc(560 * var(--u))); max-height:min(70svh, calc(560 * var(--u))); overflow-y:auto;
+  padding:6px; border:1px solid var(--line); border-radius:var(--r-md); background:var(--raised); box-shadow:var(--shadow-pop);
+  opacity:0; transform:translateY(-4px) scale(.985); transform-origin:top center; visibility:hidden; pointer-events:none;
+  transition:opacity .14s ease-out, transform .18s cubic-bezier(.2,.8,.2,1), visibility 0s linear .18s; }
+.search-suggest.is-open { opacity:1; transform:none; visibility:visible; pointer-events:auto;
+  transition:opacity .14s ease-out, transform .18s cubic-bezier(.2,.8,.2,1), visibility 0s; }
+.search-suggest ul { margin:0; padding:0; list-style:none; }
+.suggest-note { margin:0; padding:6px 10px 4px; color:var(--ink-2); font-size:calc(13 * var(--u)); line-height:1.5; }
+.suggest-note[hidden] { display:none; }
+.search-suggest [role="option"] { min-height:calc(44 * var(--u)); padding:6px 10px; display:flex; align-items:center; gap:10px; border-radius:var(--r-xs); cursor:pointer; }
+.suggest-main { min-width:0; flex:1 1 auto; display:flex; flex-direction:column; justify-content:center; }
+.suggest-title { color:var(--ink); font-size:calc(15 * var(--u)); font-weight:600; line-height:1.35; }
+.suggest-path { overflow:hidden; color:var(--ink-3); font-size:calc(12 * var(--u)); line-height:1.4; text-overflow:ellipsis; white-space:nowrap; }
+.suggest-badge { flex:0 0 auto; padding:2px 8px; border-radius:var(--r-pill); color:var(--accent-ink); background:var(--accent-soft); font-size:calc(12 * var(--u)); line-height:1.5; white-space:nowrap; }
+/* 当前项（键盘与鼠标共用的那一个游标）底色 --accent-soft；角标在当前项上改压实色面，免得和行底融成一片。
+   hover 的 --accent-soft-2 只在「还没有当前项」时出现：鼠标一动游标就跟过去，键盘再挪开时不会同时亮两条。
+   不认 :has() 的旧内核整条 hover 规则作废，只剩当前项那一种高亮，照样可用。 */
+.search-suggest:not(:has([aria-selected="true"])) [role="option"]:hover { background:var(--accent-soft-2); }
+.search-suggest [role="option"][aria-selected="true"] { background:var(--accent-soft); }
+.search-suggest [aria-selected="true"] .suggest-badge { background:var(--raised); }
+/* 「查看全部 N 个结果」：固定在末尾，上方一道分隔线（画在伪元素上，不受圆角与当前项底色影响）。 */
+.search-suggest [data-suggest-all] { position:relative; margin-top:7px; color:var(--accent-ink); font-size:calc(14 * var(--u)); font-weight:700; }
+.search-suggest [data-suggest-all]::before { content:""; position:absolute; top:-4px; right:10px; left:10px; border-top:1px solid var(--line); }
+
+/* ---- 主按钮（屋主 2026-09-23 改定，四家统一）----
+   底＝和品牌图标同一条亮渐变 linear-gradient(135deg, var(--accent), var(--accent-2))，白字，
+   浅色深色同一套。屋主原话：「所有颜色的按钮色可以和页面左上角的颜色一样浅一点」。
+   **白字压这条亮渐变达不到 4.5**（浅色 1.41–5.65，六色里只有靛过 3:1），
+   这是记录在案的**审美优先例外**，比值逐色列在 §10 表 D 与它下面那一节。
+   唯一补救是白字的 text-shadow（与四家一致），**不压深渐变、不加描边**；打印段里 text-shadow 归 none。 */
+.btn-on-accent, .skip-link, .global-search button[type="submit"], .step-footer button.next,
+.stage-fab, .aside-focus[aria-pressed="true"], .lightbox-filter button[aria-pressed="true"],
+.head-drawer-open[aria-expanded="true"], .rail-node.active b, .film-shot .film-stage {
+  text-shadow:0 1px 2px rgba(0,0,0,.25);
+}
+
+/* 分类条收敛为分段控件：两枚按钮，宽度自适应，不再是整条横栏。 */
+.category-tabs { justify-self:end; display:inline-flex; gap:2px; padding:2px; border:0; border-radius:var(--r-xs); background:var(--sunken); overflow:hidden; }
+.category-tabs button { min-width:calc(88 * var(--u)); height:calc(30 * var(--u)); padding:0 calc(17 * var(--u)); border:0; border-radius:8px; color:var(--ink-2); background:transparent; font-size:calc(14 * var(--u)); font-weight:600; white-space:nowrap; }
+.category-tabs button:hover { color:var(--accent-ink); }
+.category-tabs button.active { color:var(--accent-ink); background:var(--raised); box-shadow:0 1px 3px rgba(var(--shadow-rgb),.12); }
+
+/* 四步锚点条：四个节点始终存在，点击定位到同页对应段落，滚动时联动高亮。 */
+/* 工作台头通栏：两行都铺满视口，左右内边距与阅读栏同走 --edge，品牌因此始终对齐目录栏左边。 */
+.head-rail { padding:0 var(--edge); border-top:1px solid var(--line-soft); }
+.head-rail:empty { display:none; }
+.stage-rail { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
+.rail-node { position:relative; min-width:0; min-height:calc(66 * var(--u)); padding:30px 12px 7px 6px; border:0; color:var(--ink-3); background:transparent; text-align:left; }
+.workbench-head.is-condensed .rail-node { min-height:56px; padding-top:26px; padding-bottom:4px; }
+/* 连接线在空环节段改虚线，不给“走得通”的暗示。 */
+.rail-node::before { content:""; position:absolute; z-index:0; top:16px; right:0; left:0; border-top:2px solid var(--rail-line); }
+.workbench-head.is-condensed .rail-node::before { top:14px; }
+.rail-node:first-child::before { left:50%; }
+.rail-node:last-child::before { right:50%; }
+.rail-node.vacant::before { border-top-style:dashed; border-top-color:var(--line-mute); }
+.rail-node b { position:absolute; z-index:1; top:calc(5 * var(--u)); left:calc(4 * var(--u)); width:calc(23 * var(--u)); height:calc(23 * var(--u)); display:grid; place-items:center; border-radius:50%; color:var(--ink-2); background:var(--chip); font-size:calc(12 * var(--u)); }
+.workbench-head.is-condensed .rail-node b { top:3px; }
+.rail-name { position:relative; z-index:1; display:block; overflow:hidden; color:inherit; font-size:calc(14 * var(--u)); font-weight:800; line-height:1.35; text-overflow:ellipsis; white-space:nowrap; }
+.rail-meta { position:relative; z-index:1; display:block; color:var(--ink-3); font-size:calc(12 * var(--u)); font-weight:400; line-height:1.4; }
+.rail-node:hover:not(.active) .rail-name { color:var(--ink-2); }
+.rail-node.active { color:var(--accent-ink); }
+.rail-node.active b { color:var(--on-accent); background:var(--accent-grad); box-shadow:0 0 0 4px var(--accent-soft); }
+/* 空环节：虚线圈 + “未单列”，用 aria-disabled 而非 disabled，仍可聚焦、可点、可读屏。
+   正因为它不是真的 disabled（能聚焦、能点、承载“原手册未单列”这条制度信息），
+   SC 1.4.3 的“禁用控件例外”对它不成立，字色必须照常吃 4.5:1——
+   所以这三处走 --ink-3（浅 4.63–5.29:1 / 深 8.16–9.64:1），不再借 --ink-disabled（浅 3.44–3.93:1）。
+   “未启用”的观感改由虚线圈、虚线连接线与“未单列”四个字承担，视觉层级一点没让。 */
+.rail-node.vacant .rail-name, .rail-node.vacant .rail-meta { color:var(--ink-3); }
+.rail-node.vacant b { color:var(--ink-3); border:1px dashed var(--line-mute); background:var(--sunken); }
+.rail-node.vacant.active .rail-name { color:var(--ink-2); }
+.rail-node.vacant.active b { color:var(--accent-ink); border-color:var(--accent-line); background:var(--accent-soft); box-shadow:0 0 0 4px var(--accent-soft-2); }
+
+.manual-shell { min-height:calc(100vh - var(--head-h)); }
+/* 外壳自己不铺面色：三列各自铺（目录 --toc-bg / 正文 --paper / 右栏 --panel）。
+   外壳若也铺 --paper，半透明会和列内的面叠加，.82 叠 .82 直接糊成近白，玻璃感全丢。 */
+/* 宽屏铺满：不设 max-width、不居中留白。左目录与右速查卡各自保持 scale 后的固定宽，
+   中间那一列（minmax(0,1fr)）吸收全部余量；正文行宽另由 --measure 居中收住（见下面 .reader > *）。 */
+.manual-layout { width:100%; min-height:calc(100vh - var(--head-h)); display:grid; grid-template-columns:var(--side-w) minmax(0,1fr) var(--aside-w); align-items:stretch; background:transparent; border:0; }
+/* 正文与右栏各有常驻容器：切业务/切环节只替换容器内部，目录 DOM 不动，滚动位置与折叠状态自然保留。 */
+.reader-host, .aside-host { min-width:0; display:grid; }
+.reader-host:focus { outline:none; }
+.reader-host:focus-visible { box-shadow:var(--focus-ring); }
+
+/* 目录外壳：>900px 时 display:contents，目录本身仍是栅格第一列（桌面形态与一二期完全一致）；
+   ≤900px 时它变成底部抽屉面板。目录元素从不在 DOM 里搬家，滚动位置与折叠状态因此天然保留。 */
+/* 目录栏（§10.5）：玻璃侧栏——--glass .62 + blur(30px) saturate(160%)，右边线是一道
+   亮白线 --toc-line（= --glass-edge），整栏浮在三团光晕之上。宽度走 --side-w 的 clamp。
+   只有三个侧栏专用令牌（--toc-bg 底、--toc-sel-bg 选中底、--toc-line 边线），
+   其余一律回到通用令牌：文字走 --ink / --ink-2 / --ink-3，强调走 --accent-ink，焦点环走通用那一套。 */
+.toc-dock { display:contents; }
+.toc-drawer-head { display:none; }
+.toc-scrim { display:none; }
+/* 底色铺在整列上（列有多高铺多高），**磨砂只挂在下面那个视口大小的 .toc-sticky 上**——
+   整列在长业务上同样近两万像素高，挂磨砂会撞上与阅读区一模一样的纹理上限问题（§10.11）。 */
+.toc { min-width:0; border-right:1px solid var(--toc-line); background:var(--toc-bg); color:var(--ink); }
+/* 目录条目前的线条图标：20px、stroke 1.9、圆头，不带底块；常态次级灰、选中随文字变强调色文字档。 */
+.toc-item::before { content:""; flex:0 0 auto; width:calc(20 * var(--u)); height:calc(20 * var(--u)); margin-right:calc(9 * var(--u)); background:currentColor; opacity:.55;
+  -webkit-mask:var(--ic-doc) center / calc(20 * var(--u)) calc(20 * var(--u)) no-repeat; mask:var(--ic-doc) center / calc(20 * var(--u)) calc(20 * var(--u)) no-repeat; }
+.toc-item.selected::before, .toc-item:hover::before { opacity:1; }
+/* 整栏吸附到工作台头下沿，只有业务列表内滚，不再是页面里嵌一个矮滚动框。
+   磨砂放这里：它有 max-height 限到一屏，永远是视口大小的一层，滚动时重算的面积是常数。 */
+.toc-sticky { position:sticky; top:var(--head-h); max-height:calc(100vh - var(--head-h)); display:flex; flex-direction:column; -webkit-backdrop-filter:var(--blur); backdrop-filter:var(--blur); }
+.toc-heading { flex:0 0 auto; min-height:calc(64 * var(--u)); padding:0 calc(24 * var(--u)); display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid var(--line); }
+.toc-heading h2 { margin:0; color:var(--ink); font-size:calc(17 * var(--u)); }
+.toc-heading span { color:var(--ink-3); font-size:calc(12 * var(--u)); white-space:nowrap; }
+.toc-filter { flex:0 0 auto; padding:11px 23px; border-bottom:1px solid var(--line); }
+.toc-filter input { width:100%; height:calc(36 * var(--u)); padding:0 11px; border:1px solid var(--line-strong); border-radius:var(--r-sm); color:var(--ink); background:var(--paper); font-size:calc(13 * var(--u)); outline:0; }
+.toc-filter input:focus { border-color:var(--accent-ink); }
+.toc-scroll { flex:1 1 auto; min-height:0; overflow:auto; }
+.toc-group { border-bottom:1px solid var(--line); }
+/* 分组标题按刷刷 .nav-section-label 的关系做：比条目小一档、加粗、字距 .08em、标签灰。
+   刷刷那一条是 10px，这里用 13px——岗岗的 summary 不是纯标签而是带计数的可点开合行，
+   10px 中文低于本项目 §6.4「辅助字 ≥13px」的地板。 */
+.toc-group summary { min-height:calc(48 * var(--u)); padding:calc(13 * var(--u)) calc(23 * var(--u)); display:flex; align-items:center; justify-content:space-between; gap:10px; list-style:none; color:var(--ink-3); cursor:pointer; font-size:calc(13 * var(--u)); font-weight:600; letter-spacing:.04em; }
+.toc-group summary::-webkit-details-marker { display:none; }
+/* 开合箭头也换成真图标（原来是 "›" 这个字符，SPEC §5b 禁止用字符凑图标）。 */
+.toc-group summary::before { content:""; flex:0 0 auto; width:calc(16 * var(--u)); height:calc(16 * var(--u)); margin-right:calc(6 * var(--u)); background:currentColor;
+  -webkit-mask:var(--ic-chevron) center / calc(16 * var(--u)) calc(16 * var(--u)) no-repeat; mask:var(--ic-chevron) center / calc(16 * var(--u)) calc(16 * var(--u)) no-repeat;
+  transform:rotate(0deg); transition:transform .16s ease; }
+.toc-group[open] summary::before { transform:rotate(90deg); color:var(--accent-ink); }
+.toc-group summary small { margin-left:auto; color:var(--ink-3); font-size:calc(12 * var(--u)); font-weight:400; letter-spacing:0; }
+.toc-group[open] summary { color:var(--ink); background:var(--paper); }
+.toc-item { width:100%; min-height:calc(39 * var(--u)); padding:calc(8 * var(--u)) calc(23 * var(--u)) calc(8 * var(--u)) calc(42 * var(--u)); display:flex; align-items:center; justify-content:space-between; gap:8px; border:0; border-radius:var(--r-xs); color:var(--ink); background:transparent; text-align:left; }
+.toc-item:hover { color:var(--ink); background:var(--paper); }
+/* 选中项＝样张 .nav a.on：更实的一层白（.85）+ 一点点浮起的阴影 + 蓝字加粗。
+   上一轮那三条行内令牌覆写（把点阵与 ★ 换成压得住白底的一档）在粉彩下没有存在意义了——
+   整栏本身就是浅的，点阵与 ★ 在常态与选中态用的是同一档颜色，那三条因此整条删掉。 */
+.toc-item.selected { color:var(--accent-ink); background:var(--toc-sel-bg); box-shadow:var(--shadow); font-weight:600; }
+.toc-item > span:not(.toc-dots) { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.toc-item.is-hidden, .toc-group.is-hidden { display:none; }
+/* 目录点阵（§4.7）：四个点对应四个环节，实心 = 该环节在原手册里单列了内容。
+   整块高度锁到 20px 并与条目垂直居中，条目自身的 min-height 与触控目标一字不动。 */
+.toc-dots { flex:0 0 auto; height:20px; display:inline-flex; align-items:center; gap:4px; }
+.toc-dot { width:calc(6 * var(--u)); height:calc(6 * var(--u)); border:1px solid var(--line-strong); border-radius:50%; background:transparent; }
+.toc-dot.is-on { border-color:var(--accent-ink); background:var(--accent-ink); }
+.toc-item:hover .toc-dot, .toc-item.selected .toc-dot { border-color:var(--line-strong); }
+.toc-item:hover .toc-dot.is-on, .toc-item.selected .toc-dot.is-on { border-color:var(--accent-ink); background:var(--accent-ink); }
+/* 已标星的目录条目：纯 CSS 伪元素 ★，不可点、不可聚焦——绕开「按钮里不能再套按钮」。 */
+.toc-item.is-starred::after { content:"★"; flex:0 0 auto; margin-left:2px; color:var(--amber-ink); font-size:calc(12 * var(--u)); line-height:1; }
+.toc-note { flex:0 0 auto; margin:20px 23px 28px; padding-top:15px; border-top:1px solid var(--line); color:var(--ink-2); font-size:calc(12 * var(--u)); line-height:1.6; }
+
+/* 快速入口（§4.8）：过滤框之下、目录滚动区之上的固定小岛，零点击可见。
+   类名刻意不与 .toc-group / .toc-item 重名——目录过滤的「命中 N / 全部 M」据此自动绕开这里。 */
+.quick-entry { flex:0 0 auto; }
+.quick-entry:not(:empty) { padding:10px 23px 12px; border-bottom:1px solid var(--line); background:var(--paper); }
+.quick-alert { margin:0 0 8px; padding:7px 9px; border-left:3px solid var(--amber-ink); background:var(--chip); color:var(--amber-ink); font-size:calc(12 * var(--u)); line-height:1.5; }
+.quick-group + .quick-group { margin-top:9px; }
+.quick-head { margin:0 0 5px; display:flex; align-items:center; gap:6px; color:var(--ink-3); font-size:calc(11 * var(--u)); font-weight:800; letter-spacing:.06em; }
+.quick-head span { padding:0 5px; border-radius:var(--r-md); background:var(--chip); font-weight:700; letter-spacing:0; }
+.quick-list { margin:0; padding:0; list-style:none; }
+.quick-row { display:flex; align-items:stretch; gap:4px; }
+.quick-item { flex:1 1 auto; min-width:0; min-height:30px; padding:4px 7px; display:flex; align-items:center; border:0; border-radius:var(--r-xs); color:var(--ink); background:transparent; text-align:left; font-size:calc(13 * var(--u)); }
+.quick-item:hover { color:var(--ink); background:var(--paper); }
+.quick-name { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.quick-drop { flex:0 0 auto; min-height:30px; padding:0 7px; border:1px solid transparent; border-radius:var(--r-xs); color:var(--ink-3); background:transparent; font-size:calc(12 * var(--u)); }
+.quick-drop:hover { border-color:var(--line-strong); color:var(--ink); background:var(--paper); }
+
+/* --reader-pad 是正文左右内边距的唯一来源：吸底条靠负 margin 出血到同一宽度，写死数值会在 821–1450px 撑出横向滚动条。 */
+/* **阅读区不挂 backdrop-filter**（§10.11）：它是随正文长的面，长业务上高到近两万像素，
+   超过显卡纹理上限会整层丢弃（真机上表现为切配色后整栏空白，要等下次滚动才出现），
+   不超限时每次滚动也要把整层重新光栅化。半透明改由 .82 的不透明度单独承担。 */
+.reader { --reader-pad:var(--edge); min-width:0; padding:calc(var(--pad) + 8px) var(--reader-pad) 0; background:var(--paper); }
+.breadcrumbs { margin:0 0 12px; color:var(--ink-3); font-size:calc(13 * var(--u)); overflow-wrap:anywhere; }
+/* 面包屑两份：桌面出全路径，≤900px 换成「上级 › 当前」两级；未启用的那一份不渲染，读屏也读不到。 */
+.crumb-short { display:none; }
+.reader-heading { display:flex; align-items:start; justify-content:space-between; gap:22px; }
+.reader-heading h1 { margin:0; color:var(--ink); font-size:var(--fs-title); font-weight:700; line-height:1.2; letter-spacing:-.4px; }
+.reader-heading h1:focus { outline:none; }
+.reader-heading h1:focus-visible { box-shadow:var(--focus-ring); }
+.reader-heading p { max-width:680px; margin:10px 0 0; color:var(--ink-3); font-size:calc(14 * var(--u)); }
+/* 标星按钮：全站唯一的「加入/移出常办」入口，与打印、专注模式同属「针对当前业务的操作」。 */
+.star-toggle { flex:0 0 auto; min-height:calc(38 * var(--u)); padding:0 calc(14 * var(--u)); border:1px solid var(--line-strong); border-radius:var(--r-pill); color:var(--ink-2); background:var(--paper); font-size:calc(13 * var(--u)); font-weight:700; white-space:nowrap; }
+.star-toggle:hover { border-color:var(--accent-line); color:var(--accent-ink); }
+.star-toggle[aria-pressed="true"] { border-color:var(--amber-ink); color:var(--amber-ink); background:var(--amber-pale); }
+
+/* 原文对照视图（§4.9）：按原稿顺序逐块显示，只有转义与最基本的段落/表格/图片版式。 */
+.raw-bar { margin:20px 0 0; padding:11px 14px; display:flex; align-items:center; justify-content:space-between; gap:14px; border:1px solid var(--line); border-left:4px solid var(--ink-2); border-radius:0 var(--r-sm) var(--r-sm) 0; background:var(--paper); }
+.raw-note { margin:0; color:var(--ink-2); font-size:calc(13 * var(--u)); line-height:1.6; }
+.raw-exit { flex:0 0 auto; min-height:38px; padding:0 14px; border:1px solid var(--line-strong); border-radius:var(--r-sm); color:var(--ink-2); background:var(--paper); font-size:calc(13 * var(--u)); font-weight:700; white-space:nowrap; }
+.raw-exit:hover { border-color:var(--accent-line); color:var(--accent-ink); }
+.raw-document { min-height:auto; margin-top:0; padding:22px 0 40px; }
+.raw-para { max-width:76ch; margin:0 0 10px; color:var(--ink); white-space:pre-wrap; overflow-wrap:anywhere; }
+.raw-table { min-width:100%; }
+.raw-images { margin:12px 0; display:flex; flex-wrap:wrap; gap:12px; }
+.raw-image { max-width:100%; height:auto; border:1px solid var(--mat-line); background:var(--mat); }
+
+/* 连续文档：四个环节同页顺次排列，锚点定位时把吸顶头的高度让出来。 */
+.document { min-height:420px; margin-top:24px; border-top:1px solid var(--line); }
+.stage-section { scroll-margin-top:calc(var(--head-h) + 8px); }
+.stage-section + .stage-section { border-top:1px solid var(--line); }
+.stage-section.is-vacant .document-body { padding-bottom:22px; }
+/* 空环节的口径说明条：与正文提示条同一套琥珀基因，独立 class 以便与原稿提示区分。 */
+.stage-notice { max-width:var(--measure); margin:2px 0 4px; padding:12px 15px; border-left:4px solid var(--amber); border-radius:0 var(--r-sm) var(--r-sm) 0; background:var(--amber-pale); color:var(--ink-2); font-size:calc(14 * var(--u)); line-height:1.7; }
+.document-heading { padding:23px 0 16px; border-bottom:1px solid var(--line-soft); }
+.document-heading p { margin:0; color:var(--accent-ink); font-size:calc(13 * var(--u)); font-weight:800; letter-spacing:.05em; }
+.document-heading h2 { margin:2px 0 2px; font-size:var(--fs-h2); font-weight:700; line-height:1.35; letter-spacing:-.2px; }
+.document-heading span { color:var(--ink-3); font-size:calc(14 * var(--u)); }
+.document-body { padding:21px 0 32px; }
+/* 层级：h1 业务 › h2 环节 › h3 小节。红左条从原来的 h4 迁到 h3。 */
+.document-body h3 { margin:24px 0 10px; padding-left:12px; border-left:4px solid var(--accent-line); color:var(--ink); font-size:calc(17 * var(--u)); line-height:1.5; }
+.document-body h3:first-child { margin-top:0; }
+.document-body p { max-width:var(--measure); margin:0 0 13px; color:var(--ink-2); overflow-wrap:anywhere; }
+.document-body p + p { margin-top:2px; }
+
+/* 定义行「标签：内容」：标签加粗小字置左，内容常规；右值过长改为标签独占一行的堆叠版式。 */
+.def-line { max-width:var(--measure); margin:0 0 9px; display:grid; grid-template-columns:minmax(0,max-content) minmax(0,1fr); gap:2px 12px; align-items:baseline; }
+.def-line.is-stacked { grid-template-columns:minmax(0,1fr); }
+.def-label { color:var(--ink); font-size:calc(13 * var(--u)); font-weight:800; letter-spacing:.01em; white-space:nowrap; }
+.def-line.is-stacked .def-label { white-space:normal; }
+.def-value { min-width:0; color:var(--ink-2); overflow-wrap:anywhere; }
+
+/* 编号组：序号是原文字符，用 span 做样式序标，不用 CSS counter，不删不改一个字。 */
+.step-list { max-width:var(--measure); margin:0 0 14px; padding:0; list-style:none; counter-reset:none; }
+.step-list > li { position:relative; margin:0 0 7px; padding:0 0 0 4px; display:grid; grid-template-columns:minmax(0,max-content) minmax(0,1fr); gap:0 10px; align-items:baseline; color:var(--ink-2); }
+.step-list > li::before { content:""; position:absolute; top:2px; bottom:-7px; left:0; width:2px; background:var(--rail-line); }
+.step-list > li:last-child::before { bottom:6px; }
+.li-num { color:var(--accent-ink); font-family:var(--mono); font-size:calc(13 * var(--u)); font-weight:800; white-space:nowrap; }
+.li-text { min-width:0; overflow-wrap:anywhere; }
+.li-text.def-line { margin:0; }
+
+/* 办理步骤的纵向时间线：序号圆点里放的就是原文序标（“1.”“①”），不用 CSS counter，一个字不生成。
+   连接线由 li::before 的竖线延长而来，圆点压在它上面。 */
+.step-list.is-timeline { padding-left:2px; }
+.step-list.is-timeline > li { margin-bottom:14px; padding-left:34px; display:block; }
+.step-list.is-timeline > li::before { top:11px; bottom:-14px; left:12px; width:2px; background:var(--rail-line); }
+.step-list.is-timeline > li:last-child::before { display:none; }
+.step-list.is-timeline .li-num { position:absolute; top:0; left:0; min-width:26px; height:26px; padding:0 4px; display:grid; place-items:center; border:1px solid var(--accent-soft); border-radius:13px; color:var(--accent-ink); background:var(--accent-soft); font-size:calc(12 * var(--u)); }
+.step-list.is-timeline .li-text { display:block; padding-top:2px; }
+.step-list.is-timeline .li-text.def-line { display:grid; }
+/* 挂在步骤节点上的截图：缩进对齐正文，缩略图仍走灯箱。 */
+.step-shot { margin:10px 0 4px; }
+.step-shot .source-images { grid-template-columns:repeat(auto-fit,minmax(calc(210 * var(--u)),1fr)); gap:calc(12 * var(--u)); margin:0; }
+
+/* 材料勾选卡：卡头是原文标签 + 进度 + 清空，卡身是切分出来的勾选项，卡脚折叠里放逐字原文。 */
+.check-card { max-width:var(--measure); margin:0 0 14px; border:0; border-radius:var(--r-lg); background:var(--glass-strong); box-shadow:var(--shadow); overflow:hidden; }
+.check-head { padding:9px 13px; display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 10px; border-bottom:1px solid var(--line); }
+.check-head .def-label { white-space:normal; }
+.check-progress { margin-left:auto; color:var(--ink-3); font-family:var(--mono); font-size:calc(12 * var(--u)); white-space:nowrap; }
+.check-clear { min-height:24px; padding:0 8px; border:1px solid var(--line-strong); border-radius:var(--r-sm); color:var(--ink-3); background:var(--paper); font-size:calc(12 * var(--u)); }
+.check-clear:hover { color:var(--accent-ink); border-color:var(--accent-line); background:var(--accent-soft); }
+.check-list { margin:0; padding:6px 13px 8px; list-style:none; }
+.check-item { display:flex; align-items:baseline; gap:9px; padding:5px 0; color:var(--ink-2); cursor:pointer; }
+.check-item:hover { color:var(--ink); }
+.check-item input { flex:0 0 auto; width:16px; height:16px; margin:0; accent-color:var(--accent); transform:translateY(2px); }
+.check-text { min-width:0; overflow-wrap:anywhere; }
+.check-item input:checked + .check-text { color:var(--ink-3); text-decoration:line-through; text-decoration-color:var(--line-mute); }
+.check-source { border-top:1px solid var(--line); }
+.check-source summary { padding:7px 13px; list-style:none; color:var(--ink-3); font-size:calc(12 * var(--u)); cursor:pointer; }
+.check-source summary::-webkit-details-marker { display:none; }
+.check-source summary::before { content:"›"; margin-right:5px; display:inline-block; font-size:calc(15 * var(--u)); line-height:1; transition:transform .16s ease; }
+.check-source[open] summary { color:var(--accent-ink); }
+.check-source[open] summary::before { transform:rotate(90deg); }
+.check-raw { max-width:none; margin:0; padding:0 13px 11px; color:var(--ink-2); font-size:calc(13 * var(--u)); overflow-wrap:anywhere; }
+
+/* 风险分级：只加左色条与行首小标签，原文一字不动，也绝不折叠或隐藏；关掉开关后两者一起消失。 */
+.risk-line { padding-left:11px; border-left:3px solid transparent; }
+.risk-line.risk-1 { border-left-color:var(--red-ink); }
+.risk-line.risk-2 { border-left-color:var(--amber-ink); }
+/* 行首标记做成**软底胶囊**：与 mark 高亮同一手法（语义色文字档 + 同色相浅底），
+   在长正文里一眼能扫到；底色是实色浅底，文字档压它 ≥4.5（§10 表 D）。 */
+.risk-tag { margin-right:5px; padding:0 5px; border-radius:5px; font-size:calc(12 * var(--u)); font-weight:700; letter-spacing:.02em; white-space:nowrap; }
+.risk-1 > .risk-tag, .risk-1 .risk-tag { color:var(--red-ink); background:var(--red-pale); }
+.risk-2 > .risk-tag, .risk-2 .risk-tag { color:var(--amber-ink); background:var(--amber-pale); }
+/* 定义行是两列网格，行首标签自占一行，免得把标签与内容挤成三格。 */
+.li-text.def-line > .risk-tag { grid-column:1 / -1; }
+li.risk-line { padding-left:15px; }
+html.risk-off .risk-tag { display:none; }
+html.risk-off .risk-line { padding-left:0; border-left:0; }
+html.risk-off li.risk-line { padding-left:4px; }
+
+/* 定位高亮：点右栏速查卡的条目后，落点闪一下再淡出；减少动态偏好下由 JS 直接不加这个类。 */
+@keyframes hb-flash { 0%,100% { box-shadow:0 0 0 0 rgba(var(--focus-rgb),0); } 12%,62% { box-shadow:0 0 0 3px rgba(var(--focus-rgb),.5); } }
+.is-flash { border-radius:var(--r-xs); animation:hb-flash 1.5s ease-in-out 1; }
+
+/* 提示条：原稿里的编辑标注与提醒，克制处理——左琥珀条 + 浅底，不加图标不加“警告”字样。 */
+.notice-block { max-width:var(--measure); margin:14px 0; padding:10px 14px; border-left:4px solid var(--amber); border-radius:0 var(--r-sm) var(--r-sm) 0; background:var(--amber-pale); color:var(--ink-2); font-size:calc(14 * var(--u)); }
+
+/* 交易码徽章：等宽深蓝，点击复制。 */
+.code-badge { position:relative; margin:0 1px; padding:1px 6px; border:0; border-radius:var(--r-pill); color:var(--accent-ink); background:var(--accent-soft); font-family:var(--mono); font-size:.94em; font-weight:700; letter-spacing:.02em; line-height:inherit; }
+.code-badge:hover { border-color:var(--accent-ink); background:var(--accent-soft-2); }
+/* 「已复制 / 请手动复制」气泡（design-proposal.md §12）：徽章上方居中，带一枚指着徽章中心的小箭头。
+   --bubble-shift 是碰撞处理（app.js placeBubble）算出的左右平移：气泡整体移回视口，箭头反向移、仍指着徽章中心；
+   .is-below 是上方会被挡（视口顶、吸顶栏、裁切它的 .table-wrap）时翻到徽章下方，箭头朝上、缩放原点跟着翻。
+   出现 .16s：淡入 + 自徽章方向 4px 位移 + .92→1 缩放，原点在箭头那一端；到点后 .14s 淡出再删。只动 transform 与 opacity。 */
+@keyframes copy-bubble-in { from { opacity:0; transform:translateX(calc(-50% + var(--bubble-shift, 0px))) translateY(var(--bubble-rise, 4px)) scale(.92); } }
+@keyframes copy-bubble-out { to { opacity:0; } }
+.copy-bubble { position:absolute; z-index:5; bottom:calc(100% + 8px); left:50%; padding:3px 8px; border-radius:var(--r-sm); color:var(--paper); background:var(--ink); font-family:inherit; font-size:calc(12 * var(--u)); font-weight:400; white-space:nowrap; transform:translateX(calc(-50% + var(--bubble-shift, 0px))) translateY(0) scale(1); transform-origin:calc(50% - var(--bubble-shift, 0px)) 100%; pointer-events:none; animation:copy-bubble-in .16s cubic-bezier(.2,.8,.2,1); }
+/* 箭头：边框三角、静态定位（不用 transform），颜色与气泡底同一令牌。 */
+.copy-bubble::after { content:""; position:absolute; top:100%; left:calc(50% - var(--bubble-shift, 0px) - 5px); border:5px solid transparent; border-bottom-width:0; border-top-color:var(--ink); }
+.copy-bubble.is-below { top:calc(100% + 8px); bottom:auto; transform-origin:calc(50% - var(--bubble-shift, 0px)) 0; --bubble-rise:-4px; }
+.copy-bubble.is-below::after { top:auto; bottom:100%; border-top-width:0; border-bottom-width:5px; border-top-color:transparent; border-bottom-color:var(--ink); }
+.copy-bubble.is-leaving { animation:copy-bubble-out .14s ease forwards; }
+/* 强制色（Windows 高对比）：系统把气泡底改成 Canvas、字改成 CanvasText，补一圈 CanvasText 边框才看得出是个框。
+   边框三角那三条透明边在强制色下会被改成实色、整块变成方块，所以箭头退出强制色，只把有色的那条边写成 CanvasText。 */
+@media (forced-colors:active) {
+  .copy-bubble { border:1px solid CanvasText; }
+  .copy-bubble::after { forced-color-adjust:none; border-top-color:CanvasText; }
+  .copy-bubble.is-below::after { border-bottom-color:CanvasText; }
+}
+
+.table-frame { position:relative; margin:17px 0; }
+/* 限高扣掉吸顶头：表格滚到视口内时，它自己的冻结表头不会被工作台头压住。 */
+.table-wrap { max-height:min(calc(100vh - var(--head-h) - 56px),560px); overflow:auto; border:0; border-radius:var(--r-lg); background:var(--raised); box-shadow:var(--shadow); }
+/* 两侧渐隐阴影：表格行背景不透明，纯背景贴图会被盖住，改用伪元素 + JS 检测可滚方向。 */
+.table-frame::before, .table-frame::after { content:""; position:absolute; z-index:4; top:1px; bottom:1px; width:20px; opacity:0; transition:opacity .15s ease; pointer-events:none; }
+.table-frame::before { left:1px; background:linear-gradient(to right,rgba(var(--shadow-rgb),.16),rgba(var(--shadow-rgb),0)); }
+.table-frame::after { right:1px; background:linear-gradient(to left,rgba(var(--shadow-rgb),.16),rgba(var(--shadow-rgb),0)); }
+.table-frame.can-left::before, .table-frame.can-right::after { opacity:1; }
+table { width:100%; min-width:620px; border-collapse:separate; border-spacing:0; font-size:calc(13 * var(--u)); line-height:1.6; }
+th, td { min-width:132px; padding:10px 11px; vertical-align:top; text-align:left; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
+thead th { position:sticky; top:0; z-index:3; color:var(--ink); background:var(--sunken); font-weight:600; }
+tbody tr { background:var(--raised); }
+tbody tr:nth-child(even) { background:var(--table-zebra); }
+tbody tr:hover { background:var(--accent-soft-2); }
+/* 首行与首列冻结：.table-wrap 是滚动容器，sticky 在其内生效。 */
+tbody td:first-child { position:sticky; left:0; z-index:2; background:inherit; box-shadow:6px 0 8px -7px rgba(var(--shadow-rgb),.35); }
+thead th:first-child { left:0; z-index:5; }
+tbody tr:last-child td { border-bottom:0; }
+th:last-child, td:last-child { border-right:0; }
+td.is-repeat { background:inherit; } /* 相邻行首列重复：视觉留白，读屏仍读到 sr-only 全文 */
+
+/* auto-fit 的最小列宽同比放大，宽屏因此**不会多出一列**，列数与 1440 时一致（SPEC §4 ④）。 */
+.source-images { display:grid; grid-template-columns:repeat(auto-fit,minmax(calc(240 * var(--u)),1fr)); gap:var(--gap); margin:20px 0 23px; }
+.source-figure { min-width:0; margin:0; border:0; border-radius:var(--r-lg); background:var(--glass-strong); box-shadow:var(--shadow); overflow:hidden; }
+/* 统一瓦片：4/3 定比，cover + 顶端对齐，截图上部（标题栏、录入项）总能看到。 */
+.figure-thumb { width:100%; display:block; padding:0; border:0; border-bottom:1px solid var(--line); background:var(--mat-2); overflow:hidden; }
+.source-figure img { width:100%; display:block; aspect-ratio:4 / 3; object-fit:cover; object-position:top; background:var(--mat); }
+/* 比瓦片还小的截图不放大：按原始尺寸居中放；瓦片同时收掉固定比例，免得 44×30 的小图挂在一整格空白里。 */
+.source-figure.is-small .figure-thumb { min-height:96px; display:grid; place-items:center; padding:12px; aspect-ratio:auto; }
+.source-figure.is-small img { width:auto; height:auto; max-width:100%; max-height:260px; aspect-ratio:auto; object-fit:contain; }
+.figure-thumb:hover { background:var(--mat-hover); }
+.source-figure figcaption { min-height:43px; padding:9px 10px; display:flex; align-items:baseline; justify-content:space-between; gap:10px; color:var(--ink-2); font-size:calc(12 * var(--u)); font-weight:700; }
+.figure-label { min-width:0; overflow-wrap:anywhere; }
+.figure-seq { flex:0 0 auto; margin-left:auto; color:var(--ink-3); font-family:var(--mono); font-size:calc(12 * var(--u)); font-weight:400; }
+/* min-height 24px：§6.4 的点击目标下限（≤900px 段另有 44px 一档）。12px 的行高本来只有 21px。 */
+.figure-raw { flex:0 0 auto; min-height:24px; display:inline-flex; align-items:center; color:var(--ink-3); font-size:calc(12 * var(--u)); font-weight:400; text-decoration:underline; }
+.figure-raw:hover { color:var(--accent-ink); }
+
+/* 灯箱：有原生 dialog 就用原生（自带焦点陷阱与 Esc），否则退回同一元素的覆盖层形态。 */
+.lightbox { max-width:none; max-height:none; inset:0; width:100%; height:100%; margin:0; padding:0; border:0; color:var(--ink); background:transparent; overflow:auto; }
+.lightbox:not([open]) { display:none; }
+.lightbox::backdrop { background:var(--backdrop); }
+.lightbox.lightbox-fallback { position:fixed; z-index:80; inset:0; display:block; background:var(--backdrop); }
+html.lightbox-on { overflow:hidden; }
+.lightbox-inner { width:min(calc(1080 * var(--u)),100% - 24px); margin:24px auto; padding:14px 16px 18px; border-radius:var(--r-xl); background:var(--raised); box-shadow:var(--shadow-pop); }
+.lightbox-top { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.lightbox-count { margin:0; color:var(--ink-3); font-family:var(--mono); font-size:calc(13 * var(--u)); }
+.lightbox-close { min-height:36px; padding:0 15px; border:1px solid var(--line-strong); border-radius:var(--r-sm); color:var(--ink-2); background:var(--paper); font-weight:700; }
+.lightbox-close:hover { color:var(--accent-ink); border-color:var(--accent-line); background:var(--accent-soft); }
+.lightbox-stage { margin:12px 0; padding:10px; display:grid; place-items:center; border:1px solid var(--mat-line); background:var(--mat-2); overflow:auto; }
+.lightbox-image { max-width:100%; max-height:min(70vh,760px); display:block; cursor:zoom-in; }
+.lightbox-image.is-zoomed { max-width:none; max-height:none; width:200%; cursor:zoom-out; }
+.lightbox-caption { margin:0 0 12px; color:var(--ink-2); font-size:calc(14 * var(--u)); font-weight:700; overflow-wrap:anywhere; }
+/* 灯箱内的环节筛图（§4.5）：一排 chips，「全部」在最前；选中后上一张/下一张只在该环节内循环。
+   chips 是普通 button，因此天然落进灯箱的焦点陷阱里，键盘照走。 */
+.lightbox-filter { margin:0 0 10px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+.lightbox-filter .filter-head { margin:0 4px 0 0; color:var(--ink-3); font-size:calc(12 * var(--u)); font-weight:700; }
+.lightbox-filter button { min-height:30px; padding:0 11px; border:1px solid var(--line-strong); border-radius:var(--r-pill); color:var(--ink-2); background:var(--paper); font-size:calc(12 * var(--u)); font-weight:700; }
+.lightbox-filter button:hover { color:var(--accent-ink); border-color:var(--accent-line); background:var(--accent-soft); }
+.lightbox-filter button[aria-pressed="true"] { color:var(--on-accent); border-color:var(--accent-edge); background:var(--accent-grad); }
+.lightbox-actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.lightbox-actions button { min-height:38px; padding:0 15px; border:1px solid var(--line-strong); border-radius:var(--r-sm); color:var(--ink-2); background:var(--paper); font-weight:700; }
+.lightbox-actions button:hover:not(:disabled) { color:var(--accent-ink); border-color:var(--accent-line); background:var(--accent-soft); }
+.lightbox-actions button:disabled { color:var(--ink-disabled); border-color:var(--line); background:var(--sunken); cursor:not-allowed; }
+.lightbox-raw { margin-left:auto; color:var(--ink-3); font-size:calc(13 * var(--u)); }
+.lightbox-raw:hover { color:var(--accent-ink); }
+/* 灯箱开合动效（design-proposal.md §12）：缩略图原位放大 / 缩回，只动 transform 与 opacity。四个临时类都由 app.js 挂、播完就撤：
+   .is-veiled   showModal 之后、大图解码好之前那一小段（最多 250ms）：遮罩与卡片先不露面；
+   .is-entering / .is-leaving  遮罩淡入 / 淡出——::backdrop 用 CSS 动画，不用 WAAPI 的 pseudoElement 选项
+                （不认那个选项的内核会把动画落到 dialog 本体上，整个灯箱跟着透明）；.is-leaving 期间整只灯箱不接点击；
+   .is-morphing 变形期间真大图不露面，由幽灵 .lightbox-ghost 顶替（外框 overflow:hidden 非等比缩放管裁切，
+                内图反向缩放、始终按原图比例；关键帧由脚本逐帧算好）。回退覆盖层路径与减弱动效下一律没有这些。 */
+@keyframes lightbox-fade-in { from { opacity:0; } }
+@keyframes lightbox-fade-out { to { opacity:0; } }
+.lightbox.is-veiled::backdrop { opacity:0; }
+.lightbox.is-veiled .lightbox-inner { opacity:0; }
+.lightbox.is-entering::backdrop { animation:lightbox-fade-in .26s cubic-bezier(.2,.8,.2,1) both; }
+.lightbox.is-leaving::backdrop { animation:lightbox-fade-out .2s cubic-bezier(.2,.8,.2,1) both; }
+.lightbox.is-leaving { pointer-events:none; }
+.lightbox.is-morphing .lightbox-image { opacity:0; }
+.lightbox-ghost { position:fixed; z-index:1; margin:0; padding:0; overflow:hidden; pointer-events:none; transform-origin:0 0; }
+.lightbox-ghost img { position:absolute; top:0; left:0; max-width:none; max-height:none; margin:0; display:block; transform-origin:0 0; }
+/* 快捷键说明面板：与灯箱同一套原生 dialog / 回退覆盖层双路径，样式独立一份。 */
+.hotkey-help { max-width:none; max-height:none; inset:0; width:100%; height:100%; margin:0; padding:0; border:0; color:var(--ink); background:transparent; overflow:auto; }
+.hotkey-help:not([open]) { display:none; }
+.hotkey-help::backdrop { background:var(--backdrop); }
+.hotkey-help.hotkey-fallback { position:fixed; z-index:80; inset:0; display:block; background:var(--backdrop); }
+html.help-on { overflow:hidden; }
+.hotkey-inner { width:min(calc(620 * var(--u)),100% - 24px); margin:8vh auto 24px; padding:18px 22px 22px; border-radius:var(--r-xl); background:var(--raised); box-shadow:var(--shadow-pop); }
+.hotkey-top { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.hotkey-top h2 { margin:0; font-size:calc(19 * var(--u)); }
+.hotkey-close { min-height:36px; padding:0 15px; border:1px solid var(--line-strong); border-radius:var(--r-sm); color:var(--ink-2); background:var(--paper); font-weight:700; }
+.hotkey-close:hover { color:var(--accent-ink); border-color:var(--accent-line); background:var(--accent-soft); }
+.hotkey-list { margin:16px 0 0; display:grid; grid-template-columns:minmax(96px,max-content) minmax(0,1fr); gap:9px 16px; align-items:baseline; }
+.hotkey-list dt { margin:0; }
+.hotkey-list dd { margin:0; color:var(--ink-2); font-size:calc(14 * var(--u)); }
+.hotkey-list kbd { min-width:26px; display:inline-block; padding:2px 7px; border:1px solid var(--line-strong); border-bottom-width:2px; border-radius:var(--r-xs); color:var(--ink); background:var(--sunken); font-family:var(--mono); font-size:calc(12 * var(--u)); font-weight:700; text-align:center; }
+.hotkey-note { margin:16px 0 0; padding-top:12px; border-top:1px solid var(--line); color:var(--ink-3); font-size:calc(12 * var(--u)); }
+
+/* 连续文档后吸底条降级为轻量进度条：左回目录、中当前环节、右跳下一环节。 */
+.step-footer { position:sticky; bottom:0; z-index:3; min-height:calc(62 * var(--u)); margin:0 calc(var(--reader-pad) * -1); padding:10px var(--reader-pad); display:grid; grid-template-columns:minmax(112px,1fr) minmax(140px,1.2fr) minmax(155px,1fr); align-items:center; gap:14px; border-top:1px solid var(--line); background:var(--paper-veil); -webkit-backdrop-filter:var(--blur); backdrop-filter:var(--blur); box-shadow:0 -5px 16px rgba(var(--shadow-rgb),.04); }
+.step-footer .step-now { color:var(--ink-3); font-size:calc(13 * var(--u)); text-align:center; }
+.step-footer button { min-height:calc(40 * var(--u)); padding:0 calc(13 * var(--u)); border:1px solid var(--line-strong); border-radius:var(--r-sm); color:var(--ink-2); background:var(--paper); font-weight:700; }
+.step-footer button:hover:not(:disabled) { color:var(--accent-ink); border-color:var(--accent-line); background:var(--accent-soft); }
+.step-footer button.next { color:var(--on-accent); border-color:var(--accent-edge); background:var(--accent-grad); }
+.step-footer button.next:hover:not(:disabled) { color:var(--on-accent); background:var(--accent-grad-hover); }
+/* 禁用态统一为浅灰实色（不再用 opacity 把深红压成 2.1:1 的洗白态），置于 .next 之后以覆盖主按钮配色。 */
+.step-footer button:disabled { color:var(--ink-disabled); border-color:var(--line); background:var(--sunken); cursor:not-allowed; }
+/* ---- 大屏行宽（SPEC §4）----
+   **内容区紧贴侧栏、不在剩余空间里居中成窄柱**：`.reader` 作为玻璃面板照旧填满中间列，
+   收窄的只有里面的**文字行宽**（--measure 880），并居中于面板——所以正文两侧是面板本体，
+   不是裸底色，1920 / 2560 下中间列都不会露出光晕。
+   吸底条单独排除：它靠负 margin 出血到面板全宽，不能被这条居中规则接管。 */
+.reader > * { max-width:var(--measure); margin-left:auto; margin-right:auto; }
+.reader > .step-footer { max-width:none; margin-left:calc(var(--reader-pad) * -1); margin-right:calc(var(--reader-pad) * -1); }
+
+/* ≤900px 的单枚浮动按钮（下一环节 / 末环节改回到顶部），桌面与打印均不渲染。 */
+.stage-fab { display:none; }
+
+/* 中间态（821–1120px）的横向要点条：这枚按钮在桌面与手机形态一律不渲染、不占位、不进 Tab 序，
+   形态切换全部写在下面那个专属媒体块里。 */
+.aside-bar-toggle { display:none; }
+/* 同上：右栏也随正文长，一样不挂磨砂。 */
+.page-aside { min-width:0; padding:calc(var(--pad) + 8px) var(--pad) 32px; border-left:1px solid var(--line); background:var(--panel); }
+.page-aside > h2 { margin:0 0 18px; font-size:calc(17 * var(--u)); font-weight:700; letter-spacing:-.2px; }
+.page-aside section { margin:0; padding:0 0 19px; border-bottom:1px solid var(--line); }
+.page-aside section + section { padding-top:18px; }
+/* 速查卡各节标题＝分组列表风：32px 圆角方块（分类色实底 + 22%→0 高光 + 顶边内亮线 + 轻投影）
+   + 白色线条图标（SPEC §5b 的「带底块」规格），标题文字仍是 12px 标签色。
+   五节各用自己的分类色：编号＝强调色、材料＝绿、风险＝红、截图＝靛、工具＝橙。 */
+.page-aside h3 { position:relative; min-height:calc(32 * var(--u)); margin:0 0 7px; padding-left:calc(42 * var(--u)); display:flex; align-items:center; color:var(--ink-3); font-size:calc(12 * var(--u)); font-weight:600; letter-spacing:.04em; }
+.page-aside section > h3::before { content:""; position:absolute; top:50%; left:0; width:calc(32 * var(--u)); height:calc(32 * var(--u)); margin-top:calc(-16 * var(--u)); border-radius:calc(9 * var(--u));
+  background-image:var(--ic-block), linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0));
+  background-position:center, center; background-size:calc(18 * var(--u)) calc(18 * var(--u)), auto; background-repeat:no-repeat, no-repeat;
+  background-color:var(--ic-tint); box-shadow:inset 0 1px 0 rgba(255,255,255,.45), 0 2px 5px rgba(var(--shadow-rgb),.12); }
+.qc-codes > h3 { --ic-tint:var(--accent); --ic-block:var(--ic-code); }
+.qc-docs  > h3 { --ic-tint:var(--green); --ic-block:var(--ic-check); }
+.qc-risk  > h3 { --ic-tint:var(--red); --ic-block:var(--ic-alert); }
+.qc-film  > h3 { --ic-tint:var(--indigo-fill); --ic-block:var(--ic-photo); }
+.page-aside p { margin:0; color:var(--ink-2); font-size:calc(13 * var(--u)); overflow-wrap:anywhere; }
+.transaction-code { position:relative; display:block; width:100%; margin:0 0 6px; padding:5px 9px; border:0; border-radius:var(--r-xs); color:var(--accent-ink); background:var(--accent-soft); font-family:var(--mono); font-size:calc(18 * var(--u)); font-weight:700; letter-spacing:.02em; text-align:left; }
+.transaction-code:hover { border-color:var(--accent-ink); background:var(--accent-soft-2); }
+.page-aside .aside-hint { margin:6px 0 0; color:var(--ink-3); font-size:calc(12 * var(--u)); line-height:1.6; }
+.page-aside ul { margin:0; padding:0; list-style:none; color:var(--ink-2); font-size:calc(12 * var(--u)); }
+.page-aside li + li { margin-top:6px; }
+/* 速查卡：每一条都能点回正文出处，因此统一做成按钮态（左对齐、可悬停、可聚焦）。 */
+.qc-jump { width:100%; padding:8px 10px; display:block; border:1px solid var(--line); border-radius:var(--r-sm); color:var(--ink-2); background:var(--paper); text-align:left; }
+.qc-jump:hover { color:var(--accent-ink); border-color:var(--accent-line); background:var(--accent-soft); }
+.qc-jump b { display:block; color:var(--ink); font-family:var(--mono); font-size:calc(15 * var(--u)); }
+.qc-jump small { display:block; margin-top:2px; color:var(--ink-3); font-size:calc(12 * var(--u)); font-weight:400; }
+/* 「共 N 条」= 全部一二级风险行，与下面只展示 4 条的摘要不是同一个数，因此单独排在标题右端。 */
+.qc-risk h3 { display:flex; align-items:baseline; justify-content:space-between; gap:8px; color:var(--red-ink); }
+.qc-risk-count { flex:0 0 auto; color:var(--ink-3); font-size:calc(12 * var(--u)); font-weight:400; letter-spacing:0; white-space:nowrap; }
+.qc-risk-item { width:100%; padding:7px 9px; display:block; border:1px solid var(--line); border-left-width:3px; border-radius:var(--r-xs); color:var(--ink-2); background:var(--paper); font-size:calc(12 * var(--u)); line-height:1.6; text-align:left; overflow-wrap:anywhere; }
+.qc-risk-item:hover { border-color:var(--accent-line); border-left-color:currentColor; background:var(--accent-soft-2); }
+.qc-risk-item.risk-1 { border-left-color:var(--red-ink); }
+.qc-risk-item.risk-2 { border-left-color:var(--amber-ink); }
+/* 关掉重点标识：右栏的【禁止】【注意】标签已随 .risk-tag 一起隐去，左色条必须同时撤掉——
+   只剩一条无从解释的彩色条，比什么都没有更难读。 */
+html.risk-off .qc-risk-item.risk-1, html.risk-off .qc-risk-item.risk-2 { border-left-width:1px; border-left-color:var(--line); }
+html.risk-off .qc-risk-item:hover { border-color:var(--accent-line); border-left-color:var(--accent-line); }
+.aside-source { margin:18px 0 0; color:var(--ink-3); font-size:calc(12 * var(--u)); line-height:1.65; }
+.aside-tools { padding-top:16px; }
+.aside-print, .aside-focus, .aside-switch { width:100%; min-height:calc(38 * var(--u)); margin:calc(8 * var(--u)) 0 0; padding:0 calc(12 * var(--u)); border:1px solid var(--line-strong); border-radius:var(--r-sm); color:var(--ink-2); background:var(--paper); font-size:calc(13 * var(--u)); font-weight:700; }
+.aside-switch { margin-top:0; }
+.aside-print:hover, .aside-focus:hover, .aside-switch:hover { color:var(--accent-ink); border-color:var(--accent-line); background:var(--accent-soft); }
+.aside-focus[aria-pressed="true"] { color:var(--on-accent); border-color:var(--accent-edge); background:var(--accent-grad); }
+.aside-focus[aria-pressed="true"]:hover { color:var(--on-accent); background:var(--accent-grad-hover); }
+.aside-switch[aria-pressed="false"] { color:var(--ink-3); background:var(--sunken); }
+/* 「含截图」复选：真 checkbox + label，紧跟在「打印本业务」下面，属同一件事的两半。 */
+/* 同上：整条 label 才是点击目标，15px 的方框加 12px 的字只有 21px 高，补到 24px。 */
+.print-opt { min-height:24px; margin:6px 0 0; display:flex; align-items:center; gap:7px; color:var(--ink-3); font-size:calc(12 * var(--u)); cursor:pointer; }
+.print-opt input { flex:0 0 auto; width:15px; height:15px; margin:0; accent-color:var(--accent); }
+.print-opt:hover { color:var(--accent-ink); }
+/* ---- 外观三态分段控件（浅 / 深 / 自动）----
+   形态＝样张里的 .seg：一条 --fill 轨道 + 三枚药丸，选中那枚浮起来（强玻璃 + 一点投影 + 强调色字）。
+   `.theme-switch-label` / `.theme-seg` / `.theme-hint` 三个类名**故意保留**：案头手册开关
+   （`.desk-switch`）与中间态那几条横排规则都在用它们，改名等于把那一串一起改。
+   容器类名由 `.theme-switch` 改为 `.mode-switch`，因为语义从「主题」变成了「外观」，
+   回归套件的去装饰规则两个名字都认（旧名是基线那一侧的）。 */
+.mode-switch { margin:12px 0 0; }
+.theme-switch-label { display:block; margin:0 0 5px; color:var(--ink-3); font-size:calc(12 * var(--u)); font-weight:600; letter-spacing:.04em; }
+/* 轨道用**实色** --sunken 而不是 SPEC 的半透明 --fill：未选中那几枚的次级字就压在轨道上，
+   半透明轨道会把光晕吃进来：次级字现为 .76，压 SPEC 那条 rgba(120,120,128,.14) 最低只有 4.47（靛光晕），
+   仍不到 4.5；压实色 --sunken 是 5.00（§10.9 ②；当初按 .73 量是 4.16）。 */
+.theme-seg, .mode-seg { display:flex; gap:2px; padding:2px; border:0; border-radius:var(--r-xs); background:var(--sunken); }
+.theme-seg button, .mode-seg button { flex:1 1 0; min-width:0; min-height:calc(30 * var(--u)); padding:0 calc(6 * var(--u)); border:0; border-radius:8px; color:var(--ink-2); background:transparent; font-size:calc(12 * var(--u)); font-weight:600; white-space:nowrap; }
+.theme-seg button:hover, .mode-seg button:hover { color:var(--accent-ink); }
+.theme-seg button[aria-pressed="true"], .mode-seg button[aria-checked="true"] { color:var(--accent-ink); background:var(--raised); box-shadow:0 1px 3px rgba(var(--shadow-rgb),.12); }
+.theme-seg button:focus-visible, .mode-seg button:focus-visible { box-shadow:var(--focus-ring-inset); }
+.theme-hint { margin:5px 0 0; color:var(--ink-3); font-size:calc(12 * var(--u)); line-height:1.5; }
+
+/* ---- 六枚强调色圆点（SPEC §3：button + aria-pressed + 中文 aria-label，hover/焦点才显示文字）----
+   圆点是视觉主体；中文名默认视觉隐藏（**不是 display:none**，是压成 0 宽的 clip——
+   读屏另有 aria-label，这里只是不让六个名字把 250px 宽的右栏撑破），
+   hover 或键盘聚焦时就地展开，鼠标党也答得出「这是哪一个」。
+   点的颜色用 --dot-*：每一枚展示的是**别的**那一套，不能引用当前的 --accent。 */
+.accent-switch { margin:12px 0 0; }
+.accent-seg { display:flex; flex-wrap:wrap; gap:6px; padding:2px 0; }
+.accent-seg button { min-width:calc(28 * var(--u)); min-height:calc(28 * var(--u)); padding:calc(3 * var(--u)); display:inline-flex; align-items:center; gap:5px; border:0; border-radius:var(--r-pill); background:transparent; color:var(--ink-2); font-size:calc(12 * var(--u)); font-weight:600; }
+.accent-dot { flex:0 0 auto; width:calc(18 * var(--u)); height:calc(18 * var(--u)); display:inline-block; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(var(--shadow-rgb),.16); }
+.accent-name { max-width:0; overflow:hidden; white-space:nowrap; transition:max-width .16s ease; }
+.accent-seg button:hover .accent-name, .accent-seg button:focus-visible .accent-name { max-width:4em; }
+.accent-seg button:hover, .accent-seg button:focus-visible { color:var(--accent-ink); background:var(--sunken); }
+/* 选中：两道圈（先一圈底色把点和环隔开，再一圈强调色），与样张 .accents i.on 同手法。 */
+.accent-seg button[aria-pressed="true"] .accent-dot { box-shadow:0 0 0 2px var(--ground), 0 0 0 4px var(--accent-line); }
+.accent-seg button[data-accent-set="blue"] .accent-dot { background:var(--dot-blue); }
+.accent-seg button[data-accent-set="green"] .accent-dot { background:var(--dot-green); }
+.accent-seg button[data-accent-set="indigo"] .accent-dot { background:var(--dot-indigo); }
+.accent-seg button[data-accent-set="orange"] .accent-dot { background:var(--dot-orange); }
+.accent-seg button[data-accent-set="pink"] .accent-dot { background:var(--dot-pink); }
+.accent-seg button[data-accent-set="teal"] .accent-dot { background:var(--dot-teal); }
+
+/* 案头手册（§9）：宿主由 desk-book.js 在首帧画好之后才插到速查卡最后一格，sticky 贴在工作台头下方；
+   不合格、降级或卸载时整个节点移除。开关沿用三态主题开关的全套类名，这里只补外边距。
+   手册只在宽屏三栏形态出现，所以 ≤1120px、减弱动态效果、专注模式、打印四种情况下宿主与开关一并隐藏——
+   前两种由 desk-book.js 在运行中同步卸载，这里的 CSS 是它来不及反应（或脚本缺失）时的兜底。 */
+.desk-book { position:sticky; top:calc(var(--head-h) + 16px); height:200px; margin:24px 0 0; pointer-events:none; }
+.desk-book canvas { width:100%; height:100%; display:block; }
+.desk-switch { margin:12px 0 0; }
+html.focus-mode .desk-book, html.focus-mode .desk-switch { display:none; }
+@media (max-width:1120px) { .desk-book, .desk-switch { display:none; } }
+@media (prefers-reduced-motion:reduce) { .desk-book, .desk-switch { display:none; } }
+@media print { .desk-book, .desk-switch { display:none !important; } }
+
+/* 截图胶片条（§4.5）：本业务全部截图横向排开，右下角标出所属环节；点任一张开灯箱并定位到它。
+   无图业务整节不渲染（renderFilmstrip 返回空串），所以这里不必写空态。 */
+.qc-film h3 { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+.qc-film-count { flex:0 0 auto; color:var(--ink-3); font-size:calc(12 * var(--u)); font-weight:400; letter-spacing:0; white-space:nowrap; }
+.film-strip { display:flex; gap:8px; padding-bottom:6px; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; }
+.film-shot { position:relative; flex:0 0 auto; width:calc(74 * var(--u)); height:calc(56 * var(--u)); padding:0; display:block; border:1px solid var(--mat-line); border-radius:var(--r-xs); background:var(--mat-2); overflow:hidden; }
+.film-shot img { width:100%; height:100%; display:block; background:var(--mat); object-fit:cover; object-position:top; }
+.film-shot:hover { border-color:var(--accent-line); }
+.film-shot .film-stage { position:absolute; right:0; bottom:0; padding:0 4px; border-radius:var(--r-xs) 0 0 0; color:var(--on-accent); background:var(--accent-grad); font-size:calc(10 * var(--u)); font-weight:700; line-height:1.5; letter-spacing:0; }
+.film-shot:focus-visible { box-shadow:var(--focus-ring); }
+
+/* 专注模式：收起左目录与右栏，正文扩宽居中并把行宽收到约 76 字符；
+   工作台头与锚点条保持吸顶，右栏塌缩成一枚浮动的退出按钮，Esc 也能退出。 */
+html.focus-mode .manual-layout { grid-template-columns:minmax(0,1fr); }
+html.focus-mode .toc { display:none; }
+html.focus-mode .aside-host { position:fixed; z-index:40; right:18px; bottom:18px; grid-column:auto; display:block; }
+html.focus-mode .page-aside { padding:0; border:0; background:none; }
+html.focus-mode .page-aside > *:not(.aside-tools) { display:none; }
+html.focus-mode .aside-tools { padding:0; }
+html.focus-mode .aside-tools > *:not(.aside-focus) { display:none; }
+/* 要点条与速查卡是同一份内容的两种形态：专注模式收起速查卡时，横条也一并收起。 */
+html.focus-mode .aside-bar-toggle { display:none; }
+html.focus-mode .aside-focus { width:auto; min-height:42px; margin:0; padding:0 20px; border-radius:22px; box-shadow:0 8px 22px rgba(var(--shadow-rgb),.22); }
+/* 专注模式：面板本身铺满（收起目录与右栏之后它就是整页），行宽仍由 --measure 居中收住。 */
+html.focus-mode .reader { width:100%; margin:0; }
+
+.search-page { width:min(calc(920 * var(--u)),calc(100% - 40px)); margin:34px auto 56px; }
+.search-page header { padding:6px 0 21px; border-bottom:1px solid var(--line); }
+.search-page h1 { margin:0; font-size:var(--fs-title); font-weight:700; line-height:1.35; letter-spacing:-.4px; }
+.search-page header > p:last-child { margin:8px 0 0; color:var(--ink-3); }
+.search-toolbar { margin:16px 0; display:flex; align-items:center; justify-content:space-between; gap:16px; color:var(--ink-2); font-size:calc(14 * var(--u)); }
+.search-toolbar button, .no-results button { min-height:38px; padding:0 13px; border:1px solid var(--line-strong); border-radius:var(--r-sm); color:var(--ink-2); background:var(--paper); font-weight:700; }
+/* 结果按分类成组：每组一个 section + 自己的 <ol>，读屏能报「常见对私业务，列表，6 项」。
+   组标题、片段行、角标一律不是可聚焦元素，整页只有「结果按钮 + 工具条按钮」两类焦点目标。 */
+.result-group { margin:0 0 26px; }
+.result-group-head { margin:0 0 8px; display:flex; align-items:baseline; gap:8px; color:var(--ink); font-size:calc(15 * var(--u)); }
+.result-group-head small { color:var(--ink-3); font-size:calc(12 * var(--u)); font-weight:400; }
+.result-more { width:100%; min-height:44px; margin-top:-1px; border:0; border-top:1px solid var(--line); border-radius:0 0 var(--r-lg) var(--r-lg); color:var(--ink-2); background:var(--glass-strong); font-size:calc(13 * var(--u)); font-weight:600; }
+.result-more:hover { color:var(--accent-ink); background:var(--accent-soft-2); }
+.result-list { margin:0; padding:0; list-style:none; border:0; border-radius:var(--r-lg); background:var(--glass-strong); box-shadow:var(--shadow); overflow:hidden; }
+.result-list li { border-bottom:1px solid var(--line); }
+/* 加了片段之后由单行改多行卡片；.result-main 的 min-width:0 必须有——
+   否则长片段会把 flex 子项撑破，821–1450px 区间整页横向滚动。 */
+.result-list button { width:100%; min-height:calc(75 * var(--u)); padding:calc(15 * var(--u)) calc(16 * var(--u)); display:flex; align-items:flex-start; justify-content:space-between; gap:20px; border:0; color:inherit; background:transparent; text-align:left; }
+.result-list button:hover { background:var(--accent-soft-2); }
+.result-main { flex:1 1 auto; min-width:0; }
+.result-list strong { display:block; color:var(--ink); font-size:calc(16 * var(--u)); }
+.result-list small { display:block; margin-top:4px; color:var(--ink-3); font-size:calc(12 * var(--u)); overflow-wrap:anywhere; }
+.result-list em { flex:0 0 auto; color:var(--accent-ink); font-size:calc(13 * var(--u)); font-style:normal; font-weight:700; }
+/* 交易码精确命中的角标：非交互 span，绝不是 button——结果按钮里不能再套按钮。 */
+.code-exact-badge { margin-left:8px; padding:1px 7px; border:0; border-radius:var(--r-pill); color:var(--accent-ink); background:var(--accent-soft); font-family:var(--mono); font-size:calc(11 * var(--u)); font-weight:700; vertical-align:2px; }
+.result-snippets { margin-top:8px; display:flex; flex-direction:column; gap:5px; }
+.snippet { display:flex; align-items:baseline; gap:7px; font-size:calc(13 * var(--u)); line-height:1.6; }
+.snippet-stage { flex:0 0 auto; padding:0 6px; border-radius:var(--r-pill); color:var(--ink-3); background:var(--chip); font-size:calc(11 * var(--u)); font-weight:700; white-space:nowrap; }
+.snippet-stage[data-stage="prepare"] { color:var(--accent-ink); background:var(--accent-soft); }
+.snippet-stage[data-stage="operate"] { color:var(--green-ink); background:var(--green-pale); }
+.snippet-stage[data-stage="review"] { color:var(--amber-ink); background:var(--amber-pale); }
+.snippet-stage[data-stage="archive"] { color:var(--ink-2); background:var(--chip); }
+.snippet-text { min-width:0; color:var(--ink-2); overflow-wrap:anywhere; }
+.suggest-reason { display:block; margin-top:5px; color:var(--ink-3); font-size:calc(12 * var(--u)); }
+/* 搜索高亮：刷刷的琥珀浅底压在纸色上亮度比只有 1.06，单靠底色等于看不见，
+   而柜面查交易码正是靠它定位。补一道 2px 的琥珀下划线撑住块感——不新造颜色，
+   --amber 在深色与高对比两套里各是自己那一档，这一条规则跟着自动换。
+   用 inset box-shadow 而不是 text-decoration：后者会和正文里已有的删除线/下划线抢同一个属性。 */
+mark { padding:0 2px; border-radius:4px; color:var(--mark-ink); background:var(--mark-bg); box-shadow:inset 0 -2px 0 var(--amber-ink); }
+.no-results { width:min(calc(680 * var(--u)),calc(100% - 40px)); margin:56px auto; padding:30px; border:0; border-radius:var(--r-lg); background:var(--glass-strong); box-shadow:var(--shadow); text-align:center; }
+.no-results h1, .no-results h2 { margin:0; }
+.no-results p { color:var(--ink-3); }
+/* 推荐列表沿用 result-list 类名（键盘链因此零改动覆盖），只把居中文案还原成左对齐卡片。 */
+.no-results .result-list { margin:18px 0; text-align:left; }
+
+/* ================= 手机底部 tab bar（≤600px，2026-09-23 增）=================
+   三项：目录（唤出现有目录抽屉）、搜索（展开顶栏搜索框并聚焦）、设置（把速查卡当底部抽屉唤出）。
+   DOM 是 index.html 里 <footer> 之前一个静态 <nav class="tab-bar">，**>600px 整条 display:none**，
+   桌面既不渲染也不占位、不进 Tab 序；三个按钮接的全是已有函数，没有新状态。
+   图标按 SPEC §5b 用 mask 画（20px、stroke 1.9、圆头），激活项图标与文字同为强调色文字档。 */
+.tab-bar { display:none; }
+
+footer { padding:18px 20px calc(18px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); color:var(--ink-3); background:var(--paper); text-align:center; font-size:calc(12 * var(--u)); }
+
+/* 打印视图：屏幕上始终隐藏，打印前由 app.js 把当前业务的全部非空环节渲染进来。 */
+#print-sheet { display:none; }
+
+@media (max-width:1120px) {
+  .head-top { grid-template-columns:minmax(0,auto) minmax(0,auto) minmax(220px,1fr) auto; gap:14px; }
+  .brand { font-size:20px; }
+  .head-biz { max-width:min(24ch,20vw); font-size:14px; }
+  .category-tabs button { min-width:76px; padding:0 12px; }
+}
+
+/* ================= 900–1120px 中间态（§5.1）=================
+   两栏（目录 + 正文），速查卡改为**正文顶部的横向要点条**：
+   收起态只有一行摘要（编号 N 个 · 材料已备齐 n/m · 风险 N 条），点它展开为完整速查卡。
+   复用的是同一份 aside DOM，这里只切形态；≤900 与 >1120 的形态一字不动。
+   废除的是旧的「右栏被塞到正文下方变三宫格」：速查卡本来是给正文做前置提要的，
+   排在正文后面既读不到也够不着，改排到正文上方才与它的用途一致。 */
+@media (min-width:901px) and (max-width:1120px) {
+  /* 目录占满两行，正文与要点条分列第二列的上下两行。 */
+  .manual-layout { grid-template-columns:270px minmax(0,1fr); grid-template-rows:auto minmax(0,1fr); }
+  .toc { grid-row:1 / span 2; grid-column:1; }
+  .aside-host { --aside-pad:clamp(24px,3.4vw,42px); grid-column:2; grid-row:1; display:block; border-bottom:1px solid var(--line); background:var(--panel); }
+  .reader-host { grid-column:2; grid-row:2; }
+
+  .aside-bar-toggle { width:100%; min-height:48px; padding:11px var(--aside-pad); display:flex; align-items:baseline; flex-wrap:wrap; gap:2px 14px; border:0; background:transparent; color:var(--ink-3); font-size:13px; text-align:left; }
+  .aside-bar-toggle:hover { background:var(--accent-soft-2); }
+  .aside-bar-toggle:hover .aside-bar-title, .aside-bar-toggle:hover .aside-bar-caret { color:var(--accent-ink); }
+  .aside-bar-title { flex:0 0 auto; color:var(--ink); font-size:14px; font-weight:800; }
+  .aside-bar-sum { min-width:0; }
+  .aside-bar-sum > span + span::before { content:"·"; margin:0 8px; color:var(--line-mute); }
+  .aside-bar-caret { flex:0 0 auto; margin-left:auto; color:var(--ink-3); font-size:19px; line-height:1; transform:rotate(90deg); transition:transform .16s ease; }
+  .aside-host.is-open .aside-bar-caret { transform:rotate(-90deg); }
+  .aside-host.is-open .aside-bar-toggle { border-bottom:1px solid var(--line); }
+
+  /* 工具已统一为抽屉；不再沿用此断点的三列速查与横排按钮。 */
+
+  /* 专注模式下右栏塌缩成一枚浮动退出按钮：要让出行列占位，回到基础层那套定位。 */
+  html.focus-mode .manual-layout { grid-template-rows:minmax(0,1fr); }
+  html.focus-mode .aside-host { grid-column:auto; grid-row:auto; border-bottom:0; background:none; }
+  html.focus-mode .reader-host { grid-column:1; grid-row:1; }
+  html.focus-mode .page-aside { display:block; }
+  html.focus-mode .aside-tools { display:block; }
+}
+
+/* ================= ≤900px 手机 / 小平板形态（§5.2，2026-09-23 由 820 改到 900）=================
+   首屏即正文：目录整体收进底部抽屉，顶部只留一条 56px 吸顶栏 + 其下横向可滚的四步锚点条，
+   吸底三栏网格退场、改一枚浮动按钮，正文 15px、辅助字 ≥13px、可点元素 ≥44×44。
+   本段内的规则全部只在此断点生效，>900px 的 DOM 与样式行为一字未动。
+   ≤600px 再叠一层（见下一段）：顶栏只留品牌图标 + 业务名，底部出玻璃 tab bar。 */
+@media (max-width:900px) {
+  body { font-size:15px; }
+
+  /* ---- 单吸附条：品牌图标 + 当前业务名 + 搜索按钮 + 目录按钮，恒定 56px（压缩态不再改高度，--head-h 不抖） ---- */
+  .head-top { min-height:56px; padding:0 10px; display:flex; align-items:center; gap:8px; }
+  .workbench-head.is-condensed .head-top { min-height:56px; padding:0 10px; }
+  .brand { order:1; min-width:44px; min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:8px; font-size:17px; }
+  .brand { --brand-box:28px; }
+  .brand::before { border-radius:8px; background-size:19px 19px, auto, auto; }
+  .workbench-head.is-condensed .brand { font-size:17px; }
+  .brand-full { display:none; }
+  .brand-short { display:inline; }
+  .head-biz { order:2; flex:1 1 auto; min-width:0; display:block; overflow:hidden; color:var(--ink-2); font-size:14px; font-weight:700; line-height:1.3; text-overflow:ellipsis; white-space:nowrap; }
+  .head-btn { min-width:44px; min-height:44px; padding:0 10px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line-strong); border-radius:var(--r-md); color:var(--ink-2); background:var(--paper); font-size:14px; font-weight:700; white-space:nowrap; }
+  .head-btn:hover { color:var(--accent-ink); border-color:var(--accent-line); background:var(--accent-soft); }
+  .head-btn:disabled { color:var(--ink-disabled); border-color:var(--line); background:var(--sunken); cursor:not-allowed; }
+  .head-search-toggle { order:3; }
+  .head-drawer-open { order:4; }
+  .head-drawer-open[aria-expanded="true"] { color:var(--on-accent); border-color:var(--accent-edge); background:var(--accent-grad); }
+  /* 搜索展开：整行输入框顶掉品牌 / 业务名 / 目录按钮，只留一枚「收起」。 */
+  .global-search { order:5; display:none; }
+  .head-top.is-search-open .global-search { flex:1 1 auto; order:1; display:flex; }
+  .head-top.is-search-open .brand, .head-top.is-search-open .head-biz, .head-top.is-search-open .head-drawer-open { display:none; }
+  .head-top.is-search-open .head-search-toggle { order:2; }
+  .global-search input, .global-search button { height:44px; }
+  .workbench-head.is-condensed .global-search input, .workbench-head.is-condensed .global-search button { height:44px; }
+  .global-search button[type="submit"] { min-width:64px; }
+  /* 清空按钮在窄屏同样吃到上面那条 height:44px，宽度另放到 44px 以满足触控目标。 */
+  .search-clear { width:44px; }
+  /* 联想选项的触控目标写死 44px：窄屏上 --u 本来就是 1px，写成字面值是把「触控 ≥44px」钉死，不跟着任何令牌漂。 */
+  .search-suggest [role="option"] { min-height:44px; }
+  .category-tabs { display:none; } /* 分类分段控件改由抽屉顶部承载 */
+
+  /* ---- 四步锚点条：紧随吸顶栏之下，横向可滚 ---- */
+  .head-rail { padding:0 6px; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; }
+  .stage-rail { grid-template-columns:repeat(4,132px); }
+  .rail-node { min-height:60px; padding:27px 8px 5px 4px; }
+  .workbench-head.is-condensed .rail-node { min-height:60px; padding:27px 8px 5px 4px; }
+  .workbench-head.is-condensed .rail-node::before { top:16px; }
+  .workbench-head.is-condensed .rail-node b { top:5px; }
+  .rail-name { font-size:14px; }
+  .rail-node b { width:24px; height:24px; font-size:13px; } /* 序号圆点里的数字也抬到 13px */
+
+  /* ---- 目录抽屉：.toc-dock 由 display:contents 变为固定在底部的面板（601–900 与 ≤600 共用） ---- */
+  .manual-layout { display:block; border:0; }
+  .toc-dock { position:fixed; z-index:70; right:0; bottom:0; left:0; max-height:82vh; display:flex; flex-direction:column; overflow:hidden; border-top:1px solid var(--toc-line); border-radius:var(--r-xl) var(--r-xl) 0 0; background:var(--toc-bg); -webkit-backdrop-filter:var(--blur); backdrop-filter:var(--blur); box-shadow:0 -14px 44px rgba(var(--shadow-rgb),.26); transform:translateY(102%); visibility:hidden; transition:transform .22s ease, visibility 0s linear .22s; }
+  /* 关闭态不是 display:none，而是「有布局但移出屏外」：目录的滚动容器因此不会被清零。
+     visibility 打开时立刻生效（延时只加在关闭方向），否则滑入动画期间面板还不可见，焦点会移空。 */
+  .toc-dock[open] { transform:none; visibility:visible; transition:transform .22s ease, visibility 0s; }
+  .toc-scrim { display:none; }
+  html.toc-on { overflow:hidden; }
+  html.toc-on .toc-scrim { position:fixed; z-index:69; inset:0; display:block; background:var(--scrim); }
+  .toc-drawer-head { flex:0 0 auto; padding:8px 12px 9px; display:flex; align-items:center; flex-wrap:wrap; gap:8px 10px; border-bottom:1px solid var(--line); }
+  .toc-drawer-grip { width:44px; height:4px; margin:0 auto 5px; flex:0 0 100%; border-radius:var(--r-pill); background:var(--line-strong); }
+  .toc-drawer-tabs { flex:1 1 auto; min-width:0; display:flex; }
+  /* 抽屉里的分类分段控件与顶栏是同一个 #category-tabs 元素（app.js 在断点间搬它）。
+     上一轮那五条就地令牌重映射是为了让它在深色侧栏里不突兀；粉彩的抽屉本身就是浅的，
+     通用令牌直接能用，因此整组重映射删掉，只留宽度与排布。 */
+  .toc-drawer-tabs .category-tabs { width:100%; display:inline-flex; }
+  .toc-drawer-tabs .category-tabs button { flex:1 1 0; min-width:0; height:44px; padding:0 10px; font-size:14px; }
+  .toc-drawer-close { flex:0 0 auto; min-width:64px; min-height:44px; padding:0 14px; border:1px solid var(--line-strong); border-radius:var(--r-md); color:var(--ink); background:transparent; font-weight:700; }
+  .toc-drawer-close:hover { color:var(--ink); border-color:var(--accent-ink); background:var(--paper); }
+  .toc { flex:1 1 auto; min-height:0; display:flex; border-right:0; background:var(--toc-bg); }
+  /* 专注模式在桌面是「收起左目录」，手机上目录本来就在抽屉里：抽屉仍可正常打开。 */
+  html.focus-mode .toc { display:flex; }
+  .toc-sticky { position:static; flex:1 1 auto; min-width:0; max-height:none; display:flex; flex-direction:column; }
+  .toc-heading { min-height:48px; padding:0 16px; }
+  .toc-heading h2 { font-size:16px; }
+  .toc-filter { padding:9px 16px; }
+  .toc-filter input { height:44px; font-size:14px; }
+  /* 快速入口随目录一起进抽屉：位置不变（过滤框之下、滚动区之上），只放大触控目标。 */
+  .quick-entry:not(:empty) { padding:9px 16px 11px; }
+  .quick-item { min-height:44px; font-size:14px; }
+  .quick-drop { min-width:44px; min-height:44px; font-size:13px; }
+  .toc-scroll { flex:1 1 auto; min-height:0; max-height:none; overflow:auto; -webkit-overflow-scrolling:touch; padding-bottom:env(safe-area-inset-bottom); }
+  .toc-group summary { min-height:48px; padding:11px 16px; }
+  .toc-item { min-height:46px; padding:10px 16px 10px 34px; }
+  .toc-note { display:none; }
+
+  /* ---- 正文 ---- */
+  .reader { --reader-pad:16px; padding:20px var(--reader-pad) 0; }
+  .crumb-full { display:none; }
+  .crumb-short { display:inline; }
+  /* 窄屏把标星按钮换到标题下方一行，标题不必再和它抢宽度。 */
+  .reader-heading { flex-direction:column; gap:12px; }
+  .reader-heading h1 { font-size:29px; }
+  .reader-heading p { margin-top:8px; font-size:14px; }
+  .document { margin-top:18px; }
+  .stage-notice { padding:10px 13px; font-size:14px; }
+  .document-heading { padding:19px 0 13px; }
+  .document-heading h2 { font-size:23px; }
+  .document-body { padding:17px 0 27px; }
+  .document-body h3 { margin-top:20px; font-size:17px; }
+  .def-line { grid-template-columns:minmax(0,1fr); }
+  .step-list > li { grid-template-columns:minmax(0,max-content) minmax(0,1fr); gap:0 8px; }
+  .table-wrap { max-height:min(calc(100vh - var(--head-h) - 40px),440px); }
+  .source-images { grid-template-columns:1fr; gap:12px; }
+  .step-list.is-timeline > li { padding-left:32px; }
+  .step-list.is-timeline > li::before { left:12px; }
+  .step-list.is-timeline .li-num { min-width:26px; height:26px; border-radius:13px; }
+
+  /* ---- 弹层 ---- */
+  .lightbox-inner { width:calc(100% - 16px); margin:12px auto; padding:12px 12px 14px; }
+  /* 灯箱图片交给浏览器做双指缩放，不被页面手势劫持。 */
+  .lightbox-stage, .lightbox-image { touch-action:pinch-zoom; }
+  .lightbox-image { max-height:56vh; }
+  .lightbox-actions { gap:8px; }
+  .lightbox-raw { width:100%; min-height:44px; margin-left:0; display:inline-flex; align-items:center; }
+  .hotkey-inner { width:calc(100% - 16px); margin:12px auto; padding:14px 14px 16px; }
+  .hotkey-list { grid-template-columns:minmax(0,1fr); gap:2px 0; }
+  .hotkey-list dd { margin:0 0 8px; font-size:14px; }
+
+  /* ---- 吸底三栏退场，改一枚浮动按钮 ---- */
+  .step-footer { display:none; }
+  .stage-fab { position:fixed; z-index:45; right:14px; bottom:calc(14px + env(safe-area-inset-bottom)); min-width:56px; min-height:56px; padding:0 18px; display:inline-flex; flex-direction:column; align-items:center; justify-content:center; border:1px solid var(--accent-edge); border-radius:28px; color:var(--on-accent); background:var(--accent-grad); box-shadow:0 8px 24px rgba(var(--shadow-rgb),.28); font-size:13px; font-weight:800; line-height:1.15; }
+  .stage-fab:hover { background:var(--accent-grad-hover); }
+  /* 末环节的「回到顶部」是次级动作：按 §2.5「红色只表示重要」的收敛口径退到中性深色，
+     页面上同一时刻仍然只有一枚主色大按钮。这个类原先由 JS 挂上却没有对应样式（两态只有文案与箭头之分）。 */
+  /* 文字用 --paper 而非 --on-accent：这一枚的底是 --ink，两种主题下 ink/paper 天然互为反色。 */
+  .stage-fab.is-top { background:var(--ink); color:var(--paper); box-shadow:0 8px 24px rgba(var(--shadow-rgb),.24); }
+  .stage-fab.is-top:hover { background:var(--ink-2); }
+  .stage-fab-icon { font-size:15px; line-height:1; }
+  .stage-fab-text { max-width:104px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  html.toc-on .stage-fab { display:none; } /* 抽屉打开时让位，避免压在遮罩上 */
+  /* 专注模式的浮动退出按钮与它错位排列：退出按钮上移一档，两枚互不遮挡。 */
+  html.focus-mode .aside-host { right:14px; bottom:calc(14px + 56px + 10px + env(safe-area-inset-bottom)); }
+  html.focus-mode .aside-focus { width:auto; min-height:44px; margin:0; }
+
+  /* ---- 速查卡 ---- */
+  .page-aside { display:block; padding:21px 16px; }
+  .page-aside section, .page-aside section + section { padding:14px 0; border-bottom:1px solid var(--line); }
+  /* 末节收掉底边线：不能写死成 .qc-risk——没有风险摘要的业务末节是材料或编号，
+     那时 .qc-risk 这条规则谁也没命中，卡片下方就多出一条无处落脚的线。 */
+  .page-aside section:last-of-type { border-bottom:0; }
+  .aside-source { margin-top:16px; }
+  .aside-tools { padding-top:8px; }
+  .aside-print, .aside-focus, .aside-switch { width:100%; margin-top:8px; padding:0 12px; min-height:44px; }
+  .print-opt { min-height:44px; }
+  .print-opt input { width:20px; height:20px; }
+  .theme-seg button, .mode-seg button { min-height:44px; }
+  .accent-seg button { min-width:44px; min-height:44px; }
+  .film-shot { width:88px; height:66px; }
+  .lightbox-filter button { min-height:44px; }
+  .transaction-code { min-height:44px; display:flex; align-items:center; }
+  .qc-jump, .qc-risk-item { min-height:44px; }
+  .qc-risk-item { display:flex; align-items:center; }
+
+  /* ---- 勾选卡 ---- */
+  .check-card { margin-bottom:12px; }
+  .check-head { padding:8px 11px; align-items:center; }
+  .check-list { padding:5px 11px 7px; }
+  .check-item { min-height:44px; padding:6px 0; align-items:center; }
+  .check-item input { width:20px; height:20px; transform:none; }
+  .check-clear { min-height:44px; padding:0 12px; }
+  .check-source summary { min-height:44px; display:flex; align-items:center; }
+  .check-raw { padding:0 11px 10px; font-size:14px; }
+
+  /* ---- 触控目标：其余可点元素统一抬到 ≥44×44 ---- */
+  .skip-link { min-height:44px; display:inline-flex; align-items:center; }
+  .code-badge { min-width:44px; min-height:44px; display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; }
+  .figure-thumb { min-height:44px; }
+  .source-figure figcaption { min-height:52px; align-items:center; }
+  .figure-raw { min-height:44px; display:inline-flex; align-items:center; }
+  .lightbox-close, .lightbox-actions button, .hotkey-close { min-height:44px; }
+  .search-toolbar button, .no-results button { min-height:44px; }
+
+  /* ---- 辅助字统一抬到 ≥13px（原多处 12px）---- */
+  .breadcrumbs, .rail-meta, .toc-heading span, .toc-group summary small, .quick-head,
+  .check-progress, .check-clear, .check-source summary, .source-figure figcaption, .figure-seq, .figure-raw,
+  .risk-tag, .copy-bubble, .page-aside h3, .page-aside ul, .qc-jump small, .qc-risk-item,
+  .page-aside .aside-hint, .aside-source, .hotkey-list kbd, .hotkey-note, .result-list small,
+  .step-list.is-timeline .li-num, body > footer,
+  .print-opt, .theme-switch-label, .theme-seg button, .theme-hint, .qc-film-count,
+  .lightbox-filter .filter-head, .lightbox-filter button { font-size:13px; }
+  .page-aside p, .aside-print, .aside-focus, .aside-switch { font-size:14px; }
+
+  /* ---- 搜索页 ---- */
+  .search-page { width:min(100% - 32px,760px); margin:23px auto 42px; }
+  .search-page h1 { font-size:25px; }
+  .result-list button { padding:13px 10px; gap:12px; }
+  .result-list em { display:none; }
+  /* 片段数量由渲染层按断点决定（≤900 只出 2 条），这里不靠 display:none 藏——
+     藏起来的元素仍在 DOM 里、仍会被读屏读到。 */
+  .result-group { margin-bottom:20px; }
+  .snippet { flex-direction:column; align-items:flex-start; gap:2px; }
+  /* 标星与「返回整理后的视图」两枚按钮的触控目标 */
+  .star-toggle, .raw-exit { min-height:44px; }
+  .raw-bar { flex-direction:column; align-items:flex-start; gap:10px; }
+}
+
+/* ================= ≤600px 再叠一层（§5.2b）=================
+   顶栏收到只剩品牌图标 + 当前业务名（搜索与目录两枚按钮移交给底部 tab bar）；
+   底部出一条玻璃 tab bar，速查卡改成从 tab bar 上方升起的底部抽屉。
+   这一段只加形态，不动任何 DOM：目录抽屉仍是 .toc-dock[open]，
+   速查卡抽屉复用的是中间态就有的 .aside-host.is-open，遮罩复用 .toc-scrim。
+   脚本只多了一处：收回那 .22s 由 setAsideBar 临时挂一个 .is-closing（§12）。 */
+@keyframes aside-drawer-in { from { transform:translateY(102%); } }
+@keyframes aside-drawer-out { to { transform:translateY(102%); } }
+@media (max-width:600px) {
+  /* 顶栏：品牌图标 + 业务名。两枚 head-btn 交给 tab bar，这里整条收掉（也退出 Tab 序）。 */
+  .head-search-toggle, .head-drawer-open { display:none; }
+  .brand-short { display:none; }
+  .brand { min-width:44px; gap:0; }
+  .head-biz { font-size:15px; }
+  /* 搜索展开时仍占满整行：由 tab bar 的「搜索」触发 .is-search-open，收起按 Esc 或再点一次。 */
+  .head-top.is-search-open .global-search { flex:1 1 auto; order:1; display:flex; }
+  .head-top.is-search-open .brand, .head-top.is-search-open .head-biz { display:none; }
+
+  /* ---- 底部 tab bar ---- */
+  .tab-bar { position:fixed; z-index:72; right:0; bottom:0; left:0; display:flex;
+    padding-bottom:env(safe-area-inset-bottom);
+    border-top:1px solid var(--glass-edge); background:var(--head-bg);
+    -webkit-backdrop-filter:var(--blur); backdrop-filter:var(--blur);
+    box-shadow:0 -6px 20px rgba(var(--shadow-rgb),.10); }
+  .tab-bar button { flex:1 1 0; min-width:0; min-height:var(--tabbar-h); padding:7px 4px 6px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    border:0; background:transparent; color:var(--ink-2); font-size:11px; font-weight:600; }
+  /* 图标是 index.html 里的内联 SVG（§5b：真 SVG，20px、stroke 1.9、圆头圆角），
+     stroke 走 currentColor，所以激活态只要改按钮的 color，图标与文字一起变强调色文字档。 */
+  .tab-bar button svg { width:20px; height:20px; flex:none; }
+  .tab-bar button[aria-expanded="true"] { color:var(--accent-ink); }
+  .tab-bar button:focus-visible { border-radius:var(--r-xs); box-shadow:var(--focus-ring-inset); }
+
+  /* ---- 速查卡＝底部抽屉（复用中间态的 .aside-host.is-open）----
+     .is-closing 是收回那 .22s 的过渡态（app.js setAsideBar 加、播完撤）：抽屉形态由它撑着，落回的那一段才有东西可看。
+     关闭态照旧不是抽屉（不在屏外待命）——没照 .toc-dock 的「关闭态移出屏外 + visibility 延时」写法，
+     因为那样跨 600 拉窄、退出专注模式时，抽屉会从近乎全开处滑下去一闪（实测，见 design-proposal.md §12）。 */
+  .aside-bar-toggle { display:none; }
+  .page-aside { display:none; }
+  .aside-host.is-open, .aside-host.is-closing { position:fixed; z-index:71; right:0; bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom)); left:0;
+    max-height:70vh; display:block; overflow:auto; -webkit-overflow-scrolling:touch;
+    border-top:1px solid var(--glass-edge); border-radius:var(--r-xl) var(--r-xl) 0 0;
+    background:var(--toc-bg); -webkit-backdrop-filter:var(--blur); backdrop-filter:var(--blur);
+    box-shadow:0 -14px 44px rgba(var(--shadow-rgb),.26); }
+  .aside-host.is-open .page-aside, .aside-host.is-closing .page-aside { display:block; padding:16px 16px 22px; border:0; background:transparent; }
+  /* 升起 / 落回：只动 transform，时长与曲线跟目录抽屉一致（.22s ease），两个底部抽屉手感相同。
+     tab bar（z 72）压在抽屉（71）上面，所以抽屉是从 tab bar 后面升起、落回它后面去的。
+     收回途中不接点击；焦点在收回一开始就已还给触发按钮。遮罩与目录抽屉那边一样是随类名即出即收，不做淡入淡出。 */
+  .aside-host.is-open { animation:aside-drawer-in .22s ease; }
+  .aside-host.is-closing { pointer-events:none; animation:aside-drawer-out .22s ease forwards; }
+  html.aside-on { overflow:hidden; }
+  html.aside-on .toc-scrim { position:fixed; z-index:70; inset:0; display:block; background:var(--scrim); }
+
+  /* 目录抽屉要盖在 tab bar 之上（它自己就带关闭按钮），遮罩沿用 ≤900 段那一条。 */
+  .toc-dock { z-index:73; }
+
+  /* 吸底条在这一档隐藏：「回到目录」由 tab bar 的目录项承担；
+     浮动「下一环节」按钮上移到 tab bar 之上。 */
+  .step-footer { display:none; }
+  .stage-fab { bottom:calc(var(--tabbar-h) + 14px + env(safe-area-inset-bottom)); }
+  html.aside-on .stage-fab { display:none; }
+  /* 专注模式的浮动退出按钮同样让位 */
+  html.focus-mode .aside-host { bottom:calc(var(--tabbar-h) + 14px + 56px + 10px + env(safe-area-inset-bottom)); }
+  /* 专注模式下右栏是那枚浮动按钮，不该被上面的底部抽屉形态接管（升起 / 落回的动画也一并不要） */
+  html.focus-mode .aside-host.is-open, html.focus-mode .aside-host.is-closing { position:fixed; max-height:none; border:0; border-radius:22px; background:none; -webkit-backdrop-filter:none; backdrop-filter:none; box-shadow:none; right:14px; left:auto; animation:none; }
+  /* 正文底部给 tab bar 让出高度，最后一行不被压住 */
+  body { padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom)); }
+  footer { padding-bottom:18px; }
+}
+
+/* 减弱动效：过渡全关；另外几处 CSS animation 逐个点名关掉（灯箱遮罩、复制气泡、≤600 速查卡抽屉）。
+   脚本那一侧在同一偏好下根本不挂这些类、不播 WAAPI，这里是双保险。
+   ::backdrop 单写一条：不认它的老内核会把整条选择器列表作废，别连累前面几个。 */
+@media (prefers-reduced-motion:reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition:none !important; } .is-flash, .copy-bubble, .aside-host { animation:none !important; } .lightbox::backdrop { animation:none !important; } }
+
+/* ================= prefers-contrast: more —— 结构性加重 =================
+   令牌值那一半写在文件开头（两种主题各一组）；这里是必须压过组件规则的四条形态加重，
+   因此排在全部组件规则之后、打印段之前。两种主题共用同一份（它们只改粗细与线型，不改颜色）。 */
+@media (prefers-contrast:more) {
+  .rail-node.vacant::before { border-top-style:solid; }
+  .rail-node.vacant b { border-style:solid; }
+  .risk-line, li.risk-line { border-left-width:4px; }
+  .toc-dot { border-width:2px; }
+  .qc-risk-item { border-left-width:4px; }
+  .table-frame::before, .table-frame::after { display:none; } /* 渐隐阴影在高对比下无意义，撤掉免得糊住首末列 */
+}
+
+/* ================= 阅读优先（v1.8.2）=================
+   手机与平板默认单栏，1100px 以上为可收起目录 + 宽正文。全宽度工具抽屉替代右栏；
+   本轮只改展示，六个强调色、外观、原文与打印数据沿用原实现。
+   这组覆盖限定 screen，打印继续使用后面的完整黑白规则。
+   正文结构铺满侧栏后的空间；普通长段落单独控制行长，材料横向排列并自然换行。
+   不随大屏同比放大侧栏与小控件：把新增的横向空间留给阅读。
+*/
+@media screen {
+  :root { --scale:1; --u:1px; --fs-body:clamp(17px,calc(9.8px + .5vw),20px); --fs-title:32px; --fs-h2:24px;
+    --side-w:248px; --measure:1120px; --gap:20px; --edge:32px; --pad:22px; --tabbar-h:0px; }
+  body { padding-bottom:0; background:var(--raised); font-size:var(--fs-body); line-height:1.8; }
+  body::before { display:none; }
+  button, input, select { font-family:inherit; }
+  select:focus-visible { outline:2px solid var(--accent-ink); outline-offset:2px; }
+  .workbench-head { background:var(--head-bg); box-shadow:none; border-bottom:1px solid var(--line); }
+  .head-top, .workbench-head.is-condensed .head-top {
+    min-height:64px; padding:8px 28px; display:flex; align-items:center; gap:20px; }
+  .brand, .workbench-head.is-condensed .brand { order:0; flex:0 0 auto; gap:10px; font-size:18px; }
+  .brand { --brand-box:32px; }
+  .brand::before { box-shadow:none; border-radius:9px; }
+  .brand-full, .workbench-head.is-condensed .brand-full { display:inline; }
+  .brand-short, .workbench-head.is-condensed .brand-short { display:none; }
+  .global-search { order:1; flex:1 1 520px; max-width:580px; display:flex; margin-left:auto; font-size:14px; }
+  .global-search input, .workbench-head.is-condensed .global-search input { height:42px; font-size:16px; border-color:var(--line); }
+  .global-search button[type="submit"] { min-width:64px; height:42px; box-shadow:none; }
+  .search-clear { width:40px; border-color:var(--line); }
+  .head-btn { display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px;
+    padding:0 12px; border:0; border-radius:8px; color:var(--ink-2); background:transparent; font-size:14px; font-weight:500; }
+  .head-btn:hover { color:var(--accent-ink); background:var(--accent-soft); }
+  .head-search-toggle { display:none; }
+  .head-tools-toggle { order:3; flex:0 0 auto; }
+  .reading-nav { min-height:46px; padding:0 28px; display:flex; align-items:center; gap:16px; border-top:1px solid var(--line-soft); }
+  .reading-nav .head-drawer-open { order:0; flex:none; justify-content:flex-start; min-width:100px; padding:0; }
+  .reading-nav .head-drawer-open[aria-expanded="true"] { color:var(--accent-ink); background:transparent; }
+  .reading-nav .head-biz, .workbench-head.is-condensed .reading-nav .head-biz {
+    order:1; flex:1 1 auto; max-width:none; display:block; font-size:14px; font-weight:400; }
+  .reading-nav .head-rail { order:2; margin-left:auto; padding:0; border:0; overflow:visible; }
+  .stage-picker { display:flex; align-items:center; gap:8px; color:var(--ink-3); font-size:13px; }
+  .stage-picker select { min-width:150px; max-width:220px; min-height:42px; padding:0 28px 0 10px;
+    color:var(--ink); background:var(--raised); border:1px solid var(--line); border-radius:7px; font-size:14px; }
+  .manual-layout { display:grid; grid-template-columns:var(--side-w) minmax(0,1fr); grid-template-rows:minmax(0,1fr); }
+  .toc-dock { grid-column:1; grid-row:1; }
+  .reader-host { display:block; grid-column:2; grid-row:1; }
+  .reader { --reader-pad:clamp(24px,2.5vw,40px); padding:28px var(--reader-pad) 40px; background:var(--raised); }
+  .reader > * { width:100%; max-width:none; margin-left:0; margin-right:0; }
+  .breadcrumbs { margin-bottom:14px; font-size:13px; line-height:1.6; }
+  .reader-heading { align-items:flex-start; gap:20px; }
+  .reader-heading h1 { font-size:32px; line-height:1.4; letter-spacing:0; overflow-wrap:anywhere; }
+  .reader-heading p { margin-top:8px; font-size:14px; line-height:1.65; }
+  .reader-actions { flex:0 0 auto; display:flex; align-items:center; flex-wrap:wrap; gap:4px; }
+  .reader-actions button, .reader-actions .star-toggle { min-height:42px; padding:0 10px; border:0; border-radius:7px;
+    color:var(--ink-3); background:transparent; font-size:13px; font-weight:400; white-space:nowrap; }
+  .reader-actions button:hover { color:var(--accent-ink); background:var(--accent-soft); }
+  .reader-actions .star-toggle[aria-pressed="true"] { color:var(--accent-ink); background:var(--accent-soft); }
+  .document { margin-top:18px; }
+  .document-heading { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:2px 12px; padding:22px 0 12px; border-bottom:0; }
+  .document-heading h2 { margin:0; font-size:24px; font-weight:650; line-height:1.45; }
+  .document-heading p { min-width:44px; margin:0; padding:4px 8px; border-radius:6px; background:var(--accent-soft); font-size:12px; font-weight:600; text-align:center; letter-spacing:0; }
+  .document-heading span { grid-column:1 / -1; margin-top:4px; font-size:13px; }
+  .document-body { padding:10px 0 28px; }
+  .document-body p, .raw-para, .def-line, .notice-block, .stage-notice { max-width:70em; }
+  .document-body p { color:var(--ink); margin-bottom:16px; }
+  .document-body h3 { max-width:70em; margin:24px 0 12px; padding:0; border:0; font-size:19px; font-weight:600; line-height:1.6; }
+  .def-line { grid-template-columns:minmax(0,1fr); margin-bottom:18px; gap:4px; }
+  .def-label { font-size:16px; font-weight:600; white-space:normal; }
+  .def-value, .li-text, .check-text { color:var(--ink); }
+  .step-list { max-width:none; margin-bottom:22px; }
+  .step-list > li { margin-bottom:16px; gap:0 10px; }
+  .step-list .li-text { max-width:70em; }
+  .step-list.is-timeline > li { padding-left:36px; margin-bottom:22px; }
+  .step-list.is-timeline > li::before { width:1px; left:13px; bottom:-22px; background:var(--line); }
+  .step-list.is-timeline .li-num { top:3px; min-width:27px; height:27px; font-size:13px; font-weight:500; border:0; }
+  .step-list.is-timeline .li-text { padding-top:0; }
+  .step-shot { margin-top:16px; }
+  .check-card { --check-pad:16px; max-width:none; width:100%; border:1px solid var(--line); border-radius:8px; background:var(--raised); box-shadow:none; margin-bottom:20px; }
+  .check-head { padding:8px var(--check-pad); gap:4px 12px; align-items:center; background:var(--sunken); border-bottom:1px solid var(--line-soft); }
+  .check-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr)); align-items:stretch; gap:10px; padding:14px var(--check-pad); }
+  .check-list > .check-wide { grid-column:span 2; }
+  .check-list > .check-full { grid-column:1 / -1; }
+  .check-list > li { display:flex; min-width:0; max-width:100%; margin:0; padding:0; }
+  .check-item { box-sizing:border-box; width:100%; height:100%; min-width:0; max-width:100%; min-height:44px; padding:6px 10px; display:grid; grid-template-columns:20px minmax(0,1fr); align-items:start; gap:8px;
+    border:1px solid var(--line); border-radius:6px; background:var(--raised); line-height:1.65; }
+  .check-item:hover { border-color:var(--accent-line); background:var(--accent-soft-2); }
+  .check-item:has(input:checked) { border-color:var(--accent-line); background:var(--accent-soft); }
+  .check-text { min-width:0; overflow-wrap:anywhere; }
+  .check-item input { flex:0 0 20px; width:20px; height:20px; margin-top:4px; transform:none; }
+  .check-progress, .check-clear, .check-source summary { font-size:13px; }
+  .check-clear { min-height:44px; padding:0 8px; border:0; background:transparent; font-weight:400; }
+  .check-source summary { min-height:44px; padding:8px var(--check-pad); }
+  .check-raw { padding:0 var(--check-pad) 14px; font-size:15px; }
+  .notice-block, .stage-notice { font-size:1em; line-height:1.8; box-shadow:none; }
+  .stage-notice { border-left:2px solid var(--line-strong); background:var(--sunken); color:var(--ink-2); }
+  .stage-section.is-vacant .document-heading p { background:var(--sunken); color:var(--ink-2); }
+  .document-body .risk-line { padding:12px 14px; border-radius:6px; }
+  .document-body .risk-line.risk-1 { background:var(--red-pale); }
+  .document-body .risk-line.risk-2 { background:var(--amber-pale); }
+  .document-body li.risk-line::before { display:none; }
+  html.risk-off .document-body .risk-line { padding:0; background:transparent; border-radius:0; }
+  .risk-tag { font-size:12px; font-weight:700; }
+  .code-badge { min-height:32px; font-size:15px; border-radius:5px; box-shadow:none; }
+  .source-images, .step-shot .source-images { display:grid; grid-template-columns:minmax(0,1fr); gap:26px; margin:24px 0 28px; }
+  .source-figure { min-width:0; width:100%; border-radius:8px; background:transparent; box-shadow:none; overflow:visible; }
+  .figure-thumb { display:flex; align-items:center; justify-content:center; width:100%; min-height:44px; padding:12px;
+    border:1px solid var(--mat-line); border-radius:8px; overflow:hidden; background:var(--mat-2); cursor:zoom-in; }
+  .source-figure img, .source-figure.is-small img { display:block; width:auto; height:auto; max-width:100%; max-height:none;
+    margin:0 auto; aspect-ratio:auto; object-fit:contain; object-position:center; }
+  .source-figure.is-small .figure-thumb { display:flex; min-height:64px; padding:12px; aspect-ratio:auto; }
+  .source-figure figcaption { min-height:44px; padding:4px 0; gap:8px; font-size:13px; font-weight:400; flex-wrap:wrap; }
+  .figure-label { flex:1 1 180px; }
+  .figure-seq { font-size:12px; }
+  .figure-raw { min-height:44px; font-size:13px; color:var(--accent-ink); text-underline-offset:3px; }
+  .table-frame { max-width:100%; margin:24px 0; border-radius:6px; box-shadow:none; }
+  .table-wrap { max-height:min(calc(100dvh - var(--head-h) - 32px),600px); }
+  table { font-size:15px; line-height:1.8; }
+  th, td { padding:12px; }
+  .toc-dock { position:sticky; z-index:20; top:var(--head-h); align-self:start; display:flex; flex-direction:column;
+    height:calc(100vh - var(--head-h)); height:calc(100dvh - var(--head-h)); max-height:none;
+    border-right:1px solid var(--line); background:var(--ground); }
+  .toc-drawer-head { display:flex; flex:none; flex-wrap:wrap; align-items:center; gap:8px; padding:14px 16px 10px; border:0; }
+  .toc-drawer-grip { display:none; }
+  .toc-drawer-tabs { flex:1 1 auto; min-width:0; }
+  .toc-drawer-tabs .category-tabs { width:100%; display:flex; }
+  .toc-drawer-tabs .category-tabs button { flex:1; min-width:0; height:40px; padding:0 6px; font-size:13px; }
+  .toc-drawer-close { display:none; }
+  .toc { min-height:0; flex:1; display:flex; border:0; background:transparent; }
+  .toc-sticky { position:static; flex:1; min-width:0; height:auto; min-height:0; max-height:none;
+    display:flex; flex-direction:column; background:transparent; -webkit-backdrop-filter:none; backdrop-filter:none; }
+  .toc-heading { min-height:42px; padding:4px 18px; }
+  .toc-heading h2 { font-size:15px; }
+  .toc-heading span { font-size:12px; }
+  .toc-filter { padding:4px 16px 12px; }
+  .toc-filter input { min-height:40px; font-size:14px; background:var(--raised); }
+  .toc-scroll { flex:1; min-height:0; max-height:none; overflow:auto; overscroll-behavior:contain; padding:0 8px 24px; }
+  .toc-group summary { min-height:44px; padding:10px; gap:6px; font-size:14px; line-height:1.6; }
+  .toc-group[open] summary { background:transparent; }
+  .toc-item { min-height:42px; padding:9px 10px 9px 18px; border-radius:6px; font-size:13px; line-height:1.7; }
+  .toc-item::before { display:none; }
+  .toc-item > span:not(.toc-dots) { white-space:normal; overflow:visible; }
+  .toc-item.selected { background:var(--accent-soft); box-shadow:none; }
+  .toc-dots { display:none; }
+  .toc-note { display:none; }
+  .quick-entry:not(:empty) { padding:8px 16px 12px; }
+  .quick-item { min-height:40px; font-size:13px; }
+  .quick-head { font-size:12px; }
+  .quick-drop { min-width:36px; min-height:36px; }
+  html.toc-collapsed .manual-layout, html.focus-mode .manual-layout { grid-template-columns:minmax(0,1fr); }
+  html.toc-collapsed .toc-dock, html.focus-mode .toc-dock { display:none; }
+  html.toc-collapsed .reader-host, html.focus-mode .reader-host { grid-column:1; }
+  .tab-bar, .stage-fab, .aside-bar-toggle, .desk-book, .desk-switch { display:none !important; }
+  .reader > .step-footer { position:static; max-width:none; margin:24px 0 0; padding:20px 0; display:flex;
+    justify-content:space-between; gap:12px; border-top:1px solid var(--line); background:transparent; box-shadow:none;
+    -webkit-backdrop-filter:none; backdrop-filter:none; }
+  .step-footer button { min-height:44px; font-size:14px; box-shadow:none; }
+  .step-footer .step-now { font-size:13px; }
+  .aside-host, html.focus-mode .aside-host { display:none; }
+  .aside-host.is-open, html.focus-mode .aside-host.is-open {
+    position:fixed; z-index:75; inset:0 0 0 auto; width:min(420px,100%); max-height:none; display:block;
+    overflow:auto; overscroll-behavior:contain; border:0; border-left:1px solid var(--line); border-radius:0;
+    background:var(--raised); box-shadow:var(--shadow-pop); animation:none;
+    -webkit-backdrop-filter:none; backdrop-filter:none; }
+  .aside-host.is-closing, html.focus-mode .aside-host.is-closing { display:none; animation:none; }
+  .tools-drawer-head { position:sticky; top:0; z-index:2; display:flex; align-items:center; justify-content:space-between;
+    gap:12px; min-height:64px; padding:10px 22px; background:var(--raised); border-bottom:1px solid var(--line); }
+  .tools-drawer-head h2, .tools-drawer-head h3 { margin:0; font-size:18px; font-weight:600; }
+  .tools-drawer-head button { min-width:64px; min-height:44px; padding:0 14px; border:1px solid var(--line); border-radius:8px;
+    background:var(--raised); color:var(--ink); font-size:14px; }
+  .aside-host .page-aside, .aside-host.is-open .page-aside, html.focus-mode .aside-host .page-aside { display:block; padding:20px 22px 32px; border:0; background:var(--raised); }
+  html.focus-mode .page-aside > *:not(.aside-tools), html.focus-mode .aside-tools > *:not(.aside-focus) { display:revert; }
+  .page-aside > h2, .aside-host.is-open .page-aside > h2 { display:block; font-size:18px; }
+  .page-aside h3 { padding-left:0; min-height:24px; font-size:14px; }
+  .page-aside h3::before { display:none; }
+  .page-aside p, .page-aside ul, .qc-risk-item { font-size:14px; }
+  .page-aside section, .page-aside section + section, .aside-host.is-open .page-aside section { padding:16px 0; border-bottom:1px solid var(--line); }
+  .aside-tools, html.focus-mode .aside-tools { padding:12px 0 0; }
+  .aside-print, .aside-focus, .aside-switch, html.focus-mode .aside-focus { min-height:44px; width:100%; margin-top:8px;
+    padding:0 12px; border-radius:8px; box-shadow:none; font-size:14px; }
+  .print-opt, .mode-seg button, .accent-seg button, .qc-jump, .qc-risk-item { min-height:44px; }
+  .mode-seg button { font-size:14px; }
+  .accent-seg button { min-width:44px; }
+  html.aside-on { overflow:hidden; }
+  html.aside-on .toc-scrim { position:fixed; z-index:74; inset:0; display:block; background:var(--scrim); }
+  .lightbox-inner { width:min(1320px,calc(100% - 32px)); padding:16px 20px 20px; background:var(--raised); }
+  .lightbox-stage { display:block; place-items:start; max-height:72vh; max-height:72dvh; padding:8px; overscroll-behavior:contain; touch-action:pan-x pan-y pinch-zoom; }
+  .lightbox-image { width:auto; max-width:100%; max-height:68vh; max-height:68dvh; margin:auto; touch-action:pan-x pan-y pinch-zoom; }
+  .lightbox-image.is-zoomed { max-width:none; max-height:none; width:200%; margin:0; }
+  .lightbox-filter { gap:6px; }
+  .lightbox-filter button, .lightbox-close, .lightbox-actions button { min-height:44px; font-size:14px; }
+  .lightbox-raw { min-height:44px; display:inline-flex; align-items:center; font-size:14px; }
+  .search-page { width:min(900px,calc(100% - 40px)); }
+  .result-list button { box-shadow:none; border-radius:8px; padding:20px; }
+  .result-list strong { font-size:18px; }
+  .snippet { font-size:15px; line-height:1.8; }
+  body > footer { padding:24px; font-size:12px; border-top:1px solid var(--line-soft); }
+}
+@media screen and (max-width:1100px) {
+  .head-top, .workbench-head.is-condensed .head-top { min-height:58px; padding:6px 20px; gap:12px; }
+  .reading-nav { padding:0 20px; gap:12px; }
+  .head-search-toggle { order:2; display:inline-flex; margin-left:auto; }
+  .head-tools-toggle { margin-left:0; }
+  .global-search { display:none; }
+  .head-top.is-search-open .global-search { display:flex; max-width:none; order:0; margin:0; }
+  .head-top.is-search-open .brand, .head-top.is-search-open .head-tools-toggle { display:none; }
+  .head-top.is-search-open .head-search-toggle { order:2; margin-left:0; }
+  .global-search input, .global-search button[type="submit"], .workbench-head.is-condensed .global-search input { height:44px; }
+  .manual-layout { display:block; }
+  .reader { --reader-pad:clamp(24px,4vw,40px); padding-top:24px; }
+  .reader-heading { flex-direction:column; gap:8px; }
+  .reader-heading h1 { font-size:30px; }
+  .reader-actions { gap:8px; margin-left:-10px; }
+  .reader-actions button, .reader-actions .star-toggle { min-height:44px; font-size:14px; }
+  .crumb-full { display:none; }
+  .crumb-short { display:inline; }
+  .toc-dock, html.focus-mode .toc-dock, html.toc-collapsed .toc-dock {
+    position:fixed; z-index:75; inset:0 auto 0 0; display:flex; width:min(360px,90vw); height:100%; max-height:100%;
+    border:0; border-right:1px solid var(--line); border-radius:0; background:var(--raised);
+    box-shadow:var(--shadow-pop); -webkit-backdrop-filter:none; backdrop-filter:none;
+    transform:translateX(-102%); visibility:hidden; transition:transform .2s ease,visibility 0s linear .2s; }
+  .toc-dock[open], html.focus-mode .toc-dock[open], html.toc-collapsed .toc-dock[open] {
+    transform:none; visibility:visible; transition:transform .2s ease,visibility 0s; }
+  .toc-drawer-head { padding:12px 16px; border-bottom:1px solid var(--line); }
+  .toc-drawer-close { display:block; min-height:44px; min-width:56px; padding:0 8px; font-size:14px; }
+  .toc-drawer-tabs .category-tabs button { min-height:44px; font-size:14px; }
+  .toc, html.focus-mode .toc { display:flex; background:var(--raised); }
+  .toc-sticky { max-height:none; }
+  .toc-heading { padding:12px 18px 6px; }
+  .toc-filter input { height:44px; font-size:16px; }
+  .toc-item, .quick-item { min-height:46px; font-size:15px; }
+  .toc-group summary { min-height:48px; font-size:15px; }
+  .quick-drop { min-width:44px; min-height:44px; }
+  html.toc-on { overflow:hidden; }
+  html.toc-on .toc-scrim { position:fixed; z-index:74; inset:0; display:block; background:var(--scrim); }
+  .check-clear { min-height:44px; }
+  .code-badge { min-height:44px; }
+  .lightbox-inner { width:calc(100% - 20px); margin:10px auto; padding:12px 14px; }
+  .lightbox-stage { max-height:65vh; max-height:65dvh; }
+  .lightbox-image { max-height:60vh; max-height:60dvh; }
+}
+@media screen and (max-width:600px) {
+  .head-top, .workbench-head.is-condensed .head-top { padding:5px 16px; gap:8px; min-height:56px; }
+  .brand, .workbench-head.is-condensed .brand { gap:8px; font-size:17px; }
+  .brand { --brand-box:29px; }
+  .brand-full, .workbench-head.is-condensed .brand-full { display:none; }
+  .brand-short, .workbench-head.is-condensed .brand-short { display:inline; }
+  .head-btn { padding:0 9px; }
+  .reading-nav { padding:0 16px; min-height:46px; gap:8px; }
+  .reading-nav .head-biz { display:none !important; }
+  .stage-picker { gap:4px; }
+  .stage-picker select { min-width:0; width:152px; max-width:100%; min-height:44px; font-size:14px; border:0; background:transparent; }
+  .stage-picker > span { display:none; }
+  .reader { --reader-pad:20px; padding-top:18px; padding-bottom:28px; }
+  .reader-heading h1 { font-size:28px; }
+  .reader-heading p { font-size:13px; }
+  .breadcrumbs { font-size:12px; margin-bottom:10px; }
+  .reader-actions { gap:4px; }
+  .reader-actions button, .reader-actions .star-toggle { font-size:13px; }
+  .document { margin-top:12px; }
+  .document-heading { padding:18px 0 8px; gap:2px 10px; }
+  .document-heading h2 { font-size:22px; }
+  .document-body { padding:10px 0 26px; }
+  .document-body h3 { font-size:18px; margin-top:24px; }
+  .step-list.is-timeline > li { padding-left:32px; }
+  .step-shot { margin-left:-32px; }
+  .figure-thumb, .source-figure.is-small .figure-thumb { padding:5px; }
+  .source-images, .step-shot .source-images { gap:22px; margin:20px 0 24px; }
+  .source-figure figcaption { gap:4px 8px; }
+  .figure-label { flex-basis:160px; }
+  .check-card { --check-pad:12px; }
+  .check-head { padding:6px var(--check-pad); }
+  .check-list { grid-template-columns:repeat(2,minmax(0,1fr)); padding:12px var(--check-pad); gap:8px; }
+  .check-item { padding:6px 8px; }
+  .check-source summary { padding:8px 12px; }
+  .check-raw { padding:0 12px 12px; }
+  .notice-block, .stage-notice { font-size:17px; padding:12px; }
+  .reader > .step-footer { flex-wrap:wrap; gap:8px; padding:16px 0; }
+  .step-footer .step-now { display:none; }
+  .aside-host.is-open, html.focus-mode .aside-host.is-open { inset:auto 0 0; width:100%; max-height:85vh; max-height:85dvh;
+    border:0; border-top:1px solid var(--line); border-radius:16px 16px 0 0; padding-bottom:env(safe-area-inset-bottom); }
+  .tools-drawer-head { min-height:60px; padding:8px 18px; }
+  .aside-host .page-aside, .aside-host.is-open .page-aside, html.focus-mode .aside-host .page-aside { padding:12px 18px 28px; }
+  .lightbox-inner { width:100%; margin:0; padding:12px 12px calc(16px + env(safe-area-inset-bottom)); border-radius:0; min-height:100dvh; }
+  .lightbox-top { position:sticky; top:0; z-index:2; padding-bottom:8px; background:var(--raised); }
+  .lightbox-stage { margin:10px -6px; padding:2px; max-height:62vh; max-height:62dvh; }
+  .lightbox-image { max-height:58vh; max-height:58dvh; }
+  .lightbox-caption { font-size:13px; }
+  .lightbox-filter { gap:4px; }
+  .lightbox-filter button { padding:0 9px; font-size:12px; }
+  .lightbox-actions { gap:6px; }
+  .lightbox-actions button { padding:0 12px; }
+  .lightbox-actions [data-lightbox="next"] { margin-left:auto; }
+  .lightbox-raw { order:1; width:100%; margin-left:0; }
+  .search-page { width:calc(100% - 32px); margin-top:24px; }
+  .result-list button { padding:16px 12px; }
+  .snippet { font-size:14px; }
+}
+@media screen and (max-width:360px) {
+  .reader { --reader-pad:16px; }
+  .reading-nav { padding:0 12px; }
+  .stage-picker select { width:142px; }
+  .reader-heading h1 { font-size:26px; }
+}
+
+/* 打印：只出当前业务的对照单；纸张宽度会命中 900px 与 600px 两个断点，故本段必须放在最后覆盖。
+   链接后不追加 URL（不设 a::after{content:attr(href)}），离线柜面场景无意义。 */
+@media print {
+  /* ---- 打印永远浅色：把整套令牌就地压回黑白纸面 ----
+     四种选择器一起写（自动 / 手选浅色 / 手选深色），深色主题下按「打印」出来的仍是白纸黑字。
+     这一条必须排在打印段最前面：后面所有规则都建立在它之上。
+
+     为什么多出 :root:not([data-mode="light"]) 这一条（1.7.0 修）：
+     深色令牌挂在 @media (prefers-color-scheme:dark) 里的 :root:not([data-mode="light"])，
+     特异性是 (0,2,0)；而这里原先只有一个裸 :root，特异性 (0,1,0)，压不过它。
+     后果是「外观＝自动 + 系统深色」这一格里，打印时深色令牌仍然生效——
+     正文靠下面的 #print-sheet *{color:#000} 兜住了，但 .source-figure / .table-wrap /
+     截图 img 三处的底色会带出深色块，违背 1.6.0 立下的「打印永远白纸黑字」。
+     这里补一条同形状同特异性的选择器，源序在后，于是稳稳压过。两个 [data-mode] 那两条照旧。
+     （2026-09-23：属性名由 data-theme 改为 data-mode，四条选择器一起改，形状与特异性不变。） */
+  :root, :root:not([data-mode="light"]), :root[data-mode="light"], :root[data-mode="dark"] {
+    color-scheme:light;
+    --ink:#000; --ink-2:#000; --ink-3:#000; --ink-disabled:#444;
+    --line:#666; --line-soft:#666; --line-strong:#666; --line-field:#666; --line-mute:#666; --rail-line:#666;
+    --paper:#fff; --panel:#fff; --ground:#fff; --sunken:#fff; --chip:#fff;
+    --raised:#fff; --table-zebra:#fff; --paper-veil:#fff;
+    --mat:#fff; --mat-2:#fff; --mat-hover:#fff; --mat-line:#666;
+    --red:#000; --red-ink:#000; --red-pale:#fff;
+    /* 强调色组整组压成黑白：六个强调色打印出来是同一张纸，强调色开关不影响打印稿。
+       玻璃、光晕与磨砂一起撤（三团 --blob* 归 transparent、两层玻璃归白、--blur 归 none，
+       body::before 另有 display:none）。图标块的分类色也一并压白，见下面 --indigo-fill。 */
+    --blur:none; --scale:1; --u:1px;
+    --blob1:transparent; --blob2:transparent; --blob3:transparent;
+    --glass:#fff; --glass-strong:#fff; --glass-edge:#666; --indigo-fill:#000;
+    --dot-blue:none; --dot-green:none; --dot-indigo:none; --dot-orange:none; --dot-pink:none; --dot-teal:none;
+    --accent:#000; --accent-2:#000; --accent-ink:#000; --accent-soft:#fff; --accent-soft-2:#fff;
+    --accent-line:#666; --accent-edge:#666; --on-accent:#fff;
+    --accent-btn-1:#fff; --accent-btn-2:#fff; --accent-btn-h1:#fff; --accent-btn-h2:#fff;
+    --accent-grad:none; --accent-grad-hover:none;
+    --amber:#000; --amber-ink:#000; --amber-pale:#fff;
+    --green:#000; --green-ink:#000; --green-pale:#fff;
+    --mark-bg:#fff; --mark-ink:#000;
+    --scrim:#fff; --backdrop:#fff;
+    /* 目录栏在打印时随 .manual-shell 一起 display:none，这三条只是兜底：
+       将来若有人把目录放进打印稿，它也是白纸黑字，不会带出一块底色。 */
+    --head-bg:#fff; --toc-bg:#fff; --toc-sel-bg:#fff; --toc-line:#666;
+    --shadow-rgb:0,0,0; --focus-rgb:0,0,0;
+    --shadow:none; --shadow-pop:none;
+  }
+  /* 渐变伪元素、磨砂与阴影在纸上一律撤掉：伪元素是 fixed 的，打印时会在每页重画一层底。 */
+  body::before { display:none !important; }
+  .workbench-head, .toc-sticky, .toc-dock, .step-footer, .tab-bar, .aside-host { -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+  /* 页边距：左右留装订余量，页脚那一档更宽，免得深链与免责被切在纸边上。 */
+  @page { margin:16mm 14mm 18mm; }
+  html { scroll-behavior:auto; }
+  body { min-width:0; padding-bottom:0; color:#000; background:#fff; font-size:10.5pt; line-height:1.6; }
+  /* 主按钮那条白字投影在纸上无意义（按钮本身也 display:none），这一条是兜底。 */
+  * { text-shadow:none !important; }
+  .skip-link, #live-region, .workbench-head, .manual-shell, .manual-layout, body > footer, body > nav.tab-bar, .lightbox, .hotkey-help, button { display:none !important; }
+  #print-sheet { display:block !important; }
+  #print-sheet *, #print-sheet *::before { box-shadow:none !important; text-shadow:none !important; color:#000; }
+  /* 带底块的图标与线条图标在纸上一律不出（复印会糊成黑块）：两种画法各一条兜底。 */
+  #print-sheet *::before, #print-sheet *::after { background-image:none !important; -webkit-mask-image:none !important; mask-image:none !important; }
+  .print-head { margin:0 0 12pt; padding:0 0 7pt; border-bottom:1.5pt solid #000; }
+  .print-head h1 { margin:0 0 4pt; font-size:18pt; line-height:1.25; }
+  .print-head p { margin:0; font-size:9pt; line-height:1.5; }
+  .print-stage { margin:0 0 6pt; }
+  .print-stage > h2 { margin:14pt 0 6pt; padding:0 0 3pt; border-bottom:.8pt solid #000; font-size:13pt; break-after:avoid; break-inside:avoid; }
+  #print-sheet .document-body { padding:0; }
+  #print-sheet .document-body h3 { margin:10pt 0 5pt; padding-left:7pt; border-left:2pt solid #000; font-size:11.5pt; break-after:avoid; }
+  #print-sheet .document-body p { max-width:none; margin:0 0 5pt; }
+  #print-sheet .def-line { max-width:none; margin:0 0 4pt; gap:0 6pt; }
+  #print-sheet .def-label { font-size:10pt; }
+  #print-sheet .step-list { max-width:none; margin:0 0 6pt; }
+  #print-sheet .step-list > li { margin:0 0 3pt; padding-left:0; gap:0 6pt; }
+  #print-sheet .step-list > li::before { display:none; }
+  #print-sheet .li-num { font-weight:800; }
+  #print-sheet .notice-block { max-width:none; margin:6pt 0; padding:4pt 7pt; border-left:2pt solid #666; background:none; font-size:10pt; }
+  /* 风险标记的黑白安全口径（§5.3）：彩色左条一律降为黑色细线，
+     真正承载「哪一级」的是行首那个文字标记【禁止】/【注意】——复印、传真、黑白打印都不丢信息。 */
+  #print-sheet .risk-line { padding-left:6pt; border-left:.8pt solid #000; }
+  #print-sheet .risk-line.risk-1, #print-sheet .risk-line.risk-2 { border-left-color:#000; }
+  #print-sheet li.risk-line { padding-left:6pt; }
+  #print-sheet .risk-tag { margin-right:4pt; color:#000; font-weight:800; }
+  /* 「重点标识」是屏幕上的个人偏好开关；打印件是给他人看、要归档的，
+     §5.3「黑白打印不丢信息」是对纸面的无条件承诺——html.risk-off 下纸面标记照出。
+     （左条那两条本来就靠 #id 的特异性压过 html.risk-off，这里一并写明，免得日后被误改。） */
+  html.risk-off #print-sheet .risk-tag { display:inline; }
+  html.risk-off #print-sheet .risk-line { padding-left:6pt; border-left:.8pt solid #000; }
+  html.risk-off #print-sheet li.risk-line { padding-left:6pt; }
+  #print-sheet .table-frame { margin:8pt 0; }
+  #print-sheet .table-frame::before, #print-sheet .table-frame::after { display:none; }
+  #print-sheet .table-wrap { max-height:none; margin:0; overflow:visible; border:.8pt solid #000; }
+  #print-sheet table { min-width:0; width:100%; font-size:9pt; }
+  #print-sheet thead { display:table-header-group; }
+  #print-sheet th, #print-sheet td { position:static; border-right:.5pt solid #666; border-bottom:.5pt solid #666; }
+  #print-sheet thead th { background:none; font-weight:800; }
+  #print-sheet tbody tr, #print-sheet tbody tr:nth-child(even) { background:none; }
+  /* 打印稿不做视觉合并：重复首列还原为完整文字，纸面上每行都能独立看懂。 */
+  #print-sheet td.is-repeat .sr-only { position:static; width:auto; height:auto; margin:0; overflow:visible; clip:auto; white-space:normal; }
+  #print-sheet tr, #print-sheet figure, #print-sheet li { break-inside:avoid; }
+  #print-sheet .source-images { gap:8pt; margin:8pt 0; }
+  #print-sheet .source-figure { border:.5pt solid #666; }
+  #print-sheet .figure-thumb { padding:0; border:0; background:none; }
+  #print-sheet .source-figure img { aspect-ratio:auto; max-height:8cm; height:auto; width:auto; max-width:100%; margin:0 auto; object-fit:contain; }
+  #print-sheet .source-figure figcaption { min-height:0; padding:4pt 5pt; font-size:8.5pt; }
+  #print-sheet .figure-raw, #print-sheet .figure-seq { display:none; }
+  /* ---- 分页收尾（§5.3 定稿）----
+     段落与列表项两端各留 3 行，杜绝「一行孤字翻到下一页」；
+     标题、卡片、图与表整块不拆；页眉后面、页脚前面不断页。 */
+  #print-sheet p, #print-sheet li, #print-sheet .def-line, #print-sheet .check-raw { orphans:3; widows:3; }
+  #print-sheet .check-card, #print-sheet .source-figure, #print-sheet .notice-block { break-inside:avoid; }
+  #print-sheet .document-body h3 + p, #print-sheet .document-body h3 + .def-line { break-before:avoid; }
+  .print-head { break-after:avoid; break-inside:avoid; }
+  .print-foot { break-before:avoid; break-inside:avoid; }
+  .print-stage { break-inside:auto; }
+  /* ---- 页眉页脚版式定稿 ----
+     页眉：业务名 + 全路径 + 手册版本/站点版本；页脚：本机深链 + 打印日期 + 免责。
+     深链取自运行时 location（buildPrintSheet 里现算），因此挂在 /tools/ganggang/ 子路径下
+     打印出来的那一行天然带着子路径前缀，照着敲回来仍是同一业务同一环节。 */
+  .print-foot { margin-top:14pt; padding-top:6pt; border-top:.8pt solid #000; font-size:8.5pt; line-height:1.5; }
+  .print-foot p { margin:0; }
+  .print-link { word-break:break-all; font-family:var(--mono); }
+  .print-when { margin-top:2pt; }
+}
