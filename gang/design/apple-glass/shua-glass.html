@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>刷刷 · 液态玻璃样张</title>
+<style>
+  :root{
+    --font:-apple-system,"SF Pro Text","PingFang SC","Hiragino Sans GB","Noto Sans CJK SC",sans-serif;
+    --bg:#F4F5F9; --label:#1C1C1E; --label2:rgba(60,60,67,.62); --label3:rgba(60,60,67,.32);
+    --glass:rgba(255,255,255,.62); --glass-strong:rgba(255,255,255,.78); --glass-edge:rgba(255,255,255,.9); --sep:rgba(60,60,67,.12);
+    --accent:#007AFF; --accent-2:#5AC8FA; --accent-soft:rgba(0,122,255,.13);
+    --green:#34C759; --red:#FF3B30; --orange:#FF9500; --indigo:#5856D6; --pink:#FF2D55; --teal:#30B0C7; --fill:rgba(120,120,128,.14);
+    --blob1:rgba(90,200,250,.55); --blob2:rgba(255,214,170,.55); --blob3:rgba(175,160,255,.45);
+    --r:18px; --shadow:0 10px 30px rgba(20,30,60,.08), inset 0 1px 0 var(--glass-edge);
+    /* 流式尺度：所有字号与间距随视口在两端之间插值 */
+    --fs-title:clamp(26px, 1.4vw + 14px, 36px); --fs-h2:clamp(18px, .8vw + 10px, 24px); --fs-body:clamp(13px, .35vw + 10px, 15px);
+    --gap:clamp(10px, 1vw, 16px); --pad:clamp(14px, 1.2vw, 20px); --side-w:clamp(200px, 17vw, 250px);
+  }
+  body[data-mode="dark"]{
+    --bg:#0B0C10; --label:#F2F2F7; --label2:rgba(235,235,245,.62); --label3:rgba(235,235,245,.32);
+    --glass:rgba(40,42,52,.55); --glass-strong:rgba(44,46,58,.72); --glass-edge:rgba(255,255,255,.12); --sep:rgba(84,84,88,.5);
+    --accent:#0A84FF; --accent-2:#64D2FF; --accent-soft:rgba(10,132,255,.2); --green:#30D158; --red:#FF453A; --orange:#FF9F0A; --indigo:#5E5CE6; --pink:#FF375F; --teal:#40C8E0; --fill:rgba(120,120,128,.26);
+    --blob1:rgba(10,132,255,.35); --blob2:rgba(255,159,10,.22); --blob3:rgba(94,92,230,.35);
+    --shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 var(--glass-edge);
+  }
+  body[data-accent="green"]{--accent:#34C759;--accent-2:#A8E063;--accent-soft:rgba(52,199,89,.15);--blob1:rgba(52,199,89,.4);--blob3:rgba(48,176,199,.35)}
+  body[data-accent="indigo"]{--accent:#5856D6;--accent-2:#BF5AF2;--accent-soft:rgba(88,86,214,.15);--blob1:rgba(88,86,214,.4);--blob2:rgba(255,45,85,.25)}
+  body[data-accent="orange"]{--accent:#FF9500;--accent-2:#FFD60A;--accent-soft:rgba(255,149,0,.16);--blob1:rgba(255,149,0,.4);--blob3:rgba(255,59,48,.25)}
+  body[data-accent="pink"]{--accent:#FF2D55;--accent-2:#FF9AA2;--accent-soft:rgba(255,45,85,.14);--blob1:rgba(255,45,85,.35);--blob3:rgba(191,90,242,.3)}
+  body[data-accent="teal"]{--accent:#30B0C7;--accent-2:#64D2FF;--accent-soft:rgba(48,176,199,.15);--blob1:rgba(48,176,199,.45);--blob2:rgba(52,199,89,.3)}
+  *{box-sizing:border-box} html,body{margin:0;min-height:100%}
+  body{font-family:var(--font);color:var(--label);background:var(--bg);font-size:var(--fs-body);-webkit-font-smoothing:antialiased;min-height:100vh;display:grid;grid-template-columns:var(--side-w) 1fr}
+  /* 背景光晕：三团低饱和色，固定在视口，跟强调色走 */
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+    radial-gradient(38vw 38vw at 12% 8%, var(--blob1), transparent 60%),
+    radial-gradient(34vw 34vw at 92% 18%, var(--blob2), transparent 60%),
+    radial-gradient(40vw 40vw at 70% 100%, var(--blob3), transparent 60%);
+    filter:blur(10px)}
+  .side{position:sticky;top:0;height:100vh;padding:var(--pad) 12px;display:flex;flex-direction:column;gap:2px;background:var(--glass);backdrop-filter:blur(30px) saturate(160%);-webkit-backdrop-filter:blur(30px) saturate(160%);border-right:1px solid var(--glass-edge)}
+  .brand{display:flex;align-items:center;gap:10px;padding:4px 10px 16px}
+  .brand i{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 14px var(--accent-soft);display:grid;place-items:center;color:#fff}.brand i svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .brand b{display:block;font-size:17px}.brand span{font-size:12px;color:var(--label2)}
+  .nav a{display:flex;align-items:center;gap:10px;height:36px;padding:0 10px;border-radius:10px;color:var(--label);text-decoration:none;font-size:15px}
+  .nav a.on{background:var(--glass-strong);color:var(--accent);font-weight:600;box-shadow:var(--shadow)}
+  .nav .ic{width:22px;height:22px;display:inline-grid;place-items:center;color:var(--label2)}.nav .ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.nav a.on .ic{color:var(--accent)}
+  .nav h6{margin:14px 10px 6px;font-size:11px;font-weight:600;color:var(--label2);letter-spacing:.04em}
+  .foot{margin-top:auto;padding:10px 6px 0;font-size:12px;color:var(--label2)}
+  .seg{display:flex;background:var(--fill);border-radius:10px;padding:2px;margin-bottom:10px}
+  .seg span{flex:1;text-align:center;padding:5px 0;border-radius:8px;color:var(--label)}
+  .seg span.on{background:var(--glass-strong);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .accents{display:flex;gap:8px;margin:6px 0 12px}.accents i{width:18px;height:18px;border-radius:50%}.accents i.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent)}
+  .prog{height:5px;border-radius:3px;background:var(--fill);margin-top:8px}.prog i{display:block;width:0;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+  .main{padding:calc(var(--pad) + 8px) clamp(16px,3vw,44px) 40px;min-width:0}
+  .lt{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  h1{margin:0;font-size:var(--fs-title);letter-spacing:-.4px;font-weight:700}
+  .sub{color:var(--label2);margin:6px 0 var(--gap)}
+  .btn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 16px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:600;border:0;box-shadow:0 8px 18px var(--accent-soft)}
+  .btn.tint{background:var(--accent-soft);color:var(--accent);box-shadow:none}
+  .btn.glass{background:var(--glass);color:var(--label);box-shadow:var(--shadow);backdrop-filter:blur(20px)}
+  /* 卡片网格：auto-fit，窄了自动换行；hero 永远占尽可能宽 */
+  .grid{display:grid;gap:var(--gap);grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-bottom:var(--gap)}
+  .card{background:var(--glass);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);border-radius:var(--r);padding:var(--pad);box-shadow:var(--shadow)}
+  .hero{grid-column:1 / -2;display:flex;flex-direction:column;justify-content:space-between;min-height:170px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,var(--accent-soft),transparent 70%)}
+  .hero .k{color:var(--label2);font-weight:600;font-size:13px}.hero h2{margin:6px 0 4px;font-size:var(--fs-h2)}.hero p{margin:0 0 14px;color:var(--label2)}
+  .ring{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
+  .ring .c{width:clamp(76px,7vw,96px);aspect-ratio:1;border-radius:50%;background:conic-gradient(var(--accent) 0 0%,var(--fill) 0);display:grid;place-items:center}
+  .ring .c b{width:82%;aspect-ratio:1;border-radius:50%;background:var(--glass-strong);display:grid;place-items:center;font-size:24px}
+  .ring small{color:var(--label2);font-size:12px}
+  .stat .k{color:var(--label2);font-size:13px}.stat b{display:block;font-size:clamp(22px,1.6vw,28px);margin:6px 0 2px}.stat small{color:var(--label3);font-size:12px}
+  h3{margin:var(--gap) 0 8px;font-size:var(--fs-h2)}
+  .list{background:var(--glass);backdrop-filter:blur(24px);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+  .row{display:flex;align-items:center;gap:14px;padding:12px var(--pad);border-top:1px solid var(--sep);min-width:0}
+  .row:first-child{border-top:0}
+  .row .ico{flex:none;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#fff;background-image:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0));box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 2px 5px rgba(0,0,0,.12)}.row .ico svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .row .t{flex:1;min-width:0}.row .t b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row .t small{display:block;color:var(--label2);font-size:12.5px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .badge{color:var(--label2);background:var(--fill);border-radius:999px;padding:2px 9px;font-size:12.5px}
+  .row .chev{color:var(--label3);font-size:18px}
+  .two{display:grid;gap:var(--gap);grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  /* 窄屏：侧栏收成顶栏（图标横排），内容单列 */
+  @media (max-width:900px){
+    body{grid-template-columns:1fr}
+    .side{position:sticky;height:auto;flex-direction:row;align-items:center;gap:6px;padding:10px 12px;border-right:0;border-bottom:1px solid var(--glass-edge);overflow-x:auto}
+    .brand{padding:0 6px 0 0}.brand span{display:none}
+    .nav{display:flex;gap:4px}.nav a{height:32px;padding:0 10px;font-size:14px;white-space:nowrap}.nav h6{display:none}
+    .foot{display:none}
+    .hero{grid-column:1 / -1}
+  }
+</style></head>
+<body data-mode="light" data-accent="blue">
+<aside class="side">
+  <div class="brand"><i><svg viewBox="0 0 24 24"><rect x="6.5" y="3.5" width="13" height="16" rx="3" opacity=".55"/><rect x="4" y="6.5" width="13" height="14" rx="3"/><path d="m7.6 13.6 2.3 2.3 4.4-4.6"/></svg></i><div><b>刷刷</b><span>离线刷题工具</span></div></div>
+  <nav class="nav">
+    <a class="on"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/></svg></span>首页</a><a><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h10M4 12h16M4 18h12"/><path d="M17 4l3 2-3 2"/></svg></span>专项练习</a><a><span class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg></span>搜题</a><a><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><rect x="3" y="6" width="6" height="12" rx="1.5"/><rect x="15" y="6" width="6" height="12" rx="1.5"/></svg></span>对比</a><a><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg></span>错题与标记</a><a><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg></span>学习统计</a>
+    <h6>题库与数据</h6>
+    <a><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h4v14H4zM10 5h4v14h-4zM16.5 5.5l3.5 1-3 13-3.5-1z"/></svg></span>题库管理</a><a><span class="ic"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg></span>数据管理</a>
+  </nav>
+  <div class="foot">
+    <div class="seg"><span class="on">浅色</span><span>深色</span><span>自动</span></div>
+    <div>强调色</div>
+    <div class="accents"><i class="on" style="background:#007AFF"></i><i style="background:#34C759"></i><i style="background:#5856D6"></i><i style="background:#FF9500"></i><i style="background:#FF2D55"></i><i style="background:#30B0C7"></i></div>
+    <div>v3.11.0 · Ysevan</div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px"><span>今日目标</span><span>0 / 30</span></div>
+    <div class="prog"><i></i></div>
+  </div>
+</aside>
+<main class="main">
+  <div class="lt"><h1>学习首页</h1><button class="btn glass">⇄ 随机 20 题</button></div>
+  <div class="sub">当前题库：【新】2026 年度综合服务经理岗位准入资格年检题库 · 共 799 道</div>
+  <div class="grid">
+    <div class="card hero"><div><div class="k">今日复习</div><h2>今日复习已清空</h2><p>答错或标记不会的题会按记忆间隔再次出现</p></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn">▶ 随机练习</button><button class="btn tint">专项练习</button></div></div>
+    <div class="card ring"><div class="c"><b>0</b></div><small>今日已答 · 每日目标 30 题</small></div>
+    <div class="card stat"><div class="k">累计做题</div><b>0</b><small>覆盖 0 道</small></div>
+    <div class="card stat"><div class="k">累计正确率</div><b>0%</b><small>完成练习后生成</small></div>
+    <div class="card stat"><div class="k">未掌握错题</div><b>0</b><small>连续答对后可掌握</small></div>
+    <div class="card stat"><div class="k">手动标记不会</div><b>0</b><small>始终由你确认移除</small></div>
+  </div>
+  <h3>快速开始</h3>
+  <div class="list" style="margin-bottom:var(--gap)">
+    <div class="row"><span class="ico" style="background:linear-gradient(135deg,var(--accent),var(--accent-2))"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z" fill="#fff" stroke="none"/></svg></span><div class="t"><b>开始连续刷题</b><small>按题库顺序练习，自动保存每一步</small></div><span class="badge">2 / 799</span><span class="chev">›</span></div>
+    <div class="row"><span class="ico" style="background:var(--orange)"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 9.5V13l2.5 1.5"/><path d="M9.5 3.5h5"/></svg></span><div class="t"><b>自动看题</b><small>显示答案和解析 · 默认每 15 秒翻页</small></div><span class="chev">›</span></div>
+  </div>
+  <div class="two">
+    <div class="list">
+      <div class="row"><span class="ico" style="background:var(--green)"><svg viewBox="0 0 24 24"><path d="M7 6.5h2v11"/><path d="M12 7h6M12 12h6M12 17h6"/></svg></span><div class="t"><b>单选题练习</b><small>从 271 道单选题中随机抽取</small></div><span class="chev">›</span></div>
+      <div class="row"><span class="ico" style="background:var(--indigo)"><svg viewBox="0 0 24 24"><path d="m5 7 1.5 1.5L9 6"/><path d="m5 13 1.5 1.5L9 12"/><path d="m5 19 1.5 1.5L9 18"/><path d="M12 7.5h7M12 13.5h7M12 19.5h7"/></svg></span><div class="t"><b>多选题练习</b><small>多选少选均判为错误</small></div><span class="chev">›</span></div>
+      <div class="row"><span class="ico" style="background:var(--teal)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m8.5 12.2 2.3 2.3 4.7-4.8"/></svg></span><div class="t"><b>判断题练习</b><small>快速巩固判断类知识</small></div><span class="chev">›</span></div>
+    </div>
+    <div class="list">
+      <div class="row"><span class="ico" style="background:var(--orange)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9.7 9.6a2.3 2.3 0 1 1 3.3 2.1c-.7.4-1 .9-1 1.6"/><circle cx="12" cy="16.6" r=".7" fill="#fff" stroke="none"/></svg></span><div class="t"><b>不会题专项</b><small>0 道手动标记</small></div><span class="chev">›</span></div>
+      <div class="row"><span class="ico" style="background:var(--red)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m9.3 9.3 5.4 5.4M14.7 9.3l-5.4 5.4"/></svg></span><div class="t"><b>错题专项</b><small>0 道未掌握错题</small></div><span class="chev">›</span></div>
+      <div class="row"><span class="ico" style="background:var(--pink)"><svg viewBox="0 0 24 24"><path d="M12 4.5l2.3 4.7 5.2.8-3.8 3.7.9 5.2L12 16.4l-4.6 2.5.9-5.2L4.5 10l5.2-.8z"/></svg></span><div class="t"><b>标记题专项</b><small>0 道已标记</small></div><span class="chev">›</span></div>
+    </div>
+  </div>
+</main>
+<script>const q=new URLSearchParams(location.search);if(q.get('mode'))document.body.dataset.mode=q.get('mode');if(q.get('accent'))document.body.dataset.accent=q.get('accent');</script>
+</body></html>

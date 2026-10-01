@@ -1,7 +1,5 @@
-/* 新员工业务手册 v1.7.0：四步同页连续文档 + 吸顶工作台头与四步锚点条；
-   本版接入两个独立模块（分组搜索 search-module.js、最近查看/常办 visit-store.js），
-   新增三态主题开关（自动/浅色/深色）、截图胶片条与灯箱按环节筛图、打印「含截图」开关。
-   展示层整理，不改变原始手册事实口径。 */
+/* 新员工业务手册 v2.0.0：按原文办理环节阅读、交易与单据原句索引、Word 原色。
+   所有整理均指向原始块；复杂情形保留原序。普通同步脚本，支持离线相对路径。 */
 (() => {
   "use strict";
 
@@ -34,15 +32,19 @@
   const suggestList = document.querySelector("#search-suggest");
   const suggestNote = suggestPop ? suggestPop.querySelector(".suggest-note") : null;
   const HANDBOOK_VERSION = "2026-02-05";
-  const SITE_VERSION = "v1.8.2";
+  const SITE_VERSION = "v2.0.0";
   const STAGES = [
-    { key: "prepare", label: "准备材料", hint: "先核验客户、材料和单据是否齐全" },
-    { key: "operate", label: "办理步骤", hint: "按系统或柜面流程依次办理" },
-    { key: "review", label: "核对重点", hint: "提交前复核要素、风险点和特殊情形" },
-    { key: "archive", label: "办结归档", hint: "完成后留存资料、回单或传票" },
+    { key: "prepare", label: "办前准备", hint: "先看材料、填写单据和办理前的注意事项" },
+    { key: "operate", label: "办理操作", hint: "按适用情形查看交易码、操作顺序与就近提示" },
+    { key: "review", label: "办结核对", hint: "查看原文列出的业务完结要求" },
+    { key: "archive", label: "单据去向", hint: "查找打印、传票、复审和签字盖章的原文要求" },
   ];
-  /* 空环节的口径说明：制度框架在每个业务上都可见可解释，不再让环节整段消失。 */
-  const vacantNotice = (label) => `原手册在此业务中未单列“${label}”内容，请按所在机构及最新制度的归档/核对要求执行。`;
+  const vacantNotice = (label) => `原文未单列“${label}”内容。可查看办理操作及单据去向中的相关原句。`;
+  const Workflow = window.HandbookWorkflow || null;
+  const SourceFormat = window.HandbookSourceFormatting || null;
+  const sourceFormats = window.EMPLOYEE_HANDBOOK_FORMATTING?.nodes || {};
+  const guideCache = new Map();
+  let readingMode = "guided";
   const CONDENSE_ON = 80;      // 向下滚过此距离压缩工作台头
   const CONDENSE_OFF = 40;     // 回弹阈值另设一档，临界处不来回抖
   const LINK_LINE = 16;        // 联动判定线：吸顶头下沿再往下 16px
@@ -242,26 +244,22 @@
   }
 
   /* 只有小节标题会切换环节，普通正文一律跟随当前环节，避免正文里的个别词语打乱原手册顺序。 */
-  function stageFor(block) {
-    const text = textFor(block).replace(/\s+/g, " ").trim();
-    if (!isStageHeading(text)) return "";
-    if (/客户环节|审核材料|所需材料|所需资料|填写单据|填单图样|基础材料|客户需提供|提交资料|审核填写材料/.test(text)) return "prepare";
-    if (/注意事项|审核要点|要点提示|常见Q|风险提示|相关附件|尽职调查|相关文件|文件依据|操作提示/.test(text)) return "review";
-    if (/操作流程|系统操作|核心交易|核心操作|核心系统环节|处理流程|集约交易|发起业务|交易码|流程/.test(text)) return "operate";
-    if (/资料留存|归档|传票|回单/.test(text)) return "archive";
-    return "";
+  function guideFor(node) {
+    if (!Workflow || !node) return null;
+    if (!guideCache.has(node.key)) guideCache.set(node.key, Workflow.build(node));
+    return guideCache.get(node.key);
+  }
+
+  function stageFor(block, node) {
+    const guide = guideFor(node);
+    return guide?.sources.find(source => source.block === block)?.phaseKey || "";
   }
 
   function flowFor(node) {
-    const flow = STAGES.map((stage) => ({ ...stage, blocks: [] }));
-    let active = 0;
-    (node?.section?.blocks || []).forEach((block) => {
-      const key = stageFor(block);
-      const found = flow.findIndex((stage) => stage.key === key);
-      if (found >= 0) active = found;
-      flow[active].blocks.push(block);
-    });
-    return flow;
+    const guide = guideFor(node);
+    if (guide) return guide.phases.map((phase, index) => ({ ...phase, ...STAGES[index] }));
+    // Without the guide module retain the entire source, in its own order.
+    return STAGES.map((stage, index) => ({ ...stage, blocks: index === 1 ? (node?.section?.blocks || []) : [], sourceIndices: index === 1 ? (node?.section?.blocks || []).map((_, i) => i) : [] }));
   }
 
   /* 原手册未单列的环节视为空环节：连续文档下它仍占一段，正文位置改出一条口径说明条。 */
@@ -432,10 +430,59 @@
       isCode(code, all.slice(offset + whole.length)) ? `<button type="button" class="code-badge" data-code="${code}">${code}</button>` : whole);
   }
 
-  const inlineText = (text, badges) => {
-    const safe = escapeHtml(text);
-    return (badges ? withCodes(safe) : safe).replace(/\n/g, "<br>");
-  };
+  // Formatting always belongs to one exact source block/cell, never a global phrase.
+  let activeFormat = null;
+  let activeCodes = [];
+  function codeScope(codes, render) {
+    const previous = activeCodes;
+    activeCodes = codes;
+    try { return render(); } finally { activeCodes = previous; }
+  }
+  function sourceCodes(key, sourceIndex, lineIndex, rowIndex, cellIndex) {
+    return (guideCache.get(key)?.transactionEntries || []).filter(entry => entry.sourceIndex === sourceIndex
+      && (rowIndex === undefined ? entry.field === "text" && entry.lineIndex === lineIndex : entry.field === "rows" && entry.rowIndex === rowIndex && entry.cellIndex === cellIndex)).flatMap(entry => entry.codes);
+  }
+  function formatScope(format, render) {
+    const previous = activeFormat;
+    activeFormat = format && SourceFormat ? { ...format, cursor: 0 } : null;
+    try { return render(); } finally { activeFormat = previous; }
+  }
+  function blockFormat(key, index, block) {
+    const format = sourceFormats[key]?.blocks?.[index];
+    return format && (block.kind === "table" || format.text === block.text) ? format : null;
+  }
+  function inlineText(text, badges, explicitFormat) {
+    const value = String(text ?? "");
+    let format = explicitFormat || null;
+    if (!format && activeFormat && value) {
+      const offset = activeFormat.text.indexOf(value, activeFormat.cursor);
+      if (offset >= 0) {
+        format = SourceFormat.slice(activeFormat.text, activeFormat.spans, offset, offset + value.length);
+        activeFormat.cursor = offset + value.length;
+      }
+    }
+    const part = (start, end) => {
+      if (!SourceFormat || !format || format.text !== value) return escapeHtml(value.slice(start, end));
+      const slice = SourceFormat.slice(value, format.spans, start, end);
+      return SourceFormat.render(slice.text, slice.spans);
+    };
+    let html = "", cursor = 0;
+    if (badges) {
+      const pattern = /\b([A-Za-z]?\d{3,8})\b/g;
+      let match;
+      while ((match = pattern.exec(value))) {
+        if (!activeCodes.includes(match[1])) continue;
+        const start = match.index + match[0].indexOf(match[1]), end = start + match[1].length;
+        html += part(cursor, start) + `<button type="button" class="code-badge" data-code="${escapeHtml(match[1])}" aria-label="复制交易码 ${escapeHtml(match[1])}">${part(start, end)}</button>`;
+        cursor = end;
+      }
+    }
+    return (html + part(cursor, value.length)).replace(/\n/g, "<br>");
+  }
+  function formattedTitle(node) {
+    const text = cleanTitle(node.section.title), format = sourceFormats[node.key]?.title;
+    return formatScope(format, () => inlineText(text, false));
+  }
 
   /* ---------------- 图注：五级优先链 ---------------- */
   const FIGURE_HINT = /(?:图样|截图|界面|图示|示例|样张|图例|图片)\s*[：:]?\s*$/;
@@ -521,17 +568,17 @@
     const rows = block?.rows || [];
     if (!rows.length) return "";
     const header = looksLikeHeader(rows);
-    const cell = (value, badges) => inlineText(String(value ?? ""), badges);
-    const head = header ? `<thead><tr>${(rows[0] || []).map((value) => `<th scope="col">${cell(value, false)}</th>`).join("")}</tr></thead>` : "";
+    const cell = (value, badges, rowIndex, columnIndex) => codeScope(sourceCodes(ctx.nodeKey, ctx.sourceIndex, 0, rowIndex, columnIndex), () => inlineText(String(value ?? ""), badges, ctx.format?.cells?.[rowIndex]?.[columnIndex]));
+    const head = header ? `<thead><tr>${(rows[0] || []).map((value, columnIndex) => `<th scope="col">${cell(value, false, 0, columnIndex)}</th>`).join("")}</tr></thead>` : "";
     const body = rows.map((row, rowIndex) => {
       if (header && rowIndex === 0) return "";
       const cells = (row || []).map((value, columnIndex) => {
         const previous = (rows[rowIndex - 1] || [])[0];
         /* 相邻行首列文本相同：视觉上并成一格，读屏仍读到全文。 */
         if (columnIndex === 0 && rowIndex > 0 && flatCell(value) && flatCell(value) === flatCell(previous)) {
-          return `<td class="is-repeat"><span class="sr-only">${cell(value, false)}</span></td>`;
+          return `<td class="is-repeat"><span class="sr-only">${cell(value, false, rowIndex, columnIndex)}</span></td>`;
         }
-        return `<td>${cell(value, ctx.badges)}</td>`;
+        return `<td>${cell(value, ctx.badges, rowIndex, columnIndex)}</td>`;
       }).join("");
       return `<tr>${cells}</tr>`;
     }).join("");
@@ -628,18 +675,20 @@
     const parts = definitionParts(display, line.info, keepPrefix);
     const items = splitMaterials(parts.value);
     if (items.length < 2) return "";
-    const cardKey = `${line.blockIndex}.${line.lineIndex}`;
+    const cardKey = `${line.sourceIndex ?? line.blockIndex}.${line.lineIndex}`;
     const picked = checkedSet(cardKey, items.length);
     /* 折叠里的“原文”= 该行去掉编号组序标后的全部字符；序标本身已由 li-num 原样渲染在卡外。 */
     const source = keepPrefix ? display : display.slice(line.info.pre.prefix.length);
     ctx.cards.push({ cardKey, total: items.length });
+    const headHtml = inlineText(parts.head, false);
     const list = items.map((item, order) => {
       // 汉字约占一个字宽，ASCII 约半个；长名称跨列，保持阅读顺序与完整文字。
       const length = Array.from(item.text).reduce((sum, char) => sum + (/[^\x00-\x7f]/.test(char) ? 1 : 0.55), 0);
       const size = length > 32 ? "check-wide check-full" : length > 14 ? "check-wide" : "";
       return `<li${size ? ` class="${size}"` : ""}><label class="check-item"><input type="checkbox" data-check-index="${order}"${picked.has(order) ? " checked" : ""}><span class="check-text">${inlineText(item.text, false)}</span></label></li>`;
     }).join("");
-    return `<div class="check-card" data-check-card="${escapeHtml(cardKey)}"><div class="check-head"><b class="def-label">${inlineText(parts.head, false)}</b><span class="check-progress" data-check-progress>已备齐${picked.size}/${items.length}</span><button type="button" class="check-clear" data-check-clear>清空勾选</button></div><ul class="check-list">${list}</ul><details class="check-source"><summary>原文</summary><p class="check-raw">${inlineText(source, ctx.badges)}</p></details></div>`;
+    if (activeFormat) activeFormat.cursor = 0;
+    return `<div class="check-card" data-check-card="${escapeHtml(cardKey)}"><div class="check-head"><b class="def-label">${headHtml}</b><span class="check-progress" data-check-progress>已备齐${picked.size}/${items.length}</span><button type="button" class="check-clear" data-check-clear>清空勾选</button></div><ul class="check-list">${list}</ul><details class="check-source"><summary>原文</summary><p class="check-raw">${inlineText(source, ctx.badges)}</p></details></div>`;
   }
 
   /* ---------------- 核对重点：行级风险分级 ----------------
@@ -647,7 +696,7 @@
      “三.业务完结注意事项”这类纯标题行因此既不会挂标签，也不会进右栏风险摘要。 */
   const RISK_HIGH = /不得|严禁|禁止|必须|务必|责任重大/;
   const RISK_MID = /注意|核对|确认|审核|复核|提醒/;
-  const RISK_TAG = { 1: "【禁止】", 2: "【注意】" };
+  const RISK_TAG = { 1: "【重点】", 2: "【注意】" };
   const riskLevel = (text) => (RISK_HIGH.test(text) ? 1 : RISK_MID.test(text) ? 2 : 0);
 
   function riskModel(blocks) {
@@ -671,6 +720,15 @@
   }
 
   function renderLine(line, kind, ctx, index) {
+    const format = ctx.format;
+    const lineOffset = line.block.shape ? String(line.block.text || "").split("\n").slice(0, line.lineIndex).reduce((n, part) => n + part.length + 1, 0) : 0;
+    const lineFormat = format?.text === line.block.text && SourceFormat
+      ? SourceFormat.slice(format.text, format.spans, lineOffset, lineOffset + line.text.length) : null;
+    const html = codeScope(sourceCodes(ctx.nodeKey, line.sourceIndex, line.lineIndex), () => formatScope(lineFormat, () => renderLineContent(line, kind, ctx, index)));
+    return html.replace(/^<([a-z][\w-]*)/, `<$1 data-source-index="${line.sourceIndex}" data-source-line="${line.lineIndex}"`);
+  }
+
+  function renderLineContent(line, kind, ctx, index) {
     const display = trimLine(line.text);
     const mark = ctx.risk ? ctx.risk.get(index) : null;
     /* 风险标识是界面附属提示：只加左色条与行首小标签，原文一个字都不动，也绝不折叠或隐藏。 */
@@ -721,6 +779,10 @@
     const flushLi = () => { if (pendingLi) { html += `${pendingLi}</li>`; pendingLi = ""; } };
     const closeList = () => { flushLi(); if (listOpen >= 0) { html += "</ol>"; listOpen = -1; } };
     lines.forEach((line, index) => {
+      line.sourceIndex = options.sourceIndices?.[line.blockIndex] ?? line.blockIndex;
+      ctx.nodeKey = options.nodeKey || selectedKey;
+      ctx.sourceIndex = line.sourceIndex;
+      ctx.format = blockFormat(ctx.nodeKey, line.sourceIndex, line.block);
       const kind = lineKind(line, inRun.has(index));
       /* 被桥接的纯图片块：图片挂进上一条 li，编号组不断开；图片仍走灯箱、figure 登记顺序不变。
          上一条 li 已经因为自带图片而收尾时没有可挂的节点，退回独立图片块，绝不吐出游离的 </li>。 */
@@ -744,7 +806,7 @@
         }
       } else closeList();
       if (!line.last) return;
-      const extras = `${line.table ? renderTable(line.block, ctx) : ""}${renderImages(blocks, line.blockIndex, ctx)}`;
+      const extras = `${line.table ? renderTable(line.block, ctx) : ""}${renderImages(blocks, line.blockIndex, ctx)}`.replace(/^<div/, `<div data-source-index="${line.sourceIndex}" data-source-line="${line.lineIndex}"`);
       if (extras) { closeList(); html += extras; }
     });
     closeList();
@@ -756,8 +818,7 @@
   }
 
   function extractCodes(node) {
-    const source = (node.section.blocks || []).map(textFor).join(" ");
-    return unique(codesIn(source)).slice(0, 3);
+    return unique((guideFor(node)?.transactionEntries || []).flatMap(entry => entry.codes)).slice(0, 3);
   }
 
   /* 右栏风险摘要：一级优先、其次二级，各自按正文出现顺序，最多 4 条，每条截 40 字。
@@ -964,42 +1025,99 @@
   /* 下一环节保留在正文末尾，始终参与文档流。 */
 
   function renderProgressBar() {
-    const next = activeStage + 1 < STAGES.length ? activeStage + 1 : -1;
-    return `<nav class="step-footer" aria-label="阅读进度"><button type="button" data-back-to-toc>回到目录</button><span class="step-now">当前：第${activeStage + 1}步 · ${escapeHtml(STAGES[activeStage].label)}</span><button type="button" class="next" data-stage-index="${next}"${next < 0 ? " disabled" : ""}>${next >= 0 ? `下一环节：${escapeHtml(STAGES[next].label)}` : "已到最后一个环节"}</button></nav>`;
+    return `<nav class="step-footer" aria-label="阅读环节切换"><button type="button" class="previous" data-stage-index="${activeStage - 1}">上一环节</button><span class="step-now">阅读位置 ${activeStage + 1} / 4</span><button type="button" class="next" data-stage-index="${activeStage + 1}">下一环节</button></nav>`;
+  }
+
+  function preparationQuote(ref, format) {
+    const colon = ref.text.search(/[：:]/);
+    if (colon < 0 || !/材料|所需资料|填写单据|提交资料/.test(ref.text.slice(0, colon))) return "";
+    const head = ref.text.slice(0, colon + 1), value = ref.text.slice(colon + 1), items = splitMaterials(value);
+    if (items.length < 2) return "";
+    return formatScope(format, () => {
+      const title = inlineText(head, false);
+      const list = items.map(item => `<li>${inlineText(item.text, false)}</li>`).join("");
+      return `<div class="preparation-materials"><b>${title}</b><ul>${list}</ul><details><summary>完整原句</summary><p>${inlineText(ref.text, false, format)}</p></details></div>`;
+    });
+  }
+
+  function sourceQuote(node, ref, preparation) {
+    const block = node.section.blocks[ref.sourceIndex];
+    const original = blockFormat(node.key, ref.sourceIndex, block);
+    const format = ref.field === "rows" ? original?.cells?.[ref.rowIndex]?.[ref.cellIndex] : original;
+    const sliced = SourceFormat && format?.text?.slice(ref.start, ref.end) === ref.text
+      ? SourceFormat.slice(format.text, format.spans, ref.start, ref.end) : null;
+    return `<li class="source-quote">${ref.branchTitle ? `<small class="quote-context">适用情形：${escapeHtml(ref.branchTitle)}</small>` : ""}${preparation && preparationQuote(ref, sliced) || `<p>${inlineText(ref.text, false, sliced)}</p>`}<button type="button" class="source-link" data-source-jump="${ref.sourceIndex}" data-source-line-jump="${ref.lineIndex}">查看原句位置 <span aria-hidden="true">↗</span></button></li>`;
+  }
+
+  function renderQuoteGroup(node, title, refs, className = "") {
+    return `<section class="quote-group ${className}"><header><h3>${escapeHtml(title)}</h3><span>${refs.length ? `${refs.length} 条原句` : "待核实"}</span></header>${refs.length ? `<ul>${refs.map(ref => sourceQuote(node, ref, className === "before-notes")).join("")}</ul>` : `<p class="not-stated">原文未注明</p>`}</section>`;
+  }
+
+  function renderClosing(node, guide) {
+    if (!guide) return "";
+    const groups = guide.closingGroups.map(group => renderQuoteGroup(node, group.label, group.items, "handoff-group")).join("");
+    const uncertain = guide.uncertainItems.length ? renderQuoteGroup(node, "其他签章 / 验印要求", guide.uncertainItems, "unassigned-group") : "";
+    return `<div class="handoff-intro"><b>单据与签章，集中查</b><p>以下引用本业务的相关原句。先看句中的条件、人员与时点，涉及办前或办理中的要求仍在对应时点处理。“原文未注明”不代表无需办理。</p></div><div class="handoff-grid">${groups}</div>${uncertain}`;
+  }
+
+  function renderBranchIndex(guide) {
+    if (!guide?.branches?.length) return "";
+    return `<nav class="branch-index" aria-label="按适用情形定位"><h3>先选适用情形</h3><div>${guide.branches.map(ref => `<button type="button" data-source-jump="${ref.sourceIndex}" data-source-line-jump="${ref.lineIndex}">${escapeHtml(ref.text)} <span aria-hidden="true">↗</span></button>`).join("")}</div></nav>`;
+  }
+
+  function renderCautionIndex(guide) {
+    const refs = (guide?.cautions || []).filter(ref => ref.phaseKey !== "prepare");
+    if (!refs.length) return "";
+    const groups = refs.filter((ref, index) => refs.findIndex(item => item.sourceIndex === ref.sourceIndex) === index);
+    return `<nav class="caution-index" aria-label="业务注意事项索引"><b>本业务还有 ${refs.length} 条注意事项</b><p>涉及不同办理时点，点选回到原文查看。</p><div>${groups.map(ref => `<button type="button" data-source-jump="${ref.sourceIndex}" data-source-line-jump="${ref.lineIndex}">${escapeHtml((ref.context || ref.text).split(/[：:\n]/)[0])} <span aria-hidden="true">↗</span></button>`).join("")}</div></nav>`;
+  }
+
+  function renderPreparationIndex(phase) {
+    const materials = phase.blocks.findIndex(block => /材料|填写单据|所需资料/.test(block.text || ""));
+    const notes = phase.blocks.findIndex(block => /注意事项|风险提示|要点提示/.test(block.text || ""));
+    if (materials < 0 || notes < 0) return "";
+    return `<nav class="preparation-index" aria-label="准备内容定位"><button type="button" data-source-jump="${phase.sourceIndices[materials]}" data-source-line-jump="0"><b>材料与单据</b><span>查看清单 ↓</span></button><button type="button" data-source-jump="${phase.sourceIndices[notes]}" data-source-line-jump="0"><b>办前注意事项</b><span>先看限制与条件 ↓</span></button></nav>`;
+  }
+
+  function renderOperationIndex(node, phase) {
+    const items = guideFor(node)?.transactionEntries || [];
+    if (!items.length) return "";
+    const buttons = (entries) => entries.map(item => `<button type="button" data-source-jump="${item.sourceIndex}" data-source-line-jump="${item.lineIndex}"><b>${escapeHtml(item.codes.join(" / "))}</b><span>${escapeHtml(item.branchTitle ? `${item.branchTitle} · ${item.text}` : item.text)}</span><i aria-hidden="true">↗</i></button>`).join("");
+    const more = items.length > 4 ? `<details class="more-entries"><summary>展开其余 ${items.length - 4} 处入口</summary><div>${buttons(items.slice(4))}</div></details>` : "";
+    return `<nav class="operation-index" aria-label="交易与系统入口定位"><h3>交易 / 系统入口 <small>点选原句，按适用情形办理</small></h3><div>${buttons(items.slice(0, 4))}</div>${more}</nav>`;
   }
 
   function renderReader(node, flow) {
-    const title = cleanTitle(node.section.title);
-    /* 面包屑两份：桌面出全路径，≤900px 只出「上级 › 当前」两级（另一份被 CSS 置 display:none，读屏也不会读到）。 */
+    const title = cleanTitle(node.section.title), guide = guideFor(node);
     const crumbs = node.path.map(cleanTitle);
     const breadcrumbs = `<span class="crumb-full">${escapeHtml(crumbs.join(" › "))}</span><span class="crumb-short">${escapeHtml(crumbs.slice(-2).join(" › "))}</span>`;
-    /* 灯箱清单 = 当前业务全部四个环节的图片，按环节顺序登记，可跨环节连续翻页。 */
     lightboxFigures = [];
     materialCards = [];
     const sections = flow.map((stage, index) => {
-      const filled = isFilled(stage);
       const seat = lightboxFigures.length;
-      /* 三个环节各自的增强件：准备材料 → 勾选卡，办理步骤 → 时间线 + 节点截图，核对重点 → 风险分级。 */
-      const body = filled
-        ? renderBlocks(stage.blocks, {
-          figures: lightboxFigures,
-          bizName: title,
-          enhance: true,
-          stage: stage.key,
-          cards: stage.key === "prepare" ? materialCards : null,
-          risk: stage.key === "review" ? riskModel(stage.blocks).marks : null,
-        })
-        : `<aside class="stage-notice">${escapeHtml(vacantNotice(stage.label))}</aside>`;
-      /* 图注只在灯箱清单里补所属环节前缀，页面上的 figcaption 一字不动。
-         同时给每张图记下所属环节：胶片条的角标与灯箱里的按环节筛图都取这一份，不另立索引。 */
+      let extra = "";
+      if (index === 0 && guide) {
+        extra = renderPreparationIndex(stage);
+        const refs = guide.beforeNotes.filter(ref => ref.phaseKey !== "prepare");
+        if (refs.length) extra += renderQuoteGroup(node, guide.fallback ? "材料与办前提醒 · 原文摘录" : "办理前还需留意", refs, "before-notes");
+        if (guide.fallback) extra = `${renderCautionIndex(guide)}<aside class="flow-source-note">${escapeHtml(guide.fallback.notice)}</aside>${renderBranchIndex(guide)}${extra}`;
+      }
+      if (index === 1) extra = `${guide?.fallback ? `<aside class="flow-source-note">${escapeHtml(guide.fallback.notice)}</aside>` : ""}${renderBranchIndex(guide)}${renderOperationIndex(node, stage)}`;
+      if (index === 3) extra = renderClosing(node, guide);
+      const body = isFilled(stage) ? renderBlocks(stage.blocks, {
+        figures: lightboxFigures, bizName: title, enhance: true, stage: stage.key,
+        nodeKey: node.key, sourceIndices: stage.sourceIndices, cards: materialCards,
+        risk: stage.key === "review" ? riskModel(stage.blocks).marks : null,
+      }) : (extra ? "" : `<aside class="stage-notice">${escapeHtml(vacantNotice(stage.label))}</aside>`);
       for (let seq = seat; seq < lightboxFigures.length; seq += 1) {
         lightboxFigures[seq].caption = `${stage.label} · ${lightboxFigures[seq].caption}`;
         lightboxFigures[seq].stage = stage.key;
         lightboxFigures[seq].stageLabel = stage.label;
       }
-      return `<section class="stage-section${filled ? "" : " is-vacant"}" id="stage-${index}" data-stage-index="${index}" aria-labelledby="stage-title-${index}"><header class="document-heading"><p>第${index + 1}步</p><h2 id="stage-title-${index}">${escapeHtml(stage.label)}</h2><span>${escapeHtml(stage.hint)}</span></header><div class="document-body">${body}</div></section>`;
+      return `<section class="stage-section" id="stage-${index}" data-stage-index="${index}" aria-labelledby="stage-title-${index}"${readingMode === "guided" && activeStage !== index ? " hidden" : ""}><header class="document-heading"><p>${String(index + 1).padStart(2, "0")}</p><h2 id="stage-title-${index}" tabindex="-1">${escapeHtml(stage.label)}</h2><span>${escapeHtml(stage.hint)}</span></header>${extra}<div class="document-body">${body}</div></section>`;
     }).join("");
-    return `<section class="reader"><p class="breadcrumbs">${breadcrumbs}</p><div class="reader-heading"><div><h1 tabindex="-1">${escapeHtml(title)}</h1></div><div class="reader-actions">${renderStarButton(node.key)}<button type="button" data-print-page>打印</button><button type="button" data-raw-toggle aria-pressed="false">原文</button></div></div><article class="document">${sections}</article>${renderProgressBar()}</section>`;
+    const subtitles = ["材料 · 办前提醒", "交易码 · 操作提示", "原文完结要求", "打印 · 复审 · 签章"];
+    return `<section class="reader workflow-reader"><p class="breadcrumbs">${breadcrumbs}</p><div class="reader-heading"><div><h1 tabindex="-1">${formattedTitle(node)}</h1><p>对照原文，一环节一环节查阅</p></div><div class="reader-actions">${renderStarButton(node.key)}<button type="button" data-print-page>打印</button><button type="button" data-raw-toggle aria-pressed="false">原文对照</button></div></div><div class="workflow-toolbar"><span>办理指引</span><div class="reading-modes" role="group" aria-label="阅读方式"><button type="button" data-reading-mode="guided" aria-pressed="${readingMode === "guided"}">分环节看</button><button type="button" data-reading-mode="all" aria-pressed="${readingMode === "all"}">连续阅读</button></div></div><nav class="workflow-steps" aria-label="办理环节">${flow.map((stage, index) => `<button type="button" class="workflow-step" data-stage-index="${index}"${index === activeStage ? ' aria-current="step"' : ""}><span class="workflow-number">${String(index + 1).padStart(2, "0")}</span><span><b>${escapeHtml(stage.label)}</b><small>${subtitles[index]}</small></span></button>`).join("")}</nav><p class="source-color-note"><span aria-hidden="true">●</span> 正文保留手册原有重点颜色</p><article class="document">${sections}</article>${renderProgressBar()}</section>`;
   }
 
   /* 标星入口全站只有这一个（目录里的 ★ 是只读的，取消集中在快速入口的常办组），
@@ -1128,7 +1246,7 @@
       ? `<section class="qc-codes"><h3>原文中出现的编号</h3>${codes.map((code) => `<button type="button" class="transaction-code" data-code-jump="${escapeHtml(code)}" title="定位到正文中首次出现处">${escapeHtml(code)}</button>`).join("")}<p class="aside-hint">取自原文，请以系统实际交易码为准</p></section>`
       : "";
     const docSection = materialCards.length
-      ? `<section class="qc-docs"><h3>材料清单</h3><button type="button" class="qc-jump" data-stage-index="0"><b data-check-summary>已备齐${done}/${total}</b><small>${materialCards.length}张勾选卡 · 点此回到准备材料</small></button></section>`
+      ? `<section class="qc-docs"><h3>材料清单</h3><button type="button" class="qc-jump" data-source-jump="${materialCards[0]?.cardKey.split(".")[0] || 0}" data-source-line-jump="${materialCards[0]?.cardKey.split(".")[1] || 0}"><b data-check-summary>已备齐${done}/${total}</b><small>${materialCards.length}张勾选卡 · 点此查看材料原句</small></button></section>`
       : "";
     const riskSection = risks.length
       ? `<section class="qc-risk"><h3>风险摘要<span class="qc-risk-count">共${riskTotal}条</span></h3><ul>${risks.map((item) => `<li><button type="button" class="qc-risk-item risk-${item.level}" data-risk-anchor="${item.anchor}"><span class="risk-tag">${RISK_TAG[item.level]}</span>${escapeHtml(item.brief)}</button></li>`).join("")}</ul></section>`
@@ -1151,14 +1269,15 @@
     return figures ? `<div class="raw-images">${figures}</div>` : "";
   }
 
-  function renderRawBlock(block) {
+  function renderRawBlock(block, sourceIndex, nodeKey) {
+    const format = blockFormat(nodeKey, sourceIndex, block);
     const images = rawImages(block);
     if (block && block.kind === "table") {
-      const rows = (block.rows || []).map((row) => `<tr>${(row || []).map((cell) => `<td>${inlineText(String(cell ?? ""), false)}</td>`).join("")}</tr>`).join("");
+      const rows = (block.rows || []).map((row, ri) => `<tr>${(row || []).map((cell, ci) => `<td>${inlineText(String(cell ?? ""), false, format?.cells?.[ri]?.[ci])}</td>`).join("")}</tr>`).join("");
       return `<div class="table-frame"><div class="table-wrap"><table class="raw-table"><tbody>${rows}</tbody></table></div></div>${images}`;
     }
     const text = String((block && block.text) || "");
-    return `${text ? `<p class="raw-para">${inlineText(text, false)}</p>` : ""}${images}`;
+    return `${text ? `<p class="raw-para">${inlineText(text, false, format)}</p>` : ""}${images}`;
   }
 
   function renderRawReader(node) {
@@ -1166,7 +1285,7 @@
     const crumbs = node.path.map(cleanTitle);
     const breadcrumbs = `<span class="crumb-full">${escapeHtml(crumbs.join(" › "))}</span><span class="crumb-short">${escapeHtml(crumbs.slice(-2).join(" › "))}</span>`;
     const blocks = node.section.blocks || [];
-    return `<section class="reader is-raw"><p class="breadcrumbs">${breadcrumbs}</p><div class="reader-heading"><div><h1 tabindex="-1">${escapeHtml(title)}</h1></div></div><div class="raw-bar"><p class="raw-note">原文对照视图：按原稿顺序逐块显示，未做任何整理</p><button type="button" class="raw-exit" data-raw-exit>返回整理后的视图</button></div><article class="document raw-document" data-raw-document>${blocks.map(renderRawBlock).join("")}</article></section>`;
+    return `<section class="reader is-raw"><p class="breadcrumbs">${breadcrumbs}</p><div class="reader-heading"><div><h1 tabindex="-1">${formattedTitle(node)}</h1></div></div><div class="raw-bar"><p class="raw-note">原文对照视图：按原稿顺序逐块显示，未做任何整理</p><button type="button" class="raw-exit" data-raw-exit>返回整理后的视图</button></div><article class="document raw-document" data-raw-document>${blocks.map((block, index) => renderRawBlock(block, index, node.key)).join("")}</article></section>`;
   }
 
   /* 状态不持久化：刷新、切业务、进搜索页都回到整理后的视图。 */
@@ -1190,22 +1309,48 @@
   function paintProgress() {
     const picker = railHost ? railHost.querySelector("#current-stage-select") : null;
     if (picker) picker.value = String(activeStage);
-    each(railHost ? railHost.querySelectorAll(".rail-node") : [], (node, index) => {
-      node.classList.toggle("active", index === activeStage);
-      if (index === activeStage) node.setAttribute("aria-current", "true");
-      else node.removeAttribute("aria-current");
+    if (!shell || rawMode) return;
+    each(shell.reader.querySelectorAll(".stage-section"), (section) => {
+      section.hidden = readingMode === "guided" && Number(section.dataset.stageIndex) !== activeStage;
     });
-    if (!shell) return;
+    each(shell.reader.querySelectorAll(".workflow-step"), (button) => {
+      if (Number(button.dataset.stageIndex) === activeStage) button.setAttribute("aria-current", "step");
+      else button.removeAttribute("aria-current");
+    });
+    each(shell.reader.querySelectorAll("[data-reading-mode]"), button => button.setAttribute("aria-pressed", String(button.dataset.readingMode === readingMode)));
     const bar = shell.reader.querySelector(".step-footer");
     if (!bar) return;
     const now = bar.querySelector(".step-now");
-    if (now) now.textContent = `当前：第${activeStage + 1}步 · ${STAGES[activeStage].label}`;
-    const button = bar.querySelector("button.next");
-    if (!button) return;
-    const next = activeStage + 1 < STAGES.length ? activeStage + 1 : -1;
-    button.setAttribute("data-stage-index", String(next));
-    button.disabled = next < 0;
-    button.textContent = next >= 0 ? `下一环节：${STAGES[next].label}` : "已到最后一个环节";
+    if (now) now.textContent = `阅读位置 ${activeStage + 1} / 4`;
+    const previous = bar.querySelector("button.previous"), next = bar.querySelector("button.next");
+    if (previous) {
+      previous.disabled = activeStage === 0;
+      previous.setAttribute("data-stage-index", String(activeStage - 1));
+      previous.textContent = activeStage ? `← ${STAGES[activeStage - 1].label}` : "上一环节";
+    }
+    if (next) {
+      next.disabled = activeStage === STAGES.length - 1;
+      next.setAttribute("data-stage-index", String(activeStage + 1));
+      next.textContent = activeStage < STAGES.length - 1 ? `下一环节：${STAGES[activeStage + 1].label} →` : "已到最后环节";
+    }
+  }
+
+  function locateSource(sourceIndex, lineIndex) {
+    if (!shell) return;
+    const selector = `.document-body [data-source-index="${sourceIndex}"][data-source-line="${lineIndex}"]`;
+    const target = shell.reader.querySelector(selector) || shell.reader.querySelector(`.document-body [data-source-index="${sourceIndex}"]`);
+    if (!target) return;
+    locateLine(target, "已定位到对应原句");
+    target.setAttribute("tabindex", "-1");
+    try { target.focus({ preventScroll: true }); } catch (_) { target.focus(); }
+  }
+
+  function setReadingMode(value) {
+    if (value !== "all" && value !== "guided") return;
+    readingMode = value;
+    paintProgress();
+    setupObserver();
+    announce(value === "all" ? "已展开全部环节，可连续阅读" : "已切换为分环节阅读");
   }
 
   /* ================= 搜索结果页 =================
@@ -1281,7 +1426,7 @@
       const label = `${snippet.sourceStageLabel || "正文"}${snippet.sourceKind === "table" ? " · 表格" : ""}`;
       return `<span class="snippet"><span class="snippet-stage" data-stage="${escapeHtml(snippet.sourceStage || "")}">${escapeHtml(label)}</span><span class="snippet-text">${markSnippet(snippet)}</span></span>`;
     }).join("");
-    return `<li><button type="button" data-node-key="${escapeHtml(item.key)}"><span class="result-main"><strong class="result-title">${markText(item.title, term)}${badge}</strong><small class="result-path">${markText(item.pathText, term)}</small>${snippets ? `<span class="result-snippets">${snippets}</span>` : ""}</span><em>打开业务</em></button></li>`;
+    return `<li><button type="button" data-node-key="${escapeHtml(item.key)}"${item.codeExact && item.matchedCode ? ` data-search-code="${escapeHtml(item.matchedCode)}"` : ""}><span class="result-main"><strong class="result-title">${markText(item.title, term)}${badge}</strong><small class="result-path">${markText(item.pathText, term)}</small>${snippets ? `<span class="result-snippets">${snippets}</span>` : ""}</span><em>打开业务</em></button></li>`;
   }
 
   function renderResultGroup(group, term, order) {
@@ -1479,7 +1624,7 @@
   }
 
   function onScrollLink() {
-    if (!shell || linkSuppressed || keyword.trim()) return;
+    if (!shell || linkSuppressed || keyword.trim() || readingMode === "guided" || rawMode) return;
     const index = stageFromGeometry();
     if (index < 0) return;
     if (index !== activeStage) { activeStage = index; paintProgress(); }
@@ -1496,7 +1641,7 @@
      两条路径（IO / 节流 scroll）因此结论完全一致。 */
   function setupObserver() {
     teardownObserver();
-    if (typeof IntersectionObserver !== "function" || !shell) return;
+    if (typeof IntersectionObserver !== "function" || !shell || readingMode === "guided" || rawMode) return;
     const sections = stageSections();
     if (!sections.length) return;
     try {
@@ -1580,7 +1725,7 @@
     checkNodeKey = String(nodeKey || "");
     checkState = {};
     if (!checkNodeKey) return;
-    const raw = storageGet(`hb:check:${checkNodeKey}`);
+    const raw = storageGet(`hb:check:source-v2:${checkNodeKey}`);
     if (!raw) return;
     try {
       const parsed = JSON.parse(raw);
@@ -1596,8 +1741,8 @@
     if (!checkNodeKey) return;
     const out = {};
     Object.keys(checkState).forEach((cardKey) => { if (checkState[cardKey] && checkState[cardKey].length) out[cardKey] = checkState[cardKey]; });
-    if (!Object.keys(out).length) { storageDrop(`hb:check:${checkNodeKey}`); return; }
-    storageSet(`hb:check:${checkNodeKey}`, JSON.stringify(out));
+    if (!Object.keys(out).length) { storageDrop(`hb:check:source-v2:${checkNodeKey}`); return; }
+    storageSet(`hb:check:source-v2:${checkNodeKey}`, JSON.stringify(out));
   }
 
   function cardStat(card) {
@@ -1920,10 +2065,10 @@
     const box = typeof element.closest === "function" ? element.closest("details") : null;
     if (box && !box.open) box.open = true;
     suppressScrollLink();
-    scrollElementTo(element);
     const section = typeof element.closest === "function" ? element.closest(".stage-section") : null;
     const index = section && section.dataset ? Number(section.dataset.stageIndex) : Number.NaN;
     if (Number.isInteger(index) && index !== activeStage) { activeStage = index; paintProgress(); writeStageHashNow(); }
+    scrollElementTo(element);
     flashNode(element);
     if (message) announce(message);
     return true;
@@ -1931,6 +2076,8 @@
 
   function locateCode(code) {
     if (!shell || !code) return;
+    const entry = guideFor(currentNode())?.transactionEntries?.find(item => item.codes.some(value => value.toUpperCase() === String(code).toUpperCase()));
+    if (entry) { locateSource(entry.sourceIndex, entry.lineIndex); return; }
     const badge = shell.reader.querySelector(`.code-badge[data-code="${code}"]`);
     if (!badge) { announce(`正文中未找到编号${code}`); return; }
     locateLine(badge, `已定位到编号${code}在正文中的首次出现处`);
@@ -2891,6 +3038,7 @@
     paintModeSwitch();         // 分段控件的 aria-checked 已随模板渲染好，这一趟补「自动」那一档的解析说明
     /* 锚点条在原文对照视图里整条收起：那里没有四步可跳。 */
     if (railHost) railHost.innerHTML = rawMode ? "" : renderRail(flow);
+    paintProgress();
     markSmallFigures(shell.reader);
     syncTableShadows(shell.reader);
     applyRiskOff(riskOff, false);
@@ -2975,9 +3123,9 @@
        §5.3「黑白打印不丢信息」是对纸面的无条件承诺。@media print 里另有一条规则保证
        html.risk-off 状态下 #print-sheet 里的标记依然显示。 */
     const stages = flow.map((stage, index) => isFilled(stage)
-      ? `<section class="print-stage"><h2>${index + 1}. ${escapeHtml(stage.label)}</h2><div class="document-body">${renderBlocks(stage.blocks, { figures: null, badges: false, images: printImages, bizName: cleanTitle(node.section.title), risk: stage.key === "review" ? riskModel(stage.blocks).marks : null })}</div></section>`
+      ? `<section class="print-stage"><h2>${index + 1}. ${escapeHtml(stage.label)}</h2><div class="document-body">${renderBlocks(stage.blocks, { figures: null, badges: false, images: printImages, bizName: cleanTitle(node.section.title), nodeKey: node.key, sourceIndices: stage.sourceIndices, risk: stage.key === "review" ? riskModel(stage.blocks).marks : null })}</div></section>`
       : "").join("");
-    printSheet.innerHTML = `<article class="print-doc"><div class="print-head"><h1>${escapeHtml(cleanTitle(node.section.title))}</h1><p class="print-path">${escapeHtml(node.path.map(cleanTitle).join(" › "))}</p><p class="print-meta">手册版本${HANDBOOK_VERSION} · 网站${SITE_VERSION}</p></div>${stages}<div class="print-foot"><p class="print-link">${escapeHtml(link)}</p><p class="print-when">打印于${printDate()}${printImages ? "" : " · 本份不含截图"}</p><p>实际办理请以最新制度、系统提示及所在机构要求为准</p></div></article>`;
+    printSheet.innerHTML = `<article class="print-doc"><div class="print-head"><h1>${formattedTitle(node)}</h1><p class="print-path">${escapeHtml(node.path.map(cleanTitle).join(" › "))}</p><p class="print-meta">手册版本${HANDBOOK_VERSION} · 网站${SITE_VERSION}</p></div>${stages}<div class="print-foot"><p class="print-link">${escapeHtml(link)}</p><p class="print-when">打印于${printDate()}${printImages ? "" : " · 本份不含截图"}</p><p>实际办理请以最新制度、系统提示及所在机构要求为准</p></div></article>`;
   }
 
   function clearPrintSheet() {
@@ -3245,6 +3393,10 @@
       if (typeof window.print === "function") window.print();
       return;
     }
+    const sourceJump = event.target.closest("[data-source-jump]");
+    if (sourceJump) { if (asideBarOpen) setAsideBar(false); locateSource(Number(sourceJump.dataset.sourceJump), Number(sourceJump.dataset.sourceLineJump)); return; }
+    const readingButton = event.target.closest("[data-reading-mode]");
+    if (readingButton) { setReadingMode(readingButton.dataset.readingMode); return; }
     const modeButton = event.target.closest("[data-mode-set]");
     if (modeButton) { setMode(modeButton.dataset.modeSet); return; }
     const accentButton = event.target.closest("[data-accent-set]");
@@ -3281,6 +3433,7 @@
     if (nodeButton) {
       const fromDrawer = Boolean(nodeButton.closest(".toc")) && tocDrawerOpen();
       selectNode(nodeButton.dataset.nodeKey, nodeButton.closest(".toc") ? null : { type: "title" });
+      if (nodeButton.dataset.searchCode) locateCode(nodeButton.dataset.searchCode);
       if (fromDrawer) closeTocDrawer(); // 选中业务即收抽屉，焦点归还给吸顶栏上的目录按钮
       return;
     }

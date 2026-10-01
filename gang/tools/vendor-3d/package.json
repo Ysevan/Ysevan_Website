@@ -1,0 +1,14 @@
+{
+  "name": "gang-vendor-3d",
+  "private": true,
+  "description": "一次性制作工具：重打 vendor/three.min.js、原样拷 vendor/gsap.min.js。站点运行不依赖本目录。",
+  "scripts": {
+    "build": "bash build.sh",
+    "check": "bash build.sh --check"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.1",
+    "gsap": "3.15.0",
+    "three": "0.186.0"
+  }
+}

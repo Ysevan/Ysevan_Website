@@ -11,7 +11,7 @@
        这里挂的是**静态那一枚**（默认蓝），负责首帧；app.js 的 syncFavicon 起来后会按当前强调色
        把 href 换成 data URI。刻意不用屋主那枚 brand-icon.svg——它是透明底白线，浅色标签栏上等于隐形。
        favicon.svg 是独立自包含的一份，删掉 brand-icon.svg/.png 也不影响它。 -->
-  <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg?v=1.8.2">
+  <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg?v=2.0.0">
   <!-- 外观与强调色预置：只做一件事——在样式表生效之前把 html[data-mode] / html[data-accent] 摆好，
        **刻意排在 <link rel="stylesheet"> 之前**：这样属性在样式表开始下载之前就已经在 <html> 上，
        首帧一定拿到正确的那一套令牌——深色下不会先白一下，切过强调色后刷新也不会闪一下别的色。
@@ -41,7 +41,7 @@
       root.setAttribute("data-accent", accent);
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=1.8.2">
+  <link rel="stylesheet" href="styles.css?v=2.0.0">
 </head>
 <body>
   <a class="skip-link" href="#reader-main">跳到正文</a>
@@ -99,13 +99,16 @@
     </div>
   </dialog>
   <div id="print-sheet" aria-hidden="true"></div>
-  <footer>新员工业务手册 · v1.8.2 · 仅供内部学习参考 · 手册版本2026-02-05 · 实际办理请以最新制度、系统提示及所在机构要求为准</footer>
+  <footer>新员工业务手册 · v2.0.0 · 仅供内部学习参考 · 手册版本2026-02-05 · 实际办理请以最新制度、系统提示及所在机构要求为准</footer>
   <!-- 两个模块都是普通同步脚本（file:// 下 type="module" 会因 CORS 直接加载失败），
        各自只挂一个全局名；任一缺失时 app.js 都会优雅降级，不白屏也不报错。 -->
   <script src="employee-handbook.js"></script>
-  <script src="search-module.js?v=1.8.2"></script>
-  <script src="visit-store.js?v=1.8.2"></script>
+  <script src="employee-handbook-formatting.js?v=2.0.0"></script>
+  <script src="source-formatting.js?v=2.0.0"></script>
+  <script src="workflow-guide.js?v=2.0.0"></script>
+  <script src="search-module.js?v=2.0.0"></script>
+  <script src="visit-store.js?v=2.0.0"></script>
   <!-- 阅读布局不加载装饰性 3D 手册；本地 desk-book.js 保留，业务功能无依赖。 -->
-  <script src="app.js?v=1.8.2"></script>
+  <script src="app.js?v=2.0.0"></script>
 </body>
 </html>

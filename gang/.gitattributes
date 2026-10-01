@@ -1,0 +1,68 @@
+# 岗岗 行尾规则
+# 本仓库此前没有 .gitattributes。项目落到 Windows 宿主的磁盘上之后，Dockerfile 被那边的工具
+# 整文件翻成了 CRLF（git diff 报 21 增 21 删，--ignore-cr-at-eol 之后为空——全是行尾噪音）。
+# 同一个坑刷刷仓已经踩过并根治，这里照同样的思路补上防线。
+# 规则按「文件由谁读取」决定行尾，而不是按「谁编辑的」。
+
+# ── 打底：未在下面显式列出的文件，由 git 自动判定文本/二进制；判定为文本的一律以 LF 入库 ──
+* text=auto
+
+# ── 仓库自身的元数据文件：由 git 和跨平台脚本读取，固定 LF ──
+.gitattributes text eol=lf
+.gitignore     text eol=lf
+.dockerignore  text eol=lf
+
+# ── Windows 专用脚本：cmd.exe 对 LF 行尾的批处理解析不可靠（标签跳转、多行 if/for 块会出错）。
+#    这类文件只在 Windows 上执行，固定 CRLF。
+#    2026-09-17 实测 双击打开手册网站.bat 在盘上是 0/2 行 CRLF，本次一并归一。 ──
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# ── Unix 脚本：内核读 shebang 时会把行尾的 \r 一并算进解释器路径，
+#    CRLF 会直接导致 "bad interpreter: /bin/bash^M"，双击启动器当场失效。必须 LF。 ──
+*.command text eol=lf
+*.sh      text eol=lf
+
+# ── 网页与源码：由浏览器、Node、Python 读取，三个平台都接受 LF，统一 LF 消除 diff 噪音 ──
+*.html text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
+*.mjs  text eol=lf
+*.json text eol=lf
+*.svg  text eol=lf
+*.md   text eol=lf
+*.py   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+# ── 说明文本：README.txt 当前入库就是 LF，保持原样；现代 Windows 记事本已能正确显示 LF，
+#    改成 CRLF 只会制造一次无意义的整文件 diff。 ──
+*.txt text eol=lf
+
+# ── 案头手册的两份第三方运行库（three 子集、GSAP）：压成一行的巨型文件，文本 diff 毫无可读性、只会刷屏。
+#    仍按文本、以 LF 入库（与上面 *.js 同一口径），只是不出文本 diff；是否被改动看 vendor/README.txt 里的 sha256。 ──
+vendor/*.min.js text eol=lf -diff
+
+# ── 容器构建与服务端配置：只由 Linux 上的 docker、nginx 读取，CRLF 会让 RUN 指令和
+#    nginx 指令末尾多出 \r 而解析失败。固定 LF。这正是本次要修的那个文件。 ──
+Dockerfile text eol=lf
+*.conf     text eol=lf
+
+# ── 二进制：显式标记，禁止任何行尾转换和文本 diff。
+#    手册的截图资产量大（74 个 png + 40 个 jpeg），一旦被当文本规范化就会永久损坏。 ──
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.pdf   binary
+*.zip   binary
+*.docx  binary
+*.doc   binary
+*.xlsx  binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary

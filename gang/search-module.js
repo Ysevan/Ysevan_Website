@@ -43,10 +43,10 @@
 
   /* 四个环节：与 app.js 的 STAGES 同序同 key，snippets.sourceStage 就用这里的 key。 */
   var STAGES = [
-    { key: "prepare", label: "准备材料" },
-    { key: "operate", label: "办理步骤" },
-    { key: "review", label: "核对重点" },
-    { key: "archive", label: "办结归档" }
+    { key: "prepare", label: "办前准备" },
+    { key: "operate", label: "办理操作" },
+    { key: "review", label: "办结核对" },
+    { key: "archive", label: "单据去向" }
   ];
   var STAGE_LABEL = STAGES.reduce(function (all, stage) { all[stage.key] = stage.label; return all; }, { title: "业务标题" });
 

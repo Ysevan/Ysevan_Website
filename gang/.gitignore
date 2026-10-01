@@ -1,0 +1,6 @@
+.DS_Store
+Thumbs.db
+*.docx
+handbook-report.json
+__pycache__/
+tools/vendor-3d/node_modules/

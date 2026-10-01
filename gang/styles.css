@@ -2078,3 +2078,195 @@ footer { padding:18px 20px calc(18px + env(safe-area-inset-bottom)); border-top:
   .print-link { word-break:break-all; font-family:var(--mono); }
   .print-when { margin-top:2pt; }
 }
+
+/* v2 task guide: source text is preserved; the controls describe reading position. */
+.source-format { border-radius:0; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+.source-highlight { color:#111; padding:0 .06em; }
+.source-format { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+@media screen {
+  .workflow-reader { padding-top:24px; }
+  .workflow-reader .reader-heading { margin-bottom:22px; border-bottom:0; padding-bottom:0; }
+  .workflow-reader .reader-heading h1 { font-size:30px; }
+  .workflow-reader .reader-heading p { color:var(--ink-3); margin:6px 0 0; font-size:14px; }
+  .workflow-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 12px; }
+  .workflow-toolbar > span { font-size:13px; font-weight:650; color:var(--ink-2); }
+  .reading-modes { display:flex; gap:2px; padding:3px; background:var(--sunken); border:1px solid var(--line); border-radius:10px; }
+  .reading-modes button { min-height:36px; padding:0 12px; font-size:13px; color:var(--ink-3); border:0; background:transparent; border-radius:7px; }
+  .reading-modes button[aria-pressed="true"] { background:var(--raised); color:var(--accent-ink); box-shadow:0 1px 4px #0000000d; font-weight:650; }
+  .workflow-steps { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+  .workflow-step { display:flex; align-items:center; gap:12px; min-width:0; min-height:82px; padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--raised); color:var(--ink-2); text-align:left; }
+  .workflow-step:hover { background:var(--sunken); }
+  .workflow-number { display:grid; place-items:center; width:32px; height:32px; flex:none; border-radius:50%; font-size:13px; color:var(--ink-3); background:var(--sunken); font-variant-numeric:tabular-nums; }
+  .workflow-step b { display:block; font-size:16px; font-weight:650; white-space:nowrap; }
+  .workflow-step small { display:block; font-size:12px; color:var(--ink-3); margin-top:3px; }
+  .workflow-step[aria-current="step"] { border-color:var(--accent); background:var(--accent-soft); box-shadow:inset 0 0 0 1px var(--accent); color:var(--accent-ink); }
+  .workflow-step[aria-current="step"] .workflow-number { background:var(--accent-ink); color:var(--raised); }
+  .source-color-note { display:flex; align-items:center; gap:6px; margin:10px 0 0; font-size:12px; color:var(--ink-3); }
+  .source-color-note span { color:#c89907; font-size:10px; }
+  .workflow-reader .document { margin-top:16px; border-top:1px solid var(--line); }
+  .workflow-reader .document-heading { padding-top:24px; padding-bottom:16px; }
+  .workflow-reader .document-heading h2 { font-size:25px; }
+  .workflow-reader .document-heading p { color:var(--accent-ink); background:var(--accent-soft); font-size:13px; }
+  .stage-section[hidden] { display:none !important; }
+  .workflow-reader .document-body { padding-top:4px; }
+  .workflow-reader .document-body > :first-child { margin-top:8px; }
+  .workflow-reader .document-body h3 { margin-top:26px; }
+  .workflow-reader .step-list.is-timeline > li { background:var(--raised); padding-top:10px; padding-bottom:12px; border-bottom:1px solid var(--line-soft); }
+  .workflow-reader .step-list.is-timeline .li-num { top:14px; }
+  .workflow-reader .step-list.is-timeline > li::before { top:40px; }
+  .workflow-reader .check-card { margin-bottom:20px; }
+  .workflow-reader .code-badge { border-radius:6px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+  .flow-source-note { padding:12px 16px; border-left:3px solid var(--accent); background:var(--accent-soft); color:var(--ink-2); border-radius:0 8px 8px 0; margin:0 0 20px; font-size:14px; line-height:1.75; }
+  .branch-index, .operation-index { margin:0 0 24px; padding:16px; border:1px solid var(--line); background:var(--sunken); border-radius:12px; }
+  .branch-index h3, .operation-index h3 { margin:0 0 10px; font-size:15px; color:var(--ink); }
+  .operation-index h3 small { font-size:12px; font-weight:400; color:var(--ink-3); margin-left:10px; }
+  .branch-index > div, .operation-index > div { display:grid; gap:8px; }
+  .branch-index button { display:flex; align-items:center; justify-content:space-between; gap:16px; text-align:left; min-height:44px; width:100%; padding:10px 12px; border:1px solid var(--line); background:var(--raised); border-radius:8px; font-size:15px; color:var(--accent-ink); }
+  .operation-index button { display:grid; grid-template-columns:minmax(70px,auto) minmax(0,1fr) 16px; align-items:center; gap:14px; min-height:48px; padding:8px 12px; background:var(--raised); border:1px solid var(--line); border-radius:8px; text-align:left; }
+  .operation-index button b { color:var(--accent-ink); font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:15px; }
+  .operation-index button span { font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--ink-2); }
+  .operation-index button i { color:var(--ink-3); font-style:normal; }
+  .quote-group { min-width:0; border:1px solid var(--line); border-radius:12px; margin-bottom:20px; overflow:hidden; }
+  .quote-group > header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; background:var(--sunken); border-bottom:1px solid var(--line-soft); }
+  .quote-group > header h3 { font-size:16px; margin:0; color:var(--ink); }
+  .quote-group > header > span { flex:none; color:var(--ink-3); font-size:12px; }
+  .quote-group > ul { margin:0; padding:0 18px; list-style:none; }
+  .source-quote { padding:14px 0; border-bottom:1px solid var(--line-soft); }
+  .source-quote:last-child { border:0; }
+  .source-quote > p { color:var(--ink); font-size:16px; line-height:1.85; margin:0; overflow-wrap:anywhere; }
+  .source-link { display:inline-flex; align-items:center; gap:6px; min-height:40px; color:var(--accent-ink); font-size:12px; padding:4px 0; margin-top:4px; border:0; background:transparent; }
+  .not-stated { font-size:14px; color:var(--ink-3); margin:0; padding:18px; }
+  .handoff-intro { display:flex; flex-direction:column; gap:4px; margin:0 0 20px; padding:16px 18px; border-radius:10px; background:var(--accent-soft); }
+  .handoff-intro b { font-size:15px; color:var(--accent-ink); }
+  .handoff-intro p { font-size:14px; line-height:1.8; margin:0; color:var(--ink-2); }
+  .handoff-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; align-items:start; }
+  .handoff-grid > .quote-group { margin:0; }
+  .unassigned-group { margin-top:16px; }
+  .workflow-reader > .step-footer { display:flex; position:sticky; bottom:0; z-index:15; flex-wrap:nowrap; align-items:center; gap:12px; width:calc(100% + var(--reader-pad) * 2); max-width:none; margin:0 calc(-1 * var(--reader-pad)) -40px; padding:14px var(--reader-pad) calc(14px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:var(--raised); box-shadow:0 -8px 24px #00000005; }
+  .workflow-reader .step-footer button { min-height:44px; padding:10px 16px; border:1px solid var(--line); border-radius:8px; background:var(--raised); color:var(--ink-2); font-size:14px; line-height:1.5; }
+  .workflow-reader .step-footer button.next { margin-left:auto; color:var(--on-accent); background:var(--accent-ink); border-color:var(--accent-ink); font-weight:600; }
+  .workflow-reader .step-footer button:disabled { opacity:.45; cursor:default; }
+  .workflow-reader .step-footer .step-now { display:block; font-size:12px; color:var(--ink-3); margin-left:auto; white-space:nowrap; }
+  .document-body [data-source-index] { scroll-margin-top:calc(var(--head-h) + 20px); }
+  /* Source ink uses a white reading surface, including when surrounding tools use dark mode. */
+  :root[data-mode="dark"] .document-body, :root[data-mode="dark"] .source-quote, :root[data-mode="dark"] .raw-document {
+    background:#fff; color:#18212e; --ink:#18212e; --ink-2:#344054; --ink-3:#667085; --raised:#fff; --sunken:#f6f8fa; --line:#dfe4ea; --line-soft:#edf0f3; --accent-ink:#135ebd; --accent-soft:#eef5ff; padding:16px; border-radius:8px; }
+}
+@media screen and (prefers-color-scheme:dark) {
+  :root[data-mode="auto"] .document-body, :root[data-mode="auto"] .source-quote, :root[data-mode="auto"] .raw-document {
+    background:#fff; color:#18212e; --ink:#18212e; --ink-2:#344054; --ink-3:#667085; --raised:#fff; --sunken:#f6f8fa; --line:#dfe4ea; --line-soft:#edf0f3; --accent-ink:#135ebd; --accent-soft:#eef5ff; padding:16px; border-radius:8px; }
+}
+@media screen and (max-width:1100px) {
+  .workflow-reader .reader-heading { margin-bottom:18px; }
+  .reading-modes button { min-height:40px; }
+  .workflow-step { padding:12px; gap:10px; }
+  .workflow-step small { font-size:11px; }
+  .source-link { min-height:44px; }
+}
+@media screen and (max-width:700px) {
+  .workflow-reader .reader-heading { gap:4px; }
+  .workflow-reader .reader-heading h1 { font-size:27px; }
+  .workflow-steps { gap:6px; }
+  .workflow-step { flex-direction:column; align-items:flex-start; gap:6px; padding:10px 8px; min-height:82px; border-radius:9px; }
+  .workflow-number { width:auto; height:auto; background:none; font-size:11px; border-radius:0; }
+  .workflow-step[aria-current="step"] .workflow-number { color:var(--accent-ink); background:none; }
+  .workflow-step b { font-size:14px; }
+  .workflow-step small { display:none; }
+  .workflow-reader .document-heading h2 { font-size:23px; }
+  .workflow-reader .document-heading span { font-size:13px; }
+  .handoff-grid { grid-template-columns:minmax(0,1fr); gap:12px; }
+  .quote-group > header { padding:12px 14px; }
+  .quote-group > ul { padding:0 14px; }
+  .branch-index, .operation-index { padding:12px; }
+  .operation-index h3 small { display:block; margin:2px 0 0; }
+  .operation-index button { gap:8px; padding:10px; }
+  .operation-index button b { font-size:14px; }
+  .workflow-reader > .step-footer { gap:8px; margin-bottom:-28px; padding-top:10px; padding-bottom:calc(10px + env(safe-area-inset-bottom)); }
+  .workflow-reader .step-footer button { font-size:13px; padding:10px 12px; }
+  .workflow-reader .step-footer .step-now { display:none; }
+}
+@media screen and (max-width:360px) {
+  .workflow-step { padding:9px 6px; }
+  .workflow-step b { font-size:13px; }
+  .workflow-reader .step-footer button { padding:10px 8px; }
+}
+@media print {
+  #print-sheet .source-highlight { color:#111; }
+  #print-sheet .source-format { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}
+@media screen {
+  .preparation-materials > b { display:block; margin-bottom:12px; font-size:16px; font-weight:650; }
+  .preparation-materials > ul { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:8px; list-style:none; margin:0; padding:0; }
+  .preparation-materials > ul > li { padding:10px 12px; border:1px solid var(--line-soft); border-radius:7px; font-size:16px; color:var(--ink); background:var(--raised); line-height:1.7; overflow-wrap:anywhere; }
+  .preparation-materials details { font-size:13px; margin-top:10px; }
+  .preparation-materials summary { min-height:44px; display:list-item; padding:10px 0; cursor:pointer; color:var(--ink-3); }
+  .preparation-materials details p { font-size:15px; line-height:1.8; margin:0 0 8px; }
+}
+@media screen and (max-width:700px) {
+  .workflow-reader { padding-top:16px; }
+  .workflow-reader .breadcrumbs { display:none; }
+  .workflow-reader .reader-heading { margin-bottom:8px; }
+  .workflow-reader .reader-heading > div > p { display:none; }
+  .workflow-toolbar { margin-bottom:10px; }
+  .workflow-step { min-height:64px; gap:3px; padding-top:8px; padding-bottom:8px; }
+  .workflow-reader .document { margin-top:10px; }
+  .workflow-reader .document-heading { padding-top:18px; padding-bottom:10px; }
+  .preparation-materials > ul { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .preparation-materials > ul > li { font-size:15px; padding:9px; }
+}
+@media screen {
+  .preparation-index { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:0 0 18px; }
+  .preparation-index button { display:flex; align-items:center; justify-content:space-between; gap:8px; border:1px solid var(--line); border-radius:8px; background:var(--sunken); padding:12px 14px; min-height:52px; text-align:left; color:var(--ink); }
+  .preparation-index b { font-size:14px; font-weight:600; }
+  .preparation-index span { font-size:12px; color:var(--accent-ink); }
+}
+@media screen and (max-width:700px) {
+  .preparation-index button { flex-direction:column; align-items:flex-start; gap:0; padding:10px 12px; }
+}
+@media screen {
+  .workflow-reader .reader-heading > div > p { display:none; }
+  .workflow-reader .reader-heading { margin-bottom:12px; }
+  .workflow-reader .document-heading { padding-top:18px; padding-bottom:10px; }
+}
+@media screen {
+  .quote-context { display:block; color:var(--ink-3); font-size:12px; line-height:1.7; padding-bottom:6px; }
+  .caution-index { margin:0 0 18px; padding:14px 16px; border:1px solid var(--accent-line); border-radius:10px; background:var(--accent-soft); }
+  .caution-index > b { display:block; font-size:15px; color:var(--accent-ink); }
+  .caution-index > p { margin:2px 0 8px; font-size:12px; color:var(--ink-2); }
+  .caution-index > div { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px 14px; }
+  .caution-index button { display:block; min-height:40px; padding:6px 0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; border:0; background:none; text-align:left; font-size:13px; color:var(--accent-ink); }
+}
+@media screen and (max-width:700px) {
+  .caution-index > div { grid-template-columns:minmax(0,1fr); }
+  .caution-index button { min-height:44px; }
+}
+@media screen {
+  .operation-index button { grid-template-columns:minmax(72px,.42fr) minmax(0,1fr) 16px; }
+  .operation-index button b { min-width:0; white-space:normal; overflow-wrap:anywhere; }
+}
+@media screen {
+  .more-entries summary { cursor:pointer; min-height:44px; padding:12px 0 0; color:var(--accent-ink); font-size:13px; }
+  .more-entries > div { display:grid; gap:8px; margin-top:10px; }
+}
+/* Give prose paragraphs a consistent two-character first-line indent.
+   Lists, headings, labels and table cells keep their existing alignment. */
+.document-body p,
+.document-body .notice-block,
+.raw-para,
+.check-raw,
+.source-quote > p,
+.preparation-materials details p,
+.handoff-intro p,
+.caution-index > p,
+.stage-notice,
+#print-sheet .document-body p,
+#print-sheet .notice-block,
+#print-sheet .raw-para,
+#print-sheet .check-raw,
+#print-sheet .source-quote > p,
+#print-sheet .preparation-materials details p,
+#print-sheet .handoff-intro p,
+#print-sheet .stage-notice { text-indent:2em; }
+/* One source paragraph uses white ink without a run background. Keep its ink,
+   and provide a neutral backing so its words remain readable on the page. */
+.source-format[style*="color:#FFFFFF"]:not([style*="background-color:"]) { background-color:#334155; }
