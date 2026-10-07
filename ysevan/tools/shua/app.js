@@ -1,5 +1,5 @@
 /**
- * 刷刷 v3.13.1
+ * 刷刷 v3.13.2
  * Author: Ysevan
  * 仅限内部学习使用，请勿公开发布题库或源码。
  */
@@ -7,7 +7,7 @@
   "use strict";
 
   const projectInfo = window.PROJECT_INFO || {
-    version: "3.13.1",
+    version: "3.13.2",
     releaseDate: "2026-09-22",
     author: "Ysevan",
     classification: "仅限内部学习使用",
