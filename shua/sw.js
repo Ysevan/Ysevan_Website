@@ -1,49 +1,24 @@
-// 刷刷 v3.13.1 | Author: Ysevan | 仅限内部学习使用
-const CACHE = "zongfu-quiz-v68";
-const FILES = ["./", "./index.html", "./theme.js?v=3.13.1", "./styles.css?v=3.13.1&rev=5", "./project.js?v=3.13.1", "./effects.js?v=3.13.1", "./app.js?v=3.13.1&rev=6", "./questions.js?v=3.13.1", "./annual-inspection-2026-questions.js?v=3.13.1", "./annual-inspection-2026-comparison.js?v=3.13.1", "./domestic-settlement-questions.js?v=3.13.1", "./bill-finance-questions.js?v=3.13.1", "./bank-acceptance-questions.js?v=3.13.1", "./counterfeit-currency-2023-questions.js?v=3.13.1", "./foreign-exchange-2026-questions.js?v=3.13.1&rev=2", "./warning-education-sanming-questions.js?v=3.13.1&rev=2", "./fx-level-one-questions.js?v=3.13.1", "./manifest.webmanifest", "./vendor/lucide.min.js", "./vendor/xlsx-import.js?v=3.13.1&rev=1", "./assets/brand/brand-icon.svg", "./assets/刷刷题库导入模板.xlsx"];
-// 3D 点缀按需加载的那一个 bundle，故意不进 install 预缓存：不拖慢离线安装，也不让减弱动效、低端设备白下载。
-// 够格的设备加载成功后，effects.js 发 shua-fx-warm 消息，由下面的 message 处理器补进缓存，之后离线也有 3D。
-// 只靠 fetch 处理器不够：首次访问时页面还没被 Service Worker 接管，那一次加载不经过这里。
-// 这个文件内容有任何变化也必须递增 CACHE，否则旧缓存会继续供旧文件。
-const ON_DEMAND = ["./effects-3d.bundle.js?v=3.13.1"];
-const ON_DEMAND_URLS = new Set(ON_DEMAND.map((path) => new URL(path, self.registration.scope).href));
-// 离线且从没缓存过 3D 时给按需文件的占位脚本。回 index.html 的话浏览器会按 MIME 报红色错误；
-// effects.js 看到这个标记就安静地回 2D。3.11.2 起按需文件是经典脚本（不是 ES module），
-// 占位里写 export 会当场语法错误，所以改成直接挂全局对象。
-const OFFLINE_MODULE = "window.__shuaFx3d = { shuaOffline: true };\n";
-
-self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(FILES)).then(() => self.skipWaiting()));
-});
-
+// 刷刷已从 /shua/ 搬到 /ysevan/tools/shua/（2026-10-07）。旧地址上装过的 Service Worker 会更新成这一版：
+// 安装就接管，激活时只删缓存里属于旧地址 /shua/ 的条目（新地址和别的工具共用同一个源，别误删）、注销自己，
+// 再把开着的旧地址页面带到新地址（Service Worker 看不到 #，所以这一步带不上 #；直接打开旧地址时由 index.html 带 #）。
+const OLD = "/shua/", NEW = "/ysevan/tools/shua/";
+self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => {
-  event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))).then(() => self.clients.claim()));
-});
-
-self.addEventListener("message", (event) => {
-  if (event.data?.type !== "shua-fx-warm") return;
-  event.waitUntil(caches.open(CACHE).then(async (cache) => {
-    for (const path of ON_DEMAND) {
-      if (!(await cache.match(path))) await cache.add(path);
+  event.waitUntil((async () => {
+    await self.clients.claim();
+    for (const name of await caches.keys()) {
+      const cache = await caches.open(name);
+      const reqs = await cache.keys();
+      const mine = reqs.filter((r) => new URL(r.url).pathname.startsWith(OLD));
+      await Promise.all(mine.map((r) => cache.delete(r)));
+      if (mine.length && mine.length === reqs.length) await caches.delete(name);
     }
-  }).catch(() => {}));
-});
-
-function offlineResponse(request) {
-  if (request.mode !== "navigate" && ON_DEMAND_URLS.has(request.url)) {
-    return new Response(OFFLINE_MODULE, { status: 200, headers: { "Content-Type": "text/javascript; charset=utf-8" } });
-  }
-  return caches.match("./index.html");
-}
-
-self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request).then((response) => {
-    // 只缓存成功的响应：404 一旦进缓存，按需加载的 3D 文件会一直 404 到下次递增 CACHE。
-    if (response.ok) {
-      const copy = response.clone();
-      caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+    await self.registration.unregister();
+    for (const c of await self.clients.matchAll({ type: "window" })) {
+      const u = new URL(c.url);
+      if (!u.pathname.startsWith(OLD)) continue;
+      const rest = u.pathname.slice(OLD.length);
+      try { await c.navigate(NEW + (rest === "index.html" ? "" : rest) + u.search); } catch (e) {}
     }
-    return response;
-  }).catch(() => offlineResponse(event.request))));
+  })());
 });

@@ -1,22 +1,24 @@
-/* Build substitutes this exact list. Only public application assets belong here. */
-const CACHE = 'travel-shell-9ca87ec9876138d4';
-const ASSETS = ["/travel/","/travel/index.html","/travel/manifest.webmanifest","/travel/icon.svg","/travel/icon-192.png","/travel/icon-512.png","/travel/apple-touch-icon.png","/travel/assets/index-CjaCE7rc.css","/travel/assets/index-jlSUMVst.js"];
-const BASE = "/travel/";
-const allowed = new Set(ASSETS);
-self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
-});
-self.addEventListener('activate', (event) => {
-  event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith('travel-shell-') && key !== CACHE).map((key) => caches.delete(key)))).then(() => self.clients.claim()));
-});
-self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-  // APIs, authentication, external services, map tiles and unknown files always use the network.
-  if (event.request.method !== 'GET' || url.origin !== self.location.origin || url.search || !allowed.has(url.pathname)) return;
-  event.respondWith(caches.open(CACHE).then(async (cache) => {
-    if (event.request.mode === 'navigate') {
-      try {const response = await fetch(event.request); if (response.ok && response.type === 'basic') await cache.put(event.request, response.clone()); return response;} catch {return (await cache.match(`${BASE}index.html`)) || Response.error();}
+// 旅行助手已从 /travel/ 搬到 /ysevan/tools/travel/（2026-10-07）。旧地址上装过的 Service Worker 会更新成这一版：
+// 安装就接管，激活时只删缓存里属于旧地址 /travel/ 的条目（新地址和别的工具共用同一个源，别误删）、注销自己，
+// 再把开着的旧地址页面带到新地址（Service Worker 看不到 #，所以这一步带不上 #；直接打开旧地址时由 index.html 带 #）。
+const OLD = "/travel/", NEW = "/ysevan/tools/travel/";
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    await self.clients.claim();
+    for (const name of await caches.keys()) {
+      const cache = await caches.open(name);
+      const reqs = await cache.keys();
+      const mine = reqs.filter((r) => new URL(r.url).pathname.startsWith(OLD));
+      await Promise.all(mine.map((r) => cache.delete(r)));
+      if (mine.length && mine.length === reqs.length) await caches.delete(name);
     }
-    return (await cache.match(event.request)) || fetch(event.request);
-  }));
+    await self.registration.unregister();
+    for (const c of await self.clients.matchAll({ type: "window" })) {
+      const u = new URL(c.url);
+      if (!u.pathname.startsWith(OLD)) continue;
+      const rest = u.pathname.slice(OLD.length);
+      try { await c.navigate(NEW + (rest === "index.html" ? "" : rest) + u.search); } catch (e) {}
+    }
+  })());
 });

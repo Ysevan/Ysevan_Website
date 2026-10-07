@@ -1,19 +1,50 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#f5f6f8" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="我的旅行" />
-    <link rel="apple-touch-icon" href="/travel/apple-touch-icon.png" />
-    <link rel="manifest" href="/travel/manifest.webmanifest" />
-    <link rel="icon" href="/travel/icon.svg" type="image/svg+xml" />
-    <title>我的旅行</title>
-    <script type="module" crossorigin src="/travel/assets/index-jlSUMVst.js"></script>
-    <link rel="stylesheet" crossorigin href="/travel/assets/index-CjaCE7rc.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>旅行助手搬家了</title>
+<meta name="robots" content="noindex">
+<!-- 旅行助手从 /travel/ 搬到了 /ysevan/tools/travel/（2026-10-07）。旧地址只留这一页：带着 ? 和 # 跳过去；没开 JS 就靠下面的 meta refresh（它带不上 #）。 -->
+<meta http-equiv="refresh" content="1; url=../ysevan/tools/travel/">
+<link rel="canonical" href="../ysevan/tools/travel/">
+<script>
+(function () {
+  var OLD = "/travel/", NEW = "/ysevan/tools/travel/";
+  var p = location.pathname, i = p.indexOf(OLD);
+  var rest = i >= 0 ? p.slice(i + OLD.length) : "";
+  if (rest === "index.html") rest = "";
+  var to = (i >= 0 ? p.slice(0, i) : "") + NEW + rest + location.search + location.hash;
+  function go() { location.replace(to); }
+  // 顺手注销旧地址上的 Service Worker，并删掉缓存里属于旧地址的条目（新地址和别的工具共用同一个源，只删旧地址的）。
+  // 这里注销了，旧地址的 sw.js 新版就轮不到运行，所以清缓存得在这一页做。最多等 1.5 秒就走，不让跳转卡住。
+  var t = setTimeout(go, 1500);
+  function cleanCaches() {
+    if (!window.caches) return Promise.resolve();
+    return caches.keys().then(function (names) {
+      return Promise.all(names.map(function (n) {
+        return caches.open(n).then(function (c) {
+          return c.keys().then(function (reqs) {
+            var mine = reqs.filter(function (r) { return new URL(r.url).pathname.indexOf(OLD) === 0; });
+            return Promise.all(mine.map(function (r) { return c.delete(r); })).then(function () {
+              if (mine.length && mine.length === reqs.length) return caches.delete(n);
+            });
+          });
+        });
+      }));
+    });
+  }
+  function unregister() {
+    if (!("serviceWorker" in navigator) || !navigator.serviceWorker.getRegistrations) return Promise.resolve();
+    return navigator.serviceWorker.getRegistrations().then(function (rs) {
+      return Promise.all(rs.filter(function (r) { return new URL(r.scope).pathname === OLD; }).map(function (r) { return r.unregister(); }));
+    });
+  }
+  unregister().then(cleanCaches).then(function () { clearTimeout(t); go(); }, function () { clearTimeout(t); go(); });
+})();
+</script>
+</head>
+<body>
+<p>旅行助手搬到新地址了，正在跳转……没有自动跳转的话请点 <a href="../ysevan/tools/travel/">这里</a>。</p>
+</body>
 </html>
