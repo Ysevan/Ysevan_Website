@@ -1,0 +1,757 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F5F9">
+<meta name="description" content="中文字族在前的字体栈、随视口插值再等比放大的字阶、字重三档、长文本行宽、中英文不加空格、等宽数字、楷书巨字与子集、随笔的论文排法、画布断行禁则与文案口径，每条都能拖、能切着看。">
+<title>排版 · 设计合集</title>
+<script src="assets/boot.js"></script>
+<link rel="stylesheet" href="assets/star.css">
+<link rel="stylesheet" href="assets/pages/type.css">
+<script src="assets/star.js" defer></script>
+<script src="assets/pages/type.js" defer></script>
+</head><body data-page="type">
+<a class="skip" href="#main">跳到正文</a>
+<div id="shell-nav"></div><script src="assets/nav.js"></script>
+<main id="main" class="page">
+  <header class="page-head">
+    <h1 class="page-title" data-spot="title">排版</h1>
+    <p class="page-sub" data-spot="measure">工具和小屋共用一条中文字族在前的字体栈和一套文案口径；工具的字号随视口插值、1440以上整体等比放大，小屋另有楷书巨字和随笔的论文排法。演示里的字都是这台机器上真实画出来的，缺哪款字也看得出来。</p>
+    <nav class="page-toc" aria-label="本页目录"></nav>
+  </header>
+
+  <!-- ============================ 工具 · 液态玻璃 ============================ -->
+  <section class="group" id="g-tools" data-scope="tools">
+    <h2 class="group-title">工具 · 液态玻璃</h2>
+    <p class="group-lede">字号、字重、行宽照液态玻璃规格走（正本在plan）。屋主两台Windows上中文都由微软雅黑出字，字重和最小字号都按它来定。</p>
+
+    <!-- 1 流式字阶 -->
+    <article class="entry" id="t-scale" data-scope="tools" data-toc="流式字阶">
+      <header class="entry-head">
+        <h3>字号随视口插值、到1440封顶，再整体乘--scale等比放大</h3>
+        <p class="entry-lede">每个字号写成<code>calc(clamp(下限, 斜率, 1440处的值) * var(--scale))</code>：1440以下只有clamp在动；1440以上clamp已经封住，只由--scale放大，到2088宽1.45倍封顶。大标题700、字距-.4px。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="type.html#spot-title">排版 · 页大标题</a></p>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>拖一拖</b>拖「模拟视口宽」（或聚焦后按←→，按住Shift一次走50），看四档字号怎么变：曲线上平的两段是clamp的下限和上限，1440以后那段斜线是--scale在放大，2088以后又平了。下面每行字就是按算出来的像素画的。</p>
+        <div class="tsc" data-tsc>
+          <div class="tsc-ctrl">
+            <label class="tsc-lab" for="tsc-w">模拟视口宽</label>
+            <input id="tsc-w" class="ty-range" type="range" min="320" max="2560" step="1" value="1440" data-tsc-w>
+            <output class="tsc-read" for="tsc-w" data-tsc-read>1440px · --scale 1.000</output>
+          </div>
+          <div class="ty-chips" role="group" aria-label="常用宽度">
+            <button type="button" class="ty-chip" data-tsc-go="390">手机390</button>
+            <button type="button" class="ty-chip" data-tsc-go="417">屋主手机417</button>
+            <button type="button" class="ty-chip" data-tsc-go="768">768</button>
+            <button type="button" class="ty-chip" data-tsc-go="1100">1100</button>
+            <button type="button" class="ty-chip" data-tsc-go="1440">1440</button>
+            <button type="button" class="ty-chip" data-tsc-go="2040">台式2040</button>
+            <button type="button" class="ty-chip" data-tsc-go="2552">笔记本2552</button>
+            <button type="button" class="ty-chip" data-tsc-go="here">这台的宽度</button>
+          </div>
+          <div class="tsc-chart" data-tsc-chart aria-hidden="true">
+            <svg class="tsc-svg" viewBox="0 0 640 200" preserveAspectRatio="none" focusable="false" data-tsc-svg></svg>
+            <div class="tsc-axis" data-tsc-axis></div>
+          </div>
+          <ul class="tsc-steps" data-tsc-steps>
+            <li data-tsc-step="title"><span class="tsc-name"><i class="tsc-key" style="--k:var(--accent)"></i>大标题<code>--fs-title</code></span><b class="tsc-px" data-tsc-px>34.16px</b><span class="tsc-sample tsc-s-title" data-tsc-sample>设计合集</span></li>
+            <li data-tsc-step="h2"><span class="tsc-name"><i class="tsc-key" style="--k:var(--orange)"></i>二级标题<code>--fs-h2</code></span><b class="tsc-px" data-tsc-px>21.52px</b><span class="tsc-sample tsc-s-h2" data-tsc-sample>工具 · 液态玻璃</span></li>
+            <li data-tsc-step="body"><span class="tsc-name"><i class="tsc-key" style="--k:var(--green)"></i>正文<code>--fs-body</code></span><b class="tsc-px" data-tsc-px>15px</b><span class="tsc-sample" data-tsc-sample>长文本收在行宽里，行高1.7。</span></li>
+            <li data-tsc-step="small"><span class="tsc-name"><i class="tsc-key" style="--k:var(--label2)"></i>小字<code>--fs-13</code></span><b class="tsc-px" data-tsc-px>12.85px</b><span class="tsc-sample" data-tsc-sample>上次做到第12题 · 3分钟前</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>:root {
+  --scale: clamp(1, tan(atan2(100vw, 1440px)), 1.45);   /* 视口 ÷ 1440 */
+  --fs-title: calc(clamp(26px, 1.4vw + 14px, 34.16px) * var(--scale));
+  --fs-h2:    calc(clamp(18px, .8vw + 10px, 21.52px) * var(--scale));
+  --fs-body:  calc(clamp(13px, .35vw + 10px, 15px) * var(--scale));
+  --fs-13:    calc(clamp(12px, .17vw + 10.4px, 12.848px) * var(--scale));  /* plan 的阶梯 */
+}
+h1 { font-size: var(--fs-title); font-weight: 700; letter-spacing: -.4px; }</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具同一组（取自样张<code>shua-glass.html</code>的<code>:root</code>；plan把阶梯扩成<code>--fs-11</code>…<code>--fs-32</code>）。本站的<code>--fs-title</code>是同一条，页大标题就是它；h2、正文本站另配了斜率。等比放大本身（<code>tan(atan2())</code>、兜底探针）放在「布局与自适应」那章。</p></section>
+        <section class="fact"><h4>为什么</h4><p>上限写1440处的实算值（1.4×14.4＋14＝34.16）：≤1440时--scale恒为1、clamp也没到顶，数值和改版前逐位相同；&gt;1440时clamp已封住，字、卡片、间距只乘同一个--scale，构图不变。样张写的上限36在1440处还没摸到，封在34.16才让1440一个数都不变。</p></section>
+        <blockquote class="said"><p>「UI要适配我页面的缩放大小」</p><footer>屋主，2026-09-23</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>上限写成好看的整数会在1440→1441跳一格：刷刷1441起用设计值34×<code>--u</code>，而clamp在1440处是34.16，拖过这一格标题34.16→34.02、侧栏244.8→240.2各跳一次。上限照1440处的实算值写就不跳。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:10</code>「结构」、<code>:91</code>「大屏规则」；<code>tools/plan/app/src/styles/tokens.css:68</code>「三行样张原值」、<code>:71</code>「--fs-title」；<code>tools/shua/design-proposal.md:463</code>「边界上的小跳」；原话<code>tools/plan/docs/design/SPEC-apple-glass.md:3</code>「屋主原话」</p>
+      </div>
+    </article>
+
+    <!-- 2 字重 -->
+    <article class="entry" id="t-weight" data-scope="tools" data-toc="字重三档">
+      <header class="entry-head">
+        <h3>字重只用400、600、700；600往上在屋主的机器上都是同一个粗</h3>
+        <p class="entry-lede">标题700，选中项、按钮、小标题600，其余400；不写650、750。Windows上微软雅黑只有细、常规、粗三档，600以上全落到粗；苹方最粗是中粗，Mac上600以上也一样。层级要靠字号拉开，别指望600和700分得出来。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-08-25定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>对照</b>同一行字从300画到800。右边是这台机器上实测的字宽（canvas量的）：字宽一样，就是同一款字重在出字。切到「模拟微软雅黑」看屋主两台Windows上的样子（示意：按雅黑只有细、常规、粗三档换算）。</p>
+        <div class="seg ty-seg" role="radiogroup" aria-label="字重怎么画">
+          <button type="button" role="radio" aria-checked="true" tabindex="0" data-twt-mode="here">这台机器实际</button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" data-twt-mode="yahei">模拟微软雅黑（示意）</button>
+        </div>
+        <ol class="twt-list" data-twt-list></ol>
+        <p class="ty-read" data-twt-sum></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>body                      { font-weight: 400; }
+.btn, .group-title,
+.seg [aria-checked="true"] { font-weight: 600; }
+h1, h2                    { font-weight: 700; }
+/* 不写650 / 750：微软雅黑上和700一样，苹方上600以上也一样 */</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷改版时把650收成600、750收成700（Windows上看不出变化，Mac上苹方有细微变化）。本站<code>star.css</code>里只出现400、600、700三个值。刷刷后加的「按周回看」写过650，3.14.1改回600（offline 67baa55）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>刷刷旧方案用650、750想分出层级，可字体栈首位落到微软雅黑，Windows上只有Light、Regular、Bold，650和750都画成Bold，跟700完全一样——区分只是名义上的。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>判断「是不是同一款字重」别靠肉眼比：量同一行字的宽度，宽度一样就是同一款。演示里的读数就是这么来的，换台机器打开结果会不一样。</p></section>
+        <p class="source">出处：<code>tools/shua/design-proposal.md:106</code>「P24」、<code>:139</code>「B4」；<code>tools/shua/CHANGELOG.md:406</code>「字重和图标尺寸收敛为设计令牌」；<code>tools/shua/styles.css:753</code>「.week-head .week-range」；<code>tools/shua/design-proposal.md:630</code>「十三、字重回到三档（3.14.1）」；<code>tools/plan/docs/design/SPEC-apple-glass.md:10</code>「结构」（标题700）</p>
+      </div>
+    </article>
+
+    <!-- 3 行宽 -->
+    <article class="entry" id="t-measure" data-scope="tools" data-toc="长文本行宽">
+      <header class="entry-head">
+        <h3>大屏「填满」只管壳和卡片；长文本行宽收在--measure里</h3>
+        <p class="entry-lede">外壳、卡片网格、列表轨道铺满视口；正文、搜索结果这类长文本仍居中收在<code>--measure</code>里（岗岗880px、本站680px，&gt;1440都乘--scale），行高1.7上下。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="type.html#spot-measure">排版 · 页头副标题</a></p>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>拖一拖</b>拖阅读栏右边的把手（或Tab到把手按←→）改栏宽。「收在measure里」时正文停在680px，栏再宽也只是右边留白；切到「铺满」（反例，示意）看一行能有多长。读数是此刻第一行实际排了几个字。文字是示例。</p>
+        <div class="seg ty-seg" role="radiogroup" aria-label="正文行宽">
+          <button type="button" role="radio" aria-checked="true" tabindex="0" data-tms-mode="measure">收在measure里（现行）</button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tms-mode="fill">铺满（反例，示意）</button>
+        </div>
+        <div class="tms-stage" data-tms>
+          <div class="tms-col" data-tms-col>
+            <p class="tms-bar">阅读栏</p>
+            <p class="tms-p" data-tms-p>客户来办开户，柜员先核对身份证件是否在有效期内、照片是不是本人，再在系统里录入基本信息；有代理人的，另外核对代理人的证件和授权书，两份复印件都要客户签字确认。办完把回单交给客户，提醒他当场核对户名与账号，有疑问当场改，不要等离开柜台以后再来补。</p>
+            <span class="ty-handle tms-handle" role="slider" tabindex="0" aria-label="阅读栏宽度" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" data-tms-handle></span>
+          </div>
+        </div>
+        <p class="ty-read" data-tms-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>:root { --measure: 880px; }                       /* 岗岗；&gt;1440换 calc(880px * var(--scale)) */
+.reader { /* 三栏里的中间列：铺满，吸收多出来的宽度 */ }
+.document-body p { max-width: var(--measure); }   /* 正文收住，两边是面板本体 */
+body { line-height: 1.72; }</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>岗岗的正文段落、定义行、步骤列表、勾选卡、提示块都收在<code>--measure</code>里，搜索结果页是居中的920×scale阅读列。本站页头副标题、条目说明、正文段落收在680×<code>--u</code>。</p></section>
+        <section class="fact"><h4>为什么</h4><p>「填满」是为了大屏上不留两大块空白（屋主最初的抱怨），不是为了让一行更长。所以填满只给外壳、卡片网格、列表轨道；正文行宽另外收住，大屏上搜索页两侧露出光晕底属预期，不改成铺满。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:123</code>「次级字统一值与各项目自测义务」；<code>tools/gang/design-proposal.md:719</code>「--measure」、<code>:1017</code>「填满的边界」；<code>tools/gang/styles.css:102</code>「--measure」、<code>:938</code>「.document-body p」、<code>:610</code>「body」；<code>tools/star/assets/star.css:186</code>「--measure」</p>
+      </div>
+    </article>
+
+    <!-- 4 最小字号 -->
+    <article class="entry" id="t-min" data-scope="tools" data-toc="最小字号">
+      <header class="entry-head">
+        <h3>最小字号有地板：辅助字不低于13px，手机正文15px不降到14px</h3>
+        <p class="entry-lede">岗岗定的地板：正文15px（手机也不降），辅助字≥13px，可点的元素≥44×44px。SPEC侧栏分组小标题是11px——那是纯标签；岗岗的目录分组标题带计数、能点开合，按13px。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-08-25定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>拖一拖</b>一块手机宽的岗岗式目录（示例）。拖「辅助字」看分组标题、计数和说明小字变小，低于13px就标出来；「正文」切14和15看手机正文差多少。字是按CSS像素画的，手机上还要乘屏幕倍率。</p>
+        <div class="tmn-ctrls">
+          <div class="tmn-ctrl">
+            <label class="tsc-lab" for="tmn-aux">辅助字</label>
+            <input id="tmn-aux" class="ty-range" type="range" min="10" max="16" step="0.5" value="13" data-tmn-aux>
+            <output class="tmn-out" for="tmn-aux" data-tmn-aux-out>13px</output>
+          </div>
+          <div class="seg ty-seg tmn-seg" role="radiogroup" aria-label="手机正文字号">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tmn-body="14">正文14px</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-tmn-body="15">正文15px（现行）</button>
+          </div>
+        </div>
+        <div class="tmn-phone" data-tmn-phone>
+          <p class="tmn-group"><span>个人业务</span><span class="tmn-n">12项</span></p>
+          <p class="tmn-item">代理开户</p>
+          <p class="tmn-body">有代理人的，另外核对代理人的证件和授权书，两份复印件都要客户签字确认。</p>
+          <p class="tmn-aux">上次看到「代理开户」 · 3分钟前</p>
+          <p class="tmn-group"><span>对公业务</span><span class="tmn-n">8项</span></p>
+        </div>
+        <p class="ty-read" data-tmn-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>body               { font-size: 15px; }                /* 手机也是15，不降到14 */
+.meta, .aux, small { font-size: 13px; }                /* 辅助字地板；&gt;1440乘 --u */
+.toc-group summary { font-size: calc(13 * var(--u)); } /* 带计数、能开合的行 */
+.side-group        { font-size: 11px; }                /* SPEC：纯标签的分组小标题 */</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>岗岗的手机形态和目录分组标题（13px是SPEC偏离表里登记过的）。刷刷和本站侧栏的分组小标题照SPEC写11px——那几个字只是分组标签，不承载要读的信息。</p></section>
+        <section class="fact"><h4>为什么</h4><p>11px的中文低于岗岗「辅助字≥13px」的地板；岗岗的分组标题不是纯标签，带着计数、能点开合，是要读、要点的一行。</p></section>
+        <p class="source">出处：<code>tools/gang/design-proposal.md:266</code>「字号与触控」、<code>:732</code>「字号仍是13px」；<code>tools/plan/docs/design/SPEC-apple-glass.md:9</code>「结构」、<code>:175</code>「分组小标题」</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================ 小屋 · 暖纸 ============================ -->
+  <section class="group" id="g-xiaowu" data-scope="xiaowu">
+    <h2 class="group-title">小屋 · 暖纸</h2>
+    <p class="group-lede">小屋的字族比工具多：楷书、宋体、手写只上标题和数字，正文一律黑体。双击打开的本站读不到小屋自托管的两份字体子集，这一组里的楷书和手写都用系统字代替，演示里写明了。</p>
+
+    <!-- 5 楷书巨字 -->
+    <article class="entry" id="t-xw-kai" data-scope="xiaowu" data-toc="楷书巨字">
+      <header class="entry-head">
+        <h3>楷书巨字只用子集里的11个字；text-indent补齐字距，两个字永不换行</h3>
+        <p class="entry-lede">门厅「小屋」、门面「工具」「随笔」用自托管的马善政楷书子集（11个字，5564字节）：1440×900下136px、行高1.04、字距.06em，再加一样大的<code>text-indent</code>把最后一个字后面那格补回来；窄屏<code>nowrap</code>。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-08-26定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap ty-cap-xw"><b>演示</b>门厅那张卡的轻量示意，不是原物。点「text-indent补偿」看字墨中线（橄榄色实线）和色块中线（虚线）差多少；在标题框里换字，子集外的字标出来，按下面选的方式回落；超过两个字，虚线框是两个字时色块的宽度。</p>
+        <div class="tkai xw" data-tkai>
+          <div class="tkai-card">
+            <div class="tkai-blob" data-tkai-blob>
+              <p class="tkai-whose">Ysevan的</p>
+              <p class="tkai-big" data-tkai-big>小屋</p>
+              <p class="tkai-foot">门没锁，随便逛</p>
+              <i class="tkai-mid" aria-hidden="true"></i>
+              <i class="tkai-ink" data-tkai-ink aria-hidden="true"></i>
+              <i class="tkai-ghost" data-tkai-ghost aria-hidden="true"></i>
+            </div>
+            <div class="tkai-plate" aria-hidden="true">
+              <svg viewBox="0 0 120 120" focusable="false"><path d="M22 60 60 28l38 32"/><path d="M30 54v40h60V54"/><path d="M52 94V72h16v22"/><path d="M78 40V30h8v17"/></svg>
+            </div>
+          </div>
+          <div class="tkai-ctrls">
+            <button type="button" class="ty-toggle" aria-pressed="true" data-tkai-indent>text-indent补偿</button>
+            <label class="tkai-field"><span>标题</span><input type="text" value="小屋" maxlength="4" autocomplete="off" spellcheck="false" data-tkai-title aria-describedby="tkai-subset"></label>
+            <div class="seg ty-seg tkai-seg" role="radiogroup" aria-label="子集外的字落到哪">
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-tkai-fb="kai">现在：系统楷体</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tkai-fb="sans">2026-10以前：黑体</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tkai-fb="serif">没有楷体的安卓：serif（示意）</button>
+            </div>
+          </div>
+          <p class="tkai-subset" id="tkai-subset">子集里的11个字：<span class="xw-kai">小屋工具架随笔本留言板</span></p>
+          <p class="ty-read tkai-read" data-tkai-read></p>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>.blobBig {                                  /* Ysevan_web/app/hall.module.css；元素挂font-kai类＝var(--font-kai) */
+  font-size: calc(136 * var(--card-px));    /* ≥821px；1440×900下136px */
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: .06em;
+  text-indent: .06em;                       /* 补最后一个字后面多出来的那格字距 */
+}
+@media (max-width: 820px) {
+  .blobBig { font-size: clamp(40.25px, 11.5vw, 84px); white-space: nowrap; }   /* 下限2026-10-08从38px提上来 */
+}
+/* 子集：app/fonts/MaShanZheng-xiaowu.woff2，「小屋工具架随笔本留言板」11字，5564字节，只在门厅、工具、随笔三页preload */
+:root { --font-kai: "fontKai", "Kaiti SC", "STKaiti", "KaiTi", serif; }   /* app/globals.css 自写@font-face */</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>门厅「小屋」；工具页、随笔页门面的「工具」「随笔」。「架」「本」「留言板」五个字站上已经没有页面在用（标题改成两个字、留言板撤掉时子集没重裁）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>楷书只为几个标题服务，裁成子集才五千多字节，首屏巨字可以preload。三张卡一样大靠的就是标题都是两个字：色块<code>fit-content</code>，同一款楷书、同一个字号，算出来自然同宽；三个字会把卡撑宽，调小字号去迁就也不行。<code>text-indent</code>删了，色块看起来会右偏。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>子集外的字会半句楷书半句系统字，安卓多半没有楷体、直接掉进serif。2026-10以前楷体走vinext的<code>next/font/local</code>，它在<code>--font-kai</code>里自带一个<code>sans-serif</code>兜底，实测子集外的字落到黑体、后面的系统楷体轮不到；10-08起改成<code>app/globals.css</code>自写<code>@font-face</code>，<code>--font-kai</code>直接接系统楷体栈，子集外的字落到系统楷体。真正挡住的仍是<code>runtime:check</code>门禁（挂楷书类的文字逐字核对在子集里）。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「3.2 子集内容与文件」（「MaShanZheng-xiaowu.woff2」「硬约束」）、「3.3 字体怎么接上（app/globals.css 与 app/fonts.ts）」、「3.4 各页用字对照」（「门厅 巨字」「楷体栈里夹着一个 sans-serif」）、「4.2 数值」（「是用来补偿」）、「13.2 三张卡为什么一样大」（「标题只能两个字」）；<code>Ysevan_web/app/hall.module.css</code>「.blobBig」（「clamp(40.25px, 11.5vw, 84px)」）；<code>Ysevan_web/app/globals.css</code>「--font-kai」（「往标题里加子集外的汉字」）</p>
+      </div>
+    </article>
+
+    <!-- 6 五个字族 -->
+    <article class="entry" id="t-xw-family" data-scope="xiaowu" data-toc="五个字族">
+      <header class="entry-head">
+        <h3>楷书、宋体、手写只上标题和数字，正文一律黑体</h3>
+        <p class="entry-lede">黑体管正文和界面；楷书只给两个字的巨字；宋体给工具名、规格数字、归档与随笔球标题；手写只有开场「Hey, Ysevan!」；行楷站上现在没有页面在用。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-28核定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap ty-cap-xw"><b>演示</b>小屋几处用字拼在一起的示意（字号按比例缩小，文案取自站上）。点上面的字族，用到它的地方留下、其余淡出；再点一次取消。「只留黑体」看看楷书和宋体出了多少力。手写字体读不到，用浏览器的cursive代替。</p>
+        <div class="tfam xw" data-tfam>
+          <div class="tfam-legend" role="group" aria-label="看哪个字族">
+            <button type="button" class="ty-chip" aria-pressed="false" data-tfam-pick="sans">黑体</button>
+            <button type="button" class="ty-chip" aria-pressed="false" data-tfam-pick="serif">宋体</button>
+            <button type="button" class="ty-chip" aria-pressed="false" data-tfam-pick="kai">楷书</button>
+            <button type="button" class="ty-chip" aria-pressed="false" data-tfam-pick="xing">行楷</button>
+            <button type="button" class="ty-chip" aria-pressed="false" data-tfam-pick="hand">手写</button>
+            <button type="button" class="ty-toggle" aria-pressed="false" data-tfam-plain>只留黑体（示意）</button>
+          </div>
+          <div class="tfam-stage" data-tfam-stage>
+            <div class="tfam-hero">
+              <span class="tfam-big" data-fam="kai" data-rm="fade">工具</span>
+              <span class="tfam-hero-sub" data-fam="sans" data-rm="fade">六件自己做的东西</span>
+            </div>
+            <div class="tfam-tool">
+              <span class="tfam-name" data-fam="serif" data-rm="fade">刷刷</span>
+              <span class="tfam-say" data-fam="sans" data-rm="fade">银行岗位准入考试的刷题软件，离线也能用。</span>
+              <span class="tfam-spec"><b data-fam="serif" data-rm="fade">4475</b><small data-fam="sans" data-rm="fade">道题</small></span>
+            </div>
+            <div class="tfam-notes">
+              <span class="tfam-arch" data-fam="serif" data-tfam-arch data-rm="fade">以前写的</span>
+              <span class="tfam-day" data-fam="sans" data-rm="fade">9月27日 · 星期日</span>
+              <span class="tfam-hey" data-fam="hand" data-rm="fade">Hey, Ysevan!</span>
+            </div>
+          </div>
+          <p class="ty-read" data-tfam-read></p>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>// Ysevan_web/tailwind.config.ts → theme.extend.fontFamily
+sans:  ['"PingFang SC"', '"Hiragino Sans GB"', '"Microsoft YaHei"', '"Noto Sans CJK SC"', "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+serif: ['"Songti SC"', '"STSong"', '"SimSun"', "serif"],        // 不带 "Noto Serif SC"
+kai:   ["var(--font-kai)"],                                     // 回退栈只写在globals.css的--font-kai一处
+xing:  ['"Xingkai SC"', '"STXingkai"', '"华文行楷"', "var(--font-kai)"],
+hand:  ["var(--font-hand)", "cursive"]</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><ul>
+          <li>宋体：工具页展台工具名76px、小架工具名46px、规格数字26px（等宽数字）；归档「以前写的」与随笔球标题29px、600、字距.05em；随笔球卡片标题15px、600。</li>
+          <li>楷书：门厅「小屋」、门面「工具」「随笔」，1440下136px。</li>
+          <li>手写：开场「Hey, Ysevan!」，SVG里132px。</li>
+          <li>其余全部黑体，11.5–15px。</li>
+        </ul></section>
+        <section class="fact"><h4>为什么</h4><p>小屋的原则「手作气质，工程克制」：楷书、行楷、宋体只出现在少数标题与数字上，正文一律黑体。工具端不跟——家族契约只统一正文的字体栈，标题字族不要求统一，工具里的标题该用黑体就用黑体。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>归档页标题「以前写的」挂过好几个星期行楷：四个字都不在楷书子集里，没装系统行楷的机器上会掉出那款字。2026-09-28改成宋体，同时加了门禁逐字核对挂楷书、行楷类的文字。演示里点「行楷」能看到它当时的样子。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「1.2 六条原则」（「手作气质，工程克制」）、「3.1 五个字族」（「font-sans」）、「3.4 各页用字对照」、「A.1 字体」（「不要求统一的」）；<code>Ysevan_web/tailwind.config.ts</code>「fontFamily」（「kai:」「xing:」「serif:」）；<code>Ysevan_web/app/notes/archive/page.tsx</code>「以前写的」</p>
+      </div>
+    </article>
+
+    <!-- 7 论文排法 -->
+    <article class="entry" id="t-xw-prose" data-scope="xiaowu" data-toc="论文排法">
+      <header class="entry-head">
+        <h3>随笔正文照中文论文排：每段空两格、行距1.8、段间只多0.4em</h3>
+        <p class="entry-lede">一个类<code>.xw-note-prose</code>管全部：首行缩进2em、行高1.8、相邻两段上边距.4em、<code>line-break: strict</code>。随笔列表卡和详情页都引这一个类，不各写一份。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-21定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap ty-cap-xw"><b>切一切</b>一张随笔卡（示例文字）。三种排法切着看；拖「行距」看段间和行间的比例怎么变——读数是此刻实际的行间、段间与比例。</p>
+        <div class="tpr xw" data-tpr>
+          <div class="tpr-ctrls">
+            <div class="seg ty-seg" role="radiogroup" aria-label="正文排法">
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-tpr-mode="paper">论文排法（现行）</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tpr-mode="web">顶格＋空一行（改版前，示意）</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tpr-mode="zero">段距0（示意）</button>
+            </div>
+            <div class="tpr-ctrl">
+              <label class="tsc-lab" for="tpr-lh">行距</label>
+              <input id="tpr-lh" class="ty-range" type="range" min="1.5" max="2.2" step="0.05" value="1.8" data-tpr-lh>
+              <output class="tmn-out" for="tpr-lh" data-tpr-lh-out>1.8</output>
+            </div>
+          </div>
+          <article class="tpr-card">
+            <div class="tpr-top"><span class="tpr-who"><span class="tpr-ava" aria-hidden="true"></span>Ysevan</span><span class="tpr-date"><b>9月21日 · 星期日</b><small>2026</small></span></div>
+            <div class="tpr-text" data-tpr-text>
+              <p class="tpr-p">晚上把书架挪到了窗边。白天光从左边进来，翻书的时候影子不会落在字上，比原来顺手多了。</p>
+              <p class="tpr-p">挪的时候翻出一本旧笔记，里面夹着几张车票，日期都是好几年前的。没舍得扔，又夹回去了。</p>
+              <p class="tpr-p">明天把台灯也换个位置，看看夜里是不是一样好用。</p>
+            </div>
+            <div class="tpr-meta"><span>晴 · 在家</span><time>22:10</time></div>
+          </article>
+          <p class="ty-read" data-tpr-read></p>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>.xw-note-prose {
+  text-indent: 2em;               /* 开头空两格：卡片15px → 30px，详情页16px → 32px */
+  line-height: 1.8;               /* Word 的「1.5 倍行距」折算到网页约1.8 */
+  line-break: strict;             /* 。、，等收尾标点不许在行首 */
+  hanging-punctuation: allow-end; /* 只有 Safari 认，忽略了也不影响禁则 */
+}
+.xw-note-prose + .xw-note-prose { margin-top: .4em; }   /* 段间1.2em : 行间0.8em ＝ 1.5 : 1 */
+.xw-note-prose figure { text-indent: 0; }</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>随笔列表卡的每一段（正文按空行切成多个<code>&lt;p&gt;</code>）、详情页markdown的段落。标题、列表、引用、代码、插图都不缩进。</p></section>
+        <blockquote class="said"><p>正文要中文论文那种纸上的排法——每段开头空两格，行距1.5倍。</p><footer>屋主，2026-09-21</footer></blockquote>
+        <section class="fact"><h4>为什么</h4><p>屋主给的段距是「0，缩进自己分段」，屏幕上0太挤：行距1.8已经把行与行拉开0.8em，段间也只有0.8em的话，缩进就成了唯一的分段信号，扫读时得逐行找缩进。多0.4em让段间:行间＝1.5:1，一眼看得出换段，又远不到「空一行」（1.8em起），仍在屋主给的≤0.5em里。</p></section>
+        <section class="fact trap"><h4>坑</h4><p><code>text-indent</code>是段落的属性：整条随笔塞进一个<code>&lt;p&gt;</code>只有第一行缩进，所以列表卡要按空行切段。markdown会把独占一行的图片包进<code>&lt;p&gt;</code>，<code>figure</code>要另外清掉缩进。分两处写这四个数一定会走散，屋主明确要列表卡和详情页的第一段一样。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「7.6 随笔正文的排法」、「7.6 随笔正文的排法 › 四个数，只写在一处」（「段间距」）；<code>Ysevan_web/app/globals.css</code>「.xw-note-prose」（「随笔正文的排法」）</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================ 通用 ============================ -->
+  <section class="group" id="g-common" data-scope="common">
+    <h2 class="group-title">通用</h2>
+    <p class="group-lede">两种气质都照这几条。字体栈、文案口径、等宽数字来自小屋规格附录里的家族契约，四个工具一样适用。</p>
+
+    <!-- 8 字体栈 -->
+    <article class="entry" id="t-stack" data-scope="common" data-toc="中文在前的字体栈">
+      <header class="entry-head">
+        <h3>字体栈中文字族在前：苹方、冬青黑、微软雅黑、思源黑，再轮到系统UI字体</h3>
+        <p class="entry-lede"><code>"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, sans-serif</code>，四个工具和小屋同一条，配<code>&lt;html lang="zh-CN"&gt;</code>。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-08-26定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>切一切</b>同一段字换三条字体栈。看方向键和中点：排在第一的字体有西文字形，西文、数字、符号就都归它画。下面列的是这台机器上装没装这几款字，以及中文、西文此刻各由谁出字。</p>
+        <div class="seg ty-seg" role="radiogroup" aria-label="字体栈">
+          <button type="button" role="radio" aria-checked="true" tabindex="0" data-tst-stack="cjk">中文在前（现行）</button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tst-stack="ui">系统UI在前（刷刷）</button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tst-stack="latin">西文字体在前（反例，示意）</button>
+        </div>
+        <div class="tst-sample" data-tst-sample>
+          <p>Ysevan的小屋 · 共12题 · Excel导出</p>
+          <p>电脑可用 ↑ ↓ ← → 切题</p>
+          <p>21:40 · 2026-10-08 · v3.13.2</p>
+        </div>
+        <p class="tst-code"><code data-tst-code></code></p>
+        <ul class="tst-hits" data-tst-hits aria-label="这台机器上的字体"></ul>
+        <p class="ty-read" data-tst-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>&lt;html lang="zh-CN"&gt;
+body {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",
+               -apple-system, BlinkMacSystemFont, sans-serif;
+}</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>岗岗、plan、card、小屋、本站同一条；plan的token注释写着「改字体要四处一起改」。现状：刷刷是登记过的偏离，系统UI在前——试改成中文在前后，Mac上做题页「↑ ↓ ← →」改由苹方出字、间距不匀，中点「·」也变宽，控制室2026-09-28裁定不改；Windows上前几个字体都取不到、一律微软雅黑，只影响苹果设备。</p></section>
+        <section class="fact"><h4>为什么</h4><p>苹方缺字时应落到冬青黑、微软雅黑、思源黑，而不是先落到<code>-apple-system</code>这类UI字体，否则同一段中文会混进两套字形；中文界面也不该落到Arial、Helvetica这类西文回退上。<code>lang</code>决定标点与断行的字形（zh-CN和zh-TW的引号形状不同）。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>谁排第一，西文和符号就归谁画：中文在前时Mac上的箭头、中点都是苹方的全宽字形，系统UI在前时是SF的窄字形。改字体栈要在Mac上看一眼符号多的那几页。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.1 字体」（「正文字体栈」「三条的理由」）；<code>tools/plan/app/src/styles/tokens.css:256</code>「字体」；<code>tools/plan/docs/design/SPEC-apple-glass.md:180</code>「字体栈」；<code>tools/shua/design-proposal.md:354</code>「字体栈保持系统 UI 在前」；<code>tools/gang/styles.css:610</code>「body」；<code>tools/shua/styles.css:122</code>「font-family」</p>
+      </div>
+    </article>
+
+    <!-- 9 不引外部字体 -->
+    <article class="entry" id="t-nofont" data-scope="common" data-toc="不引外部字体">
+      <header class="entry-head">
+        <h3>不引外部字体：上了CSP，外链字体根本加载不出来</h3>
+        <p class="entry-lede">只用系统字体栈；非要特殊的字，就自托管裁好的子集（小屋的楷书、手写）。字体栈里也不留外链字体的名字。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-08-25定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>演示</b>同一段字的「打开过程」（示意，不真发请求）。点「重新打开」：系统字体栈第0秒就画出来；外链字体被CSP拦下，立刻失败、控制台报错、一直是回退字；连不上的时候，浏览器先空着等那款字，最多约3秒才用回退字。</p>
+        <div class="seg ty-seg" role="radiogroup" aria-label="字体从哪来">
+          <button type="button" role="radio" aria-checked="true" tabindex="0" data-tnf-mode="system">系统字体栈（现行）</button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tnf-mode="csp">外链被CSP拦（反例，示意）</button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tnf-mode="hang">外链连不上（反例，示意）</button>
+        </div>
+        <div class="tnf-win" data-tnf>
+          <div class="tnf-bar"><button type="button" class="ty-btn" data-tnf-run>重新打开</button><span class="tnf-time" data-tnf-time>0.0秒</span><span class="tnf-track"><i class="tnf-prog" data-tnf-prog></i></span></div>
+          <p class="tnf-text" data-tnf-text>Ysevan的个人小站，放着几件自己做的小工具，还有平时写的随笔。</p>
+          <div class="tnf-console" data-tnf-console></div>
+        </div>
+        <p class="ty-read" data-tnf-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>Content-Security-Policy: default-src 'self'      # 刷刷 serve.ps1
+Content-Security-Policy: font-src 'self' data:   # 小屋postexport.mjs的basePolicy，构建时逐页写进meta
+
+/* 设计稿里的 Google Fonts 外链一律不带进实现 */
+font-family: "Songti SC", "STSong", "SimSun", serif;   /* 不带 "Noto Serif SC" */</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具和小屋都不引网络字体；小屋的设计小样用的是Google Fonts外链，实现时换成自托管的子集。本站零依赖，也不引外部字体。</p></section>
+        <section class="fact"><h4>为什么</h4><p>刷刷的CSP是<code>default-src 'self'</code>，外部资源被浏览器直接拦截——不是效果差一点，是完全加载不出来。小屋生产是<code>font-src 'self' data:</code>，外链字体一律失败；宋体栈末尾留着<code>"Noto Serif SC"</code>只会让栈变长，还无效。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>老站品牌字写的是网络字体Montserrat，从来没加载过，实际一直是Arial（见交互页<a href="interaction.html#ix-oldnav">「老站透明导航栏」</a>）。设计稿上看着好看的那款字，上线后可能一次都没画出来过。</p></section>
+        <p class="source">出处：<code>tools/shua/design-proposal.md:171</code>「引入外部字体或 CDN 资源」；<code>tools/gang/design-proposal.md:1283</code>「不引入任何网络字体」；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「3.1 五个字族」（「Noto Serif SC」）、「3.5 CSP 约束」（「font-src」）；<code>Ysevan_web/scripts/postexport.mjs</code>「basePolicy」；<code>memory/ysevan-web-state.md:31</code>「Google Fonts」</p>
+      </div>
+    </article>
+
+    <!-- 10 中英文空格 -->
+    <article class="entry" id="t-space" data-scope="common" data-toc="不加空格">
+      <header class="entry-head">
+        <h3>中英文之间、数字与中文之间都不加空格；URL两侧留空格</h3>
+        <p class="entry-lede">写「Ysevan的小屋」「Excel导出」「共12题」「30分钟」；纯英文串内部照英文规矩（「Hey, Ysevan!」）；全角标点贴底，不用~代替～。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-08-26定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>对照</b>左边是家族口径，右边是加了空格的样子（反例，示意）。下面的框里随便打一段（输入法选词时不整理，选完才整理），按家族口径整理出来：红点是去掉的空格，绿点是URL两边补上的。最下面一行是拼接出来的读数（反例，示意）：逐个字符串字面量扫，一处都扫不出来，画出来却带着空格。</p>
+        <div class="tsp-pair">
+          <div class="tsp-col"><p class="tsp-tag">现行</p><ul class="tsp-list" data-tsp-good>
+            <li>Ysevan的小屋</li><li>Excel导出</li><li>共12题 · 30分钟</li><li>4475道题</li><li>2026年10月8日</li>
+          </ul></div>
+          <div class="tsp-col tsp-col-bad"><p class="tsp-tag">加空格（反例，示意）</p><ul class="tsp-list" data-tsp-bad aria-label="加了空格的反例"></ul></div>
+        </div>
+        <div class="tsp-tool">
+          <label class="tsp-lab" for="tsp-in">打一段试试</label>
+          <textarea id="tsp-in" class="tsp-in" rows="3" spellcheck="false" data-tsp-in></textarea>
+          <p class="tsp-out" data-tsp-out aria-live="off"></p>
+          <p class="ty-read" data-tsp-read></p>
+        </div>
+        <div class="tsp-cat" data-tsp-cat>
+          <p class="tsp-lab">拼接出来的读数（反例，示意）</p>
+          <p class="tsp-cat-row"><span class="tsp-cat-k">源码</span><code>"有 " + n + " 处"</code></p>
+          <p class="tsp-cat-row"><span class="tsp-cat-k">扫源码</span><span>逐个字符串字面量查「汉字＋空格＋数字」：<b data-tsp-cat-scan>0处</b></span></p>
+          <p class="tsp-cat-row"><span class="tsp-cat-k">画出来</span><span class="tsp-cat-out" data-tsp-cat-out data-copy-bad></span><b class="tsp-cat-hit" data-tsp-cat-hit></b></p>
+          <button type="button" class="ty-btn ty-btn-quiet" data-tsp-cat-n>换个数</button>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>写                                   不写
+「Ysevan的小屋」                     「Ysevan 的小屋」
+「Excel导出」                        「Excel 导出」
+「共12题 · 30分钟」                  「共 12 题 · 30 分钟」
+「4475道题」                         「4475 道题」
+「见 https://old.ysevan.com 首页」   「见https://old.ysevan.com首页」
+「Hey, Ysevan!」                     （纯英文串内部照英文规矩留空格）
+「9～12点」                          「9~12点」</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具和小屋所有看得见的文案：标题、导航、按钮、提示、metadata的title与description；代码注释和文档叙述不管。plan已全改（2026-10-08提交98ac0fb，界面上数字两边原来带空格的文案一并改掉），并加了源码判据<code>app/src/numberSpacing.test.ts</code>：字符串、模板串、JSX文本里「汉字＋空格＋数字」或插值紧挨汉字隔一个空格就红。不归这条管的：「 · 」这类分隔符两边的空格；两个各自完整的词组之间的元素间距（见「坑」）；「标签＋名字」（如无障碍名「删除附件 报表.pdf」）；照搬的原文（题库、员工手册条文、小屋的随笔正文、出处里引的原话）。本站页面文案同样。</p></section>
+        <section class="fact"><h4>为什么</h4><p>几个工具的用户是同一批同事，界面文案的口音要一致。这条2026-08-26屋主裁定，小屋全站先行，工具端照家族契约对齐。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>CSS撑出来的空隙看它在不在一个词组里（控制室10-08定）：一个词组内部的照样不许——工具架标题旁「共3件」把3拆成单独的元素、靠元素间距隔开，画出来字和数字之间空着一截，算违规；两个各自完整的词组之间的空隙是版式，不算，比如徽章胶囊和后面的说明、读数标签和读数块之间的元素间距。SPEC原文是「CSS 撑出来的空隙（flex 的 gap、margin）在标签和数字之间也算空格，一样不要」；小屋规格原来把「共3件」那个间距写成例外，现在那句已改成「不算例外」，站上也已经没有这一处。JSX里<code>本周完成 {n} 项</code>两侧的空格会原样画出来——plan回顾页的汇总那一行踩过，98ac0fb改掉了。另外plan的CLAUDE.md曾写反成「中文与数字之间保留」，2026-09-27改正：这条别写反。扫描看不见拼接：<code>"有 " + n + " 处"</code>里每个字面量单看都没有「汉字＋空格＋数字」，共用扫描器报0处，拼出来的界面字照样带空格（岗岗踩到）。拼接、模板串、JSX插值两边的空格都得另核，最稳的是看画出来的字。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「1.4 文案排版规则」（「不算例外」）、「A.5 文案排版」（「中英文之间不加空格」「标点用简体中文全角标点贴底」）；<code>tools/plan/CLAUDE.md:87</code>「中英文词语之间不加空格」；<code>tools/plan/docs/design/SPEC-apple-glass.md:53</code>「界面文案：数字与中文之间不加空格」、<code>:55</code>「CSS 撑出来的空隙」（词组内外怎么分：控制室10-08定）、<code>:57</code>「不归这条管的源」；<code>tools/plan/app/src/pages/WeekReview.tsx:138</code>「本周完成」；plan提交98ac0fb；<code>tools/plan/app/src/numberSpacing.test.ts:2</code>「数字与中文之间不留空格」；<code>memory/ysevan-workspace-map.md:71</code>「家族契约」；扫描看不见拼接：控制室2026-10-08（岗岗踩到）</p>
+      </div>
+    </article>
+
+    <!-- 11 等宽数字 -->
+    <article class="entry" id="t-tnum" data-scope="common" data-toc="等宽数字">
+      <header class="entry-head">
+        <h3>等宽数字用--font-num画：写了tabular-nums的规则，同一条里写font-family: var(--font-num)</h3>
+        <p class="entry-lede">苹方在Chrome里不认<code>tabular-nums</code>和<code>"tnum"</code>，中文字族打头的栈里写了也照样跳。凡是写了等宽数字的规则，同一条里指定<code>--font-num</code>（BlinkMacSystemFont打头、后面接中文字族）：数字交给认tnum的系统UI字体画，中文照旧落到中文字族上。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-10-08定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-ring">总览 · 本书进度</a></p>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>对照</b>两个计数器并排：左边是改前的写法（中文字族打头＋tabular-nums，示意），右边是现行的<code>--font-num</code>＋tabular-nums。计时走起来看框宽跳了多少；读数是这台机器上实测的。数字是示例。</p>
+        <div class="ttn" data-ttn>
+          <div class="ttn-acts">
+            <button type="button" class="ty-btn" aria-pressed="false" data-ttn-run>开始计时</button>
+            <button type="button" class="ty-btn ty-btn-quiet" data-ttn-next>下一题</button>
+          </div>
+          <div class="ttn-pair">
+            <figure class="ttn-box ttn-pf" data-ttn-box="pf" data-tnum-ok="反例：苹方打头会跳"><figcaption>中文字族打头＋tabular-nums（改前，示意）</figcaption>
+              <span class="ttn-clock" data-ttn-clock>00:00.0</span>
+              <span class="ttn-q" data-ttn-q>第1/120题</span>
+              <table class="ttn-tab"><tbody data-ttn-rows></tbody></table>
+              <p class="ttn-jit" data-ttn-jit></p>
+            </figure>
+            <figure class="ttn-box ttn-num" data-ttn-box="num"><figcaption>--font-num＋tabular-nums（现行）</figcaption>
+              <span class="ttn-clock" data-ttn-clock>00:00.0</span>
+              <span class="ttn-q" data-ttn-q>第1/120题</span>
+              <table class="ttn-tab"><tbody data-ttn-rows></tbody></table>
+              <p class="ttn-jit" data-ttn-jit></p>
+            </figure>
+          </div>
+          <p class="ty-read" data-ttn-read></p>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>:root {
+  --font-num: BlinkMacSystemFont, -apple-system, "Segoe UI", system-ui,
+              "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+.count, .timer, .date, td.num, .progress {
+  font-family: var(--font-num);          /* 同一条里写：数字交给认 tnum 的系统 UI 字体 */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;       /* 兼容不认上一条的旧引擎 */
+}
+/* 前四个按「谁会先取到」排：Mac 的 Chrome 认 BlinkMacSystemFont，Safari / iOS 认 -apple-system，
+   Windows 取到 "Segoe UI"，安卓、Linux 走 system-ui。"SF Pro Text" 实测没用，不放。 */</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>plan先落地，源码护栏是<code>app/src/styles/fontNum.test.ts</code>：写了tabular-nums的规则没指定<code>--font-num</code>就红。本站全站跟上：外壳的计数胶囊、搜索里的标签条数、总览「本书进度」圆环与更新刻度尺、收藏的条数、色彩页的对比度读数、交互页弹窗演示里的大数字，都换成了<code>--font-num</code>；<code>body</code>不再写tabular-nums。刷刷的栈系统UI打头，本来就生效。现状：小屋规格还没跟，随笔日期仍是中文字族打头＋tabular-nums。</p></section>
+        <section class="fact"><h4>为什么</h4><p>家族契约要等宽数字（「等宽数字是工具感最便宜的来源」），家族字体栈又是中文字族打头。实测苹方在Chrome里写<code>tabular-nums</code>、<code>"tnum" 1</code>都不生效：40px、600下「1111」宽65.6、「0000」宽96.0。Chrome也不认<code>-apple-system</code>和<code>"SF Pro Text"</code>，按名字取不到就退回苹方；<code>BlinkMacSystemFont</code>、<code>system-ui</code>打头时「1111」「0000」「8888」都是102.7。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>Windows待核：本机只有Mac，按字体本身Segoe UI的数字默认就等宽；核的办法是共享盘工作区根目录的「数字等宽诊断.html」：屋主在Windows台式机上双击打开，页上直接写「等宽 / 会跳」，核过再改这句。量「等不等宽」要在目标浏览器里造一个span，套上元素的字体、字号、字重，依次放「1111」「0000」「8888」，差≤0.5px才算；别用canvas量——canvas不认<code>-apple-system</code>，字体串不认时还会静默保留上一个。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:34</code>「3a. 数字字体」、<code>:37</code>「取值」、<code>:40</code>「为什么」、<code>:43</code>「量法」、<code>:46</code>「Windows 还没实测」、<code>:47</code>「数字等宽诊断.html」；plan提交769b07a；<code>tools/plan/app/src/styles/tokens.css:271</code>「--font-num」；<code>tools/plan/app/src/styles/fontNum.test.ts:2</code>「数字字体护栏」；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.1 字体」（「tabular-nums」「三条的理由」）；<code>tools/shua/design-proposal.md:103</code>「P21」；<code>tools/star/assets/star.css:197</code>「--font-num」</p>
+      </div>
+    </article>
+
+    <!-- 12 等宽字族 -->
+    <article class="entry" id="t-mono" data-scope="common" data-toc="等宽字族">
+      <header class="entry-head">
+        <h3>等宽字族栈里要有一款取得到的：名字写了不等于取得到</h3>
+        <p class="entry-lede">Mac的Chrome按名字取不到<code>ui-monospace</code>和<code>"SF Mono"</code>，Mac上也没有Consolas，原来的栈一路落到Courier New。在<code>"SF Mono"</code>后面插Menlo：<code>ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace</code>。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-10-08定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="interaction.html#spot-pull">交互 · 长代码块</a></p>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>点一点</b>同一段代码用两条等宽字族栈画，下面的胶囊是栈里的每个名字（打勾的在栈里），点一下把它从栈里拿掉、再点放回去，看实际落到哪款字。页面里拿不到浏览器实际选中的字体名，这里用字宽判：同一串字在这条栈下量出的宽度，跟明写<code>"Menlo"</code>、明写<code>"Courier New"</code>时比，差≤0.3px就算同一款。</p>
+        <div class="tmo" data-tmo>
+          <div class="tmo-pair">
+            <figure class="tmo-box" data-tmo-box="old"><figcaption>改前的栈</figcaption>
+              <div class="tmo-code" data-tmo-code>--mono: var(--x);  0O 1lI {}[]
+const n = 0x1F;  // 示例</div>
+              <div class="tmo-chips" role="group" aria-label="改前的栈里有哪些名字" data-tmo-chips></div>
+              <p class="ty-read" data-tmo-read></p>
+            </figure>
+            <figure class="tmo-box" data-tmo-box="new"><figcaption>现行的栈（"SF Mono"后面插了Menlo）</figcaption>
+              <div class="tmo-code" data-tmo-code>--mono: var(--x);  0O 1lI {}[]
+const n = 0x1F;  // 示例</div>
+              <div class="tmo-chips" role="group" aria-label="现行的栈里有哪些名字" data-tmo-chips></div>
+              <p class="ty-read" data-tmo-read></p>
+            </figure>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>:root {
+  /* 改前：Mac 的 Chrome 里一路落到 Courier New */
+  /* --mono: ui-monospace, "SF Mono", Consolas, "Courier New", monospace; */
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+}
+code, pre, kbd { font-family: var(--mono); }</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>本站所有代码块、行内代码、色值都是<code>var(--mono)</code>，改完在Mac的Chrome里由Menlo画。岗岗查出的是同一件事。Safari认<code>ui-monospace</code>，取到的是系统的等宽字；Windows上取到Consolas（未核实）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>栈里排在前面的名字这台浏览器一个都取不到时，就一路落到最后一款取得到的。老栈里只剩Courier New取得到，代码看着像打字机。Menlo是Mac自带的等宽字，Chrome按名字取得到。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>和<code>-apple-system</code>在Chrome里不认是同一类事：名字写了不等于取得到，栈里每一个名字都要在目标浏览器里核。量法是用CDP的<code>CSS.getPlatformFontsForNode</code>看元素实际由哪款字画；页面里拿不到这个，就照这块演示量字宽对照。</p></section>
+        <p class="source">出处：控制室2026-10-08实测（CDP的CSS.getPlatformFontsForNode，明写Menlo、明写Courier New两个阳性对照）；<code>tools/plan/docs/design/SPEC-apple-glass.md:48</code>「等宽字族」；<code>tools/star/assets/star.css:198</code>「--mono」</p>
+      </div>
+    </article>
+
+    <!-- 12 画布断行 -->
+    <article class="entry" id="t-canvas" data-scope="common" data-toc="画布断行禁则">
+      <header class="entry-head">
+        <h3>画布里的字自己折行：英文串不拆、中文禁则、撞上了推一个字下去</h3>
+        <p class="entry-lede">canvas没有浏览器的断行规则。照小屋随笔球的<code>line-break.ts</code>：连续的字母数字（含夹在中间的<code>. - _ /</code>）是一个整体；，。、；：？！）」这类不许在行首，（「『《这类不许在行尾，撞上了把上一行末尾的字推下去陪它，最多回推4个单元。DOM里别搬这套。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-20定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>拖一拖</b>拖卡片右边的把手（或Tab到把手按←→）改宽度，字是画在canvas上的。「逐字量、放不下就断」是改版前的写法（示意）：红底是跑到行首的标点，橙线是被拆开的英文串。读数数的是此刻的这两种毛病。文字是示例。</p>
+        <div class="seg ty-seg" role="radiogroup" aria-label="怎么折行">
+          <button type="button" role="radio" aria-checked="true" tabindex="0" data-tcv-mode="rules">按禁则折（现行）</button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tcv-mode="naive">逐字量、放不下就断（改版前，示意）</button>
+        </div>
+        <div class="tcv-stage" data-tcv>
+          <div class="tcv-card" data-tcv-card>
+            <canvas class="tcv-canvas" data-tcv-canvas role="img" aria-label="画在画布上的随笔卡片"></canvas>
+            <span class="ty-handle tcv-handle" role="slider" tabindex="0" aria-label="卡片宽度" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" data-tcv-handle></span>
+          </div>
+        </div>
+        <p class="ty-read" data-tcv-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>// Ysevan_web/components/notes-globe/line-break.ts（节选）
+const noLineStart = new Set(Array.from("，。、；：？！）」』》】〉〕〗｝］’”…‥—～·・%,.;:?!)]}"));
+const noLineEnd   = new Set(Array.from("（「『《【〈〔〖｛［‘“([{"));
+const maxPushBack = 4;                                       // 往回找断点最多退4个单元
+const latinRun = /[A-Za-z0-9]+(?:[._\-/]+[A-Za-z0-9]+)*/y;   // 127.0.0.1、util-linux 不拆
+// 推不动（一整行几乎都是标点）才让标点挤在上一行末尾；超过 maxLines 截断，末尾换「…」</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>小屋随笔球3D卡面的标题与摘要（各最多三行，末尾「…」）。静态网格那一侧是浏览器自己排的，不走它。本页这块演示用的就是照它改写的同一套规则。</p></section>
+        <section class="fact"><h4>为什么</h4><p>最早的写法逐字量、放不下就断，于是出现「localh / ost」「Wi / ndows」「util-lin / ux」「300 / 0」，行首还会冒出「，」。2026-09-20屋主看过之后补的这套规则。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>别把这套搬进DOM：浏览器自己有真正的断行规则（随笔正文写<code>line-break: strict</code>就够），搬过去只会两套打架。小屋实测DOM里16个宽度、两个落地点，行首标点0处。</p></section>
+        <p class="source">出处：<code>Ysevan_web/components/notes-globe/line-break.ts</code>「noLineStart」、「noLineEnd」、「maxPushBack」（「三条规则」「不许出现在行首的标点」）；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「7.5.2 卡片与补位」（「3D 卡面的折行」）、「7.6 随笔正文的排法 › 四个数，只写在一处」（「不把画布那套断行函数搬到 DOM 里」）</p>
+      </div>
+    </article>
+
+    <!-- 13 文案只说事实 -->
+    <article class="entry" id="t-copy" data-scope="common" data-toc="只说事实">
+      <header class="entry-head">
+        <h3>文案只说事实：不写鼓励语，不写错话</h3>
+        <p class="entry-lede">汇总给一个大数和一行事实（「本周完成6项 · 4天有进展」），一件都没有就写「本周没有完成记录。」，不堆感叹号。没意义的数不显示：只命中上级路径、正文一处都没有的搜索结果，不出「正文0处」这种角标。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>切一切</b>上面一张周汇总卡，点「完成一项」「清空本周」看文案怎么跟着数变；下面是搜「开户」的联想结果，看角标。切到反例（示意）对照。数据都是示例。</p>
+        <div class="seg ty-seg" role="radiogroup" aria-label="文案口径">
+          <button type="button" role="radio" aria-checked="true" tabindex="0" data-tcp-mode="fact">只说事实（现行）</button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tcp-mode="cheer">鼓励语、错话（反例，示意）</button>
+        </div>
+        <div class="tcp-pair" data-tcp>
+          <div class="tcp-sum">
+            <p class="tcp-title">本周汇总 · 工作库</p>
+            <p class="tcp-big" data-tcp-big>6<small>项完成</small></p>
+            <p class="tcp-fact" data-tcp-fact>本周完成6项 · 4天有进展</p>
+            <div class="tcp-acts"><button type="button" class="ty-btn" data-tcp-add>完成一项</button><button type="button" class="ty-btn ty-btn-quiet" data-tcp-clear>清空本周</button></div>
+          </div>
+          <div class="tcp-search">
+            <p class="tcp-q">搜「开户」</p>
+            <ul class="tcp-rows">
+              <li><span class="tcp-t">个人<mark>开户</mark></span><span class="tcp-path">个人业务 › 开户</span><span class="tcp-badge" data-tcp-badge="title"></span></li>
+              <li><span class="tcp-t">身份核验</span><span class="tcp-path">个人业务 › 开户</span><span class="tcp-badge" data-tcp-badge="body">正文3处</span></li>
+              <li><span class="tcp-t">账户年检</span><span class="tcp-path">对公业务 › 开户</span><span class="tcp-badge" data-tcp-badge="path"></span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>本周汇总 · 工作库          ← 标题写清数字的边界
+6项完成
+本周完成6项 · 4天有进展    ← 一个大数 + 一行事实
+本周没有完成记录。         ← 一件都没有时
+
+角标：标题命中 → 不出（标题里已经高亮）
+      正文命中 → 正文N处
+      只命中上级路径 → 不出（写「正文0处」是错话）</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>plan回顾页的汇总格（有测试盯着）、刷刷「按周回看」的汇总格、岗岗搜索联想的角标。</p></section>
+        <section class="fact"><h4>为什么</h4><p>看汇总的人要的是数字和它的边界，标题写「本周汇总 · 工作库」就够了。「正文0处」是数对、话错：命中的只是上级路径，正文里一处都没有，写出来像是命中了正文。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/ui-redesign-proposal-v2.md:856</code>「只说事实」、<code>:857</code>「本周没有完成记录」；<code>tools/plan/app/src/pages/WeekReview.tsx:26</code>「只说事实」；<code>tools/shua/design-proposal.md:494</code>「只说事实」；<code>tools/gang/design-proposal.md:1327</code>「正文0处」</p>
+      </div>
+    </article>
+
+    <!-- 14 空态 -->
+    <article class="entry" id="t-empty" data-scope="common" data-toc="空态一句话">
+      <header class="entry-head">
+        <h3>空态一句话加一个动作，不画灰框</h3>
+        <p class="entry-lede">「今天没有要做的事。」后面跟一个「看看本周的日程 →」；不套虚线灰框、不放插画、不写第二句。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-filter-multi">收藏 · 标签多选</a></p>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>点一点</b>一张今日清单（示例）。把三件都勾掉，看空下来时出什么；切到反例（示意）再勾一遍。点「看看本周的日程 →」或「恢复示例」把清单放回来。</p>
+        <div class="seg ty-seg" role="radiogroup" aria-label="空态写法">
+          <button type="button" role="radio" aria-checked="true" tabindex="0" data-tem-mode="line">一句话＋一个动作（现行）</button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tem-mode="box">灰框＋插画＋两句话（反例，示意）</button>
+        </div>
+        <div class="tem-page" data-tem>
+          <p class="tem-h">今天</p>
+          <ul class="tem-list" data-tem-list></ul>
+          <div class="tem-empty" data-tem-empty hidden></div>
+        </div>
+        <button type="button" class="ty-btn ty-btn-quiet" data-tem-reset>恢复示例</button>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>&lt;div class="today-empty"&gt;
+  &lt;p&gt;今天没有要做的事。&lt;/p&gt;
+  &lt;button class="text-button" type="button"&gt;看看本周的日程 →&lt;/button&gt;
+&lt;/div&gt;
+&lt;!-- 筛完没结果：一句话 --&gt;
+&lt;p class="list-empty"&gt;没有符合的任务。&lt;/p&gt;</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>plan今日页、全部任务筛完为空。本站收藏页标签筛空时也是一句话加一个动作：「「全部」里没有带所选标签的收藏：换一个类型，或者点上面的「清除」。」</p></section>
+        <section class="fact"><h4>为什么</h4><p>plan改版前是框套框三层：面板卡片里套任务卡片，空了再套一个灰色空态框。改版准绳第5条专门写了「空态一句话＋一个动作，不画灰框」。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/ui-redesign-proposal-v2.md:18</code>「框套框三层」、<code>:30</code>「空态一句话」、<code>:118</code>「空态」、<code>:166</code>「没有符合的任务」；<code>tools/plan/app/src/pages/Dashboard.tsx:230</code>「今天没有要做的事」</p>
+      </div>
+    </article>
+
+    <!-- 15 名字不截断 -->
+    <article class="entry" id="t-names" data-scope="common" data-toc="名字不截断">
+      <header class="entry-head">
+        <h3>名字完整显示、允许折行，不许省略号；只有清单行故意单行省略</h3>
+        <p class="entry-lede">详情里的阶段名、材料名，回顾页的任务名，一律<code>overflow-wrap: anywhere</code>折行；清单行一行一条、点进去看得全，才单行省略。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="ty-cap"><b>拖一拖</b>一块详情面板（示例）。拖右边的把手（或Tab到把手按←→）把它收窄，看阶段名、材料名怎么办；切到「单行省略」（反例，示意）再拖——屋主在2552宽笔记本上看到的第三栏就是这样。上面那行清单是故意单行省略的。</p>
+        <div class="seg ty-seg" role="radiogroup" aria-label="名字放不下时">
+          <button type="button" role="radio" aria-checked="true" tabindex="0" data-tnm-mode="wrap">允许折行（现行）</button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tnm-mode="clip">单行省略（反例，示意）</button>
+        </div>
+        <div class="tnm-stage" data-tnm>
+          <div class="tnm-panel" data-tnm-panel>
+            <p class="tnm-row"><span class="tnm-dot" aria-hidden="true"></span><span class="tnm-row-t">分行季度检查：发通知并收集各网点的反馈材料，汇总后上报</span><span class="tnm-row-d">还有3天</span></p>
+            <p class="tnm-h">阶段</p>
+            <ol class="tnm-list">
+              <li><span class="tnm-name">发通知并收集各网点的反馈材料</span><span class="tnm-st">进行中</span></li>
+              <li><span class="tnm-name">检查材料并汇总上报分行</span><span class="tnm-st">未开始</span></li>
+            </ol>
+            <p class="tnm-h">材料</p>
+            <ol class="tnm-list">
+              <li><span class="tnm-name">各网点反馈表（盖章扫描件）</span><span class="tnm-st">10月12日前</span></li>
+              <li><span class="tnm-name">分行汇总模板2026版</span><span class="tnm-st">已收</span></li>
+            </ol>
+            <span class="ty-handle tnm-handle" role="slider" tabindex="0" aria-label="详情面板宽度" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" data-tnm-handle></span>
+          </div>
+        </div>
+        <p class="ty-read" data-tnm-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>.detail .stage-name, .detail .doc-name, .review .task-name {
+  white-space: normal;
+  overflow-wrap: anywhere;        /* 允许折行；不写 nowrap + text-overflow: ellipsis */
+}
+.task-row .title {                /* 清单行：故意单行省略 */
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>plan详情对话框里的标题、chip、材料名与来源·截止、阶段名与起止·状态、提醒、附件名、通知原文、历史、toast、菜单项；回顾页日格里的任务名（这一页和列表页的规矩相反，别顺手加省略号）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>2026-09-23屋主在2552宽的笔记本上看详情第三栏：栏太窄，阶段名、材料名被截成「发通知并收…」「检查材料并…」，主区却空着一大片。于是否掉第三栏、改居中大对话框（见交互页<a href="interaction.html#ix-dialog">「详情对话框」</a>），名字完整显示成了验收硬指标。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/BUSINESS_LOGIC.md:1350</code>「栏太窄」、<code>:1357</code>「一律完整显示」、<code>:1364</code>「清单行（TaskRow）单行省略是故意的」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:852</code>「名字完整不截断」</p>
+      </div>
+    </article>
+  </section>
+</main></body></html>

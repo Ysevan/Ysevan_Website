@@ -1,0 +1,874 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F5F9">
+<meta name="description" content="各项目定下的动效做法：曲线与时长、FLIP、只动transform和opacity、减弱动效、收尾与打断，本站自己的过渡，小屋的开场、换房间与走进小屋。每条都能点着看。">
+<title>动画 · 设计合集</title>
+<script src="assets/boot.js"></script>
+<link rel="stylesheet" href="assets/star.css">
+<link rel="stylesheet" href="assets/pages/motion.css">
+<script src="assets/star.js" defer></script>
+<script src="assets/pages/motion.js" defer></script>
+</head><body data-page="motion">
+<a class="skip" href="#main">跳到正文</a>
+<div id="shell-nav"></div><script src="assets/nav.js"></script>
+<main id="main" class="page">
+  <header class="page-head">
+    <h1 class="page-title">动画</h1>
+    <p class="page-sub">曲线怎么挑、补位怎么做、哪些属性能动、减弱动效怎么兜底、动画中途被打断怎么办；本站自己的几种过渡；小屋的开场、换房间和走进小屋。每条旁边都能点着看。按压倾斜、筛选让位、六种弹窗的手感在交互页，这里只讲通用的功夫。</p>
+    <nav class="page-toc" aria-label="本页目录"></nav>
+  </header>
+
+  <!-- ================================================================ 通用 -->
+  <section class="group" id="g-common" data-scope="common">
+    <h2 class="group-title">通用</h2>
+    <p class="group-lede">不分气质都适用。数值取自四个工具和小屋的代码；演示里的方块、卡片、文字都是示例。</p>
+
+    <!-- 1 曲线与时长 -->
+    <article class="entry" id="mo-curves" data-scope="common" data-toc="曲线与时长">
+      <header class="entry-head">
+        <h3>一种动作配一条曲线：出现用缓出、离场用缓入、松手才带弹回；时长跟着路程走</h3>
+        <p class="entry-lede">局部小件140–260ms，整页过渡420–550ms，只有本身就是仪式的开场才上秒。同一个动作在一个站里只用一条曲线。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-27定</li></ul>
+      </header>
+      <div class="specimen mo-specimen moc" data-demo="curves">
+        <p class="mo-cap"><b>演示</b>点一行的「走一遍」，那一行的小方块按这条曲线、这个时长走一遍。勾上几行再点「一起跑」，同一时刻出发并排比。「统一600ms」把时长拉齐、只比曲线的形状；「慢放×4」看清起步和落定。</p>
+        <div class="mo-bar">
+          <button type="button" class="btn btn-tint mo-btn" data-c="run-sel">一起跑勾上的<span class="mo-n" data-c="n">（0行）</span></button>
+          <div class="seg seg-sm mo-seg" role="radiogroup" aria-label="时长">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-dur="own">按原时长</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-dur="600">统一600ms</button>
+          </div>
+          <button type="button" class="mo-tog" aria-pressed="false" data-c="slow">慢放×4</button>
+        </div>
+        <ol class="moc-list" aria-label="曲线一览"></ol>
+        <p class="mo-readout" data-c="out" aria-hidden="true">还没跑。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre data-no-pull><code>曲线                         名字（时长）            用在
+cubic-bezier(.2,.8,.2,1)     通用缓出（140–260ms）   刷刷FLIP补位240、按压按下150；岗岗灯箱开260关200；本站切页进场260
+cubic-bezier(.22,1,.36,1)    plan缓出（220ms）       plan对勾、计数跳动、FLIP（--motion-base）
+cubic-bezier(.32,.72,0,1)    苹果ease（240–380ms）   card Cover Flow切卡380；plan详情对话框240
+cubic-bezier(.4,0,.2,1)      标准（240–500ms）       刷刷标签删除240；小屋主题交叉淡化500
+cubic-bezier(.4,0,1,1)       缓入（200–550ms）       离场：本站跨页旧页淡出200；小屋换房间旧页退后550
+cubic-bezier(.34,1.56,.64,1) 过冲（420ms）           刷刷按压松手；linear()不认时弹簧的退路
+linear(0,.06,.208,…,1.002,1) 弹簧（700ms）           card按压松手（阻尼比.5，过冲约16%）
+cubic-bezier(.25,.5,.3,1)    揭开（420ms）           本站切明暗的圆形揭开
+cubic-bezier(.2,.7,.3,1)     小屋入场（440ms）       小屋页面入场 viewin
+cubic-bezier(.3,0,.16,1)     洇纸（550ms）           小屋换房间纸色洇开
+cubic-bezier(.34,.06,.42,1)  写字（1750ms）          小屋开场手写
+
+plan 时长令牌  --motion-fast 140ms / --motion-base 220ms / --motion-slow 320ms；减弱动效时三个全归0</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>本页每条演示的时长和曲线都取自这张表。交互页的<a href="interaction.html#ix-press">按压倾斜</a>、<a href="interaction.html#ix-filter">筛选让位</a>、<a href="interaction.html#ix-sheet-frosted">六种弹窗</a>就是这些曲线用在真东西上的样子。</p></section>
+        <section class="fact"><h4>为什么</h4><p>曲线说的是动作的物理：冒出来的东西一开始最快、落定时最慢；离开的东西慢慢起步、加速走掉；只有手松开的东西才会弹回来。时长跟路程走：按钮的反馈140ms就够，切页要盖住整屏，长一档；超过半秒的只留给不常发生、本身就是仪式的东西（开场写字、走进小屋）。plan把三档时长做成令牌，减弱动效时一处归零。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>同一种动作两处用两条曲线，手感就打架：岗岗速查卡抽屉特意跟目录抽屉用同一条.22s ease，两个底部抽屉手感相同。<code>linear()</code>弹簧要先写一行<code>cubic-bezier</code>再写一行<code>linear()</code>：不认它的浏览器丢掉后一行，留下前一行。</p></section>
+        <p class="source">出处：tools/shua/app.js:702「flipMove」、:3848「PRESS_IN」、:3850「PRESS_OUT」、:2442「cubic-bezier(.4, 0, .2, 1)」；tools/gang/design-proposal.md:1539「12.5 动效口径」；tools/plan/app/src/styles/tokens.css:295「--motion-fast」、:298「--ease-out」、:717「--motion-fast: 0ms」；tools/plan/app/src/App.css:2623「--dd-ease」；tools/card/collection/gallery.css:22「.flow-card」、:33「is-springing」；tools/star/assets/star.css:547「page-in」、:924「vt-out」；tools/star/assets/star.js:199「VT_REVEAL_EASE」；Ysevan_web/app/globals.css「::view-transition-old(root)」（「animation-timing-function」）、「@keyframes xwveilin」、「@keyframes roomexit」；Ysevan_web/app/hall.module.css「.hall」（「animation: viewin」）；Ysevan_web/components/handwriting-intro.module.css「@keyframes sweep」</p>
+      </div>
+    </article>
+
+    <!-- 2 FLIP -->
+    <article class="entry" id="mo-flip" data-scope="common" data-toc="FLIP">
+      <header class="entry-head">
+        <h3>撑开、让位、补位：布局一次到位，看着连续靠FLIP反向位移再归零</h3>
+        <p class="entry-lede">先量旧位置，改DOM，再量新位置，用transform从旧位置滑回0。连点时旧位置按「此刻屏幕上的样子」量，量完先撤掉上一轮。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-filter">收藏 · 类型单选</a><a href="index.html#spot-search">全站 · 搜索框</a></p>
+      </header>
+      <div class="specimen mo-specimen mof" data-demo="flip">
+        <p class="mo-cap"><b>演示</b>点「打乱」「删一个」「加一个」，切「直接跳」对照。快速连点「打乱」：现行写法每一下都从屏幕上的位置接着滑；勾上「反例」改成按布局位置量（不含上一轮还没走完的位移），连点时方块会一帧跳一截。方块上的字是示例。</p>
+        <div class="mo-bar">
+          <button type="button" class="btn btn-tint mo-btn" data-f="shuffle">打乱</button>
+          <button type="button" class="btn btn-tint mo-btn" data-f="remove">删一个</button>
+          <button type="button" class="btn btn-tint mo-btn" data-f="add">加一个</button>
+          <div class="seg seg-sm mo-seg" role="radiogroup" aria-label="补位方式">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-mode="jump">直接跳</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-mode="flip">FLIP补间</button>
+          </div>
+          <button type="button" class="mo-tog" aria-pressed="false" data-f="stagger">依次晚30ms</button>
+          <button type="button" class="mo-tog mo-tog-bad" aria-pressed="false" data-f="bad">反例：按布局量</button>
+        </div>
+        <ul class="mof-grid" aria-label="示例方块"></ul>
+        <p class="mo-readout" data-f="out" aria-live="polite"></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>function flipMove(items, mutate) {
+  var before = items.map(function (el) { return el.getBoundingClientRect(); });  // 1、量旧位置：含上一轮没走完的位移
+  items.forEach(function (el) { var a = running.get(el); if (a) a.cancel(); });  //    量完先撤掉上一轮
+  mutate();                                                                     // 2、改 DOM：布局一次到位
+  if (reduced()) return;                                                        //    减弱动效：只改不动
+  items.forEach(function (el, i) {                                              // 3、量新位置
+    var now = el.getBoundingClientRect();
+    var dx = before[i].left - now.left, dy = before[i].top - now.top;
+    if (Math.abs(dx) &lt; .5 &amp;&amp; Math.abs(dy) &lt; .5) return;
+    running.set(el, el.animate(                                                 // 4、从旧位置滑回0
+      [{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "translate(0,0)" }],
+      { duration: 240, easing: "cubic-bezier(.2,.8,.2,1)" }));
+  });
+}
+依次补位  plan：容器挂 data-flip-stagger，按文档顺序依次晚30ms（封顶8个）
+嵌套      标签里的字按「相对最近一层 data-flip 祖先」算，不然父子各补一遍
+收缩      框变矮用 scaleY 只缩边框那一层，字不在那个元素里、不变形
+快照      在点击的事件里拍，不在每次渲染里拍：窗口改宽引起的位移不该滑</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷搜索标签删掉后的补位；plan全部任务的状态筛选让位、笔记标签。交互页<a href="interaction.html#ix-filter">筛选标签</a>、<a href="interaction.html#ix-tags">可删除标签</a>两条演示就是它。本站收藏页类型单选的让位、搜索框里标签删掉后的补位也是这一套。</p></section>
+        <section class="fact"><h4>为什么</h4><p>过渡width、left，每一帧都要重新排版，整排跟着重算；FLIP只在开头量两次，中间全是合成器上的transform。「让位」本来就是布局变了，让它一次到位，眼睛看到的连续交给反向位移。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>连点时上一轮还在半路：不先撤掉就量新位置，新位置里带着上一轮的位移，会一帧跳一截。量旧位置要用<code>getBoundingClientRect</code>（含正在走的transform），用<code>offsetLeft</code>量的是布局位置，同样会跳。验FLIP有没有动别读<code>el.style.transform</code>，见交互页<a href="interaction.html#ix-filter">筛选标签</a>那条坑。</p></section>
+        <p class="source">出处：tools/shua/app.js:696「撑开 / 补位」、:699「连点时」、:702「flipMove」；tools/plan/app/src/hooks/useFlip.ts:4「FLIP 位移动画」、:12「嵌套的 data-flip」、:15「data-flip-height」、:17「data-flip-stagger」、:19「capture() 放在事件处理里」；tools/plan/docs/BUSINESS_LOGIC.md:1837「动画的共同写法」</p>
+      </div>
+    </article>
+
+    <!-- 3 只动 transform / opacity -->
+    <article class="entry" id="mo-cheap" data-scope="common" data-toc="只动transform/opacity">
+      <header class="entry-head">
+        <h3>只动transform和opacity；投影要变，就把大投影画在伪元素上去动它</h3>
+        <p class="entry-lede">位置、大小、旋转走transform，出现消失走opacity，都在合成器上走。box-shadow、width、clip-path这类每一帧都要重画或重排。投影要跟着变，就把整圈投影画好放在伪元素上，动它的opacity或transform。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-27定</li></ul>
+      </header>
+      <div class="specimen mo-specimen mos" data-demo="cheap">
+        <p class="mo-cap"><b>演示</b>左右各12张示例卡，浮起时都上移4px、投影变大。左边A动<code>box-shadow</code>（反例），右边B把大投影画在<code>::after</code>上只动它的<code>opacity</code>。鼠标停在卡上看浮起；点「各量3秒」让两边轮流反复浮沉，量这段时间的帧间隔；每帧重画了多少次，页面里量不到，写在下面「为什么」里。</p>
+        <div class="mo-bar">
+          <button type="button" class="btn btn-tint mo-btn" data-s="lift" aria-pressed="false">两边都浮起</button>
+          <button type="button" class="btn btn-tint mo-btn" data-s="measure">各量3秒</button>
+        </div>
+        <div class="mos-pair">
+          <div class="mos-side" data-side="a"><p class="mo-sub">A　动box-shadow（反例）</p><div class="mos-cards mos-a"></div></div>
+          <div class="mos-side" data-side="b"><p class="mo-sub">B　伪元素上的投影动opacity</p><div class="mos-cards mos-b"></div></div>
+        </div>
+        <table class="mo-table mos-table">
+          <caption class="sr-only">帧间隔实测</caption>
+          <thead><tr><th scope="col"></th><th scope="col">帧数</th><th scope="col">中位</th><th scope="col">P95</th><th scope="col">超过25ms</th></tr></thead>
+          <tbody>
+            <tr data-row="a"><th scope="row">A：box-shadow</th><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr data-row="b"><th scope="row">B：伪元素opacity</th><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <p class="mo-readout" data-s="out" aria-live="polite"></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>/* 反例：每一帧重画一整圈模糊 */
+.card { box-shadow: 0 1px 2px rgba(20,30,60,.1); transition: box-shadow .3s, transform .3s; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 18px 36px -12px rgba(20,30,60,.4); }
+
+/* 现行：大投影画好放在伪元素上，只动它的 opacity（模糊只画一次） */
+.card { position: relative; box-shadow: 0 1px 2px rgba(20,30,60,.1); transition: transform .3s; }
+.card::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+               box-shadow: 0 18px 36px -12px rgba(20,30,60,.4); opacity: 0; transition: opacity .3s; }
+.card:hover { transform: translateY(-4px); }
+.card:hover::after { opacity: 1; }
+
+/* 小屋门厅：挂画投影跟着卡片倾斜挪，画在 .set::before 上，动它的 translate3d */
+.set::before { box-shadow: 0 16px 34px -14px rgba(74,77,53,.22);
+               transform: translate3d(calc(var(--hall-tilt-x, 0) * -9px), calc(var(--hall-tilt-y, 0) * 5px), 0); }
+
+不动    width / height / top / left / clip-path / border-radius / box-shadow
+例外    先在屋主台式机那档（2040×1019@1.25、软件渲染）做改前 / 改后帧率 A/B：
+        中位 ≤ ×1.15、P95 ≤ ×1.25、长帧（&gt;25ms）≤ 改前 + 2；不过就换写法</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具都写进了规矩：岗岗「动效口径」、plan第34节、card的CLAUDE.md。小屋门厅挂画的大投影在<code>.set::before</code>上，跟着倾斜挪的是transform。破例的只有两枚进度圆环：刷刷结算分数圈、岗岗材料小圆环，动的是<code>stroke-dashoffset</code>，都先在没显卡那档量过帧率才放行。本站的按压倾斜、复制气泡、弹层也只动这两样；长代码下拉展开动height是写明了的例外（交互页<a href="interaction.html#ix-sheet-pull">下拉展开</a>）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>合成器挪一张画好的图几乎不花钱；box-shadow每变一帧，浏览器就要把那一圈模糊重画一遍。屋主台式机没显卡，这一画全落在CPU上。小屋门厅的注释写得直白：动box-shadow本身等于每帧重画一大片模糊，实测掉帧就掉在这；挪到伪元素上用transform移，模糊只画一次。</p><p class="mo-measured" data-s="measured">本页实测（2026-10-08，无头Chrome，左右各12张卡反复浮沉3秒，跑两轮）：A每一帧都在重画，Paint约2500次；光栅在2040×1019@1.25软件渲染下花了277–307ms，有显卡的1440档只花9–10ms；B的Paint约100次、光栅3–12ms。两边的帧间隔都是16.7ms：光栅在别的线程上，这么小的卡还压不垮帧；卡一大、一多（小屋门厅那张整卡、整页的投影），这笔账就落到帧上了。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>圆角不能跟着非等比缩放走（会拉成椭圆），动border-radius又违反规矩：岗岗灯箱的幽灵是直角的，接受头尾一两帧盖住缩略图的圆角。状态类（静态的opacity:0）不算动画。量帧率要断言操作真落地（真浮起了、真播了），不然「没动」会冒充「不卡」。</p></section>
+        <p class="source">出处：tools/gang/design-proposal.md:1543「只动 transform 与 opacity」、:1493「已知局限」；tools/gang/CLAUDE.md:111「动效只动 transform / opacity」、:116「再想加别的非 transform」、:120「量帧率必须断言操作真落地」；tools/plan/docs/BUSINESS_LOGIC.md:1837「动画的共同写法」；tools/card/CLAUDE.md:184「动画只动 transform 和 opacity」；tools/shua/design-proposal.md:617「stroke-dashoffset」；Ysevan_web/app/hall.module.css「.set::before」（「挂画的大投影」）、「.card」（「动 box-shadow 本身」）</p>
+      </div>
+    </article>
+
+    <!-- 4 减弱动效 -->
+    <article class="entry" id="mo-reduce" data-scope="common" data-toc="减弱动效两道保险">
+      <header class="entry-head">
+        <h3>减弱动效两道保险：样式表末尾一张兜底网，加上每个组件自己判</h3>
+        <p class="entry-lede">第一道是全站一条媒体查询，把动画压到0.01ms（不是0、不是none：收尾事件照样来）；第二道是组件自己判，开场这类整段不渲染，不是渲染了再藏。JS动画CSS管不到，各自判。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-08-26定</li></ul>
+      </header>
+      <div class="specimen mo-specimen mor" data-demo="reduce">
+        <p class="mo-cap"><b>演示</b>样框里局部模拟「减弱动效」（不改系统设置，也不动全站）。点「播一次开场」：一层示例遮罩淡出，<code>animationend</code>来了才拆掉它。打开模拟后换着第一道的两种写法试：写<code>none</code>时事件不来，遮罩一直盖着，除非收尾带了兜底计时器；第二道打开时遮罩根本不渲染。</p>
+        <div class="mor-ctl">
+          <div class="mor-row"><span class="mo-sub" id="mor-l0">模拟</span>
+            <button type="button" class="mo-tog" aria-pressed="true" data-r="sim">模拟减弱动效</button></div>
+          <div class="mor-row"><span class="mo-sub" id="mor-l1">第一道</span>
+            <div class="seg seg-sm mo-seg" role="radiogroup" aria-labelledby="mor-l1">
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-css="tiny">0.01ms</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-css="none">none</button>
+            </div></div>
+          <div class="mor-row"><span class="mo-sub" id="mor-l2">收尾</span>
+            <div class="seg seg-sm mo-seg" role="radiogroup" aria-labelledby="mor-l2">
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-end="event">只等animationend</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-end="timer">事件＋兜底计时器</button>
+            </div></div>
+          <div class="mor-row"><span class="mo-sub" id="mor-l3">第二道</span>
+            <button type="button" class="mo-tog" aria-pressed="false" data-r="gate">组件自己判：不渲染</button></div>
+        </div>
+        <div class="mor-stage" data-r="stage">
+          <div class="mor-page" aria-hidden="true"><b>门厅（示例）</b><span>门没锁，随便逛</span></div>
+        </div>
+        <div class="mo-bar"><button type="button" class="btn btn-tint mo-btn" data-r="play">播一次开场</button></div>
+        <ol class="mo-log" data-r="log" aria-live="polite"></ol>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>/* 第一道：写在所有 @layer 之外、样式表最末，!important 压得住各处的 transition / animation */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;       /* 0.01ms不是0：animationend / transitionend 照样来 */
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+// 第二道：组件自己判，命中就整段不渲染
+if (matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
+// CSS 管不到的要自己判：scrollTo({ behavior: "smooth" })、WAAPI、rAF、View Transition
+各家    小屋0.01ms；plan 0.01ms + --motion-* 归0；刷刷、本站 animation / transition: none；
+        岗岗 transition: none，再点名关几处 animation
+        写 none 的，收尾不能只等 animationend：本站每处都是「事件 + 兜底计时器」
+按压    不倾斜、不缩放，只原地淡入淡出（本站约定 data-rm="fade" 留住 opacity 过渡）</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋<code>globals.css</code>末尾那一条，开场、门厅倾斜各自再判一道（门厅那道写着「不依赖脚本的那一道」）。刷刷、岗岗、plan、card各写一条全站规则，JS里的FLIP、WAAPI、平滑滚动再各自判。本站在<code>star.css</code>第12节，要原地淡入淡出的元素挂<code>data-rm="fade"</code>。</p></section>
+        <section class="fact"><h4>为什么</h4><p>一道不够：CSS兜底管不到JS里的动画，组件自判又难免漏掉某个角落的transition。0.01ms和none差在收尾事件上：靠<code>animationend</code>拆遮罩、还滚动的组件，写none就永远等不到，遮罩一直盖着。不渲染和渲染后隐藏差在首帧：后者会先闪一下全屏的白块。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>页面里别拿更高的特异性加<code>!important</code>把过渡放回来。规则的先后也要管：小屋门厅「立体感」那一节必须排在文末减弱动效那一段之前，写在后面就把减弱动效顶掉了。</p></section>
+        <p class="source">出处：Ysevan_web/app/globals.css「@media (prefers-reduced-motion: reduce)」（「reduced-motion 全局兜底」「0.01ms 而不是 0」）；Ysevan_web/components/handwriting-intro.tsx「evaluateGate」（「不渲染」）；Ysevan_web/components/handwriting-intro.module.css「@media (prefers-reduced-motion: reduce)」（「第二道保险」）；Ysevan_web/docs/xiaowu-ui-spec.md「8.6 reduced-motion」（「两道保险」）；Ysevan_web/app/hall.module.css「@media (prefers-reduced-motion: reduce)」（「不依赖脚本的那一道」「必须排在文末」）；tools/shua/app.js:693「减弱动态效果」；tools/plan/app/src/styles/tokens.css:714「减少动态效果」；tools/gang/design-proposal.md:1546「减弱动效」；tools/star/assets/star.css:844「prefers-reduced-motion」、:847「data-rm」</p>
+      </div>
+    </article>
+
+    <!-- 5 收尾与打断 -->
+    <article class="entry" id="mo-interrupt" data-scope="common" data-toc="收尾与打断">
+      <header class="entry-head">
+        <h3>每段动画都能被打断：短的直接到终态，长的从这一帧倒着走回去；收尾等事件也等计时器</h3>
+        <p class="entry-lede">进行中再触发、或被别的路径关掉：取消动画、删临时元素、清类名和计时器。零点几秒的开合直接到终态；走进小屋那种5秒的播放，往回滚就从这一帧原路倒放。收尾两条路，谁先到算谁，旧一轮的收尾一律作废。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-lightbox">收藏 · 截图放大</a></p>
+      </header>
+      <div class="specimen mo-specimen moi" data-demo="interrupt">
+        <p class="mo-cap"><b>演示</b>点「开 / 关」打开一张示例面板（慢放到900ms，方便半路点）。开到一半再点：「直接到终态」当场关掉；「倒着走回去」从这一帧原路缩回。三个反例可以叠着开：收尾不比代数、只等事件、模拟后台标签页（事件不来），看右边状态怎么错。</p>
+        <div class="mo-bar">
+          <button type="button" class="btn btn-tint mo-btn" data-i="toggle" aria-expanded="false">开 / 关</button>
+          <div class="seg seg-sm mo-seg" role="radiogroup" aria-label="半路被打断时">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-way="end">直接到终态</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-way="back">倒着走回去</button>
+          </div>
+        </div>
+        <div class="mo-bar">
+          <button type="button" class="mo-tog mo-tog-bad" aria-pressed="false" data-i="nogen">反例：收尾不比代数</button>
+          <button type="button" class="mo-tog mo-tog-bad" aria-pressed="false" data-i="notimer">反例：只等事件</button>
+          <button type="button" class="mo-tog mo-tog-bad" aria-pressed="false" data-i="stuck">模拟：事件不来</button>
+        </div>
+        <div class="moi-grid">
+          <div class="moi-stage"><div class="moi-panel" data-i="panel" aria-hidden="true"><b>示例面板</b><span>第3页 · 共12页</span></div></div>
+          <dl class="moi-state">
+            <div><dt>按钮说</dt><dd data-i="want">关着</dd></div>
+            <div><dt>状态</dt><dd data-i="state">closed</dd></div>
+            <div><dt>这一代</dt><dd data-i="gen">0</dd></div>
+          </dl>
+        </div>
+        <ol class="mo-log" data-i="log" aria-live="polite"></ol>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>打断   关闭中再关 → 立即到终态，不开第二段动画
+       打开动画进行中被关 → 直接到终态（关掉）；不做「从半路倒着缩回去」：状态机要多一倍，
+       换来的只是0.26秒里的一点连贯（岗岗灯箱）
+       走进小屋播放中往上 → 从这一帧原路倒放（在0.447处反向，2.27秒回到顶 = 0.447 × 5秒）
+收尾   领头那段动画的 finish 事件，或兜底计时器（时长 + 120ms），谁先到算谁：
+       后台标签页里动画时钟可能停着，事件不来
+代数   var gen = 0;
+       function play() {
+         var my = ++gen;                                    // 每次清场换一代
+         var done = function () { if (my !== gen) return;  // 旧代的收尾一律作废
+                                  … };
+         anim.finished.then(done, done);                    // cancel() 会让 finished 走 reject，照样会跑 done
+         setTimeout(done, ms + 120);
+       }
+走完再排  刷刷标签增删后自动重搜：延到补位动画走完再重排结果区（结果卡带磨砂，压在动画上会掉帧）</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>岗岗灯箱、复制气泡、速查卡抽屉；刷刷标签补位；小屋走进小屋的倒放。本站套件里的灯箱（收藏页截图放大）和交互页<a href="interaction.html#ix-lightbox">灯箱演示</a>都加了代数守卫。交互页<a href="interaction.html#ix-sheet-frosted">六种弹窗</a>每一种都走这套收尾。</p></section>
+        <section class="fact"><h4>为什么</h4><p>倒着走回去，要把动画当成可逆的状态机：每个中间态都得能往两个方向走，代码多一倍。开合只有零点几秒，用户几乎看不见那点连贯，直接到终态就好。走进小屋不一样：5秒、方向由用户自己的滚动决定，走到一半猛地跳回顶上像出了错，所以它值得倒放。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>WAAPI的<code>cancel()</code>会让<code>finished</code>走reject：<code>finished.then(run, run)</code>照样跑收尾，中途关掉的灯箱会在下一个微任务里被改回open（明明已经收起）。每次清场<code>gen++</code>，收尾回调先比代数——本站和交互页的灯箱都是这样修的。</p></section>
+        <p class="source">出处：tools/gang/design-proposal.md:1484「打断与收尾」、:1487「倒着缩回去」、:1491「收尾两条路」、:1549「打断与收尾」；Ysevan_web/docs/xiaowu-ui-spec.md「4.9.1 一次意图，定时播完 › 中间为什么会停」（「播放中往上」）；tools/shua/design-proposal.md:577「延到动画走完」；tools/star/CLAUDE.md:89「WAAPI 的 cancel()」；tools/star/assets/kit.js:907「lbStep」</p>
+      </div>
+    </article>
+
+    <!-- 6 整页换色交叉淡化 -->
+    <article class="entry" id="mo-xfade" data-scope="common" data-toc="整页交叉淡化">
+      <header class="entry-head">
+        <h3>整页换色用快照交叉淡化，不给几百个元素各写transition</h3>
+        <p class="entry-lede">换主题、换强调色的那一下包进View Transition：浏览器拍下新旧两帧，整页一起淡过去。各元素自己的transition时长不一，换起来东一块西一块，小屋的注释管它叫「彩色烟花」。小屋切明暗0.5秒，本站换强调色260ms。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-01定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-accent">全站 · 强调色</a></p>
+      </header>
+      <div class="specimen mo-specimen mox" data-demo="xfade">
+        <p class="mo-cap"><b>演示</b>一块示例小页面。点「换强调色」「切明暗」：「各写transition」时每个元素按自己的时长换色（反例：底、字、图标、按钮各到各的）；「快照交叉淡化」时整块一起淡过去。只换这块小页面，不动全站。</p>
+        <div class="mo-bar">
+          <button type="button" class="btn btn-tint mo-btn" data-x="accent">换强调色</button>
+          <button type="button" class="btn btn-tint mo-btn" data-x="mode">切明暗</button>
+          <div class="seg seg-sm mo-seg" role="radiogroup" aria-label="换色写法">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-way="each">各写transition</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-way="snap">快照交叉淡化</button>
+          </div>
+          <div class="seg seg-sm mo-seg" role="radiogroup" aria-label="时长">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ms="260">260ms本站</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ms="500">500ms小屋</button>
+          </div>
+        </div>
+        <div class="mo-frame mox-frame" data-x="frame"></div>
+        <p class="mo-readout" data-x="out" aria-live="polite"></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>// 换类的那一下包进 View Transition；回调里同步把类翻到位
+var vt = document.startViewTransition(function () { root.classList.toggle("dark"); });
+vt.ready.catch(function () {});        // 被跳过或中止（页面在后台、连点第二下）时会 reject，要接住
+vt.finished.catch(function () {});
+
+/* 小屋：切明暗0.5s */
+::view-transition-old(root), ::view-transition-new(root) {
+  animation-duration: 0.5s; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* 本站：换强调色260ms（只在换色那一下挂 vt-fade，跨页过渡的时长不受影响） */
+html.vt-fade::view-transition-group(root),
+html.vt-fade::view-transition-old(root),
+html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
+不支持 / 减弱动效   直接切</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋顶栏的墙壁开关切明暗（开关本身见交互页<a href="interaction.html#ix-xw-switch">墙壁开关</a>）；本站换强调色。本站切明暗另做了圆形揭开，见下一组「切明暗」。</p></section>
+        <section class="fact"><h4>为什么</h4><p>一页几百个元素，各自写的transition时长、曲线、属性都不一样，还有根本没写过渡的，换主题时有的先到有的后到、有的直接跳。快照淡化只动两张图的opacity，时长统一、一次到位，也不用回头给每个元素补transition。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>回调里要当场把类翻到位：小屋的主题库把类落在React的effect里，晚一拍的话快照拍到的还是旧主题。<code>ready</code>、<code>finished</code>都要接住，不然后台标签页里切一下、或者连点两下，控制台就多一条没处理的rejection。</p></section>
+        <p class="source">出处：Ysevan_web/app/globals.css「::view-transition-old(root)」（「主题切换的整页交叉淡化」「彩色烟花」「animation-duration: 0.5s」）；Ysevan_web/components/theme-toggle.tsx「ThemeToggle」（「换类的瞬间用 View Transition 包住」「晚一拍」「被跳过或中止」）；tools/star/assets/star.js:10「强调色走 View Transition 默认的交叉淡入」；tools/star/assets/star.css:931「切强调色」</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================================================================ 工具 · 液态玻璃 -->
+  <section class="group" id="g-tools" data-scope="tools">
+    <h2 class="group-title">工具 · 液态玻璃</h2>
+    <p class="group-lede">card的弹簧，加上本站（设计合集）自己的三种整页过渡。本站是工具架上的一件，外壳走液态玻璃；这几条都挂着「本站这里在用」，点过去就是实物。</p>
+
+    <!-- 7 弹簧 -->
+    <article class="entry" id="mo-spring" data-scope="tools" data-toc="弹簧参数">
+      <header class="entry-head">
+        <h3>松手用弹簧：阻尼比.5、过冲约16%；JS里按1/240秒细分积分，CSS里烤成linear()</h3>
+        <p class="entry-lede">card查看器松手用刚度219、阻尼14.8（阻尼比.5），按下用临界阻尼。同一条弹簧在0.7秒里等分取29个点，就是画廊里那条<code>linear()</code>。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-chapters">总览 · 章节目录</a><a href="collection.html#spot-cards">收藏 · 卡片按压</a></p>
+      </header>
+      <div class="specimen mo-specimen mop" data-demo="spring">
+        <p class="mo-cap"><b>演示</b>拖「刚度」「阻尼比」两个滑块（也能Tab过去按方向键），曲线和读数跟着变；点「松手」看小球按这组参数弹回来。几个预设是真在用的数。把刚度拉到900、勾上「不细分」，看一帧直接积一步怎么发散。下面那行是按当前参数烤出来的<code>linear()</code>，点一下复制。</p>
+        <div class="mop-grid">
+          <div class="mop-ctl">
+            <label class="mop-field"><span>刚度k<output data-p="kv">219</output></span><input type="range" min="20" max="1000" step="1" value="219" data-p="k"></label>
+            <label class="mop-field"><span>阻尼比ζ<output data-p="zv">0.50</output></span><input type="range" min="0.1" max="1.2" step="0.01" value="0.5" data-p="z"></label>
+            <div class="mo-bar mop-presets" role="group" aria-label="预设">
+              <button type="button" class="mo-tog" aria-pressed="true" data-preset="219,0.5">card松手</button>
+              <button type="button" class="mo-tog" aria-pressed="false" data-preset="900,1">card按下（临界）</button>
+              <button type="button" class="mo-tog" aria-pressed="false" data-preset="5.8,0.85">漂浮叶子回位</button>
+            </div>
+            <div class="mo-bar">
+              <button type="button" class="btn btn-tint mo-btn" data-p="go">松手</button>
+              <button type="button" class="mo-tog mo-tog-bad" aria-pressed="false" data-p="coarse">不细分（一帧0.06秒直接积）</button>
+            </div>
+          </div>
+          <div class="mop-view">
+            <svg class="mop-plot" viewBox="0 0 320 150" role="img" aria-label="弹簧回位曲线" data-p="plot"></svg>
+            <div class="mop-track" aria-hidden="true"><span class="mop-goal"></span><span class="mop-ball" data-p="ball"></span></div>
+          </div>
+        </div>
+        <dl class="mo-stats" data-p="stats"></dl>
+        <button type="button" class="mop-linear" data-p="linear" aria-label="复制按当前参数生成的 linear() 曲线"></button>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>// card 查看器：一个量 a 驱动倾角、缩放、光团（0静止，1压到底）
+var down = press.target &gt; 0;
+var k = down ? 900 : 219;                          // 按下要快；松手 ω = √219 ≈ 14.8 rad/s
+var c = down || reduced ? 2 * Math.sqrt(k) : 14.8; // 按下与减弱动效：临界阻尼不回弹；松手阻尼比 c / (2√k) = .5
+for (var left = dt; left &gt; 0; left -= 1 / 240) {    // 一帧最长 .06s，直接一步积，ω = 30那档会发散
+  var h = Math.min(left, 1 / 240);
+  press.v += (k * (press.target - press.a) - c * press.v) * h;
+  press.a += press.v * h;
+}
+过冲   e^(−πζ / √(1 − ζ²))：ζ = .5 → 16.3%
+CSS    同一条弹簧在 .7s 里等分取29个点：
+       transition: transform .7s cubic-bezier(.34,1.56,.64,1);   /* 不认 linear() 的退路，写在前面 */
+       transition: transform .7s linear(0,.06,.208,.4,.6,.784,.935,1.047,1.119,1.155,1.163,1.149,
+         1.123,1.091,1.059,1.03,1.007,.99,.979,.974,.974,.976,.981,.986,.991,.996,1,1.002,1);</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>card画廊正中那张与查看器里的卡，按压松手。交互页<a href="interaction.html#ix-press">按压倾斜</a>的演示、本站总览章节目录和收藏卡片的松手，都是这条<code>linear()</code>。小屋漂浮叶子被推开后回位也挂在弹簧上：刚度5.8、阻尼比.85，回位不来回晃。</p></section>
+        <section class="fact"><h4>为什么</h4><p>弹簧的两个数比曲线的四个控制点好说话：刚度定快慢（周期2π/√k），阻尼比定弹几下。按下要快、不能抖，用临界阻尼；松手要有弹回来的手感，阻尼比.5只过冲一次、约16%。JS里那份和CSS里那份是同一组参数，画廊和查看器手感一样。本页核过：k=219、c=14.8在0.7秒里等分取29个点，和card那条<code>linear()</code>逐点最大差0.001。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>按帧积分会发散：一步走一整帧（最长0.06秒），刚度一高就越积越大，card在ω=30那档撞上过，改成1/240秒一小步。弹簧曲线只管这一次复原，走完要摘掉，不然下一次按下也会过冲（交互页按压那条的坑）。</p></section>
+        <p class="source">出处：tools/card/collection/shared/viewer.js:16「a 走弹簧」、:399「弹簧按 1/240 s 细分积分」、:402「k=down?900:219」；tools/card/collection/gallery.css:29「按压」、:33「is-springing」；Ysevan_web/components/hall-float/float-scene.ts「springK」、「springC」（「阻尼比 0.85」）</p>
+      </div>
+    </article>
+
+    <!-- 8 切明暗圆形揭开 -->
+    <article class="entry" id="mo-reveal" data-scope="tools" data-toc="切明暗圆形揭开">
+      <header class="entry-head">
+        <h3>切明暗从点的那个地方圆形揭开：420ms，曲线按面积挑，前快后慢又不空等</h3>
+        <p class="entry-lede">View Transition拍下新旧两帧，新画面盖在上面，从点击点（键盘取控件中心）用<code>clip-path</code>圆张开。cubic-bezier(.25,.5,.3,1)按圆面积算：1/4时长盖住30%、一半74%、3/4 95%。先试的(.32,.72,0,1)一半时长就到91%，后210ms等于白等。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-10-08定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-theme">全站 · 浅深切换</a></p>
+      </header>
+      <div class="specimen mo-specimen mov" data-demo="reveal">
+        <p class="mo-cap"><b>演示</b>点下面这块示例小页面的任意位置（或按「切明暗」，圆心取按钮中心），新的明暗从那一点圆形揭开。换曲线对比；右边的图画的是「圆面积占终点的比例」随时间走，黑点跟着播放走。读数给两个数：按圆面积算的，和这块小页面真被盖住的。只切这块，不动全站。</p>
+        <div class="mo-bar">
+          <button type="button" class="btn btn-tint mo-btn" data-v="go">切明暗</button>
+          <div class="seg seg-sm mo-seg" role="radiogroup" aria-label="揭开曲线">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ease="now">现行(.25,.5,.3,1)</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ease="steep">先试的(.32,.72,0,1)</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ease="linear">半径匀速</button>
+          </div>
+          <button type="button" class="mo-tog" aria-pressed="false" data-v="slow">慢放×4</button>
+        </div>
+        <div class="mov-grid">
+          <div class="mo-frame mov-frame" data-v="frame"></div>
+          <div class="mov-side">
+            <svg class="mov-plot" viewBox="0 0 220 150" role="img" aria-label="圆面积占比随时间" data-v="plot"></svg>
+            <dl class="mo-stats" data-v="stats"></dl>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>var vt = document.startViewTransition(function () { setMode(next); });
+vt.ready.then(function () {
+  var r = Math.ceil(Math.hypot(Math.max(x, w - x), Math.max(y, h - y)));   // 到最远那个角
+  var at = " at " + x + "px " + y + "px)";
+  document.documentElement.animate(
+    { clipPath: ["circle(0px" + at, "circle(" + r + "px" + at] },
+    { duration: 420, easing: "cubic-bezier(.25,.5,.3,1)", pseudoElement: "::view-transition-new(root)" });
+});
+/* 关掉默认的交叉淡入：新画面整张盖在旧画面上 */
+html.vt-reveal::view-transition-old(root),
+html.vt-reveal::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+圆心   鼠标、触摸取点击点；键盘（click 的 detail 为0）取控件中心
+连点   上一个还没走完就 skipTransition()，新的从头来
+接住   ready / finished / updateCallbackDone 三个 promise 都接，跳过时会 reject</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>本站侧栏底部和「更多」面板里的「浅色 / 深色 / 自动」。只在模糊档位full、没开减弱动效、页面看得见时做，其余直接切（下一条）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>圆盖住的面积随半径的平方涨：半径匀速涨，看起来是越铺越快、最后一下猛地盖满，所以半径要前快后慢。太陡也不行，(.32,.72,0,1)一半时长半径已到95%，剩下一半时间几乎不动。420ms：圆要跨过整条视口对角线（2040的屏上约2300px），比260ms的局部过渡长一档，又不到半秒、不拖手。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>「按圆面积」和「视口真被盖住多少」差得不少：圆心靠边时有一大块圆在视口外面，1/4时长圆面积才30%，视口可能已经盖住一半。挑曲线时两个都看。动的是<code>clip-path</code>，不在「只动transform和opacity」里：所以它只在有显卡的full档做。</p></section>
+        <p class="source">出处：tools/star/assets/star.js:9「明暗一变」、:12「为什么是这条曲线和时长」、:198「VT_REVEAL_MS」、:205「transition(kind, origin, change)」；tools/star/assets/star.css:928「切明暗」</p>
+      </div>
+    </article>
+
+    <!-- 9 切页进场 -->
+    <article class="entry" id="mo-page" data-scope="tools" data-toc="切页进场">
+      <header class="entry-head">
+        <h3>切页时侧栏不动，正文淡入、上移8px，260ms；跨页过渡在file://下也开</h3>
+        <p class="entry-lede">每页正文进场opacity 0→1、translateY 8px→0。full档再加跨文档View Transition：侧栏、tab bar临时起名、原地不动，旧页200ms淡出，新页同一套进场。带#锚点打开时只淡入不上移。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-10-08定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-pagein">全站 · 切页进场</a></p>
+      </header>
+      <div class="specimen mo-specimen mog" data-demo="page">
+        <p class="mo-cap"><b>演示</b>点示例小窗口左边的三页切换。「整页一起淡」是反例：侧栏也跟着闪。打开「跨页过渡」看旧页淡出、新页进场同时走；再挑一个file://下的坑，看修之前是什么样子。页面内容是示例。</p>
+        <div class="mo-bar">
+          <div class="seg seg-sm mo-seg" role="radiogroup" aria-label="进场方式">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-pg="main">侧栏不动、正文进场</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-pg="all">整页一起淡（反例）</button>
+          </div>
+          <button type="button" class="mo-tog" aria-pressed="true" data-g="vt">跨页过渡（full档）</button>
+          <button type="button" class="mo-tog" aria-pressed="false" data-g="hash">带#锚点打开</button>
+        </div>
+        <div class="mo-bar">
+          <span class="mo-sub" id="mog-l1">file://下</span>
+          <div class="seg seg-sm mo-seg" role="radiogroup" aria-labelledby="mog-l1">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-bug="none">两个坑都修好了</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-bug="abort">开关只在外部样式表</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-bug="noside">首帧早于侧栏</button>
+          </div>
+        </div>
+        <div class="mo-frame mog-frame" data-g="frame"></div>
+        <ol class="mo-log" data-g="log" aria-live="polite"></ol>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>/* 每页都有：正文进场，侧栏不动。fill 只取 backwards：走完不留 transform（不然 .page 一直是 fixed 后代的参照） */
+.page { animation: page-in 260ms cubic-bezier(.2,.8,.2,1) backwards; }
+@keyframes page-in { from { opacity: 0; transform: translateY(8px); } }
+html.jump-in .page { animation-name: page-fade; }              /* 带 #锚点：只淡入，落点不偏8px */
+
+/* 跨页：两页都写了才生效（file:// 同目录也行） */
+@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }
+html.vt-nav .side { view-transition-name: star-side; }         /* 只在跨页那一下起名 */
+html.vt-nav .page { animation: none; }                         /* 别两套进场叠在一起 */
+html.vt-nav::view-transition-old(root) { animation: vt-out 200ms cubic-bezier(.4,0,1,1) both; }
+html.vt-nav::view-transition-new(root) { animation: vt-in 260ms cubic-bezier(.2,.8,.2,1) both; }
+
+// boot.js（&lt;head&gt; 里同步执行）：file:// 下开关再挂一份构造样式表
+var s = new CSSStyleSheet();
+s.replaceSync("@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }");
+document.adoptedStyleSheets = document.adoptedStyleSheets.concat([s]);
+// full 档、没开减弱动效时再挂 &lt;link rel="expect" href="#main" blocking="render"&gt;：新页首帧等到 #main
+// 旧页 pageswap、新页 pagereveal：不是 full 或开了减弱动效 → vt.skipTransition()</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>本站每一页：点侧栏换一页就看得到，这一页里任何指向别页的链接也是。</p></section>
+        <section class="fact"><h4>为什么</h4><p>侧栏是「同一个地方」，换的只是正文；侧栏跟着闪一下，像整个应用重开了一遍。8px、260ms是「换了一页」最小的提示，不拖手。屋主是双击打开的，Chrome在file://同目录也做跨文档过渡，所以照开，只是开关要可靠。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>file://下新页判「开没开跨页过渡」那一刻，外部样式表时有时无：开关只写在<code>star.css</code>里，20次跳转9–10次被中止，新页控制台还留一条<code>InvalidStateError</code>；<code>boot.js</code>用构造样式表再挂一份之后20/20。另一半：新页首帧早于<code>nav.js</code>插进侧栏时，新画面里没有侧栏，旧侧栏淡出、过渡完新侧栏才冒出来，所以挂<code>rel="expect"</code>让首帧等到<code>#main</code>。起了<code>view-transition-name</code>的元素是backdrop root，它里面的磨砂只糊得到它自己，所以侧栏只在过渡那一下起名。</p></section>
+        <p class="source">出处：tools/star/assets/star.css:545「切页进场」、:550「带 #锚点 打开」、:921「vt-nav」、:924「vt-out」；tools/star/assets/boot.js:113「构造样式表」、:126「新页面首帧等到 #main 解析出来再画」、:140「跨页过渡（新页这一侧）」；tools/star/assets/star.js:1816「切页：旧页一侧」；tools/star/CLAUDE.md:87「backdrop root」、:88「外部样式表可能还没到」</p>
+      </div>
+    </article>
+
+    <!-- 10 只在 full 档做 -->
+    <article class="entry" id="mo-skip" data-scope="tools" data-toc="整页过渡跳过条件">
+      <header class="entry-head">
+        <h3>整页过渡只在有显卡时做：没显卡、减弱动效、页面在后台、浏览器不支持，一律直接切</h3>
+        <p class="entry-lede">View Transition要把整屏拍成快照再合成，软件渲染下最贵。本站切明暗、换强调色、跨页三种整页过渡只在模糊档位full做；lite和off、减弱动效、页面看不见、没有startViewTransition，回调照跑、画面直接换。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-10-08定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-blur">全站 · 背景模糊</a></p>
+      </header>
+      <div class="specimen mo-specimen mok" data-demo="skip">
+        <p class="mo-cap"><b>演示</b>把左边四个条件摆成你想试的样子，点「切一下」：样框里的示例小页面要么圆形揭开，要么直接换，右边写走了哪条、为什么。全是模拟，不改全站的档位和系统设置。</p>
+        <div class="mok-grid">
+          <div class="mok-ctl">
+            <div class="mor-row"><span class="mo-sub" id="mok-l1">模糊档位</span>
+              <div class="seg seg-sm mo-seg" role="radiogroup" aria-labelledby="mok-l1">
+                <button type="button" role="radio" aria-checked="true" tabindex="0" data-tier="full">full</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tier="lite">lite</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tier="off">off</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tier="unknown">自动·没测过</button>
+              </div></div>
+            <div class="mo-bar">
+              <button type="button" class="mo-tog" aria-pressed="false" data-k="rm">减弱动效</button>
+              <button type="button" class="mo-tog" aria-pressed="false" data-k="hidden">页面在后台</button>
+              <button type="button" class="mo-tog" aria-pressed="false" data-k="nosupport">不支持startViewTransition</button>
+            </div>
+            <div class="mo-bar"><button type="button" class="btn btn-tint mo-btn" data-k="go">切一下</button></div>
+            <p class="mo-verdict" data-k="verdict" aria-live="polite">还没切。</p>
+          </div>
+          <div class="mo-frame mok-frame" data-k="frame"></div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>function canVT() {
+  return typeof document.startViewTransition === "function"
+    &amp;&amp; !matchMedia("(prefers-reduced-motion: reduce)").matches
+    &amp;&amp; blurTier() === "full"              // 自动：有显卡 full、没显卡 lite；没测过先按 lite
+    &amp;&amp; !document.hidden;
+}
+function transition(kind, origin, change) {
+  if (!canVT()) { change(); return null; } // 直接切：换色照样发生，只是不拍快照
+  …
+}
+// 跨页两侧同一个判据：旧页 pageswap、新页 pagereveal 里不满足就 vt.skipTransition()，三个 promise 先接住</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>本站外观里的「背景模糊：自动 / 开 / 关」决定档位；自动按WebGL的<code>failIfMajorPerformanceCaveat</code>判有没有显卡。切明暗、换强调色、跨页三种过渡都走这一个判据。</p></section>
+        <section class="fact"><h4>为什么</h4><p>屋主台式机没显卡，整屏快照再合成在那台上就是一次长帧。误判成full，代价是没显卡那台每切一下卡一下；误判成lite，只是少一个圆。往后果轻的那边错，所以没测过也先按lite。页面在后台时浏览器本来就会跳过，还会让<code>ready</code>走reject，干脆先判。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>跳过也要把三个promise接住：<code>skipTransition()</code>会让<code>ready</code>走reject，没接住就是控制台里一条Uncaught (in promise)。</p></section>
+        <p class="source">出处：tools/star/assets/star.js:11「不支持 startViewTransition」、:202「canVT」；tools/star/assets/star.css:100「只在 full 下做」；tools/star/assets/boot.js:12「没测过也按 lite」、:141「三个 promise 先全接住」；tools/star/CLAUDE.md:92「没测过先按 lite」</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================================================================ 小屋 · 暖纸 -->
+  <section class="group" id="g-xiaowu" data-scope="xiaowu">
+    <h2 class="group-title">小屋 · 暖纸</h2>
+    <p class="group-lede">小屋的动效都说同一种话：纸、水彩、屋子。开场写一句手写的招呼，换房间洇一层纸，往下滚走进那幅画里；装饰的东西动得极慢，而且停得下来。演示都是暖纸样框里的轻量示意，原物在小屋。</p>
+
+    <!-- 11 手写开场 -->
+    <article class="entry" id="mo-xw-intro" data-scope="xiaowu" data-toc="手写开场">
+      <header class="entry-head">
+        <h3>开场「Hey, Ysevan!」按笔画写出来：描边和遮罩两条动画同时长、同延迟、同缓动</h3>
+        <p class="entry-lede">每次回门厅都播：0.12秒起笔，1.75秒写完，0.4秒填色定格，2.35秒起淡出，2.8秒收起。点击、Esc、回车、空格、往下滚的意图都能跳过，0.26秒收起。减弱动效下整段不渲染。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-08-26定</li></ul>
+      </header>
+      <div class="specimen mo-specimen xw mow" data-demo="intro">
+        <p class="mo-cap mo-cap-xw"><b>轻量示意</b>字体换成了系统手写体（原物是只含这一句的手写子集）；只在样框里播，不锁页面滚动。点「重播」，播的时候在样框上点一下、滚一下滚轮、或焦点在样框里按Esc / 回车 / 空格 / ↓，都会跳过。勾「反例」让遮罩比描边快：后面的字还没轮到，笔画就先露了头。</p>
+        <div class="mo-bar">
+          <button type="button" class="mo-xbtn" data-w="play">重播</button>
+          <button type="button" class="mo-tog mo-tog-bad" aria-pressed="false" data-w="bad">反例：遮罩比描边快</button>
+        </div>
+        <div class="mow-stage" data-w="stage" tabindex="0" role="group" aria-label="开场演示区（示例）：播的时候按 Esc、回车、空格或下方向键跳过">
+          <div class="mow-hall" aria-hidden="true"><span class="mow-blob xw-kai">小屋</span><span class="mow-plate"></span></div>
+          <div class="mow-intro" data-w="intro" aria-hidden="true">
+            <svg class="mow-svg" viewBox="0 0 720 260" focusable="false">
+              <defs><mask id="mow-sweep" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1200" height="700"><rect class="mow-mask" data-w="mask"></rect></mask></defs>
+              <text class="mow-text" data-w="text" x="360" y="178" text-anchor="middle" mask="url(#mow-sweep)">Hey, Ysevan!</text>
+            </svg>
+            <span class="mow-skip">点击跳过</span>
+          </div>
+        </div>
+        <div class="mow-line" aria-hidden="true"><span class="mow-head" data-w="head"></span>
+          <i style="left:4.3%">起笔</i><i style="left:66.8%">写完</i><i style="left:81.1%" class="is-left">定格</i><i style="left:83.9%" class="is-low">淡出</i><i style="left:100%">收起</i></div>
+        <p class="mo-readout mo-readout-xw" data-w="out" aria-live="polite">还没播。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>&lt;svg viewBox="0 0 720 260"&gt;
+  &lt;defs&gt;&lt;mask id="hwSweep" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1200" height="700"&gt;
+    &lt;rect class="mask"/&gt;&lt;/mask&gt;&lt;/defs&gt;
+  &lt;text class="text font-hand" x="360" y="178" text-anchor="middle" mask="url(#hwSweep)"&gt;Hey, Ysevan!&lt;/text&gt;
+&lt;/svg&gt;
+.text { font-size: 132px; fill: rgba(74,77,53,0); stroke: var(--xw-olive-deep); stroke-width: 1.15;
+        stroke-dasharray: 900; stroke-dashoffset: 900; }
+.mask { x: var(--sx, 6px); y: -140px; height: 460px; width: 0; fill: #fff; }
+.isPlay .mask { animation: sweep 1.75s cubic-bezier(.34,.06,.42,1) .12s forwards; }  /* 同时长、同延迟、同缓动 */
+.isPlay .text { animation: draw 1.75s cubic-bezier(.34,.06,.42,1) .12s forwards, settle .4s ease-out 1.87s forwards; }
+@keyframes sweep  { to { width: var(--sw, 700px); } }
+@keyframes draw   { to { stroke-dashoffset: 0; } }
+@keyframes settle { to { fill: rgba(74,77,53,1); stroke-width: .5; } }
+// 量字：等 document.fonts.ready（1200ms 兜底）再 getBBox()，抛错就用 CSS 默认值
+mask.style.setProperty("--sx", (b.x - 10) + "px");      // 起笔余量
+mask.style.setProperty("--sw", (b.width + 34) + "px");  // 盖住感叹号与收笔
+len = (b.width + b.height) * 2.2;                       // dasharray / dashoffset
+时序  第0.12秒起笔 → 1.87写完 → 2.27填色定格 → 2.35起淡出（opacity、translateY(-22px)，.5s cubic-bezier(.4,0,.2,1)）→ 2.80收起
+跳过  点击 / Esc / Enter / Space / 滚动意图（wheel、touchmove 全 passive，绝不 preventDefault），走 .26s 快速淡出</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋门厅，每次回门厅都播（2026-09-01起不再每会话只播一次）。遮罩起淡出那一刻给<code>&lt;html&gt;</code>盖<code>data-intro-leaving</code>，门厅跟着掀开的纸浮上来落定（0.75秒，opacity .35→1、上移18px、缩放.986→1）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>描边写字其实是两条动画：<code>draw</code>把dashoffset收到0让笔画显形，<code>sweep</code>把遮罩从左往右拉开让字依次出现；三个参数不一致，就会看到笔画在遮罩外提前露头，或者整段字一起描。字体子集没加载完时量到的是回退字体的宽度，遮罩会太窄、或者dasharray算错让笔画一次蹦出来，所以要等<code>fonts.ready</code>。第五种跳过（滚动意图）修的是「进门厅第一件事滑滚轮，什么都不会发生」：页面锁着，滚动又不在跳过方式里。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>动的是dashoffset、遮罩宽、填色，都不在「只动transform和opacity」里：它只播一次、两秒多，播的时候整屏就它一样东西。收起时把<code>&lt;html&gt;</code>的overflow还原成进场前的值，别写死auto（会盖掉用户样式表）。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「8. 开场动画」、「8.3 完整时序表」、「8.5 五种跳过方式」、「8.7 每次回门厅都播」；Ysevan_web/components/handwriting-intro.module.css「.mask」（「描边写字」）、「@keyframes sweep」；Ysevan_web/components/handwriting-intro.tsx「HandwritingIntro」（「还原成进场前的值」「起点左移 10px」「document.fonts.ready」「监听一律 passive」）；Ysevan_web/app/hall.module.css「:global(html[data-intro-leaving]) .hall」</p>
+      </div>
+    </article>
+
+    <!-- 12 洇一层纸 -->
+    <article class="entry" id="mo-xw-veil" data-scope="xiaowu" data-toc="洇一层纸">
+      <header class="entry-head">
+        <h3>换房间洇一层纸：纸色水痕从中间洇开盖住旧页，在纸下面换页，再像水干了一样褪去</h3>
+        <p class="entry-lede">洇开0.55秒（scale .01→1），外圈颜料边比纸慢0.05秒；旧页同时退到.45透明、缩到.985；新页就位后纸0.6秒干去（scale 1→1.06、opacity 1→0）。只动transform和opacity，转场里唯一的颜色是那圈极淡的橄榄边。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-02定</li></ul>
+      </header>
+      <div class="specimen mo-specimen xw moe" data-demo="veil">
+        <p class="mo-cap mo-cap-xw"><b>演示</b>点样框顶栏的「小屋 / 工具 / 随笔」换房间。切到两扇被否的门（示意，照提交记录的描述画的）对比。「慢放×3」看颜料边怎么比纸晚半拍。房间里的字是示例。</p>
+        <div class="mo-bar">
+          <div class="seg seg-sm mo-seg mo-seg-xw" role="radiogroup" aria-label="转场">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-tr="veil">洇一层纸</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tr="door">双开门板（被否）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tr="lattice">纸色格心门（被否）</button>
+          </div>
+          <button type="button" class="mo-tog mo-tog-xw" aria-pressed="false" data-e="slow">慢放×3</button>
+        </div>
+        <div class="moe-stage" data-e="stage">
+          <nav class="moe-bar" aria-label="示例房间">
+            <span class="moe-logo">Ysevan的小屋</span>
+            <button type="button" data-room="0" aria-current="true">小屋</button>
+            <button type="button" data-room="1">工具</button>
+            <button type="button" data-room="2">随笔</button>
+          </nav>
+          <div class="moe-main" data-e="main"></div>
+          <div class="moe-veil" data-e="veil" aria-hidden="true"><span class="moe-wash"></span><span class="moe-rim"></span></div>
+          <div class="moe-door" data-e="door" aria-hidden="true"><span class="moe-leaf moe-leaf-l"></span><span class="moe-leaf moe-leaf-r"></span></div>
+        </div>
+        <p class="mo-readout mo-readout-xw" data-e="out" aria-live="polite"></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>.xw-veil { position: fixed; inset: 0; z-index: 30; }            /* 盖住 main，藏在顶栏40下 */
+.xw-veil__wash, .xw-veil__rim {                                 /* 两个超尺寸圆盘，以视口中心为原点缩放 */
+  position: absolute; left: 50%; top: 45%; width: 250vmax; height: 250vmax;
+  margin-left: -125vmax; margin-top: -125vmax; border-radius: 50%; }
+.xw-veil__wash { background: radial-gradient(circle,                    /* 软边画在渐变里 */
+  hsl(var(--background)) 0%, hsl(var(--background)) 62%, hsl(var(--background) / .92) 72%, hsl(var(--background) / 0) 86%); }
+.xw-veil__rim  { background: radial-gradient(circle,
+  transparent 58%, hsl(var(--xw-olive-2) / .1) 68%, hsl(var(--xw-olive-2) / .05) 76%, transparent 84%); }
+[data-phase="in"] .xw-veil__wash  { animation: xwveilin .55s cubic-bezier(.3,0,.16,1) both; }
+[data-phase="in"] .xw-veil__rim   { animation: xwveilin .55s cubic-bezier(.34,0,.22,1) .05s both; }  /* 水推着颜料走 */
+[data-phase="out"] .xw-veil__wash,
+[data-phase="out"] .xw-veil__rim  { animation: xwveilout .6s cubic-bezier(.3,.1,.3,1) both; }
+@keyframes xwveilin  { from { transform: scale(.01); } to { transform: scale(1); } }
+@keyframes xwveilout { from { transform: scale(1); opacity: 1; } to { transform: scale(1.06); opacity: 0; } }
+html[data-room-leaving] main { animation: roomexit .55s cubic-bezier(.4,0,1,1) both; }   /* 旧页退后 */
+@keyframes roomexit { to { opacity: .45; transform: scale(.985); } }
+序列  洇开550ms → 路由在纸下切换 → 路由真的变了才干去600ms；首次加载、前进后退、减弱动效不播</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋顶栏「小屋 / 工具 / 随笔」之间换页。</p></section>
+        <section class="fact"><h4>为什么</h4><p>前两版是「门」：先是色块那种材质的双开门板（合门0.45秒、开门0.75秒带透视外摆），再是纸色格心门，都被屋主裁定不够优雅。当时查过一圈主流转场（错列色块、方向扫屏、交叉淡化），都偏科技作品集的气质，放进水彩小屋里违和。转场不该造一个新物件，该说站点自己的语言：水彩。加载的那一瞬藏在纸下面，原来换页时那一下空白也没有了。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>纸「干去」要等路由真的变了再开始（路径变化是触发器），不是定时：加载慢的时候定时干去，纸干了旧房间还在。软边不要用<code>filter: blur</code>，直接画在径向渐变里，缩放全程走合成器、不重绘。</p></section>
+        <p class="source">出处：Ysevan_web/app/globals.css「.xw-veil」（「洇一层纸」）、「.xw-veil__rim」（「颜料边」）、「@keyframes xwveilin」、「@keyframes xwveilout」（「干去」）、「html[data-room-leaving] main」；Ysevan_web/components/page-veil.tsx「PageVeil」（「前两版是」「这个门有点丑，不够优雅」「到达：路由真的变了才褪」）；Ysevan_web提交017f067「转场第三版——不造门了，洇一层纸」、33ca504「门做成真的门——双开门板、合门藏加载、透视外摆」、65842d1「门改成纸色格心门」</p>
+      </div>
+    </article>
+
+    <!-- 13 走进小屋 -->
+    <article class="entry" id="mo-xw-walk" data-scope="xiaowu" data-toc="走进小屋">
+      <header class="entry-head">
+        <h3>走进小屋按固定5秒播完、不擦洗；缓动写在每一拍里，播放头匀速</h3>
+        <p class="entry-lede">第一次往下滚的意图起播：0.85秒画放大盖满视口，0.65秒推近兼洇纸，0.05秒在纸下穿门，3.45秒屋里那一段。每一拍各有缓动（放大rush、洇纸power1.in、干去power1.out、屋里sine.out），播放头本身匀速。往上滚，从这一帧原路倒放。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-20定</li></ul>
+      </header>
+      <div class="specimen mo-specimen xw mok2" data-demo="walk">
+        <p class="mo-cap mo-cap-xw"><b>轻量示意，不是原物</b>原物是WebGL里的两幅画和一间屋子；这里用几块示意图形走同一套节拍和缓动。点「往下」起播、「往上」倒放（焦点在样框里按↓↑、或在样框上滚滚轮也行）。换成「擦洗」：每一格只走8.5%，一顿一顿；换成「播放头再叠ease-in-out」：起播后半天看不出在动。右边的图画进度随时间怎么走。</p>
+        <div class="mo-bar">
+          <button type="button" class="mo-xbtn" data-k2="down">往下</button>
+          <button type="button" class="mo-xbtn" data-k2="up">往上</button>
+          <div class="seg seg-sm mo-seg mo-seg-xw" role="radiogroup" aria-label="怎么走">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-walk="timed">定时5秒</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-walk="scrub">擦洗（反例）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-walk="eased">播放头叠ease-in-out（反例）</button>
+          </div>
+        </div>
+        <div class="mok2-grid">
+          <div class="mok2-stage" data-k2="stage" tabindex="0" role="group" aria-label="走进小屋演示区（示例）：按下方向键往下走，上方向键往回">
+            <div class="mok2-card" data-k2="card" aria-hidden="true"><span class="mok2-blob xw-kai">小屋</span><span class="mok2-plate"><span class="mok2-door"></span></span></div>
+            <div class="mok2-room" data-k2="room" aria-hidden="true"><span class="mok2-wall mok2-wall-l"></span><span class="mok2-wall mok2-wall-r"></span><span class="mok2-floor"></span></div>
+            <span class="mok2-wash" data-k2="wash" aria-hidden="true"></span>
+          </div>
+          <div class="mok2-side">
+            <svg class="mok2-plot" viewBox="0 0 220 150" role="img" aria-label="进度随时间" data-k2="plot"></svg>
+            <dl class="mo-stats mo-stats-xw" data-k2="stats"></dl>
+          </div>
+        </div>
+        <p class="mo-readout mo-readout-xw" data-k2="out" aria-live="polite"></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>playMs = 5000;  progress = head / playMs      // 播放头匀速：每帧按夹过的时长推进
+放大：0    → 0.17  0 → 0.85s   rush(p / .17) = (1 − e^(−3t)) / (1 − e^(−3))，指数插值；起步就有速度
+推近：0.17 → 0.30  → 1.50s    匀速，画最多再大18%（3.4 → 4.0倍）；纸从门那一点洇开，power1.in（尾巴加速）
+穿门：0.30 → 0.31  → 1.55s    纸底下50ms
+干去：0.31 → 0.39  → 1.95s    power1.out（一上来就见光）
+屋里：0.31 → 1     → 5.00s    sine.out：纸掀开时1.57倍均速在走，到墙角速度归零
+打断  播放中再往下：不理；播放中往上：从这一帧原路倒放；顶上往上、墙角往下：交给原生滚动
+锁    播放的5秒锁 &lt;body&gt; 的 overflow-y（不锁 &lt;html&gt;）；一次 preventDefault 都没有
+硬要求  整条播放里除了两端，没有一段速度是0</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋门厅：首屏仍是那张名片、一像素不变，第一次往下滚才起播；静态档（无脚本、减弱动效、≤900、WebGL不可用）没有跑道。</p></section>
+        <blockquote class="said"><p>看着一顿一顿的。</p><footer>屋主，2026-09-20，看擦洗版走进小屋</footer></blockquote>
+        <section class="fact"><h4>为什么</h4><p>原来是擦洗：进度＝scrollY÷跑道长。一格滚轮约100px，整条跑道1170px只有十来格，触控板惯性又忽快忽慢，节奏被输入设备定死了。5秒是屋主给的4–6秒取中间：再快洇纸看不清，再慢屋里成了走不完的走廊。屋主原话要「ease-in-out」，可两层缓动相乘会让起播0.45秒、倒放0.8秒内看不出在动（「我滚了没反应」），所以ease-in-out由节拍给、播放头匀速，这是那一轮唯一没照字面做的地方，理由写进了文档。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>播放锁写在<code>&lt;html&gt;</code>上会让<code>&lt;body&gt;</code>（全局<code>overflow-x: hidden</code>）变成真的滚动容器，门厅的sticky当场失效，放大中的画下面露出一块空白（1440×900实测最多222px）；改锁<code>&lt;body&gt;</code>的overflow-y。擦洗时代留下的「相机停0.4秒」「纸满后留0.3秒余量」在自动播放里就是死画面，删了。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「4.9.1 一次意图，定时播完」（「原来是擦洗」「222px」「rush」「5 秒怎么来的」「缓动在节拍里」「整条播放里除了两端」「方向与打断」）、「4.9.6 那把锁：播放的 5 秒里页面是锁着的」；Ysevan_web/docs/threejs-immersive-hall-prd.md「19.7 屋主改判（按时间） › 2026-09-20 第一次改判：擦洗 → 定时播放」（「屋主的话」「缓动没有加在播放头上」）</p>
+      </div>
+    </article>
+
+    <!-- 14 擦洗与交叉淡入 -->
+    <article class="entry" id="mo-xw-scrub" data-scope="xiaowu" data-toc="擦洗两条教训">
+      <header class="entry-head">
+        <h3>跟着滚动走的动画两条教训：叠在同一处的字淡入淡出不交叠；擦洗曲线用smoothstep</h3>
+        <p class="entry-lede">同一位置上的两段字要首尾相接：一交叠，两段各剩一半，叠成双重曝光。跟手的曲线两端速度为零：ease-out在起点最快，一碰滚轮就往前窜。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-05定</li></ul>
+      </header>
+      <div class="specimen mo-specimen xw mou" data-demo="scrub">
+        <p class="mo-cap mo-cap-xw"><b>演示</b>拖「进度」滑块当作滚动（聚焦后按方向键也行），或点「滚一格」每次走8.5%。上面：同一位置的两段字，切「窗口交叠」看正中那一段双重曝光。下面：同一个进度过三条曲线，第一格各走了多少写在右边。</p>
+        <div class="mo-bar">
+          <label class="mou-field"><span>进度</span><input type="range" min="0" max="1000" step="1" value="0" data-u="p"><output data-u="pv">0%</output></label>
+          <button type="button" class="mo-xbtn" data-u="step">滚一格</button>
+          <button type="button" class="mo-xbtn" data-u="reset">回到0</button>
+        </div>
+        <div class="mou-fade">
+          <div class="seg seg-sm mo-seg mo-seg-xw" role="radiogroup" aria-label="淡入淡出窗口">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-win="seq">首尾相接（现行）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-win="overlap">窗口交叠（反例）</button>
+          </div>
+          <div class="mou-words" aria-hidden="true"><span class="mou-w xw-kai" data-u="w0">工具架</span><span class="mou-w xw-kai" data-u="w1">随笔本</span></div>
+          <p class="mo-readout mo-readout-xw" data-u="fout"></p>
+        </div>
+        <div class="mou-lanes" aria-hidden="true">
+          <div class="mou-lane"><span class="mou-name">smoothstep</span><span class="mou-track"><i data-u="d0"></i></span><b data-u="v0"></b></div>
+          <div class="mou-lane"><span class="mou-name">ease-out</span><span class="mou-track"><i data-u="d1"></i></span><b data-u="v1"></b></div>
+          <div class="mou-lane"><span class="mou-name">linear</span><span class="mou-track"><i data-u="d2"></i></span><b data-u="v2"></b></div>
+        </div>
+        <p class="sr-only" data-u="live" aria-live="polite"></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>smoothstep(t) = t² (3 − 2t)     两端速度为0：跟着手走
+ease-out                        起点速度最大：一碰滚轮内容就往前窜一下
+linear                          匀速：到头一下刹住
+窗口  上一段在交接点 b 之前淡完、下一段在 b 之后才淡入，首尾相接
+      （梯形窗，触及半径 = 中心间距的一半）
+工具页  文案窗22svh：两套字只在交接正中4svh里同时出现，那时两边都 &lt; .025
+        右栏图窗32svh、重叠24svh：图允许交叠，正中两边各剩 .32，任何一刻都至少有一件东西看得见</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋工具页那条sticky轨道（五层叠在同一格里交接）、随笔页门面退场、走进小屋里画、洇纸、屋子三样东西的交接。门厅那段已删的四幕文案是栽跟头的地方，结论留下来给后面所有页用。</p></section>
+        <blockquote class="said"><p>太快、不自然。</p><footer>屋主，门厅滚动叙事那一版（2026-09-04加、09-05删），换成smoothstep之前</footer></blockquote>
+        <section class="fact"><h4>为什么</h4><p>窗口交叠时两段字各以约1/3的不透明度同时画出来，一个字都读不清。ease-out的速度峰在起点：手指刚一动，内容已经窜出去一大截，像被推了一把，不像跟着手走。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>这条规矩是对「叠在同一位置、要读的字」说的：图可以留一点交叠，工具页右栏就留了，免得交接正中一片空。同一个滚动进度驱动的东西，曲线全站只用一条，不同元素各用各的就又打架了。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「4.7 滚动叙事：加过，又删了」（「叠在同一位置的东西」「擦洗的曲线要用 smoothstep」）、「6.3 数值」（「右栏淡入淡出」「文案淡入淡出」「曲线一律」「太快、不自然」）</p>
+      </div>
+    </article>
+
+    <!-- 15 卡片跟指针 -->
+    <article class="entry" id="mo-xw-tilt" data-scope="xiaowu" data-toc="卡片跟指针">
+      <header class="entry-head">
+        <h3>门厅卡片跟着指针侧过来：2.8°和1.9°、透视900；远的反着走，近的多走一截</h3>
+        <p class="entry-lede">rotateY(x×2.8°) rotateX(y×−1.9°)，x、y是指针相对门厅中心的位置（−1到1），rAF里按55ms时间常数跟过去。垂柳（远）往指针反方向挪，卡片只转，盆栽（近）顺着多走一截。变量默认0：脚本没跑、减弱动效时就是原样。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-01定</li></ul>
+      </header>
+      <div class="specimen mo-specimen xw mot" data-demo="tilt">
+        <p class="mo-cap mo-cap-xw"><b>演示</b>鼠标在样框里移动；焦点在样框里时按方向键挪「指针」、Home归零。原物只在精确指针上做，这里手机上按住拖动也算，方便看。切「第一版」和「方向写反（示意）」对比；右边读数是这块样框里卡片和盆栽左右各挪了多少。</p>
+        <div class="mo-bar">
+          <div class="seg seg-sm mo-seg mo-seg-xw" role="radiogroup" aria-label="参数">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-tl="now">现行2.8°/1.9°</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tl="v1">第一版1.6°/1.1°</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tl="flip">方向写反（示意）</button>
+          </div>
+        </div>
+        <div class="mot-stage" data-t="stage" tabindex="0" role="group" aria-label="倾斜演示区（示例）：方向键挪指针，Home 归零">
+          <span class="mot-vine" data-t="vine" aria-hidden="true"><svg viewBox="0 0 70 100" focusable="false"><path d="M30 0C32 22 26 42 34 64C38 76 36 88 40 98M44 0C46 18 50 34 46 52" fill="none" stroke="#6F855C" stroke-width="1.4" stroke-linecap="round"/><g fill="#9BAE86"><ellipse cx="24" cy="18" rx="7" ry="3.4" transform="rotate(-30 24 18)"/><ellipse cx="37" cy="34" rx="7" ry="3.4" transform="rotate(25 37 34)"/><ellipse cx="27" cy="52" rx="7" ry="3.4" transform="rotate(-35 27 52)"/><ellipse cx="41" cy="72" rx="6" ry="3" transform="rotate(30 41 72)"/><ellipse cx="52" cy="26" rx="6" ry="3" transform="rotate(35 52 26)"/></g><g fill="#A9BC96"><ellipse cx="40" cy="12" rx="6" ry="3" transform="rotate(30 40 12)"/><ellipse cx="51" cy="44" rx="6" ry="3" transform="rotate(-25 51 44)"/><ellipse cx="33" cy="86" rx="5.5" ry="2.8" transform="rotate(-30 33 86)"/></g></svg></span>
+          <div class="mot-set" data-t="set" aria-hidden="true">
+            <span class="mot-blob xw-kai">小屋</span><span class="mot-plate"></span>
+          </div>
+          <span class="mot-pot" data-t="pot" aria-hidden="true"><svg viewBox="0 0 60 80" focusable="false"><g fill="#7E9367"><ellipse cx="22" cy="30" rx="12" ry="5" transform="rotate(-50 22 30)"/><ellipse cx="38" cy="26" rx="12" ry="5" transform="rotate(45 38 26)"/><ellipse cx="30" cy="18" rx="11" ry="4.5" transform="rotate(-85 30 18)"/></g><g fill="#A9BC96"><ellipse cx="15" cy="40" rx="10" ry="4" transform="rotate(-20 15 40)"/><ellipse cx="45" cy="38" rx="10" ry="4" transform="rotate(25 45 38)"/></g><path d="M14 46H46L42 76H18Z" fill="#D3D0BF" stroke="#B2AF9B" stroke-width="1"/><rect x="12" y="44" width="36" height="6" rx="2" fill="#C9C6B4" stroke="#B2AF9B" stroke-width="1"/><path d="M16 58H44" stroke="#BFBCA9" stroke-width="1"/></svg></span>
+          <span class="mot-dot" data-t="dot" aria-hidden="true"></span>
+        </div>
+        <p class="mo-readout mo-readout-xw" data-t="out"></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>.hall { perspective: 900px; perspective-origin: 50% 42%; }
+.set  { transform-style: preserve-3d;
+        transform: rotateY(calc(var(--hall-tilt-x, 0) * 2.8deg)) rotateX(calc(var(--hall-tilt-y, 0) * -1.9deg)); }
+.pot  { transform: translate3d(calc(var(--hall-tilt-x, 0) * -8px), calc(var(--hall-tilt-y, 0) * -5px), 70px); }  /* 近 */
+.vine { transform: translate3d(calc(var(--hall-tilt-x, 0) * 6px), calc(var(--hall-tilt-y, 0) * 3px), 0); }      /* 远 */
+.set::before { transform: translate3d(calc(var(--hall-tilt-x, 0) * -9px), calc(var(--hall-tilt-y, 0) * 5px), 0); } /* 挂画投影 */
+// hall-depth：只写两个变量；阻尼在 JS 里，按真实帧间隔算（高刷屏和60Hz手感一致）
+cur += (target - cur) * (1 - Math.exp(-dt / 55));   // tau 55ms
+差值 &lt; .0008 → 停 rAF；只在 (hover: hover) and (pointer: fine) 上做；减弱动效不做
+实测摆幅  垂柳 +10、卡片 −11、盆栽 −27 px（1440视口、卡宽710）</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋门厅那张一体卡片（色块＋水彩画）；工具页门面、随笔页门面是同一张卡。</p></section>
+        <blockquote class="said"><p>不跟手。</p><footer>屋主，2026-09-01，第一版倾斜（每帧固定走0.12，约130ms），代码注释转述</footer></blockquote>
+        <section class="fact"><h4>为什么</h4><p>第一版1.6°/1.1°配1200的透视，卡片四角全程只挪5.7px，静态截图前后几乎分不出来：克制过头就是等于没做。方向第一版写反过：垂柳比卡片走得还多，看起来像挂在卡片前面。阻尼不用CSS transition：transition每一帧都被新值打断重来，跟指针连续移动叠在一起是一种说不清的黏滞感；55ms是跟得紧又有重量的一档。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>盆栽只靠translateZ不够：Z=70配900透视只多走8%，和卡片差不到1px，真正拉开距离的是那个2D位移。触摸屏不做（没有悬停，窄屏卡片本来就收小了），设备方向也不做（iOS要弹权限框，为一个装饰去要权限不成比例）。</p></section>
+        <p class="source">出处：Ysevan_web/app/hall.module.css「.set」（「立体感」「角度是量着定的」「三层的位移方向是有讲究的」「实测三层的横向摆幅」）、「.pot」（「盆栽只靠 translateZ 是不够的」）；Ysevan_web/components/hall-depth.tsx「HallDepth」、「followTauMs」（「为什么阻尼在 JS 里做」「触摸屏不做」「不跟手」）</p>
+      </div>
+    </article>
+
+    <!-- 16 漂浮叶子 -->
+    <article class="entry" id="mo-xw-leaves" data-scope="xiaowu" data-toc="漂浮叶子">
+      <header class="entry-head">
+        <h3>漂浮叶子：极缓的正弦叠加，被指针推开后挂在弹簧上漂回来，风停了一帧都不画</h3>
+        <p class="entry-lede">卡片后面十几片从这一页那幅画里取下的叶子，各绕自己的「家」做周期约13、8、11、9秒的正弦叠加，相位按黄金角撒开；指针170px以内受斥力，挂在刚度5.8、阻尼比.85的弹簧上回位；指针停7秒风就停，弹簧也停稳后不再请求下一帧。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-20定</li></ul>
+      </header>
+      <div class="specimen mo-specimen xw mol" data-demo="leaves">
+        <p class="mo-cap mo-cap-xw"><b>轻量示意，不是原物</b>原物是WebGL画的、从画里抠下来的叶子；这里用十二片线描叶子走同一套漂法和推法。鼠标在样框里经过，附近的叶子被推开；键盘或触摸点「从中间推一下」。滚到这里才开始漂，滚走、切到后台就停；指针停7秒后看右下角的出帧数停住。</p>
+        <div class="mo-bar"><button type="button" class="mo-xbtn" data-l="push">从中间推一下</button></div>
+        <div class="mol-stage" data-l="stage">
+          <div class="mol-card" aria-hidden="true"><span class="xw-kai">小屋</span></div>
+          <div class="mol-leaves" data-l="leaves" aria-hidden="true"></div>
+          <span class="mol-meter" data-l="meter" aria-hidden="true"></span>
+        </div>
+        <p class="mo-readout mo-readout-xw" data-l="out" aria-live="polite"></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>漂   driftX = (6 + 6·近) · (sin(.48t + p) + .4 · sin(.79t + 2p))    周期约13s、8s
+     driftY = (4 + 4·近) · sin(.57t + 1.7p)                         约11s
+     sway   = .07 rad · sin(.67t + p)                               约9s
+     p = 序号 × 2.399（黄金角撒开，免得一起摆）；远的幅度小、漂得慢至多40%
+推   距离170px以内斥力800 · (1 − .5·远近) · (1 − d/170)² px/s²
+     弹簧 k = 5.8（周期约2.6s）、阻尼比 .85（回位不来回晃）；横向位移顺带转 .004 rad/px
+停   指针停7s后「风」以 .6s 时间常数停下；速度与合力都近0 → 不再请求下一帧
+     标签页隐藏、离开视口、这一层已经淡出也停
+长度 都乘「卡宽 / 708.08」；角度和时间不乘</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋门厅、工具架门面、随笔门面三页（2026-09-21扩到三页）。永远在卡片之下，不压画和字。夜里叶子怎么画见色彩页<a href="color.html#x-art">夜里的画</a>。</p></section>
+        <section class="fact"><h4>为什么</h4><p>像屋外的风带着几片叶子：不是粒子、不是光晕，数量个位数到十几。几个周期互不成整数倍，相位又撒开，十几片永远不会一起摆。装饰的东西不能一直在画：没显卡那台每一帧都是CPU的活，风停了画面就静止、不出帧，指针一动再接着漂，相位接着上次、不跳。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>长度要跟着卡片缩放：叶子大小、漂移振幅、推开的半径和力道都乘「卡宽÷708.08」，不折算的话大窗口上叶子显得小、推一下反应迟钝，像一层和卡片无关的贴纸。刚度和阻尼比不乘，它们定的是周期。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「4.8 漂浮」、「4.8.2 数值」（「自发漂浮」「推开」「按需渲染」「卡宽 708.08」）；Ysevan_web/components/hall-float/float-scene.ts「pushRadius」、「springK」、「idleMs」、「driftX」（「黄金角」）</p>
+      </div>
+    </article>
+
+    <!-- 17 灯呼吸 -->
+    <article class="entry" id="mo-xw-breath" data-scope="xiaowu" data-toc="灯呼吸">
+      <header class="entry-head">
+        <h3>夜里画中的灯8秒呼吸一次、幅度5%；精简档不让它呼吸，墙角才停得下来</h3>
+        <p class="entry-lede">breath = 1 + 0.05·sin(0.785t)，乘在门窗的暖光上。它是停下来之后唯一还在动的东西：留着它，render()永远要下一帧、循环永不退出，「停稳后重画一张清楚的」就永远等不到。软件渲染的精简档里把它关了。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen mo-specimen xw mob" data-demo="breath" data-mode="dark">
+        <p class="mo-cap mo-cap-xw"><b>轻量示意，不是原物</b>原物是着色器里的灯光；这里一扇示意的窗，暖光层的opacity按同一个式子走。点「走到墙角」：完整档灯一直呼吸，帧数一直涨，画面停在「走动档」；精简档停稳后重画一次就不再出帧。5%很淡，勾「幅度×6」才看得清（示意）。</p>
+        <div class="mo-bar">
+          <div class="seg seg-sm mo-seg mo-seg-xw" role="radiogroup" aria-label="档位">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-bt="full">完整档：灯呼吸</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-bt="soft">精简档：不呼吸</button>
+          </div>
+          <button type="button" class="mo-xbtn" data-b="walk">走到墙角</button>
+          <button type="button" class="mo-tog mo-tog-xw" aria-pressed="false" data-b="amp">幅度×6</button>
+        </div>
+        <div class="mob-stage" data-b="stage">
+          <div class="mob-wall" data-b="wall" aria-hidden="true">
+            <span class="mob-window"><span class="mob-glow" data-b="glow"></span></span>
+            <span class="mob-door"><span class="mob-glow mob-glow-door" data-b="glow2"></span></span>
+          </div>
+          <dl class="mob-meter" data-b="meter"></dl>
+        </div>
+        <p class="mo-readout mo-readout-xw" data-b="out" aria-live="polite"></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>/* 片元着色器：入夜 = 压暗偏冷 + 门窗里的暖光 + 8秒极缓呼吸 */
+float breath = 1.0 + 0.05 * sin(uTime * 0.785);        // 2π / 0.785 ≈ 8s
+vec3 night = dusk + lit * warm * (glow * 1.45 * breath) + warm * glow * glow * 0.20 * breath;
+
+// 走进小屋 render()：返回 true = 下一帧还要画
+var breathing = detail !== "soft" &amp;&amp; night &gt; 0.001;    // 精简档不呼吸
+if (progress === posed &amp;&amp; !breathing &amp;&amp; !nightMoving) return false;   // 停稳：循环退出
+…
+return breathing || nightMoving;
+白天  静止不画；夜里只要 night &gt; 0 → 每帧都走（rAF 在后台自动暂停）</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>门厅画内景深与走进小屋的场景，都只在夜里。</p></section>
+        <section class="fact"><h4>为什么</h4><p>夜里的配方是「压暗偏冷＋门窗里的暖光＋8秒呼吸」：灯是活的，屋子才像有人。精简档砍它不是为了省那一点帧，是「停稳」能不能成立的前提：软件渲染上停在墙角后要按325万像素重画一张清楚的；呼吸留着，这一帧没机会发生，画出来也会被下一帧按走动密度盖掉，一块铺满视口的画布还会一直画下去。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>发现它靠的是读代码，不是验收：白天那次录像验的是「不闪」，验过了，可它测不到夜里压根没进入停稳那个状态。呼吸按绝对时钟走，夜里做逐像素比对会有1/255级的抖动，比之前要先把那块画布藏掉。</p></section>
+        <p class="source">出处：Ysevan_web/components/plate-depth.tsx「PlateDepth」（「入夜」「float breath」「白天静止不画」）；Ysevan_web/components/hall-walk/scene/index.ts「breathing」（「精简档不让灯呼吸」）；Ysevan_web/docs/xiaowu-ui-spec.md「4.9.8 精简档：走动一档预算，停稳另一档」（「精简档不让灯呼吸」「发现它靠的是读代码」）、「4.9.3 什么时候有跑道（分档与降级）」（「按绝对时钟走」）</p>
+      </div>
+    </article>
+  </section>
+</main>
+</body></html>

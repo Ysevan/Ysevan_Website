@@ -21,7 +21,7 @@
   <!-- ============================ 工具 · 液态玻璃 ============================ -->
   <section class="group" id="g-tools" data-scope="tools">
     <h2 class="group-title">工具 · 液态玻璃</h2>
-    <p class="group-lede">黑红、六套中性、粉彩三条路都被屋主否过，这里只写定下来的；为什么不是那样，见「否掉的方向」（下一轮补）。</p>
+    <p class="group-lede">黑红、六套中性、粉彩三条路都被屋主否过，这里只写定下来的；为什么不是那样，见否掉的方向「<a href="rejected.html#r-sheet">黑红与六套中性</a>」「<a href="rejected.html#r-pastel">粉彩三选与六套</a>」两条，被否的样子按当时的色值画在现行旁边。</p>
 
     <!-- 1 中性底与玻璃 -->
     <article class="entry" id="c-glass" data-scope="tools" data-toc="中性底与玻璃">
@@ -70,13 +70,13 @@
       </div>
       <div class="entry-body">
         <section class="fact"><h4>数值</h4>
-<pre><code>html { background: #F4F5F9; }            /* 深 #0B0C10；body 保持透明 */
---glass:        rgba(255,255,255,.62);  /* 深 rgba(40,42,52,.55) */
---glass-strong: rgba(255,255,255,.78);  /* 深 rgba(44,46,58,.72) */
---glass-edge:   rgba(255,255,255,.9);   /* 顶边亮线；深 rgba(255,255,255,.12) */
---sep:          rgba(60,60,67,.12);     /* 深 rgba(84,84,88,.5) */
+<pre><code>html { background: #F4F5F9; }            /* 深：#0B0C10；body 保持透明 */
+--glass:        rgba(255,255,255,.62);  /* 深：rgba(40,42,52,.55) */
+--glass-strong: rgba(255,255,255,.78);  /* 深：rgba(44,46,58,.72) */
+--glass-edge:   rgba(255,255,255,.9);   /* 顶边亮线；深：rgba(255,255,255,.12) */
+--sep:          rgba(60,60,67,.12);     /* 深：rgba(84,84,88,.5) */
 --shadow: 0 10px 30px rgba(20,30,60,.08), inset 0 1px 0 var(--glass-edge);
-                                        /* 深 0 10px 30px rgba(0,0,0,.35) */</code></pre>
+                                        /* 深：0 10px 30px rgba(0,0,0,.35) */</code></pre>
         </section>
         <section class="fact"><h4>用在哪</h4><p>.62磨砂：侧栏、顶栏、tab bar、弹层——视口大小的面。.78不磨砂：条目卡、阅读栏、右栏——随正文长的面。本站同样：侧栏、顶栏挂.62磨砂，条目卡.78不挂。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主要「参考苹果的UI和配色」。分层只靠玻璃、投影和分隔线，不用边框。长面不挂磨砂：长到近两万像素会超显卡纹理上限、整层丢弃，每次滚动还要重新光栅化；屋主台式机没显卡，磨砂正是那台机器的瓶颈。</p></section>
@@ -139,7 +139,7 @@
         <section class="fact"><h4>为什么是.76</h4><p>样张原值.62叠最亮光晕角只有3.42；改.73只压过了蓝光晕，绿、橙、粉、青、靛的光晕更深，只有4.28–4.49；.76让六色都过（本站实测条目卡最低4.91）。一个值，不按强调色分表。</p></section>
         <section class="fact"><h4>各家本地压深</h4><p>统一值只是起点：plan内容区的字直接压光晕、没有玻璃底，本地压到.85；card的hero副标题、页脚也在裸光晕上，压到.89、深色.64。这两处都有记录，是SPEC允许的本地偏离。本站把所有文字都放在玻璃卡上，分组说明这类压裸光晕的字只用正文色，所以.76够用。</p></section>
         <section class="fact trap"><h4>坑</h4><p>次级字.76直接压在光晕中心（不隔玻璃）只有3.52。字要么上玻璃，要么换正文色，别指望统一值免检。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:82</code>「降级与可访问性」、<code>:94</code>「次级字统一值与各项目自测义务」、<code>:137</code>「各家有记录的偏离」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:108</code>「降级与可访问性」、<code>:120</code>「次级字统一值与各项目自测义务」、<code>:163</code>「各家有记录的偏离」</p>
       </div>
     </article>
 
@@ -285,13 +285,13 @@
       </div>
       <div class="entry-body">
         <section class="fact"><h4>文字档</h4>
-<pre><code>/* 浅色：HIG 增强对比度 */  蓝 #0040DD  绿 #1F7A36  靛 #3634A3  橙 #C93400  粉 #D30F45  青 #0071A4  红 #D70015
-/* 深色：HIG 深色增强对比度 */ 蓝 #409CFF  绿 #30DB5B  靛 #8E8BFF  橙 #FFB340  粉 #FF6482  青 #5AC8F5  红 #FF6961</code></pre>
+<pre><code>/* 浅色：HIG 增强对比度 */  蓝 #0040DD · 绿 #1F7A36 · 靛 #3634A3 · 橙 #C93400 · 粉 #D30F45 · 青 #0071A4 · 红 #D70015
+/* 深色：HIG 深色增强对比度 */ 蓝 #409CFF · 绿 #30DB5B · 靛 #8E8BFF · 橙 #FFB340 · 粉 #FF6482 · 青 #5AC8F5 · 红 #FF6961</code></pre>
           <p>绿用#1F7A36，不用HIG的#248A3D（压白只有4.40）；深色靛从HIG的#7D7AFF提亮到#8E8BFF（对#0B0C10是6.8）。</p>
         </section>
         <section class="fact"><h4>渐变浅端</h4><p>浅色accent-2：蓝#5AC8FA、绿#A8E063、靛#BF5AF2、橙#FFD60A、粉#FF9AA2、青#64D2FF。深色样张只重写了蓝（#64D2FF），其余沿用浅色那组，本站与岗岗、card一样照这个写。</p></section>
         <section class="fact"><h4>现状</h4><p>深色accent-2四家是三种写法：刷刷、plan各自配了一套，互相也对不上。统一与否等控制室定，正在对齐。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:17</code>「颜色（苹果系统色）」、<code>:37</code>「自适应」文字档、<code>:83</code>「降级与可访问性」、<code>:162</code>「各家有记录的偏离」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:17</code>「颜色（苹果系统色）」、<code>:63</code>「自适应」文字档、<code>:109</code>「降级与可访问性」、<code>:188</code>「各家有记录的偏离」</p>
       </div>
     </article>
 
@@ -361,7 +361,7 @@
         <section class="fact"><h4>为什么</h4><p>曾经为了4.5把渐变压深，屋主看了说要和左上角一样浅。审美例外只开这一处：别的承载信息的文字——正文、链接、chip、次按钮——一律≥4.5，压深的「文字档」只用在它们身上。</p></section>
         <blockquote class="said"><p>「所有颜色的按钮色可以和页面左上角的颜色一样浅一点」</p><footer>屋主 · 2026-09-23</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>别用「大字3:1」口径粉饰；对比度脚本把主按钮单列成「记录不断言」，其余照断言。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:81</code>「降级与可访问性」、<code>:105</code>「对比度验收方法」；比值与<code>tools/card/collection/shared/theme.css:5</code>文件头注释逐个对得上</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:107</code>「降级与可访问性」、<code>:131</code>「对比度验收方法」；比值与<code>tools/card/collection/shared/theme.css:5</code>文件头注释逐个对得上</p>
       </div>
     </article>
 
@@ -453,7 +453,7 @@
         <section class="fact"><h4>用在哪</h4><p>plan的风险色：红＝冲突逾期、橙＝今天截止、黄＝两天内到期（2026-10-08加，只给日期标签，见下一条<a href="#c-urgency">「黄色只给两天内到期」</a>）、绿＝完成、灰＝未开始和离截止三天以上；风险色覆盖阶段色，用户不能自定义。刷刷答对绿、答错红。本站条目里的「坑」铺橙色实色软底，左边写着「坑」字，不只靠颜色。</p></section>
         <section class="fact"><h4>为什么</h4><p>语义不能跟着强调色变，换了强调色「红」还得是红。色弱的人分不清红绿，所以风险提示必须有文字说明，不能只靠颜色。</p></section>
         <section class="fact"><h4>本站本地</h4><p>深色红字HIG原值#FF6961压强玻璃叠青光晕最浓角只有4.49，本站提亮到#FF6E66（4.63）；其余五个文字档压最不利角都≥4.62。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:18</code>「颜色（苹果系统色）」、<code>:37</code>文字档；<code>tools/plan/docs/BUSINESS_LOGIC.md:994</code>「风险与颜色逻辑」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:18</code>「颜色（苹果系统色）」、<code>:63</code>文字档；<code>tools/plan/docs/BUSINESS_LOGIC.md:1001</code>「风险与颜色逻辑」</p>
       </div>
     </article>
 
@@ -500,17 +500,17 @@
   其余        normal   灰   还有N天（--fill 底 + 次级字）
 已完成 / 已归档        一律 normal，只给灰色的绝对日期（10月5日）
 
-黄（2026-10-08 加，只给 soon）
-  填充    #FFCC00 / #FFD60A   只当填充，不当字：压白 1.51、压页面底 1.39
-  文字档  #7A5200 / #FFD60A   压自己的软底 6.23 / 9.04
-  软底    #FDF3CF / #3A3214   实色
+黄（2026-10-08加，只给 soon）
+  填充    #FFCC00 / #FFD60A   只当填充，不当字：压白1.51、压页面底1.39
+  文字档  #7A5200 / #FFD60A   压自己的软底6.23 / 9.04
+  软底    #FDF3CF / #3A3214   （实色）
 token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow-text);</code></pre>
         </section>
         <section class="fact"><h4>用在哪</h4><p>plan今日、日程、全部任务三页的任务行日期标签，和详情里的截止日期胶囊，同一个<code>urgencyTone</code>。全部任务页近两天之外写绝对日期（周四／9月30日），颜色照样按这四档。SPEC写明四家通用：其余三家以后有日期标签照这一套。和上一条<a href="#c-semantic">「语义色」</a>的交叉：橙从「即将截止」收窄成「今天截止」，明天、后天归黄。</p></section>
         <section class="fact"><h4>为什么</h4><p>改版前不急的日期（「明天」「还有12天」「10月20日」）也用强调色软底＋强调色字，和「逾期」一样大、一样粗、一样有颜色，远的和急的一样响。分四档以后，只有真急的带颜色，越急越暖；强调色只留给能点的东西，日期不再冒充按钮。</p></section>
         <blockquote class="said"><p>一眼不知道哪里是重点</p><footer>屋主，2026-10-08，对照SuperTodo（SPEC §2a记录）</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>系统黄当字压白只有1.51、压页面底1.39：浅色的字必须压到<code>#7A5200</code>，深色那档的字才能直接用系统黄。plan写完对比度测试后先把<code>--yellow-text</code>改回<code>#FFCC00</code>跑一次，当场红，判据才算接上了。已完成、已归档的任务要单独判：不判的话做完的事也挂着「逾期」，plan 10-08修过一次。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:19</code>「颜色（苹果系统色）」、<code>:22</code>「2a. 紧急程度标签」；<code>tools/plan/app/src/domain/dateLabel.ts:30</code>「urgencyTone」、<code>:102</code>「isSettledTask」；<code>tools/plan/app/src/styles/tokens.css:186</code>「--yellow-text」、<code>:376</code>「--soon-50」；<code>tools/plan/app/src/styles/tokens.contrast.test.ts:75</code>；<code>tools/plan/docs/BUSINESS_LOGIC.md:1017</code>「黄色：两天内到期」、<code>:1857</code>「紧急程度只用一组色」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:19</code>「颜色（苹果系统色）」、<code>:22</code>「2a. 紧急程度标签」；<code>tools/plan/app/src/domain/dateLabel.ts:30</code>「urgencyTone」、<code>:102</code>「isSettledTask」；<code>tools/plan/app/src/styles/tokens.css:186</code>「--yellow-text」、<code>:387</code>「--soon-50」；<code>tools/plan/app/src/styles/tokens.contrast.test.ts:75</code>；<code>tools/plan/docs/BUSINESS_LOGIC.md:1024</code>「黄色：两天内到期」、<code>:1864</code>「紧急程度只用一组色」</p>
       </div>
     </article>
 
@@ -550,14 +550,14 @@ token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow
       </div>
       <div class="entry-body">
         <section class="fact"><h4>数值</h4>
-<pre><code>--fill: #E6E6E6;          /* 浅 = 白与正文色 #1C1C1E 兑 11%；深 #393A3E = 深底与正文色兑 20% */
---accent-tint: #E3F0FF;   /* 实色软底：浅 = 填充色兑 11% 进白；深 = 兑 18% 进 #17181C（#152B45） */
+<pre><code>--fill: #E6E6E6;          /* 浅 = 白与正文色 #1C1C1E 兑11%；深 #393A3E = 深底与正文色兑20% */
+--accent-tint: #E3F0FF;   /* 实色软底：浅 = 填充色兑11%进白；深 = 兑18%进 #17181C（#152B45） */
 --accent-shadow: rgba(0,122,255,.13);  /* 投影：必须半透明，不压字 */
-/* plan 再拆一支 --accent-stroke（描边，半透明，按图形 ≥3 判） */</code></pre>
+/* plan 再拆一支 --accent-stroke（描边，半透明，按图形 ≥3判） */</code></pre>
         </section>
         <section class="fact"><h4>为什么</h4><p>半透明软底和压在上面的字是同一个色相，底吃进光晕后对比度随位置漂：岗岗实测同色相文字只有3.9–4.4，plan是「同一个chip挪个位置就从4.4掉到3.3」。实色把这一格从「随光晕变」变成确定值，文字档能原封不动用统一值。</p></section>
         <section class="fact"><h4>命名教训</h4><p>旧的<code>--accent-soft</code>同时当软底、投影、描边，<code>--on-accent</code>同时当主按钮白字和实底上的字——名字说的是长相，所以谁都拿去用。token的名字必须说明用途，不是说明颜色。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:96</code>「次级字统一值与各项目自测义务」、<code>:119</code>「plan本地第三轮」、<code>:134</code>「命名教训」；<code>tools/gang/design-proposal.md:832</code>「例外与理由」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:587</code>「对比度第三轮」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:122</code>「次级字统一值与各项目自测义务」、<code>:145</code>「plan本地第三轮」、<code>:160</code>「命名教训」；<code>tools/gang/design-proposal.md:832</code>「例外与理由」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:587</code>「对比度第三轮」</p>
       </div>
     </article>
 
@@ -597,7 +597,7 @@ token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow
         </section>
         <section class="fact"><h4>为什么</h4><p>光晕是这套视觉的主要特征，不为了字色去减淡它——字不够就上玻璃或压深字，别动光晕。用固定伪元素而不是<code>background-attachment:fixed</code>：iOS Safari不支持固定附着，背景会被拉成整页高、越往下越跑偏。</p></section>
         <section class="fact trap"><h4>坑</h4><p>光晕的vw尺寸与blur半径不乘大屏缩放系数；<code>html</code>与<code>body</code>只能有一个写底色（见「中性底」那条）。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:20</code>「颜色（苹果系统色）」；<code>tools/plan/docs/design/shua-glass.html:31</code><code>body::before</code>；<code>tools/gang/styles.css:606</code>「刻意不用background-attachment:fixed」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:20</code>「颜色（苹果系统色）」；<code>tools/plan/docs/design/shua-glass.html:31</code><code>body::before</code>；<code>tools/gang/styles.css:612</code>「刻意不用background-attachment:fixed」</p>
       </div>
     </article>
 
@@ -684,7 +684,7 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
         <section class="fact"><h4>两法</h4><ol><li>公式法压最不利角：对每个文字色，底取玻璃叠光晕最浓那一角的合成色，套上面的L/C。</li><li>像素法交叉验证：真实页面逐元素截图，取底色像素众数（含磨砂与光晕的最终合成），浅深 × 六强调色 × 全部承载文字的元素。</li></ol><p>两条路各抓得到对方漏的：岗岗公式法抓到粉色光晕下顶栏环节名4.35，像素法抓到深色弹层底太亮、三个强调色选中项4.17–4.25。任一条不过就算不过。</p></section>
         <section class="fact"><h4>本站实测</h4><p>条目卡（强玻璃.78叠光晕最浓角），浅深 × 六强调色：次级字最低4.91（浅靛）/5.17（深青）；强调色文字档最低4.75（浅粉）/4.68（深蓝）。侧栏磨砂.62叠饱和度提升后的光晕：粉文字档只有4.26，所以侧栏、顶栏、tab bar里的强调色字一律压在强玻璃选中底上（≥4.70）。</p></section>
         <section class="fact trap"><h4>坑</h4><p>读<code>getComputedStyle().backgroundColor</code>只拿到rgba字面量，算不出真实底色；统一值只是起点，各项目必须在自己最不利的光晕角下实测，不够就本地压深并记录。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:100</code>「对比度验收方法」、<code>:98</code>「各项目自测义务」；<code>tools/gang/design-proposal.md:771</code>「computed值不可信」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:126</code>「对比度验收方法」、<code>:124</code>「各项目自测义务」；<code>tools/gang/design-proposal.md:771</code>「computed值不可信」</p>
       </div>
     </article>
 
@@ -723,8 +723,8 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
 @keyframes twinkle { 0%, 100% { opacity: .85 } 50% { opacity: .55 } }
 @media (prefers-reduced-motion: reduce) { .stage::before { animation: none } }</code></pre>
         </section>
-        <section class="fact"><h4>为什么</h4><p>舞台底要随强调色的深色调，不要纯黑（屋主裁定）。六选（极光雾、聚光舞台、网格渐变加颗粒、星野、玻璃台面、光环）里挑了星野；球形选卡撤掉之后星野底留了下来。</p></section>
-        <p class="source">出处：<code>tools/card/collection/shared/theme.css:20</code><code>--stage</code>；<code>tools/card/collection/gallery.css:17</code><code>.globe-stage::before</code>星点、<code>:40</code>减弱动效；<code>tools/card/CLAUDE.md:228</code>「画廊的几条硬约束」</p>
+        <section class="fact"><h4>为什么</h4><p>舞台底随强调色的深色调、不用纯黑：这一句是控制室2026-09-23 02:15下发时自己加的，查不到屋主说过（这里以前写成「屋主裁定」，2026-10-08查会话记录更正，经过见<a href="rejected.html#r-stage">否掉的方向 · 舞台底六选</a>）。屋主从六选（极光雾、聚光舞台、网格渐变加颗粒、星野、玻璃台面、光环）里回了「D」，挑的是星野；球形选卡撤掉之后星野底留了下来。</p></section>
+        <p class="source">出处：<code>tools/card/collection/shared/theme.css:24</code><code>--stage</code>；<code>tools/card/collection/gallery.css:17</code><code>.globe-stage::before</code>星点、<code>:40</code>减弱动效；<code>tools/card/CLAUDE.md:233</code>「星野」；控制室会话记录（2026-09-23 02:15下发「舞台底改成随强调色的深色调而不是纯黑」，02:20屋主回「D」）</p>
       </div>
     </article>
   </section>
@@ -756,7 +756,7 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
               <li><button type="button" class="sw sw-sm" data-copy="#4A4D35" aria-label="复制 #4A4D35" style="--c:#4A4D35"><i></i></button><div><b>深橄榄</b><code>#4A4D35</code><small>链接、规格数字、巨字「小屋」 · 8.09</small></div></li>
               <li><button type="button" class="sw sw-sm" data-copy="#E1E0CE" aria-label="复制 #E1E0CE" style="--c:#E1E0CE"><i></i></button><div><b>橄榄浅</b><code>#E1E0CE</code><small>药丸标签底；hover面也用它，不能是橙</small></div></li>
               <li><button type="button" class="sw sw-sm" data-copy="#D5D4C1" aria-label="复制 #D5D4C1" style="--c:#D5D4C1"><i></i></button><div><b>色块</b><code>#D5D4C1</code><small>只有两处：门厅色块、随笔头像</small></div></li>
-              <li><button type="button" class="sw sw-sm" data-copy="#EDEAE3" aria-label="复制 #EDEAE3" style="--c:#EDEAE3"><i></i></button><div><b>雅灰</b><code>#EDEAE3</code><small>只给地毯、写作框</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#EDEAE3" aria-label="复制 #EDEAE3" style="--c:#EDEAE3"><i></i></button><div><b>雅灰</b><code>#EDEAE3</code><small>只给地毯（写作框是未渲染的设计规格）</small></div></li>
               <li><button type="button" class="sw sw-sm" data-copy="#E4E0D6" aria-label="复制 #E4E0D6" style="--c:#E4E0D6"><i></i></button><div><b>线</b><code>#E4E0D6</code><small>顶栏描边、卡片边框</small></div></li>
               <li><button type="button" class="sw sw-sm" data-copy="#AA4E1D" aria-label="复制 #AA4E1D" style="--c:#AA4E1D"><i></i></button><div><b>熔岩橙</b><code>#AA4E1D</code><small>只给随笔日期；不做按钮、强调、标签 · 5.09</small></div></li>
             </ul>
@@ -774,7 +774,7 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
               <li><button type="button" class="sw sw-sm" data-copy="#E0D7BD" aria-label="复制 #E0D7BD" style="--c:#E0D7BD"><i></i></button><div><b>灯下大字</b><code>#E0D7BD</code><small>深橄榄的夜里 · 12.50</small></div></li>
               <li><button type="button" class="sw sw-sm" data-copy="#2E3138" aria-label="复制 #2E3138" style="--c:#2E3138"><i></i></button><div><b>橄榄浅</b><code>#2E3138</code><small>药丸标签底</small></div></li>
               <li><button type="button" class="sw sw-sm" data-copy="#2A2E37" aria-label="复制 #2A2E37" style="--c:#2A2E37"><i></i></button><div><b>色块</b><code>#2A2E37</code><small>青黛，和画里的夜空同族</small></div></li>
-              <li><button type="button" class="sw sw-sm" data-copy="#25272D" aria-label="复制 #25272D" style="--c:#25272D"><i></i></button><div><b>雅灰</b><code>#25272D</code><small>地毯、写作框</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#25272D" aria-label="复制 #25272D" style="--c:#25272D"><i></i></button><div><b>雅灰</b><code>#25272D</code><small>地毯</small></div></li>
               <li><button type="button" class="sw sw-sm" data-copy="#353840" aria-label="复制 #353840" style="--c:#353840"><i></i></button><div><b>线</b><code>#353840</code><small>描边、边框</small></div></li>
               <li><button type="button" class="sw sw-sm" data-copy="#EB8947" aria-label="复制 #EB8947" style="--c:#EB8947"><i></i></button><div><b>炉火橙</b><code>#EB8947</code><small>熔岩橙提亮一档，仍只给日期 · 7.01</small></div></li>
             </ul>
@@ -782,7 +782,7 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
         </div>
         <p class="spec-note">色值末尾的数字是对各自纸底的对比度。夜里那组按<code>globals.css</code>里的HSL实算（同文件的十六进制注释是近似值）。</p>
         <div class="use">
-          <p class="use-cap"><b>用起来</b>顶栏当前项、随笔日记卡、药丸标签、主按钮「放进屋里」，白天夜里并排。熔岩橙只出现在日期上；点顶栏换当前项，点主按钮复制它的底色，Tab进来看橄榄焦点环。</p>
+          <p class="use-cap"><b>用起来</b>顶栏当前项、随笔日记卡、药丸标签、主按钮「放进屋里」，白天夜里并排。签名头像在站上是一张小图，这里只画它的底色块。熔岩橙只出现在日期上；点顶栏换当前项，点主按钮复制它的底色，Tab进来看橄榄焦点环。</p>
           <div class="use-pair">
             <div class="up-room xw" data-mode="light">
               <p class="up-cap">白天</p>
@@ -793,7 +793,7 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
               </div>
               <article class="up-entry">
                 <div class="up-top">
-                  <div class="up-who"><span class="up-ava xw-kai" aria-hidden="true">屋</span><span class="up-name">Ysevan</span></div>
+                  <div class="up-who"><span class="up-ava" aria-hidden="true"></span><span class="up-name">Ysevan</span></div>
                   <div class="up-date"><span class="up-day">9月27日 · 星期日</span><span class="up-year">2026</span></div>
                 </div>
                 <p class="up-text">把颜色和交互收进一本合集，以后开新站先翻它。</p>
@@ -813,7 +813,7 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
               </div>
               <article class="up-entry">
                 <div class="up-top">
-                  <div class="up-who"><span class="up-ava xw-kai" aria-hidden="true">屋</span><span class="up-name">Ysevan</span></div>
+                  <div class="up-who"><span class="up-ava" aria-hidden="true"></span><span class="up-name">Ysevan</span></div>
                   <div class="up-date"><span class="up-day">9月27日 · 星期日</span><span class="up-year">2026</span></div>
                 </div>
                 <p class="up-text">把颜色和交互收进一本合集，以后开新站先翻它。</p>
@@ -838,7 +838,7 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
         </section>
         <section class="fact"><h4>为什么</h4><p>「名片为主」的暖屋：低饱和暖底读起来安静，饱和色一多就不是这间屋子了，所以每个饱和色只许出现在写明的位置。对比度不达标的五处（辅助小字、熔岩橙压地毯、输入框边框、hover面语义、缺正文墨槽位）都按实测只压明度修掉。</p></section>
         <section class="fact trap"><h4>坑</h4><p>凡是把<code>--xw-*</code>抄成页内副本的地方，白天夜里都要各抄一份，否则只有白天是对的——随笔卡底行小字入夜后曾掉到2.94。</p></section>
-        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md:103</code>「shadcn标准槽位」、<code>:124</code>「小屋扩展槽位」、<code>:217</code>「对比度实测与必须的微调」；<code>Ysevan_web/app/globals.css:15</code><code>:root</code>、<code>:64</code><code>.dark</code>；「用起来」那块照<code>Ysevan_web/docs/xiaowu-ui-spec.md:1598</code>「站名与导航」当前项、<code>:3163</code>「日记流」、<code>:3090</code>composer的「放进屋里」、<code>:114</code>药丸标签、<code>:249</code>焦点环外扩4px</p>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「2.1 shadcn 标准槽位」、「2.2 小屋扩展槽位（--xw-*）」、「2.5 对比度实测与必须的微调」；<code>Ysevan_web/app/globals.css</code>「:root」、「.dark」；「用起来」那块照<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「5.3 站名与导航」（「当前项」）、「7.4 日记流」、「7.3 composer：完整交互规格（设计规格，当前未渲染）」（「放进屋里」）、「2.1 shadcn 标准槽位」（「药丸标签底」）、「2.5 对比度实测与必须的微调」（「offset 4px」）——当前项、日记卡、药丸标签、焦点环外扩4px；「放进屋里」是写作框的主按钮，写作框只是设计规格、站上没有渲染</p>
       </div>
     </article>
 
@@ -876,7 +876,7 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
         </section>
         <section class="fact"><h4>为什么</h4><p>纯黑阴影压在暖纸底上会发灰。两档之外不要第三档，hover也不换档。工具卡摆在地毯上，门厅卡片挂在墙上，所以挂画投影更沉；色块与画纸各自不加投影，否则接缝处叠出一道脏影。</p></section>
         <section class="fact trap"><h4>坑</h4><p>装饰性边框对比度只有1.24，不作3:1要求——但不要因此把线做得更淡。</p></section>
-        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md:4590</code>「圆角、阴影、焦点环」、<code>:550</code>「三根线，各司其职」、<code>:558</code>「挂画投影在卡片上」、<code>:254</code>「装饰性不达标，可接受」</p>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.3 圆角、阴影、焦点环」、「4.6.2 数值」（「三根线，各司其职」「挂画投影在卡片上」）、「2.5 对比度实测与必须的微调」（「装饰性不达标，可接受」）</p>
       </div>
     </article>
 
@@ -938,7 +938,7 @@ html.dark { color-scheme: dark; }  /* 滚动条、表单控件跟着入夜 */</c
         </section>
         <section class="fact"><h4>为什么</h4><p>夜不是把亮色反相，是「这间屋子晚上长什么样」。夜橄榄（深绿一暗就泥）和琥珀棕（全屋刷暖发腻）两版都被否，第三版把底换成冷的，暖字才显得出暖。切换用顶栏的「墙壁开关」，整页交叉淡化。</p></section>
         <section class="fact"><h4>现状</h4><p>规格原则「两个时辰，一间屋子」和<code>globals.css</code>的文件头、<code>.dark</code>注释都已改成冷夜暖灯（225的冷底、40–45的暖字），文档与代码对得上（2026-10-08核）。此前它们写的「色相家族不变，纸压成松烟暖炭」是第一、二版的旧说法。</p></section>
-        <p class="source">出处：<code>Ysevan_web/app/globals.css:10</code>文件头「冷夜暖灯」、<code>:64</code><code>.dark</code>；<code>Ysevan_web/docs/xiaowu-ui-spec.md:56</code>「两个时辰，一间屋子」</p>
+        <p class="source">出处：<code>Ysevan_web/app/globals.css</code>「冷夜暖灯」、「.dark」（文件头注释与夜里那一块）；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「1.2 六条原则」（「两个时辰，一间屋子」）</p>
       </div>
     </article>
 
@@ -972,7 +972,7 @@ html.dark { color-scheme: dark; }  /* 滚动条、表单控件跟着入夜 */</c
 .poster { filter: brightness(0.66) saturate(0.8); }                 /* 工具页静态海报：更暗一档，同样不偏冷 */</code></pre>
         </section>
         <section class="fact"><h4>为什么</h4><p><code>brightness</code>等比缩三个通道、色相不动，<code>saturate</code>只收一点彩度：暗一档、仍然是绿的、墨线留着。<code>hue-rotate</code>会把红勾和丝带一起转成青色。漂浮叶子第一版整体偏冷，屋主说叶子几乎看不见、晴天娃娃变成蓝灰，被否。</p></section>
-        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md:3899</code>「夜里（2026-09-21补齐）」、<code>:2492</code>「静态版」；<code>Ysevan_web/app/hall.module.css:381</code><code>.deco</code>夜里</p>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「9.6 夜里」、「6.9.4 静态版」（「不偏冷」）；<code>Ysevan_web/app/hall.module.css</code>「:global(.dark) .deco」</p>
       </div>
     </article>
 
@@ -1025,18 +1025,18 @@ html.dark { color-scheme: dark; }  /* 滚动条、表单控件跟着入夜 */</c
       </div>
       <div class="entry-body">
         <section class="fact"><h4>数值</h4>
-<pre><code>01 日程安排  --brand: #2563EB  --brandsoft: rgba(37,99,235,.11)   纸底 4.79
-02 刷刷      --brand: #B4232C  --brandsoft: rgba(180,35,44,.10)   纸底 6.04
-03 岗岗      --brand: #8F1D2C  --brandsoft: rgba(143,29,44,.18)   纸底 8.17（工具架变体；岗岗站内 #A62031）
-04 card      --brand: #10666E  --brandsoft: rgba(16,102,110,.12)  纸底 6.18（汐青）
-05 travel    --brand: #296B38  --brandsoft: rgba(41,107,56,.12)   纸底 5.97（林绿）
-06 设计合集  --brand: #702682  --brandsoft: rgba(112,38,130,.11)  纸底 8.50（梅紫，暂定）
+<pre><code>01 · 日程安排   --brand: #2563EB  --brandsoft: rgba(37,99,235,.11)   纸底4.79
+02 · 刷刷       --brand: #B4232C  --brandsoft: rgba(180,35,44,.10)   纸底6.04
+03 · 岗岗       --brand: #8F1D2C  --brandsoft: rgba(143,29,44,.18)   纸底8.17（工具架变体；岗岗站内 #A62031）
+04 · card       --brand: #10666E  --brandsoft: rgba(16,102,110,.12)  纸底6.18（汐青）
+05 · travel     --brand: #296B38  --brandsoft: rgba(41,107,56,.12)   纸底5.97（林绿）
+06 · 设计合集   --brand: #702682  --brandsoft: rgba(112,38,130,.11)  纸底8.50（梅紫，暂定）
 :global(.dark) .icon, :global(.dark) .open { background: hsl(42.9 33.3% 95.9%); }  /* --tool-paper：白天那张纸 */</code></pre>
         </section>
         <section class="fact"><h4>为什么</h4><p>家族感靠中性系统统一，身份靠品牌色区分；身份色一旦铺大面积，暖屋就花了。不得用于卡片边框、底色、标题、正文、状态条、hover面、分隔线。夜里页底上身份色只有1.96–3.47，换纸之后回到白天的数——观感像暗屋里几块点着灯的小牌子。</p></section>
         <section class="fact"><h4>新增一支</h4><ol><li>和已有几支色相拉开（221°、355°、350°之外，汐青取185°）；</li><li>和这个工具自己的作品色系读得到一起（card十三张卡里冷色占多数）；</li><li>够深，能当纸上的字（card卡面的#8ACBE8压暖纸只有1.65，只能当装饰）。</li></ol></section>
         <section class="fact trap"><h4>坑</h4><p>夜里「打开」的hover那层淡品牌色要叠在纸上：<code>.open:hover</code>写的是<code>background</code>简写，夜里会把整张纸换掉、当场掉回2.75，要另写一条只改<code>background-image</code>。</p></section>
-        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md:152</code>「工具身份色」、<code>:196</code>「小面积原则」、<code>:200</code>「夜里的纸片规则」、<code>:202</code>四处落点；<code>Ysevan_web/app/projects/tools.module.css:208</code>「夜里的身份色：换纸，不换色」</p>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「2.3 工具身份色（六个 brand，不进 token）」（「小面积原则」「夜里的纸片规则」「四处落点」）；<code>Ysevan_web/app/projects/tools.module.css</code>「夜里的身份色：换纸，不换色」（那一段的注释与规则）</p>
       </div>
     </article>
 
@@ -1074,7 +1074,7 @@ html.dark { color-scheme: dark; }  /* 滚动条、表单控件跟着入夜 */</c
       <div class="entry-body">
         <section class="fact"><h4>为什么</h4><p>装饰SVG是自洽的图形单元，十来个只出现一次的色值全提成全局token只会污染色板。同理，定义了却没用上的<code>--board #B8B69E</code>不落地——不上线未使用的token。海湾蓝在全站只剩一个去处：绿植里半透明的冷调叶影。</p></section>
         <section class="fact"><h4>对比度</h4><p>这些都是纯装饰，不适用3:1/4.5:1；浅叶压纸底只有1.88，就是「很淡」的设计意图。</p></section>
-        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md:258</code>「装饰与插画专用色」、<code>:277</code>「落地方式」、<code>:148</code>「不需要落地的」；盆栽示意照<code>:3832</code>「SVG内部结构」的四层叠法</p>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「2.6 装饰与插画专用色」（「落地方式」）、「2.2 小屋扩展槽位（--xw-*）」（「不需要落地的」）；盆栽示意的四层叠法照<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「9.4 SVG 内部结构（defs + use 复用）」</p>
       </div>
     </article>
   </section>

@@ -98,7 +98,7 @@
         li.classList.toggle("is-pass", pass);
         li.classList.toggle("is-fail", !pass);
       });
-      if (speak) liveEl.textContent = "对比度 " + shown + " 比 1";
+      if (speak) liveEl.textContent = "对比度" + shown + "比1";
     };
     var setFg = function (v, from) { var h = norm(v); if (!h) return; state.fg = h; if (from !== fg) fg.value = h.toLowerCase(); if (from !== fgHex) fgHex.value = h; };
     var setBg = function (v, from) { var h = norm(v); if (!h) return; state.bg = h; if (from !== bg) bg.value = h.toLowerCase(); if (from !== bgHex) bgHex.value = h; };

@@ -268,8 +268,8 @@
         clearTimeout(timer);
         lastReal.removeEventListener("transitionend", onEnd);
         pending = null;
-        srText.textContent = "编号 " + value;
-        live.textContent = "编号 " + value;
+        srText.textContent = "编号" + value;
+        live.textContent = "编号" + value;
       }
       function onEnd(e) { if (e.propertyName === "opacity") announce(); }
       lastReal.addEventListener("transitionend", onEnd);

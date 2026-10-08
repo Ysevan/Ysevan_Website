@@ -1,0 +1,487 @@
+/*
+ * 动画页（motion.html）专用样式。外壳（令牌、条目卡、.btn、.seg、.xw 暖纸令牌）在 assets/star.css；
+ * 这里只写本页样例零件，类名一律 mo 开头，不改外壳的类。脚本在 assets/pages/motion.js，每个样例一段。
+ *
+ * 规矩：
+ * - 动画只动 transform / opacity。演示本身就是在演示别的属性时例外，写在那一段的注释里：
+ *   「各写transition」那个反例动颜色（mox-each）、box-shadow 反例（mos-a）、切明暗的 clip-path 圆（mov / mok，
+ *   View Transition 原物就是动 clip-path）、手写开场的描边 / 遮罩宽 / 填色（mow，原物就是这样写字的）。
+ * - 不新增 backdrop-filter；浮在样例里的东西 absolute，不用 fixed。
+ * - 尺寸乘 --u（≤1440 恒为 1px）。小屋样例放在 .xw 作用域里，颜色用 --xw-* 令牌；夜里 .xw[data-mode="dark"]。
+ * - prefers-reduced-motion：外壳把全部 transition / animation 关掉（!important），JS 那边也不起动画、直接到终点。
+ *   「减弱动效两道保险」那条在样框里局部模拟减弱动效：只在 .mor[data-sim] 下压 .mor-veil 的动画，不碰别处。
+ */
+
+/* ---------- 共用：说明、按钮、开关、读数、日志 ---------- */
+.mo-cap { margin: 0 0 calc(14 * var(--u)); max-width: var(--measure); color: var(--label2); font-size: calc(12.5 * var(--u)); line-height: 1.7; }
+.mo-cap > b:first-child {
+  display: inline-block; margin-right: calc(6 * var(--u)); padding: 0 calc(7 * var(--u)); border-radius: 999px;
+  background: var(--accent-tint); color: var(--accent-text); font-size: calc(11.5 * var(--u)); line-height: 1.7; font-weight: 600;
+}
+.mo-cap code { font-size: .92em; }
+.mo-cap-xw { color: var(--xw-ink-2); }
+.mo-cap-xw > b:first-child { background: var(--xw-olive-tint); color: var(--xw-olive-deep); }
+.xw .mo-cap code { background: var(--xw-muted); color: var(--xw-ink); }
+
+.mo-bar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(8 * var(--u)); margin: 0 0 calc(12 * var(--u)); min-width: 0; }
+.mo-btn { height: calc(32 * var(--u)); padding: 0 calc(14 * var(--u)); font-size: var(--fs-small); }
+.mo-n { font-weight: 400; }
+.mo-sub { margin: 0; font-size: var(--fs-xs); font-weight: 600; color: var(--label2); }
+.xw .mo-sub { color: var(--xw-ink-2); }
+
+/* 分段控件：外壳 .seg 的按钮是等分的，这里按字宽排、可换行 */
+.mo-seg { display: inline-flex; flex-wrap: wrap; max-width: 100%; }
+.mo-seg button { flex: none; padding: calc(5 * var(--u)) calc(11 * var(--u)); }
+.mo-seg.seg-sm button { padding: calc(4 * var(--u)) calc(10 * var(--u)); }
+.xw .mo-seg-xw { background: var(--xw-muted); }
+.xw .mo-seg-xw button { color: var(--xw-ink); }
+.xw .mo-seg-xw button[aria-checked="true"] { background: var(--xw-card); box-shadow: var(--xw-shadow-lift), 0 0 0 1px var(--xw-line); color: var(--xw-olive-deep); }
+.xw .mo-seg-xw button:focus-visible, .xw .mo-xbtn:focus-visible, .xw .mo-tog-xw:focus-visible { outline-color: var(--xw-olive); }
+
+/* 开关胶囊（aria-pressed）：前面一颗小圆，关着空心、按下实心，状态不只靠底色 */
+.mo-tog {
+  display: inline-flex; align-items: center; gap: calc(7 * var(--u)); max-width: 100%;
+  min-height: calc(30 * var(--u)); padding: calc(3 * var(--u)) calc(13 * var(--u)) calc(3 * var(--u)) calc(10 * var(--u));
+  border: 0; border-radius: 999px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--sep);
+  color: var(--label); font-size: var(--fs-small); font-weight: 600; line-height: 1.4; text-align: left; cursor: pointer;
+}
+.mo-tog::before {
+  content: ""; flex: none; width: calc(10 * var(--u)); height: calc(10 * var(--u)); border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px currentColor; opacity: .7;
+}
+.mo-tog[aria-pressed="true"] { background: var(--accent-tint); box-shadow: none; color: var(--accent-text); }
+.mo-tog[aria-pressed="true"]::before { background: currentColor; opacity: 1; }
+.mo-tog-bad[aria-pressed="true"] { background: var(--orange-tint); color: var(--orange-text); }
+.xw .mo-tog, .xw .mo-xbtn { background: var(--xw-card); box-shadow: inset 0 0 0 1px var(--xw-line); color: var(--xw-ink); }
+.xw .mo-tog[aria-pressed="true"] { background: var(--xw-olive-tint); box-shadow: none; color: var(--xw-olive-deep); }
+.xw .mo-tog-bad[aria-pressed="true"] { background: #F3E2D6; color: #8A3C12; }
+.xw[data-mode="dark"] .mo-tog-bad[aria-pressed="true"] { background: #3A2A20; color: #F0B48A; }
+/* 小屋样框里的按钮：药丸、橄榄描边，hover 只换底色（小屋「打开」按钮那套） */
+.mo-xbtn {
+  display: inline-flex; align-items: center; min-height: calc(30 * var(--u)); padding: 0 calc(14 * var(--u));
+  border: 0; border-radius: 999px; font-size: var(--fs-small); font-weight: 600; cursor: pointer;
+}
+.xw .mo-xbtn { box-shadow: inset 0 0 0 1px var(--xw-olive-2); color: var(--xw-olive-deep); }
+@media (hover: hover) { .xw .mo-xbtn:hover { background: var(--xw-olive-tint); } }
+
+.mo-readout { margin: calc(10 * var(--u)) 0 0; min-height: 1.6em; font-size: var(--fs-small); line-height: 1.6; color: var(--label2); overflow-wrap: anywhere; }
+.mo-readout-xw { color: var(--xw-ink-2); }
+.mo-verdict { margin: calc(4 * var(--u)) 0 0; font-size: var(--fs-small); line-height: 1.65; color: var(--label); overflow-wrap: anywhere; }
+.mo-verdict b { color: var(--accent-text); }
+.mo-verdict .is-skip { color: var(--orange-text); }
+
+.mo-log { list-style: none; margin: calc(10 * var(--u)) 0 0; padding: 0; display: grid; gap: calc(3 * var(--u)); min-width: 0; font-size: var(--fs-xs); line-height: 1.6; color: var(--label); }
+.mo-log li { padding: calc(3 * var(--u)) calc(9 * var(--u)); border-radius: calc(6 * var(--u)); background: var(--fill); overflow-wrap: anywhere; }
+.mo-log li.is-ok { background: var(--green-tint); color: var(--green-text); }
+.mo-log li.is-warn { background: var(--orange-tint); color: var(--orange-text); }
+.mo-log li.is-bad { background: var(--red-tint); color: var(--red-text); }
+.mo-log:empty::before { content: "（还没有）"; color: var(--label2); }
+
+.mo-stats { display: grid; gap: calc(4 * var(--u)); margin: calc(10 * var(--u)) 0 0; font-size: var(--fs-xs); line-height: 1.55; min-width: 0; }
+.mo-stats div { display: flex; justify-content: space-between; gap: calc(10 * var(--u)); padding: calc(3 * var(--u)) calc(9 * var(--u)); border-radius: calc(6 * var(--u)); background: var(--fill); }
+.mo-stats dt { color: var(--label2); }
+.mo-stats dd { margin: 0; font-weight: 600; color: var(--label); text-align: right; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.mo-stats-xw div { background: var(--xw-muted); }
+.mo-stats-xw dt { color: var(--xw-ink-2); }
+.mo-stats-xw dd { color: var(--xw-ink); }
+
+.mo-table { width: 100%; max-width: calc(560 * var(--u)); margin-top: calc(12 * var(--u)); border-collapse: collapse; font-size: var(--fs-xs); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.mo-table th, .mo-table td { padding: calc(5 * var(--u)) calc(8 * var(--u)); border-bottom: 1px solid var(--sep); text-align: right; white-space: nowrap; }
+.mo-table th:first-child { text-align: left; }
+.mo-table thead th { color: var(--label2); font-weight: 600; }
+.mo-table tbody th { font-weight: 600; }
+.mo-table td.is-bad { color: var(--red-text); font-weight: 700; }
+.mo-table td.is-ok { color: var(--green-text); font-weight: 700; }
+.mo-measured { color: var(--label); }
+
+/* ---------- 示例小页面（切明暗、交叉淡化、跳过条件共用；JS 里 miniPage() 生成）---------- */
+.mo-frame { position: relative; isolation: isolate; overflow: hidden; border-radius: var(--r-md); box-shadow: 0 0 0 1px var(--sep); aspect-ratio: 16 / 9; max-height: calc(300 * var(--u)); min-width: 0; }
+.mp {
+  position: absolute; inset: 0; display: grid; grid-template-columns: 24% minmax(0, 1fr); overflow: hidden;
+  background:
+    radial-gradient(45% 60% at 10% 6%, var(--blob1), transparent 70%),
+    radial-gradient(40% 55% at 95% 18%, var(--blob2), transparent 70%),
+    radial-gradient(50% 60% at 70% 105%, var(--blob3), transparent 70%),
+    var(--bg);
+  color: var(--label); font-size: calc(10 * var(--u));
+}
+.mp-side { display: flex; flex-direction: column; gap: 6%; padding: 9% 9% 8%; background: var(--glass); border-right: 1px solid var(--glass-edge); min-width: 0; }
+.mp-brand { display: block; width: 28%; aspect-ratio: 1; border-radius: 26%; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+.mp-nav { display: flex; align-items: center; gap: 8%; height: 8%; min-height: 6px; padding: 0 6%; border-radius: 6px; }
+.mp-nav i { flex: none; width: 13%; aspect-ratio: 1; border-radius: 30%; background: var(--label3); }
+.mp-nav b { flex: 1; height: 34%; border-radius: 4px; background: var(--label3); }
+.mp-nav.is-on { background: var(--accent-tint); }
+.mp-nav.is-on i, .mp-nav.is-on b { background: var(--accent-text); }
+.mp-seg { display: flex; gap: 3px; margin-top: auto; padding: 2px; border-radius: 6px; background: var(--fill); height: 9%; min-height: 8px; }
+.mp-seg i { flex: 1; border-radius: 4px; }
+.mp-seg i.is-on { background: var(--seg-on); box-shadow: var(--shadow-sm); }
+.mp-main { display: flex; flex-direction: column; gap: 5%; padding: 4.5% 5.5%; min-width: 0; }
+.mp-h { display: block; width: 46%; height: 5%; min-height: 5px; border-radius: 4px; background: var(--label); }
+.mp-p { display: block; width: 72%; height: 4%; min-height: 4px; border-radius: 4px; background: var(--label2); }
+.mp-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5%; flex: 1; min-height: 0; }
+.mp-card { display: flex; flex-direction: column; gap: 10%; padding: 9%; border-radius: 10px; background: var(--glass-strong); box-shadow: var(--shadow); min-width: 0; }
+.mp-ico { display: block; width: 26%; aspect-ratio: 1; border-radius: 28%; background: var(--accent); }
+.mp-card:nth-child(2) .mp-ico { background: var(--green); }
+.mp-card:nth-child(3) .mp-ico { background: var(--orange); }
+.mp-card b { display: block; width: 80%; height: 6%; min-height: 4px; border-radius: 3px; background: var(--label); }
+.mp-card s { display: block; width: 60%; height: 6%; min-height: 3px; border-radius: 3px; background: var(--label2); }
+.mp-chip { display: block; width: 50%; height: 12%; min-height: 6px; margin-top: auto; border-radius: 999px; background: var(--accent-tint); box-shadow: inset 0 0 0 1px var(--sep); }
+.mp-btns { display: flex; gap: 4%; height: 11%; min-height: 10px; }
+.mp-btn { display: block; width: 22%; border-radius: 6px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+.mp-btn2 { display: block; width: 18%; border-radius: 6px; background: var(--accent-tint); }
+/* 盖在上面的那一层（切明暗的新画面、交叉淡化的旧快照） */
+.mp.mp-over { z-index: 2; pointer-events: none; }
+
+/* ---------- 1 曲线与时长 ---------- */
+.moc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(6 * var(--u)); }
+.moc-row {
+  display: grid; grid-template-columns: auto calc(46 * var(--u)) minmax(0, 15em) minmax(0, 1fr) auto;
+  align-items: center; gap: calc(10 * var(--u)); padding: calc(6 * var(--u)) calc(8 * var(--u));
+  border-radius: var(--r-sm); background: var(--raised); box-shadow: inset 0 0 0 1px var(--sep);
+}
+.moc-pick { padding-right: calc(10 * var(--u)); }
+.moc-pick span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.moc-thumb { display: block; width: 100%; height: auto; overflow: visible; color: var(--accent); }
+.moc-thumb .ax { fill: none; stroke: var(--label3); stroke-width: 1; }
+.moc-thumb .cv { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.moc-meta { display: grid; min-width: 0; line-height: 1.35; }
+.moc-meta b { font-size: var(--fs-small); }
+.moc-meta code { padding: 0 !important; background: none !important; color: var(--label2) !important; font-size: var(--fs-xs) !important; overflow-wrap: anywhere; }
+.moc-meta small { color: var(--label2); font-size: var(--fs-xs); }
+.moc-lane { position: relative; display: block; height: calc(26 * var(--u)); border-radius: 999px; background: var(--fill); }
+.moc-lane::after { /* 终点线：过冲的曲线会越过它再回来 */
+  content: ""; position: absolute; top: 3px; bottom: 3px; left: calc(var(--end, 80%)); width: 2px; border-radius: 1px; background: var(--label3);
+}
+.moc-dot { position: absolute; left: 3px; top: 3px; width: calc(20 * var(--u)); height: calc(20 * var(--u)); border-radius: calc(6 * var(--u)); background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: var(--shadow-sm); }
+.moc-run { height: calc(28 * var(--u)); padding: 0 calc(12 * var(--u)); border: 0; border-radius: 999px; background: var(--accent-tint); color: var(--accent-text); font-size: var(--fs-small); font-weight: 600; cursor: pointer; white-space: nowrap; }
+
+/* ---------- 2 FLIP ---------- */
+.mof-grid { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); min-height: calc(120 * var(--u)); align-content: flex-start; }
+.mof-tile {
+  display: grid; place-items: center; width: calc(84 * var(--u)); height: calc(52 * var(--u));
+  border-radius: calc(12 * var(--u)); background: var(--raised); box-shadow: inset 0 0 0 1px var(--sep), var(--shadow-sm);
+  font-size: var(--fs-small); font-weight: 600; color: var(--label);
+}
+.mof-tile::before { content: ""; width: calc(10 * var(--u)); height: calc(10 * var(--u)); margin-bottom: -2px; border-radius: 50%; background: var(--c, var(--accent)); }
+.mof-tile.is-wide { width: calc(128 * var(--u)); }
+
+/* ---------- 3 只动 transform / opacity ---------- */
+.mos-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(16 * var(--u)); }
+.mos-side { min-width: 0; }
+.mos-cards { isolation: isolate; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(14 * var(--u)) calc(10 * var(--u)); margin-top: calc(8 * var(--u)); padding: calc(10 * var(--u)) calc(6 * var(--u)) calc(16 * var(--u)); }
+.mos-card { position: relative; display: block; height: calc(46 * var(--u)); border-radius: calc(10 * var(--u)); background: var(--raised); box-shadow: 0 1px 2px rgba(20,30,60,.1), inset 0 0 0 1px var(--sep); }
+.mos-card::before { content: ""; position: absolute; left: 12%; right: 30%; top: 30%; height: 12%; border-radius: 3px; background: var(--label3); }
+/* A：反例，动 box-shadow（这一条演示的就是它，例外） */
+.mos-a .mos-card { transition: box-shadow .3s ease, transform .3s ease; }
+.mos-a.is-lift .mos-card { transform: translateY(-4px); box-shadow: 0 18px 36px -12px rgba(20,30,60,.4), inset 0 0 0 1px var(--sep); }
+/* B：大投影画在 ::after 上，只动 opacity */
+.mos-b .mos-card { transition: transform .3s ease; }
+.mos-b .mos-card::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; box-shadow: 0 18px 36px -12px rgba(20,30,60,.4); opacity: 0; transition: opacity .3s ease; }
+.mos-b.is-lift .mos-card { transform: translateY(-4px); }
+.mos-b.is-lift .mos-card::after { opacity: 1; }
+@media (hover: hover) {
+  .mos-a .mos-card:hover { transform: translateY(-4px); box-shadow: 0 18px 36px -12px rgba(20,30,60,.4), inset 0 0 0 1px var(--sep); }
+  .mos-b .mos-card:hover { transform: translateY(-4px); }
+  .mos-b .mos-card:hover::after { opacity: 1; }
+}
+
+/* ---------- 4 减弱动效两道保险 ---------- */
+.mor-ctl { display: grid; gap: calc(8 * var(--u)); margin-bottom: calc(12 * var(--u)); }
+.mor-row { display: flex; flex-wrap: wrap; align-items: center; gap: calc(8 * var(--u)) calc(10 * var(--u)); min-width: 0; }
+.mor-row > .mo-sub { flex: none; width: calc(56 * var(--u)); }
+.mor-stage { position: relative; overflow: hidden; height: calc(150 * var(--u)); margin-bottom: calc(12 * var(--u)); border-radius: var(--r-md); background: var(--raised); box-shadow: inset 0 0 0 1px var(--sep); }
+.mor-page { position: absolute; inset: 0; display: grid; place-content: center; gap: calc(4 * var(--u)); text-align: center; }
+.mor-page b { font-size: calc(22 * var(--u)); }
+.mor-page span { color: var(--label2); font-size: var(--fs-small); }
+.mor-veil { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: linear-gradient(160deg, var(--accent-tint), var(--raised)); font-size: calc(26 * var(--u)); font-weight: 700; color: var(--accent-text); }
+.mor-veil.is-out { animation: mor-out .5s cubic-bezier(.4, 0, .2, 1) forwards; }
+@keyframes mor-out { to { opacity: 0; transform: translateY(-22px); } }
+/* 样框里的「模拟减弱动效」：只压这一层遮罩，两种写法各一条（演示用的局部规则，不是放回过渡） */
+.mor[data-sim="tiny"] .mor-veil { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+.mor[data-sim="none"] .mor-veil { animation: none !important; transition: none !important; }
+
+/* ---------- 5 收尾与打断 ---------- */
+.moi-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, calc(220 * var(--u))); gap: calc(14 * var(--u)); align-items: start; }
+.moi-stage { position: relative; height: calc(170 * var(--u)); overflow: hidden; border-radius: var(--r-md); background: var(--raised); box-shadow: inset 0 0 0 1px var(--sep); }
+.moi-panel {
+  position: absolute; left: 10%; right: 10%; top: 14%; bottom: 14%; display: grid; place-content: center; gap: calc(4 * var(--u)); text-align: center;
+  border-radius: var(--r-md); background: linear-gradient(160deg, var(--accent-tint), var(--glass-panel)); box-shadow: var(--shadow-pop);
+  opacity: 0; transform: translateY(24px) scale(.94); visibility: hidden;
+}
+.moi-panel.is-open { opacity: 1; transform: none; visibility: visible; }
+.moi-panel.is-moving { visibility: visible; }
+.moi-panel b { font-size: calc(18 * var(--u)); }
+.moi-panel span { color: var(--label2); font-size: var(--fs-small); }
+.moi-state { margin: 0; display: grid; gap: calc(4 * var(--u)); font-size: var(--fs-small); }
+.moi-state div { display: flex; justify-content: space-between; gap: calc(10 * var(--u)); padding: calc(5 * var(--u)) calc(10 * var(--u)); border-radius: calc(8 * var(--u)); background: var(--fill); }
+.moi-state dt { color: var(--label2); }
+.moi-state dd { margin: 0; font-weight: 700; font-family: var(--mono); font-size: var(--fs-xs); }
+.moi-state.is-wrong div:nth-child(2) { background: var(--red-tint); color: var(--red-text); }
+
+/* ---------- 6 交叉淡化：「各写transition」反例里每类元素各自的过渡（动的是颜色——这一条演示的就是它） ---------- */
+.mox-each .mp { transition: background-color .15s linear; }
+.mox-each .mp-side { transition: background-color .5s ease, border-color .9s ease; }
+.mox-each .mp-nav.is-on { transition: background-color 1s ease; }
+.mox-each .mp-card { transition: background-color .35s ease, box-shadow .8s ease; }
+.mox-each .mp-ico { transition: background-color 1.2s ease; }
+.mox-each .mp-h, .mox-each .mp-card b { transition: background-color .6s ease; }
+.mox-each .mp-chip { transition: background-color .25s ease; }
+/* mp-btn、mp-brand、光晕的渐变底不能过渡：没写过渡的直接跳（现实里最常见的那种） */
+
+/* ---------- 7 弹簧 ---------- */
+.mop-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: calc(16 * var(--u)); align-items: start; }
+.mop-ctl { display: grid; gap: calc(10 * var(--u)); min-width: 0; }
+.mop-field { display: grid; gap: calc(4 * var(--u)); font-size: var(--fs-small); font-weight: 600; }
+.mop-field output { margin-left: calc(4 * var(--u)); font-family: var(--mono); color: var(--accent-text); }
+.mop-field input, .mou-field input { width: 100%; accent-color: var(--accent); }
+.mop-presets { margin: 0; }
+.mop-view { min-width: 0; }
+.mop-plot { display: block; width: 100%; height: auto; border-radius: var(--r-sm); background: var(--raised); box-shadow: inset 0 0 0 1px var(--sep); }
+.mop-plot .ax { stroke: var(--sep); stroke-width: 1; fill: none; }
+.mop-plot .goal { stroke: var(--label3); stroke-width: 1; stroke-dasharray: 4 3; fill: none; }
+.mop-plot .cv { stroke: var(--accent); stroke-width: 2.2; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.mop-plot .cv-bad { stroke: var(--red); }
+.mop-plot text { fill: var(--label2); font-size: 10px; font-family: var(--font); }
+.mop-plot .now { fill: var(--accent); }
+.mop-track { position: relative; height: calc(36 * var(--u)); margin-top: calc(10 * var(--u)); border-radius: 999px; background: var(--fill); }
+.mop-goal { position: absolute; top: 4px; bottom: 4px; left: var(--goal, 55%); width: 2px; border-radius: 1px; background: var(--label3); }
+.mop-ball { position: absolute; left: 4px; top: 4px; width: calc(28 * var(--u)); height: calc(28 * var(--u)); border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: var(--shadow-sm); }
+.mop-linear {
+  display: block; width: 100%; margin-top: calc(10 * var(--u)); padding: calc(8 * var(--u)) calc(12 * var(--u));
+  border: 0; border-radius: var(--r-sm); background: var(--code-bg); box-shadow: inset 0 0 0 1px var(--sep);
+  color: var(--label); font-family: var(--mono); font-size: var(--fs-xs); line-height: 1.6; text-align: left; overflow-wrap: anywhere; cursor: copy;
+}
+
+/* ---------- 8 切明暗圆形揭开 ---------- */
+.mov-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: calc(14 * var(--u)); align-items: start; }
+.mov-frame { cursor: pointer; }
+.mov-side { min-width: 0; }
+.mov-plot, .mok2-plot { display: block; width: 100%; height: auto; border-radius: var(--r-sm); background: var(--raised); box-shadow: inset 0 0 0 1px var(--sep); }
+.mov-plot .ax, .mok2-plot .ax { stroke: var(--sep); stroke-width: 1; fill: none; }
+.mov-plot .cv-alt, .mok2-plot .cv-alt { stroke: var(--label3); stroke-width: 1.4; fill: none; stroke-dasharray: 3 3; }
+.mov-plot .cv, .mok2-plot .cv { stroke: var(--accent); stroke-width: 2.2; fill: none; stroke-linejoin: round; }
+.mov-plot .mk { fill: var(--accent); }
+.mov-plot text, .mok2-plot text { fill: var(--label2); font-size: 9.5px; font-family: var(--font); }
+.mov-plot .now, .mok2-plot .now { fill: var(--label); }
+
+/* ---------- 9 切页进场 ---------- */
+.mog-frame { aspect-ratio: 16 / 8; }
+.mg { position: absolute; inset: 0; display: grid; grid-template-columns: 26% minmax(0, 1fr); background: var(--bg); color: var(--label); }
+.mg-side { position: relative; z-index: 1; display: flex; flex-direction: column; gap: calc(4 * var(--u)); padding: calc(10 * var(--u)) calc(8 * var(--u)); background: var(--glass); border-right: 1px solid var(--glass-edge); min-width: 0; }
+.mg-brand { display: block; width: calc(22 * var(--u)); height: calc(22 * var(--u)); margin-bottom: calc(6 * var(--u)); border-radius: calc(6 * var(--u)); background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+.mg-nav {
+  display: block; width: 100%; padding: calc(5 * var(--u)) calc(8 * var(--u)); border: 0; border-radius: calc(7 * var(--u));
+  background: transparent; color: var(--label); font-size: var(--fs-xs); font-weight: 600; text-align: left; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mg-nav[aria-current="page"] { background: var(--accent-tint); color: var(--accent-text); }
+.mg-main { position: relative; min-width: 0; overflow: hidden; }
+.mg-page { position: absolute; inset: 0; display: flex; flex-direction: column; gap: calc(8 * var(--u)); padding: calc(12 * var(--u)) calc(14 * var(--u)); }
+.mg-title { display: block; font-size: calc(15 * var(--u)); line-height: 1.3; }
+.mg-page p { margin: 0; color: var(--label2); font-size: var(--fs-xs); line-height: 1.5; }
+.mg-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(8 * var(--u)); }
+.mg-card { height: calc(46 * var(--u)); border-radius: calc(9 * var(--u)); background: var(--glass-strong); box-shadow: var(--shadow); }
+.mg-card:first-child { background: linear-gradient(135deg, var(--accent-tint), var(--glass-strong)); }
+
+/* ---------- 10 跳过条件 ---------- */
+.mok-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: calc(14 * var(--u)); align-items: start; }
+.mok-ctl { display: grid; gap: calc(8 * var(--u)); min-width: 0; }
+.mok-ctl .mo-bar { margin: 0; }
+.mok-ctl .mor-row > .mo-sub { width: auto; }
+
+/* ---------- 11 小屋：手写开场 ---------- */
+.mow-stage { position: relative; overflow: hidden; height: calc(220 * var(--u)); border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--xw-line); background: var(--xw-paper); cursor: pointer; }
+.mow-stage:focus-visible { outline: 2px solid var(--xw-olive); outline-offset: 2px; }
+.mow-hall { position: absolute; inset: 0; display: grid; grid-template-columns: auto auto; justify-content: center; align-items: center; }
+.mow-blob { display: grid; place-items: center; height: calc(110 * var(--u)); padding: 0 calc(22 * var(--u)); border-radius: calc(18 * var(--u)) 0 0 calc(18 * var(--u)); background: var(--xw-block); color: var(--xw-olive-deep); font-size: calc(46 * var(--u)); letter-spacing: .06em; text-indent: .06em; }
+.mow-plate { display: block; width: calc(78 * var(--u)); height: calc(110 * var(--u)); border-radius: 0 calc(18 * var(--u)) calc(18 * var(--u)) 0; background: linear-gradient(170deg, #DCE5D3, #F2EDE2 60%, #E6DCC6); box-shadow: inset 0 0 0 1px rgba(74,77,53,.12); }
+.mow-hall.is-settle { animation: mow-settle-hall .75s cubic-bezier(.22, .61, .36, 1) both; }
+@keyframes mow-settle-hall { from { opacity: .35; transform: translateY(18px) scale(.986); } to { opacity: 1; transform: none; } }
+.mow-intro {
+  position: absolute; inset: 0; z-index: 2; display: grid; place-items: center;
+  background: radial-gradient(70% 90% at 82% -12%, #F3EDE0 0%, rgba(249,247,241,0) 58%), radial-gradient(60% 90% at 8% 108%, #EAEFEC 0%, rgba(249,247,241,0) 60%), #F9F7F1;
+  transition: opacity .5s cubic-bezier(.4, 0, .2, 1), transform .5s cubic-bezier(.4, 0, .2, 1);
+}
+.mow-intro[hidden] { display: none; }
+.mow-intro.is-out { opacity: 0; transform: translateY(-22px); pointer-events: none; }
+.mow-intro.is-fast { transition-duration: .26s; }
+.mow-svg { display: block; width: min(92%, calc(560 * var(--u))); height: auto; overflow: visible; }
+/* 写字：描边、遮罩宽、填色都不是 transform / opacity——原物就是这样写字的，例外 */
+.mow-text {
+  font-family: "Snell Roundhand", "Segoe Script", "Apple Chancery", "Brush Script MT", "Lucida Handwriting", cursive;
+  font-size: 132px; fill: rgba(74,77,53,0); stroke: #4A4D35; stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: var(--len, 900); stroke-dashoffset: var(--len, 900);
+}
+.mow-mask { x: var(--sx, 6px); y: -140px; height: 460px; width: 0; fill: #fff; }
+.mow-intro.is-play .mow-mask { animation: mow-sweep 1.75s cubic-bezier(.34, .06, .42, 1) .12s forwards; }
+.mow-intro.is-play .mow-text { animation: mow-draw 1.75s cubic-bezier(.34, .06, .42, 1) .12s forwards, mow-fill .4s ease-out 1.87s forwards; }
+.mow-intro.is-play.is-bad .mow-mask { animation-duration: .5s; animation-timing-function: linear; }
+.mow-intro.is-done .mow-mask { width: var(--sw, 700px); }
+.mow-intro.is-done .mow-text { stroke-dashoffset: 0; fill: rgba(74,77,53,1); stroke-width: .5; }
+@keyframes mow-sweep { to { width: var(--sw, 700px); } }
+@keyframes mow-draw { to { stroke-dashoffset: 0; } }
+@keyframes mow-fill { to { fill: rgba(74,77,53,1); stroke-width: .5; } }
+.mow-skip { position: absolute; right: calc(16 * var(--u)); bottom: calc(12 * var(--u)); font-size: calc(12 * var(--u)); letter-spacing: .12em; color: #6B685B; opacity: 0; }
+.mow-intro.is-play .mow-skip { animation: mow-skipin .5s ease-out .9s forwards; }
+@keyframes mow-skipin { to { opacity: 1; } }
+.mow-line { position: relative; height: calc(30 * var(--u)); margin: calc(10 * var(--u)) calc(14 * var(--u)) 0 0; border-top: 2px solid var(--xw-line); }
+.mow-head { position: absolute; left: 0; top: -6px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--xw-olive); transform: translateX(var(--x, 0px)); }
+.mow-line i { position: absolute; top: 4px; transform: translateX(-50%); font-style: normal; font-size: var(--fs-xs); color: var(--xw-ink-2); white-space: nowrap; }
+.mow-line i.is-left { transform: translateX(-88%); }
+.mow-line i.is-low { transform: translateX(-12%); }
+.mow-line i::before { content: ""; position: absolute; left: 50%; top: -9px; width: 1px; height: 6px; background: var(--xw-ink-3); }
+.mow-line i.is-left::before { left: 88%; }
+.mow-line i.is-low::before { left: 12%; }
+
+/* ---------- 12 小屋：洇一层纸 ---------- */
+.moe-stage { position: relative; overflow: hidden; isolation: isolate; height: calc(240 * var(--u)); border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--xw-line); background: var(--xw-paper); perspective: 900px; }
+.moe-bar { position: relative; z-index: 4; display: flex; align-items: center; gap: calc(4 * var(--u)); height: calc(40 * var(--u)); padding: 0 calc(12 * var(--u)); border-bottom: 1px solid var(--xw-line); background: var(--xw-paper); }
+.moe-logo { margin-right: auto; font-size: var(--fs-small); font-weight: 600; color: var(--xw-ink); white-space: nowrap; }
+.moe-bar button { padding: calc(4 * var(--u)) calc(9 * var(--u)); border: 0; background: none; color: var(--xw-ink-2); font-size: var(--fs-small); cursor: pointer; }
+.moe-bar button[aria-current="true"] { color: var(--xw-olive-deep); box-shadow: inset 0 -2px 0 var(--xw-olive-2); }
+.moe-bar button:focus-visible { outline: 2px solid var(--xw-olive); outline-offset: -2px; border-radius: 6px; }
+.moe-main { position: absolute; left: 0; right: 0; top: calc(40 * var(--u)); bottom: 0; display: grid; place-content: center; gap: calc(8 * var(--u)); padding: calc(10 * var(--u)); text-align: center; transform-origin: 50% 45%; }
+.moe-main .xw-kai { font-size: calc(44 * var(--u)); color: var(--xw-olive-deep); letter-spacing: .06em; line-height: 1.1; }
+.moe-main p { margin: 0; color: var(--xw-ink-2); font-size: var(--fs-small); }
+.moe-row { display: flex; justify-content: center; gap: calc(8 * var(--u)); }
+.moe-row span { display: block; width: calc(70 * var(--u)); height: calc(46 * var(--u)); border-radius: calc(10 * var(--u)); background: var(--xw-card); box-shadow: var(--xw-shadow-lift), 0 0 0 1px var(--xw-line); }
+.moe-veil { position: absolute; left: 0; right: 0; top: calc(40 * var(--u)); bottom: 0; z-index: 3; overflow: hidden; pointer-events: none; visibility: hidden; }
+.moe-veil.is-on { visibility: visible; }
+/* 两个超尺寸圆盘：宽 250%、正方形，margin 百分比按包含块宽度算，正好把圆心放在 50% / 45% */
+.moe-wash, .moe-rim { position: absolute; left: 50%; top: 45%; width: 250%; aspect-ratio: 1; margin-left: -125%; margin-top: -125%; border-radius: 50%; transform: scale(.01); }
+.moe-wash { background: radial-gradient(circle, var(--xw-paper) 0%, var(--xw-paper) 62%, color-mix(in srgb, var(--xw-paper) 92%, transparent) 72%, transparent 86%); }
+.moe-rim { background: radial-gradient(circle, transparent 0%, transparent 58%, rgba(139,140,109,.1) 68%, rgba(139,140,109,.05) 76%, transparent 84%); }
+/* 被否的门（示意）：门板从两侧合拢、再带透视外摆打开 */
+.moe-door { position: absolute; left: 0; right: 0; top: calc(40 * var(--u)); bottom: 0; z-index: 3; pointer-events: none; visibility: hidden; perspective: 900px; }
+.moe-door.is-on { visibility: visible; }
+.moe-leaf { position: absolute; top: 0; bottom: 0; width: 50%; background: var(--xw-olive); box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+.moe-leaf-l { left: 0; transform-origin: left center; box-shadow: inset -1px 0 0 rgba(255,255,255,.3), inset -10px 0 14px -10px rgba(0,0,0,.35); }
+.moe-leaf-r { right: 0; transform-origin: right center; box-shadow: inset 1px 0 0 rgba(255,255,255,.3), inset 10px 0 14px -10px rgba(0,0,0,.35); }
+.moe-leaf::after { content: ""; position: absolute; top: 50%; width: calc(8 * var(--u)); height: calc(8 * var(--u)); margin-top: calc(-4 * var(--u)); border-radius: 50%; background: #CDBF98; }
+.moe-leaf-l::after { right: calc(12 * var(--u)); }
+.moe-leaf-r::after { left: calc(12 * var(--u)); }
+.moe-door.is-lattice .moe-leaf {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 calc(22 * var(--u)), rgba(139,140,109,.55) calc(22 * var(--u)) calc(24 * var(--u))),
+    repeating-linear-gradient(90deg, transparent 0 calc(22 * var(--u)), rgba(139,140,109,.55) calc(22 * var(--u)) calc(24 * var(--u))),
+    #F3EFE6;
+}
+.moe-door.is-lattice .moe-leaf::after { background: #8B8C6D; }
+
+/* ---------- 13 小屋：走进小屋 ---------- */
+.mok2-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: calc(14 * var(--u)); align-items: start; }
+.mok2-stage { position: relative; overflow: hidden; isolation: isolate; aspect-ratio: 16 / 10; border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--xw-line); background: var(--xw-paper); cursor: ns-resize; }
+.mok2-stage:focus-visible { outline: 2px solid var(--xw-olive); outline-offset: 2px; }
+.mok2-card { position: absolute; left: 19%; top: 31%; width: 62%; aspect-ratio: 1.8348; display: grid; grid-template-columns: 1fr 1fr; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 20px -10px rgba(74,77,53,.3), 0 0 0 1px rgba(74,77,53,.17); transform-origin: 75% 62%; }
+.mok2-blob { display: grid; place-items: center; background: var(--xw-block); color: var(--xw-olive-deep); font-size: calc(30 * var(--u)); letter-spacing: .06em; }
+.mok2-plate { position: relative; display: block; background: linear-gradient(175deg, #CFDBC6 0%, #EFE7D6 55%, #DCCFB3 100%); }
+.mok2-door { position: absolute; left: 50%; top: 62%; width: 22%; height: 46%; margin: -23% 0 0 -11%; border-radius: 40% 40% 2px 2px; background: #6F5B43; box-shadow: inset 0 0 0 2px #4F3F2C; }
+.mok2-room { position: absolute; inset: 0; opacity: 0; transform-origin: 50% 60%; }
+.mok2-wall { position: absolute; top: 10%; bottom: 22%; width: 44%; background: linear-gradient(180deg, #E8DFCC, #D8CCB2); box-shadow: inset 0 0 0 1px rgba(74,77,53,.18); }
+.mok2-wall-l { left: 6%; transform: perspective(400px) rotateY(38deg); transform-origin: right center; background: linear-gradient(180deg, #DCE3D0, #C8D2BA); }
+.mok2-wall-r { right: 6%; transform: perspective(400px) rotateY(-38deg); transform-origin: left center; }
+.mok2-floor { position: absolute; left: 10%; right: 10%; bottom: 14%; height: 10%; border-radius: 50%; background: radial-gradient(closest-side, rgba(74,77,53,.22), transparent); }
+.mok2-wash { position: absolute; left: 50%; top: 50%; width: 260%; aspect-ratio: 1; margin-left: -130%; margin-top: -130%; border-radius: 50%; background: radial-gradient(circle, var(--xw-paper) 0%, var(--xw-paper) 62%, color-mix(in srgb, var(--xw-paper) 92%, transparent) 72%, transparent 86%); transform: scale(0); z-index: 2; pointer-events: none; }
+.mok2-side { min-width: 0; }
+.mok2-plot { background: var(--xw-card); box-shadow: inset 0 0 0 1px var(--xw-line); }
+.xw .mok2-plot .cv { stroke: var(--xw-olive); }
+.xw .mok2-plot text { fill: var(--xw-ink-2); }
+.xw .mok2-plot .now { fill: var(--xw-lava); }
+.xw .mok2-plot .ax { stroke: var(--xw-line); }
+.xw .mok2-plot .cv-alt { stroke: var(--xw-ink-3); }
+
+/* ---------- 14 小屋：擦洗两条教训 ---------- */
+.mou-field { display: flex; align-items: center; gap: calc(8 * var(--u)); flex: 1 1 calc(240 * var(--u)); min-width: 0; font-size: var(--fs-small); font-weight: 600; color: var(--xw-ink); }
+.mou-field input { flex: 1; min-width: 0; accent-color: var(--xw-olive); }
+.mou-field output { flex: none; width: 3.4em; text-align: right; font-family: var(--mono); color: var(--xw-olive-deep); }
+.mou-fade { display: grid; gap: calc(8 * var(--u)); margin-bottom: calc(14 * var(--u)); }
+.mou-words { position: relative; height: calc(74 * var(--u)); border-radius: var(--r-sm); background: var(--xw-card); box-shadow: inset 0 0 0 1px var(--xw-line); }
+.mou-w { position: absolute; left: 0; right: 0; top: 50%; margin-top: calc(-26 * var(--u)); text-align: center; font-size: calc(40 * var(--u)); line-height: calc(52 * var(--u)); letter-spacing: .06em; color: var(--xw-olive-deep); opacity: 0; }
+.mou-w:first-child { opacity: 1; }
+.mou-lanes { display: grid; gap: calc(6 * var(--u)); }
+.mou-lane { display: grid; grid-template-columns: calc(88 * var(--u)) minmax(0, 1fr) calc(48 * var(--u)); align-items: center; gap: calc(10 * var(--u)); font-size: var(--fs-xs); color: var(--xw-ink-2); }
+.mou-name { font-family: var(--mono); }
+.mou-track { position: relative; display: block; height: calc(20 * var(--u)); border-radius: 999px; background: var(--xw-muted); }
+.mou-track i { position: absolute; left: 3px; top: 3px; width: calc(14 * var(--u)); height: calc(14 * var(--u)); border-radius: 50%; background: var(--xw-olive); transform: translateX(var(--x, 0px)); }
+.mou-lane b { text-align: right; font-family: var(--mono); color: var(--xw-ink); font-weight: 600; }
+
+/* ---------- 15 小屋：卡片跟指针 ---------- */
+.mot-stage { position: relative; overflow: hidden; height: calc(250 * var(--u)); border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--xw-line); background: var(--xw-paper); touch-action: pan-y; }
+.mot-stage:focus-visible { outline: 2px solid var(--xw-olive); outline-offset: 2px; }
+.mot-stage.is-dragging { touch-action: none; }
+.mot-set { position: absolute; left: 50%; top: 50%; width: calc(330 * var(--u)); max-width: 72%; aspect-ratio: 1.8348; transform-style: preserve-3d; display: grid; grid-template-columns: 1fr 1fr; margin: 0; translate: -50% -50%; }
+.mot-shadow { position: absolute; inset: 0; z-index: -1; border-radius: calc(20 * var(--u)); box-shadow: 0 16px 34px -14px rgba(74,77,53,.32); }
+.mot-blob { display: grid; place-items: center; border-radius: calc(20 * var(--u)) 0 0 calc(20 * var(--u)); background: var(--xw-block); color: var(--xw-olive-deep); font-size: calc(40 * var(--u)); letter-spacing: .06em; box-shadow: inset 0 0 0 1px rgba(74,77,53,.12); }
+.mot-plate { display: block; border-radius: 0 calc(20 * var(--u)) calc(20 * var(--u)) 0; background: linear-gradient(170deg, #DCE5D3, #F7F2E8 55%, #E6DCC6); box-shadow: inset 0 0 0 1px rgba(74,77,53,.12); }
+.mot-vine { position: absolute; right: 9%; top: -2px; width: calc(70 * var(--u)); height: calc(100 * var(--u)); opacity: .85; }
+.mot-vine svg, .mot-pot svg { display: block; width: 100%; height: 100%; }
+.mot-pot { position: absolute; left: 9%; bottom: 6%; width: calc(60 * var(--u)); height: calc(80 * var(--u)); }
+.mot-dot { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--xw-lava); opacity: 0; pointer-events: none; }
+.mot-stage:focus-visible .mot-dot, .mot-stage.is-keys .mot-dot { opacity: .9; }
+
+/* ---------- 16 小屋：漂浮叶子 ---------- */
+.mol-stage { position: relative; overflow: hidden; isolation: isolate; height: calc(240 * var(--u)); border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--xw-line); background: var(--xw-paper); }
+.mol-card { position: absolute; left: 33%; right: 33%; top: 28%; bottom: 28%; z-index: 2; display: grid; place-items: center; border-radius: calc(16 * var(--u)); background: var(--xw-block); color: var(--xw-olive-deep); font-size: calc(34 * var(--u)); letter-spacing: .06em; box-shadow: 0 8px 20px -10px rgba(74,77,53,.3), 0 0 0 1px rgba(74,77,53,.15); }
+.mol-leaves { position: absolute; inset: 0; z-index: 1; }
+.mol-leaf { position: absolute; left: 0; top: 0; width: 34px; height: 34px; margin: -17px 0 0 -17px; }
+.mol-leaf svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.mol-meter { position: absolute; right: calc(10 * var(--u)); bottom: calc(8 * var(--u)); z-index: 3; padding: calc(2 * var(--u)) calc(8 * var(--u)); border-radius: 999px; background: var(--xw-card); box-shadow: 0 0 0 1px var(--xw-line); font-size: var(--fs-xs); color: var(--xw-ink-2); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+
+/* ---------- 17 小屋：灯呼吸（夜里） ---------- */
+.mob-stage { position: relative; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: calc(14 * var(--u)); align-items: center; }
+.mob-wall { position: relative; overflow: hidden; height: calc(210 * var(--u)); border-radius: var(--r-md); background: linear-gradient(180deg, #1D2230, #262B36 70%, #2E3038); box-shadow: inset 0 0 0 1px var(--xw-line); transform-origin: 50% 60%; }
+.mob-wall.is-walk { filter: blur(1.2px); }
+.mob-window, .mob-door { position: absolute; display: block; overflow: hidden; background: #2A2620; box-shadow: inset 0 0 0 2px #15171B; }
+.mob-window { left: 18%; top: 22%; width: 26%; height: 34%; border-radius: 4px; }
+/* 窗格：十字窗棂压在暖光上 */
+.mob-window::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent calc(50% - 1.5px), #15171B calc(50% - 1.5px) calc(50% + 1.5px), transparent calc(50% + 1.5px)), linear-gradient(0deg, transparent calc(50% - 1.5px), #15171B calc(50% - 1.5px) calc(50% + 1.5px), transparent calc(50% + 1.5px)); }
+.mob-door { right: 18%; bottom: 0; width: 22%; height: 62%; border-radius: 40% 40% 0 0; }
+.mob-glow { position: absolute; inset: -40%; background: radial-gradient(closest-side, rgba(255,196,120,.95), rgba(255,170,90,.55) 45%, rgba(255,150,70,0) 100%); opacity: .85; }
+.mob-glow-door { inset: -30% -40% -10%; }
+.mob-meter { margin: 0; display: grid; gap: calc(4 * var(--u)); font-size: var(--fs-xs); min-width: 0; }
+.mob-meter div { display: flex; justify-content: space-between; gap: calc(8 * var(--u)); padding: calc(4 * var(--u)) calc(9 * var(--u)); border-radius: calc(6 * var(--u)); background: var(--xw-muted); }
+.mob-meter dt { color: var(--xw-ink-2); }
+.mob-meter dd { margin: 0; font-weight: 600; color: var(--xw-ink); font-family: var(--font-num); font-variant-numeric: tabular-nums; text-align: right; }
+.mob-meter dd.is-bad { color: #F0B48A; }
+.mob-meter dd.is-ok { color: #B9D3A0; }
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 900px) {
+  .mov-grid, .mok2-grid, .mok-grid, .mop-grid { grid-template-columns: minmax(0, 1fr); }
+  .moi-grid { grid-template-columns: minmax(0, 1fr); }
+  .mob-stage { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .moc-row { grid-template-columns: auto calc(40 * var(--u)) minmax(0, 1fr) auto; grid-template-areas: "pick thumb name run" "pick thumb ms run" "code code code code" "lane lane lane lane"; row-gap: calc(2 * var(--u)); }
+  .moc-pick { grid-area: pick; }
+  .moc-thumb { grid-area: thumb; }
+  .moc-meta { display: contents; }
+  .moc-meta b { grid-area: name; align-self: end; }
+  .moc-meta small { grid-area: ms; align-self: start; }
+  .moc-meta code { grid-area: code; margin-top: calc(4 * var(--u)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .moc-run { grid-area: run; }
+  .moc-lane { grid-area: lane; margin-top: calc(4 * var(--u)); }
+  .mos-pair { grid-template-columns: minmax(0, 1fr); }
+  .mos-cards { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: calc(10 * var(--u)) calc(6 * var(--u)); }
+  .mos-card { height: calc(36 * var(--u)); }
+  .mof-tile { width: calc(72 * var(--u)); }
+  .mof-tile.is-wide { width: calc(110 * var(--u)); }
+  .mog-frame { aspect-ratio: 4 / 3; }
+  .mo-frame { aspect-ratio: 4 / 3; }
+  .mor-row > .mo-sub { width: 100%; }
+  .mow-stage { height: calc(170 * var(--u)); }
+  .mow-blob { height: calc(80 * var(--u)); font-size: calc(32 * var(--u)); padding: 0 calc(14 * var(--u)); }
+  .mow-plate { width: calc(56 * var(--u)); height: calc(80 * var(--u)); }
+  .moe-stage { height: calc(220 * var(--u)); }
+  .moe-logo { display: none; }
+  .moe-main .xw-kai { font-size: calc(34 * var(--u)); }
+  .mot-stage { height: calc(200 * var(--u)); }
+  .mol-stage { height: calc(200 * var(--u)); }
+  .mol-card { left: 30%; right: 30%; }
+  .mou-lane { grid-template-columns: calc(78 * var(--u)) minmax(0, 1fr) calc(44 * var(--u)); }
+}
+
+/* ---------- 减弱动效：外壳已关全部过渡与动画；这里把会留下位移的终态钉住 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .mow-intro.is-out { transform: none; }
+}

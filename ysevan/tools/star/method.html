@@ -1,0 +1,952 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F5F9">
+<meta name="description" content="做网站的方法：首页之外的审美原则、屋主三台设备与验收档位、先量后截图、七条防假信号、测试静音、软件渲染、文档实时更新、打包白名单。每条旁边一块页面内模拟。">
+<title>做网站的方法 · 设计合集</title>
+<script src="assets/boot.js"></script>
+<link rel="stylesheet" href="assets/star.css">
+<link rel="stylesheet" href="assets/pages/method.css">
+<script src="assets/star.js" defer></script>
+<script src="assets/pages/method.js" defer></script>
+</head><body data-page="method">
+<a class="skip" href="#main">跳到正文</a>
+<div id="shell-nav"></div><script src="assets/nav.js"></script>
+<main id="main" class="page">
+  <header class="page-head">
+    <h1 class="page-title">做网站的方法</h1>
+    <p class="page-sub">首页没放下的审美原则，加上验收的做法：屋主三台设备、每档查什么、先量后截图、七条防假信号、测试不出声、文档同一轮改。每条旁边一块小模拟，全在页面里算，不开浏览器、不发请求。</p>
+    <nav class="page-toc" aria-label="本页目录"></nav>
+  </header>
+
+  <!-- ================================================================ 其余审美原则 -->
+  <section class="group" id="g-taste" data-scope="common">
+    <h2 class="group-title">其余审美原则</h2>
+    <p class="group-lede">总览放了十条（<a href="index.html#taste-01">两种气质</a>、<a href="index.html#taste-02">偏软偏轻</a>、<a href="index.html#taste-03">审美优先于对比度</a>、<a href="index.html#taste-04">要好看不要更紧凑</a>、<a href="index.html#taste-05">等比放大</a>、<a href="index.html#taste-06">首页净增为零</a>、<a href="index.html#taste-07">真线条图标</a>、<a href="index.html#taste-08">暖靠冷底</a>、<a href="index.html#taste-09">留白对称</a>、<a href="index.html#taste-10">先做出来</a>），这里是其余的。「只升级已有交互、不为套组件造新功能」见交互页<a href="interaction.html#ix-only-upgrade">那一条</a>。</p>
+
+    <!-- 1 正对你的东西要端正 -->
+    <article class="entry" id="me-upright" data-scope="tools" data-toc="端正">
+      <header class="entry-head">
+        <h3>正对你的东西要端正；形状怪的不要</h3>
+        <p class="entry-lede">选卡台正中那张永远rotate 0、最大最近；两侧侧立让位。卡集的球形选卡就是因为正对的那张跟着球面歪着被否，改成Cover Flow。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>同样七张示例卡，左右键或按钮换中间那张。切到「球形选卡」看正对你的那张：它跟着球面倾着。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="选卡台怎么摆">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-up-mode="sphere">球形选卡（被否，示意）</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-up-mode="flow">Cover Flow（现行）</button>
+          </div>
+          <span class="me-pair">
+            <button type="button" class="me-btn" data-up-step="-1"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.2 6.2-5.8 5.8 5.8 5.8"/></svg>上一张</button>
+            <button type="button" class="me-btn" data-up-step="1">下一张<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m9.8 6.2 5.8 5.8-5.8 5.8"/></svg></button>
+          </span>
+        </div>
+        <div class="me-up" data-up data-v="flow" tabindex="0" role="group" aria-label="选卡台：左右方向键换中间那张" aria-describedby="me-up-read">
+          <div class="me-up-ring" data-up-ring aria-hidden="true">
+            <i class="me-up-card" style="--hue:212"><b>1</b></i>
+            <i class="me-up-card" style="--hue:262"><b>2</b></i>
+            <i class="me-up-card" style="--hue:330"><b>3</b></i>
+            <i class="me-up-card" style="--hue:24"><b>4</b></i>
+            <i class="me-up-card" style="--hue:150"><b>5</b></i>
+            <i class="me-up-card" style="--hue:188"><b>6</b></i>
+            <i class="me-up-card" style="--hue:46"><b>7</b></i>
+          </div>
+        </div>
+        <p class="me-read" id="me-up-read" data-up-read>正中第4张：rotateX 0°、rotateY 0°，端正。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+<pre><code>/* card 画廊 Cover Flow（gallery.js 按舞台尺寸算） */
+正中一张：rotate 0，最大最近（宽 .50H）
+两侧：rotateY ±60° 后退、等距重叠（宽 .44H），越远越暗到 .45
+透视2.2H、透视原点正中；切换380ms 苹果 ease，减弱动效直接切</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>card画廊的选卡台（替代转盘、球两档）；中间卡上下留白对称、倒影住在下边距里，见总览<a href="index.html#taste-09">留白对称</a>那条。</p></section>
+        <section class="fact"><h4>为什么</h4><p>你正对着看的那一张是注意力所在，它歪一点就整个不对劲；球形排布让每张都带着曲面的倾角，正中那张也不例外。Cover Flow把「歪」全留给两侧让位的卡，正中永远端正。按card当时球档几何画的球和Cover Flow并排在<a href="rejected.html#r-ball">否掉的方向「球形选卡」</a>，两边都能拖。</p></section>
+        <blockquote class="said"><p>「我发现这些卡片正对我们的时候有一点倾斜，并且有一个球感觉很奇怪，你想想有没有别的更合适的方法来总的展示」</p><footer>屋主 · 2026-09-23 02:29（控制室会话记录）</footer></blockquote>
+        <p class="source">出处：<code>tools/card/CLAUDE.md:160</code>「画廊的几条硬约束」、<code>:161</code>、<code>:162</code>、<code>:174</code>；原话：控制室会话记录（2026-09-23 02:29）；<code>memory/ysevan-workspace-map.md:19</code>「否掉球形选卡」记的「正对的卡歪、球看着怪」是转述。演示里的倾角、半径是示意，不是card的原数。</p>
+      </div>
+    </article>
+
+    <!-- 2 转场用站点自己的语言 -->
+    <article class="entry" id="me-own-language" data-scope="xiaowu" data-toc="自己的语言">
+      <header class="entry-head">
+        <h3>转场用站点自己的语言，不引入新物件</h3>
+        <p class="entry-lede">小屋换页先做过两版门（实心双开门、纸色格心门），都被否；定稿是水彩的「洇一层纸」：纸色水痕从中央洇开盖住画面，在纸下面切页，水干了褪去。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-01定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>选一种转场，点「换一页」。前两种是被否的门（示意），第三种是「洇一层纸」的轻量示意，不是原物（原物的曲线与时长见<a href="motion.html#mo-xw-veil">动画章「洇一层纸」</a>）。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="换页转场">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ol="slab">实心双开门（示意）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ol="lattice">纸色格心门（示意）</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ol="veil">洇一层纸（现行）</button>
+          </div>
+          <button type="button" class="me-btn me-btn-main" data-ol-go>换一页</button>
+        </div>
+        <div class="me-ol xw" data-ol-stage data-mode="light" data-v="veil">
+          <div class="me-ol-page" data-ol-page>
+            <b class="me-ol-title xw-kai" data-ol-title>小屋</b>
+            <span class="me-ol-line" data-ol-line>这是谁的地方，可以随便逛。</span>
+          </div>
+          <div class="me-ol-door me-ol-l" aria-hidden="true"><i class="me-ol-knob"></i></div>
+          <div class="me-ol-door me-ol-r" aria-hidden="true"><i class="me-ol-knob"></i></div>
+          <div class="me-ol-veil" aria-hidden="true"></div>
+        </div>
+        <p class="me-read" data-ol-read>洇一层纸：用的是小屋自己的水彩——纸、水痕、颜料边，没有多出一件东西。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>三版</h4><ol><li>实心双开门：门板是色块色（昼橄榄 / 夜青黛）＋把手＋中缝发丝线；合门0.45s藏住路由加载，开门0.75s透视外摆。被否。</li><li>纸色格心门：纸色门板＋双圈发丝线格心＋黄铜圆钮。被否。</li><li>洇一层纸：纸色水痕带颜料边从中央洇开、纸下切路由、水干褪去；只动scale与opacity，走合成器。定稿。</li></ol></section>
+        <section class="fact"><h4>为什么</h4><p>门是新造的物件：它要自己的材质、把手、开合逻辑，站里别处都没有它；水彩洇纸是小屋本来就在说的话（画是水彩、底是纸），转场只是把这句话说一遍。以后加任何「过场」，先问它借的是不是这个站自己的东西。两扇门按当时提交里的原值重演在<a href="rejected.html#r-xw-door">否掉的方向「换房间的门」</a>。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋换页（<code>page-veil.tsx</code>与<code>xw-veil</code>样式）。工具类的切页是另一种语言：正文淡入上移8px、侧栏不动，见<a href="motion.html#mo-page">动画章「切页进场」</a>。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/ysevan-web-state.md:53</code>「门升级为实体双开门」、<code>:54</code>「纸色格心门」、<code>:55</code>「转场定稿」</p>
+      </div>
+    </article>
+
+    <!-- 3 他画的就是风格 -->
+    <article class="entry" id="me-drawn-style" data-scope="xiaowu" data-toc="他画的就是风格">
+      <header class="entry-head">
+        <h3>他画的就是风格，不算占位</h3>
+        <p class="entry-lede">屋主的手绘稿少色、几笔线，看着像没画完——那是风格。照原样用，不「补全」、不换成更满的图，也不在评审里标「待换图」。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-22定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>三张是屋主真画稿（工具架3D文具上的纸面）。切到「当成占位」看会丢掉什么（示意）。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="这三张图怎么对待">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ds="keep">原样（现行）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ds="ph">当成占位换掉（示意）</button>
+          </div>
+        </div>
+        <div class="me-ds xw" data-ds-box data-mode="light" data-v="keep">
+          <figure class="me-ds-fig"><span class="me-ds-art"><img src="../../../ysevan/shelf/shua-card-front.v1.webp" width="1024" height="995" alt="屋主画稿：刷刷闪卡正面，淡蓝水彩云和三道横线" loading="lazy" decoding="async"><span class="me-ds-ph" aria-hidden="true"><i>占位图 · 待换</i></span></span><figcaption>刷刷 · 闪卡正面</figcaption></figure>
+          <figure class="me-ds-fig"><span class="me-ds-art"><img src="../../../ysevan/shelf/gang-cover.v1.webp" width="738" height="1024" alt="屋主画稿：岗岗手册封面，灰绿底上一张白标签和红色书签带" loading="lazy" decoding="async"><span class="me-ds-ph" aria-hidden="true"><i>占位图 · 待换</i></span></span><figcaption>岗岗 · 封面</figcaption></figure>
+          <figure class="me-ds-fig"><span class="me-ds-art"><img src="../../../ysevan/shelf/gang-page-a.v1.webp" width="748" height="1024" alt="屋主画稿：岗岗手册内页，几组铅笔横线" loading="lazy" decoding="async"><span class="me-ds-ph" aria-hidden="true"><i>占位图 · 待换</i></span></span><figcaption>岗岗 · 内页a</figcaption></figure>
+        </div>
+        <p class="me-read" data-ds-read>原样：三张都是屋主画的，少色、几笔线——这就是小屋的手作气质。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>用在哪</h4><p>小屋工具架的3D文具：刷刷五张闪卡正面、岗岗封面和八个纸面（按a–d四张循环；没有背面、书脊的就用素纸 / 素橄榄），海报也按画稿重渲。</p></section>
+        <section class="fact"><h4>为什么</h4><p>「少」是画的一部分：手作气质靠的就是这点不满。拿「看起来没画完」当理由去补色、补细节，或者换成生成的满图，等于把屋主自己那只手从站上拿掉。拿不准是不是占位，问一句，别替他补。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>评审清单、TODO注释里写「占位图，待换」最危险：下一个人照着清单就把画换了，而且他会觉得自己在收尾。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/ysevan-web-state.md:17</code>「少色是手绘风格，非占位」；图在 <code>old/ysevan/shelf/</code>（小屋工具架同一批文件）</p>
+      </div>
+    </article>
+
+    <!-- 4 名片为主 -->
+    <article class="entry" id="me-card-first" data-scope="xiaowu" data-toc="名片为主">
+      <header class="entry-head">
+        <h3>名片为主：无页脚、无联系方式、无自我介绍</h3>
+        <p class="entry-lede">门厅只交付一件事：「这是谁的地方，可以随便逛」。常见网站会顺手补上的东西，小屋有一张「明确不存在的元素」清单，评审按它核，别补回来。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-08-25定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>点下面的按钮，把「顺手补上」的东西加进名片（示意），看清单怎么判。</p>
+        <div class="me-cf xw" data-cf data-mode="light">
+          <div class="me-cf-hall">
+            <div class="me-cf-card"><span class="me-cf-blob"><b class="xw-kai">小屋</b></span><span class="me-cf-art" aria-hidden="true"></span></div>
+            <p class="me-cf-line">Ysevan的小屋。</p>
+            <div class="me-cf-x" data-cf-part="arrow" hidden><span class="me-cf-arrow">往下滚 ↓</span><em>清单：不加「往下滚」提示</em></div>
+            <div class="me-cf-x" data-cf-part="list" hidden><span class="me-cf-mini">最新随笔 · 9月27日 · 9月25日 · 9月22日</span><em>清单：门厅没有预览列表</em></div>
+            <div class="me-cf-x" data-cf-part="intro" hidden><span class="me-cf-mini">关于我：一名……热爱……</span><em>清单：没有自我介绍</em></div>
+            <div class="me-cf-x" data-cf-part="contact" hidden><span class="me-cf-mini">邮箱 · GitHub · 微信</span><em>清单：联系方式一个都没有</em></div>
+            <div class="me-cf-x" data-cf-part="stats" hidden><span class="me-cf-mini">今日访问128</span><em>清单：没有访问统计</em></div>
+            <div class="me-cf-x" data-cf-part="footer" hidden><span class="me-cf-mini">© 2026 · 备案号 · Powered by</span><em>清单：任何形式的页脚都没有</em></div>
+          </div>
+        </div>
+        <div class="me-chips" role="group" aria-label="顺手补上的东西（示意）">
+          <button type="button" class="me-chip" aria-pressed="false" data-cf-add="arrow">「往下滚」箭头</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-cf-add="list">随笔预览</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-cf-add="intro">自我介绍</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-cf-add="contact">联系方式</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-cf-add="stats">访问统计</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-cf-add="footer">页脚</button>
+        </div>
+        <p class="me-read" data-cf-read>名片：只交付一件事。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>清单</h4><ul><li>结构：页脚（版权、备案号、社交图标、回到顶部、Powered by）、<code>/about</code>、面包屑、侧边目录、分页器、搜索框、标签云、分类导航。</li><li>内容：自我介绍、简历、技能条、经历时间线；联系方式（邮箱、GitHub、微信……）；版权与备案展示；门厅上的项目 / 随笔预览列表；工具卡上的外链按钮。</li><li>功能：评论、点赞、收藏、订阅、RSS、分享；注册、会员；访问统计（页面上看得见的访问量、阅读数这类计数）、看板、广告、弹窗、Cookie同意条。</li></ul></section>
+        <section class="fact"><h4>为什么</h4><p>陌生访客30秒内知道这是谁的地方，且不被要求做任何事。每多一件「常见网站都有」的东西，名片就更像一份简历或一个门户。清单的用处是让人不用每次重新论证——「顺手补上」是最常见的走样。</p></section>
+        <section class="fact"><h4>本站例外</h4><p>设计合集是工具，不是名片：有搜索、有目录、有更新记录。这一条只管小屋。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「1.1 定位」（「名片为主」）、「1.2 六条原则」（「名片优先」）、「1.3 明确不存在的元素」（「页脚」「自我介绍、简历」「联系方式」「页面上看得见的访问计数」）</p>
+      </div>
+    </article>
+
+    <!-- 5 借结构不借视觉 -->
+    <article class="entry" id="me-borrow-structure" data-scope="xiaowu" data-toc="借结构不借视觉">
+      <header class="entry-head">
+        <h3>发布会式页面：借结构，不借视觉</h3>
+        <p class="entry-lede">借一屏一个概念、巨字、大量留白、逐屏揭示、一条规格条、一个明确的主操作；不借大黑底、产品摄影、戏剧化渐变。页面仍是纸底、橄榄墨、发丝线。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-04定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>点下面五个结构，看它落在哪；再切「连视觉一起借」看两套语言打架（示意，数字是假的）。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="借什么">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-bs="paper">借结构（现行）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-bs="dark">连视觉一起借（示意）</button>
+          </div>
+        </div>
+        <div class="me-bs xw" data-bs-box data-mode="light" data-v="paper" data-hl="">
+          <div class="me-bs-text">
+            <span class="me-bs-no" data-part="concept">02 · 刷题</span>
+            <b class="me-bs-big xw-kai" data-part="big">刷刷</b>
+            <span class="me-bs-one">一个人的题库练习本。</span>
+            <span class="me-bs-spec" data-part="spec"><i><b>1,284</b>道题</i><i><b>6</b>个题库</i><i><b>3</b>种练法</i></span>
+            <span class="me-bs-open" data-part="cta">打开刷刷</span>
+          </div>
+          <div class="me-bs-art" data-part="space" aria-hidden="true"><i class="me-bs-paper"></i></div>
+        </div>
+        <div class="me-chips" role="group" aria-label="借来的结构">
+          <button type="button" class="me-chip" aria-pressed="false" data-bs-hl="concept">一屏一个概念</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-bs-hl="big">巨字</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-bs-hl="space">大量留白</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-bs-hl="spec">一条规格条</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-bs-hl="cta">一个主操作</button>
+        </div>
+        <p class="me-read" data-bs-read>借结构：纸底、橄榄墨；身份色只落在序号、主操作这类小面积上。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>用在哪</h4><p>小屋工具页<code>/projects</code>的展台：一件一整屏、左文右图、巨字、规格条、3D展品随滚动登场。身份色只落在序号、图标块、「打开」按钮、焦点环四处。</p></section>
+        <section class="fact"><h4>为什么</h4><p>发布会页面好的是节奏：一次只讲一件事、字大、空多、一个按钮。它的大黑底、产品摄影和戏剧化渐变是另一套语言，和小屋的暖纸中性色放在一起就是两种气质混用（总览<a href="index.html#taste-01">第一条</a>）。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「6.1 借结构，不借视觉」、「6. 工具页 /projects」（「2026-09-04 屋主裁定整节重写」）</p>
+      </div>
+    </article>
+
+    <!-- 6 小屋六条原则 -->
+    <article class="entry" id="me-xw-six" data-scope="xiaowu" data-toc="小屋六条">
+      <header class="entry-head">
+        <h3>小屋六条原则：名片优先、少即是真、手作克制、零固定高度、不阻塞、两个时辰</h3>
+        <p class="entry-lede">小屋规格开头那六条，是后面所有取舍的根。拿不准一个改动时，按这六条一条条过。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-08-25定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>选一条原则，再点「看反例」，同一张小名片会被改成违背它的样子（示意）。</p>
+        <div class="me-six-tabs" role="tablist" aria-label="六条原则" data-six-tabs>
+          <button type="button" role="tab" id="me-six-t1" aria-selected="true" aria-controls="me-six-panel" tabindex="0" data-six="1">①名片优先</button>
+          <button type="button" role="tab" id="me-six-t2" aria-selected="false" aria-controls="me-six-panel" tabindex="-1" data-six="2">②少即是真</button>
+          <button type="button" role="tab" id="me-six-t3" aria-selected="false" aria-controls="me-six-panel" tabindex="-1" data-six="3">③手作克制</button>
+          <button type="button" role="tab" id="me-six-t4" aria-selected="false" aria-controls="me-six-panel" tabindex="-1" data-six="4">④零固定高度</button>
+          <button type="button" role="tab" id="me-six-t5" aria-selected="false" aria-controls="me-six-panel" tabindex="-1" data-six="5">⑤不阻塞</button>
+          <button type="button" role="tab" id="me-six-t6" aria-selected="false" aria-controls="me-six-panel" tabindex="-1" data-six="6">⑥两个时辰</button>
+        </div>
+        <div class="me-six-panel" id="me-six-panel" role="tabpanel" aria-labelledby="me-six-t1" data-six-panel>
+          <p class="me-six-text" data-six-text>门厅只交付一件事：「这是谁的地方，可以随便逛」。不放任何列表、预览、统计、引导按钮。</p>
+          <div class="me-ctrl">
+            <button type="button" class="me-btn" aria-pressed="false" data-six-bad>看反例（示意）</button>
+            <button type="button" class="me-btn" aria-pressed="false" data-six-more hidden>多写两行</button>
+            <div class="seg" role="radiogroup" aria-label="白天还是夜里" data-six-night hidden>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-six-mode="day">白天</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-six-mode="night">夜里（冷夜暖灯）</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-six-mode="invert">反相（示意）</button>
+            </div>
+          </div>
+        </div>
+        <div class="me-six xw" data-six-scene data-mode="light" data-p="1">
+          <div class="me-six-card">
+            <span class="me-six-blob"><b class="me-six-title">小屋</b></span>
+            <span class="me-six-body">
+              <span class="me-six-line">Ysevan的小屋。</span>
+              <span class="me-six-sub">写写随笔，摆几件自己做的工具。</span>
+              <span class="me-six-extra" data-six-extra hidden>这两行是后来加的内容：内容多了，卡片就往下长，不在里面滚、不被裁掉。</span>
+              <span class="me-six-bad1" aria-hidden="true">最新随笔 · 共28篇 <i>开始探索 →</i></span>
+              <span class="me-six-bad2" aria-hidden="true"><i>NEW</i><i>HOT</i><i>✦✦✦</i></span>
+            </span>
+            <svg class="me-six-plant" viewBox="0 0 40 48" aria-hidden="true"><path d="M20 46V22"/><path d="M20 30c-6-1-10-6-10-12 6 0 10 5 10 12z"/><path d="M20 26c5-1 9-5 9-11-5 0-9 4-9 11z"/></svg>
+          </div>
+          <div class="me-six-block" aria-hidden="true"><span>等字体 · 等开场动画……</span></div>
+        </div>
+        <p class="me-read" data-six-read>名片优先：现行。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>六条</h4><ol><li>名片优先：门厅只交付一件事，不放列表、预览、统计、引导按钮（见<a href="#me-card-first">名片为主</a>那条的清单）。</li><li>少即是真：每个元素要么承载内容，要么承载导航；唯一例外是四处绿植装饰，完全不占布局、不接事件、不带动画。</li><li>手作气质，工程克制：楷 / 行楷 / 宋只出现在少数标题与数字上，正文一律黑体；饱和色严格限量、限位置。</li><li>零固定高度：内容多就往下长，内容少就居中留白。</li><li>不阻塞：开场动画、自托管字体、装饰SVG都不能挡住内容首屏，也不能延迟数据获取。</li><li>两个时辰，一间屋子：夜里不是反相，是同一间屋子的夜里——冷夜暖灯；切换入口是顶栏的墙壁开关（交互页<a href="interaction.html#ix-xw-switch">墙壁开关</a>）。</li></ol></section>
+        <section class="fact"><h4>为什么</h4><p>这六条把「小屋是一张名片、一间手作的屋子」拆成能核对的句子。新需求来了先过一遍：违背哪条就不做，或者换个不违背的做法。</p></section>
+        <blockquote class="said"><p>「像家里的开关」</p><footer>屋主 · 2026-09-01（说墙壁开关）</footer></blockquote>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「1.2 六条原则」</p>
+      </div>
+    </article>
+
+    <!-- 7 降级的终点 -->
+    <article class="entry" id="me-degrade-endpoint" data-scope="common" data-toc="降级的终点">
+      <header class="entry-head">
+        <h3>降级的终点就是今天那一页，一像素不差</h3>
+        <p class="entry-lede">任何增强层（3D、漂浮、走进小屋）降级后，必须和改动前的构建逐像素比对、差异为0：不留占位、不留半透明的残影、不让版面挪一像素。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-20定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>左边是「今天那一页」，中间是加了增强层、但这一档要降级的页面；右边是逐像素比出来的差（红点）。换一种降级写法看看。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="降级怎么写">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-de="none">整层不存在（现行）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-de="slot">留了占位（示意）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-de="ghost">降成静态还画着（示意）</button>
+          </div>
+        </div>
+        <div class="me-de" data-de-box>
+          <figure><canvas width="240" height="150" data-de-a aria-label="改动前的页面"></canvas><figcaption>改动前</figcaption></figure>
+          <figure><canvas width="240" height="150" data-de-b aria-label="改动后降级档的页面"></canvas><figcaption>改动后 · 降级档</figcaption></figure>
+          <figure><canvas width="240" height="150" data-de-d aria-label="逐像素差"></canvas><figcaption>逐像素差</figcaption></figure>
+        </div>
+        <p class="me-read" data-de-read>差异像素0：降级的终点就是今天那一页。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>验收</h4><p>1440×900下和改动前的构建逐像素比：滚动位置0、没动过鼠标的三页 × 亮 / 夜；减弱动效、800px宽、触摸、省流量、禁用JS、WebGL失败六档都动过鼠标——差异像素0，而且一档都没有画布挂上。首屏多出来的只有那个岛本身（约1.3KB gzip、一个请求）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>降级档的访客没有「看到增强」，他该看到的就是没有增强时那一页；任何「降级了但还留点什么」都是给他的页面平白加了东西。逐像素比是唯一不靠眼睛的判法：0就是0。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>夜里有一块会呼吸的画（8秒夜灯），比的时候先把那块画布藏掉再比；同一构建自己比也有差，就是在量环境，不算增强层的账。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「4.8.4 触发与降级 › 首屏与降级的验收」、「4.9.3 什么时候有跑道（分档与降级）」（「降级的终点就是今天的门厅」）</p>
+      </div>
+    </article>
+
+    <!-- 8 不让行为取决于用户忘掉的往事 -->
+    <article class="entry" id="me-forgotten-state" data-scope="common" data-toc="忘掉的往事">
+      <header class="entry-head">
+        <h3>不让行为取决于用户忘掉的往事；隔离要隔到不留痕迹</h3>
+        <p class="entry-lede">一个功能的行为如果取决于用户早就想不起来的历史状态，一律否掉，不用先问。库与库的隔离，连「另一个库存在过」的条数、日期、提示都不许出现。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>日程安排的「生活库 · 本周回顾」（示例数据）。底下那行「往事」是你三个月前做的事，你早忘了——切换它，看两种设计下回顾页变不变。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="回顾页怎么设计">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-fs="merge">已解锁就合并（被否，示意）</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-fs="own">只看当前库（现行）</button>
+          </div>
+        </div>
+        <div class="me-fs" data-fs-box data-v="own">
+          <div class="me-fs-panel">
+            <p class="me-fs-head"><b>本周回顾</b><span>生活库 · 9月21日—9月27日</span></p>
+            <ul class="me-fs-list" data-fs-list></ul>
+            <p class="me-fs-sum" data-fs-sum></p>
+          </div>
+          <div class="me-fs-past">
+            <span class="me-fs-past-label">往事 · 三个月前（你早忘了）</span>
+            <button type="button" class="me-chip" aria-pressed="false" data-fs-past>给工作库设过口令</button>
+          </div>
+        </div>
+        <p class="me-read" data-fs-read>只看当前库：往事怎么变，回顾页都一样。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>实例</h4><p>周回顾本可以「工作库已解锁就合并显示两个库」。但工作库上锁时是加密存的，密钥只在它自己那个已解锁页面的内存里，生活库页面读不到——所以「合并」只在工作库从没设过口令时才会发生。屋主会看到回顾页一会儿有工作、一会儿没有，而完全不会把它和「当初设没设口令」联系起来。现行：周回顾只看当前库，「另一个库上锁了」这种提示也不出现。</p></section>
+        <section class="fact"><h4>为什么</h4><p>用户解释不了的行为就是bug，哪怕代码完全按设计在跑。控制室原话：这条理由比隔离原则本身还硬。代价（某天看起来像普通空天）是隔离该付的钱。</p></section>
+        <section class="fact"><h4>护栏</h4><p>「只看当前库」三条测试走整个<code>&lt;App /&gt;</code>（真实的读库键路径），不给组件喂数组——喂数组的话「读错键」根本没机会发生。先让它红过一次：组件临时去读另一个库，三条当场全红。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/BUSINESS_LOGIC.md:1696</code>「隔离到什么程度」、<code>:1773</code>「为什么不做「已解锁就合并」」、<code>:1778</code>；控制室记录 <code>memory/no-behavior-from-forgotten-state.md:13</code>「一律否掉」</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================================================================ 设备与验收档位 -->
+  <section class="group" id="g-devices" data-scope="common">
+    <h2 class="group-title">设备与验收档位</h2>
+
+    <!-- 9 三台设备 -->
+    <article class="entry" id="me-devices" data-scope="common" data-toc="三台设备">
+      <header class="entry-head">
+        <h3>屋主三台设备：台式2040×1019@1.25没显卡，笔记本2552×1274@1.5，手机417×750@3.5</h3>
+        <p class="entry-lede">都是屋主本人用诊断页实测的视口（CSS像素），不是屏幕分辨率。此前按「2560 CSS px」定的大屏规则错过两次。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>四个框按真实尺寸比例画在一起；点一台看细节，切「物理像素」看同一块屏幕在显卡眼里有多大。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="按什么像素画">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-dv-unit="css">CSS像素</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-dv-unit="phys">物理像素</button>
+          </div>
+          <div class="seg" role="radiogroup" aria-label="手机地址栏">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-dv-bar="750">地址栏露着750</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-dv-bar="903">收起903</button>
+          </div>
+        </div>
+        <div class="me-dv" data-dv>
+          <div class="me-dv-stage" data-dv-stage aria-hidden="true">
+            <i class="me-dv-frame" data-dv-frame="laptop"><b>1</b></i>
+            <i class="me-dv-frame" data-dv-frame="desk"><b>2</b></i>
+            <i class="me-dv-frame" data-dv-frame="mac"><b>3</b></i>
+            <i class="me-dv-frame" data-dv-frame="phone"><b>4</b></i>
+          </div>
+          <div class="me-dv-side">
+            <div class="me-dv-list" role="radiogroup" aria-label="选一台设备">
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-dv-pick="laptop"><b>1</b>笔记本</button>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-dv-pick="desk"><b>2</b>台式（没显卡）</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-dv-pick="mac"><b>3</b>Mac（基准）</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-dv-pick="phone"><b>4</b>手机</button>
+            </div>
+            <dl class="me-dv-facts" data-dv-facts></dl>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+<pre><code>台式：  2040 × 1019  DPR 1.25  Microsoft Basic Render Driver（WARP 软件渲染）  --scale 1.417（未封顶）
+笔记本：2552 × 1274  DPR 1.5   RTX 4060 Laptop                                 --scale 1.45（封顶，2088起）
+手机：   417 × 750   DPR 3.5   Adreno 750      （地址栏收起后417 × 903）
+Mac：   1440 × 900             （开发机，等比基准，1440及以下一个数都不许变）</code></pre>
+        </section>
+        <section class="fact"><h4>怎么用</h4><ul><li>大屏两档都拍：2040那档看「未封顶的纯等比」，2552那档才看得出1.45封顶后的样子。</li><li>「为什么没有3D」只属于台式那台；笔记本、手机本来就有。</li><li>手机按417拍图；判「装不装得下」用750（最坏），判「会不会显得空」用903。高度相关的尺寸一律dvh / svh，不用裸vh。</li></ul></section>
+        <section class="fact"><h4>为什么</h4><p>台式机物理2560宽、Windows缩放125%，视口其实是2040。按2560推出来的「1.45封顶在他机器上触得到」「填满与等比要取舍」全错了；公式也因此必须是「视口÷1440」，线性爬坡在2040处只给1.241，比等比的1.417小约12.4%（反过来说等比大14%；plan的SPEC原文写成「小14%」，是比反了）。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:68</code>「屋主实机实测」、<code>:70</code>、<code>:75</code>、<code>:76</code>、<code>:78</code>、<code>:79</code>；<code>tools/shua/design-proposal.md:425</code>「中间一律偏小」（刷刷3.14.2改对的算法）；控制室记录 <code>memory/owner-devices-viewports.md:8</code>「错过两次」、<code>:12</code>「Windows 台式」、<code>:14</code>、<code>:22</code>「手机档按」、<code>:24</code>、<code>:25</code></p>
+      </div>
+    </article>
+
+    <!-- 10 验收档位清单 -->
+    <article class="entry" id="me-tiers" data-scope="common" data-toc="验收档位">
+      <header class="entry-head">
+        <h3>验收档位清单：每一档都有它才抓得到的问题</h3>
+        <p class="entry-lede">常规档跑全，屋主三台真机的档一个不少；带浏览器工具栏的真实高度另跑一档。每档查什么心里有数，漏一档就漏一类错。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>点一档，看它查什么、为什么非它不可；或者点上面一类问题，看哪几档在管它。</p>
+        <div class="me-chips" role="group" aria-label="按问题看" data-tr-checks>
+          <button type="button" class="me-chip" aria-pressed="false" data-tr-check="ovf">横向溢出</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-tr-check="bp">版面档 / 断点</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-tr-check="con">对比度</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-tr-check="fps">卡不卡</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-tr-check="fit">装不装得下</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-tr-check="cap">等比与封顶</button>
+        </div>
+        <ul class="me-tr" data-tr-list></ul>
+        <p class="me-tr-note" data-tr-note>点一档看说明。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>档位</h4><ul><li>1440×900@1浅 / 深：等比基准；1440及以下数值一个都不许变。对比度在这两档按最不利角两法验收，见色彩页<a href="color.html#c-contrast">对比度两法</a>。</li><li>1100（侧栏还在的窄桌面）、768（900以下收成顶栏、还没到600换底部tab bar）。</li><li>390@3与417×750@3.5都跑：390更窄，反而会掩盖「417才刚好放不下」那一类。</li><li>2040×1019@1.25带软件渲染旗标：屋主台式机，看长帧；2552×1274@1.5：只有它看得出封顶。</li><li>带工具栏的真实高度：台式2040×930、笔记本2552×1180，断言<code>scrollHeight === clientHeight</code>。</li><li>⌘+缩放：等价视口变窄，不许出横向滚动条。</li></ul></section>
+        <section class="fact"><h4>为什么</h4><p>每一档对应一类只在那里露馅的错：封顶后的形态只在2552、浏览器工具栏吃掉的高度只在930、软件合成的卡顿只在台式那档。档位清单就是「错会躲在哪」的地图。</p></section>
+        <p class="source">出处：<code>tools/star/CLAUDE.md:71</code>「测试」；<code>tools/plan/docs/design/SPEC-apple-glass.md:66</code>「现行规则」、<code>:78</code>、<code>:82</code>「浏览器缩放」；<code>tools/card/CLAUDE.md:172</code>「带浏览器工具栏」；控制室记录 <code>memory/owner-devices-viewports.md:22</code>「手机档按」</p>
+      </div>
+    </article>
+
+    <!-- 11 先量后截图 -->
+    <article class="entry" id="me-measure-first" data-scope="common" data-toc="先量后截图">
+      <header class="entry-head">
+        <h3>大屏验收先量后截图，回报附数字</h3>
+        <p class="entry-lede">模拟2040×1019@1.25，往页面里灌一条探针数据，用<code>getBoundingClientRect</code>量关键元素左右缘离视口、离行边缘多少像素；截图只是附件。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>一张2040宽版面的缩略「截图」（示例数据）。A、B两版的右侧停靠栏，你看得出哪版贴着行的右缘吗？再放探针量一下。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="版式">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-mf="a">版式A</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-mf="b">版式B</button>
+          </div>
+          <button type="button" class="me-btn me-btn-main" aria-pressed="false" data-mf-probe>放探针量</button>
+        </div>
+        <div class="me-mf" data-mf-box>
+          <div class="me-mf-vp" data-mf-vp data-v="a" aria-hidden="true">
+            <i class="me-mf-side"></i>
+            <div class="me-mf-main">
+              <i class="me-mf-row" data-mf-row></i><i class="me-mf-row"></i><i class="me-mf-row"></i>
+              <i class="me-mf-dock" data-mf-dock></i>
+            </div>
+            <span class="me-mf-tag" data-mf-tag hidden></span>
+          </div>
+        </div>
+        <p class="me-read" data-mf-read>截图缩到这么小，两版看起来一样。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>做法</h4>
+<pre><code>// 量具里：设视口2040×1019@1.25 → 灌探针数据 → 量 → 回报数字 → 删探针
+const r = el.getBoundingClientRect();
+const row = rowEl.getBoundingClientRect();
+report({ leftGap: r.left - row.left, rightGap: row.right - r.right, vw: innerWidth });</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>控制室两次把大屏规则定错（整壳居中留白、≥1600多列），都是只看截图不量数。plan停靠位「1100×scale在2040只比行宽小几像素、视觉上等于右对齐」这个结论也是量出来的，截图看不出。判断「像不像停住」「留白够不够」用数字说话。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/bigscreen-verify-by-measure.md:11</code>「大屏验收」、<code>:13</code>、<code>:14</code>「先量后截图」。演示里的宽度是编的，只为演示截图里几像素看不出。</p>
+      </div>
+    </article>
+
+    <!-- 12 设视口不设窗口 -->
+    <article class="entry" id="me-viewport-not-window" data-scope="common" data-toc="设视口不设窗口">
+      <header class="entry-head">
+        <h3>无头Chrome设视口，不设窗口；设完当场对账</h3>
+        <p class="entry-lede">用<code>Emulation.setDeviceMetricsOverride</code>（puppeteer的<code>setViewport</code>内部就是它），顺序是先navigate再设视口，然后读<code>innerWidth</code> / <code>devicePixelRatio</code>和决定版面档的媒体查询，对不上就抛错。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>四种设法（模拟，不开浏览器）。截出来的图看着都是手机尺寸，里面的版面却不一定是按手机排的；打开「对账断言」才分得出。</p>
+        <div class="me-ctrl">
+          <div class="seg me-seg-wrap" role="radiogroup" aria-label="怎么设手机档">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-vw="window">--window-size=390,844</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-vw="override">设视口390@3</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-vw="blank">设视口，但在about:blank上读</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-vw="meta">页面缺viewport meta</button>
+          </div>
+          <button type="button" class="me-btn" aria-pressed="true" data-vw-assert>对账断言：开</button>
+        </div>
+        <div class="me-vw" data-vw-box>
+          <div class="me-vw-shot" aria-hidden="true">
+            <div class="me-vw-page" data-vw-page data-layout="desk">
+              <i class="me-vw-side"></i>
+              <span class="me-vw-body"><i></i><i></i><i></i><i></i></span>
+              <i class="me-vw-tab"></i>
+            </div>
+          </div>
+          <dl class="me-vw-out" data-vw-out></dl>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>async function setViewport(c, w, h, dpr, mobile) {
+  await c.send("Emulation.setDeviceMetricsOverride",
+    { width: w, height: h, deviceScaleFactor: dpr, mobile, screenWidth: w, screenHeight: h });
+  const got = await evaluate(c, "({w: innerWidth, dpr: devicePixelRatio})");   // 已经 navigate 过
+  if (got.w !== w || Math.abs(got.dpr - dpr) > 1e-6) throw new Error("viewport mismatch");
+}</code></pre>
+        </section>
+        <section class="fact"><h4>三个成因</h4><ol><li><code>--window-size</code>设的是窗口：macOS最小宽度把它夹到500，不报错，PNG照样是390×844，布局按500排、手机断点没命中。</li><li>页面没有<code>&lt;meta name="viewport"&gt;</code>又开了<code>mobile:true</code>：Chrome给980的默认布局视口。</li><li>在还没navigate的<code>about:blank</code>上读：读到980（读的是上一页）。</li></ol><p>三种现象一模一样、都不报错，只能靠对账断言分开；护栏要真红一次：拿掉viewport meta的副本读到980、断言抛错，正常页面读到390、通过。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>只核尺寸不够：<code>(max-width:900px)</code>、<code>(hover: hover) and (pointer: fine)</code>这几条决定版面档的媒体查询也要核。尺寸全对、跑的却是桌面版面时，截图、帧率、画布尺寸全是错的。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/headless-viewport-not-window.md:10</code>「设的是窗口」、<code>:11</code>、<code>:16</code>「先 navigate 再设视口」；<code>memory/webgl-headless-chrome-testing.md:23</code>「前提坑」、<code>:25</code>「about:blank」、<code>:28</code>「护栏要真红一次」、<code>:30</code>「媒体查询」；<code>tools/star/CLAUDE.md:70</code>「设视口不设窗口」</p>
+      </div>
+    </article>
+
+    <!-- 13 溢出跟目标宽度比 -->
+    <article class="entry" id="me-overflow-target" data-scope="common" data-toc="溢出跟目标宽比">
+      <header class="entry-head">
+        <h3>手机模拟下判溢出，跟目标宽度比，不跟当时的innerWidth比</h3>
+        <p class="entry-lede"><code>mobile:true</code>时内容撑破屏幕，Chrome不让<code>scrollWidth</code>变大，而是把<code>innerWidth</code>本身撑宽——「<code>scrollWidth === innerWidth</code>」永远成立。判据写成跟目标宽度比、逐元素右缘不超过目标宽度。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>417宽的手机模拟（数字照刷刷那次实测）。先塞一个477px的撑破块，看三条判据谁红；再换成会被页面夹住的注入，看「绿」为什么不算数。</p>
+        <div class="me-ctrl">
+          <button type="button" class="me-btn me-btn-main" aria-pressed="false" data-ov-add>塞一个477px的块</button>
+          <div class="seg" role="radiogroup" aria-label="怎么注入">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ov-how="hard">min-width:477px（对）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ov-how="soft">width:477px，被max-width夹住（坑）</button>
+          </div>
+        </div>
+        <div class="me-ov" data-ov-box>
+          <div class="me-ov-phone" aria-hidden="true">
+            <div class="me-ov-page" data-ov-page>
+              <i class="me-ov-bar"></i><i class="me-ov-line"></i><i class="me-ov-line"></i><i class="me-ov-line me-ov-short"></i>
+              <i class="me-ov-block" data-ov-block hidden></i>
+            </div>
+            <i class="me-ov-edge" data-ov-edge></i>
+          </div>
+          <ul class="me-ov-out" data-ov-out></ul>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>const W = 417;                                    // 目标宽度，不是此刻的 innerWidth
+const doc = Math.max(document.documentElement.scrollWidth, innerWidth);
+const over = [...document.querySelectorAll("body *")]
+  .filter((el) => el.getBoundingClientRect().right > W + 0.5);
+ok(doc === W && over.length === 0);</code></pre>
+        </section>
+        <section class="fact"><h4>先红一次</h4><p>注入撑破块要写<code>min-width</code>加<code>max-width:none</code>，并先确认注入物自己真的越界了——否则块被页面的<code>max-width</code>夹住、根本没撑破，判据「绿」只是因为没东西可抓。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>页面被撑破后innerWidth先变491，过一两帧有时又缩回417，所以「scrollWidth大于目标宽」时红时绿（改前改后两棵树都这样）。量具自证只认逐元素越界。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/headless-viewport-not-window.md:20</code>「手机模拟下」；<code>memory/three-rules-against-false-signals.md:82</code>「注入撑破块」、<code>:90</code>「Chrome 手机模拟」</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================================================================ 防假信号 -->
+  <section class="group" id="g-signals" data-scope="common">
+    <h2 class="group-title">防假信号</h2>
+    <p class="group-lede">「看起来有信号、其实信号是假的」最难查：复查代码查不出来，只能靠规矩挡在前面。任何新写的护栏、门禁、自动降级，落地前对照下面过一遍。</p>
+
+    <!-- 14 七条 -->
+    <article class="entry" id="me-seven" data-scope="common" data-toc="七条防假信号">
+      <header class="entry-head">
+        <h3>七条防假信号：新护栏落地前逐条过</h3>
+        <p class="entry-lede">不拿可变文案当判据｜先让它红一次｜门禁跑在稳定快照上｜判据不掺自己加的量｜断言零件接没接上｜阴性结论附阳性证据｜判据先在改前的树上跑。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>七个情景（改编自各项目真踩过的坑），每个选一条它犯的规矩。</p>
+        <div class="me-q" data-q>
+          <p class="me-q-no" data-q-no>第1 / 7题</p>
+          <p class="me-q-text" data-q-text></p>
+          <div class="me-q-opts" role="group" aria-label="它犯了哪一条" data-q-opts>
+            <button type="button" class="me-q-opt" data-q-pick="1">可变文案当判据</button>
+            <button type="button" class="me-q-opt" data-q-pick="2">没先红一次</button>
+            <button type="button" class="me-q-opt" data-q-pick="3">没跑在稳定快照上</button>
+            <button type="button" class="me-q-opt" data-q-pick="4">掺了自己加的量</button>
+            <button type="button" class="me-q-opt" data-q-pick="5">只看零件在不在</button>
+            <button type="button" class="me-q-opt" data-q-pick="6">阴性结论没阳性证据</button>
+            <button type="button" class="me-q-opt" data-q-pick="7">没在改前的树上跑</button>
+          </div>
+          <p class="me-q-fb" data-q-fb></p>
+          <div class="me-ctrl"><button type="button" class="me-btn me-btn-main" data-q-next disabled>下一题</button><span class="me-q-score" data-q-score>答对0题</span></div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>七条</h4><ol><li>不许拿可变的显示文案当判定依据。</li><li>测试先让它红一次再修绿；突变要精确，一次只坏一件事。</li><li>门禁跑在验证过的稳定快照上（连续两轮、每轮3秒源树无变化才放行）。</li><li>判据里不许掺我们自己加的量（限帧、节流、去抖、人为延迟）。</li><li>断言「零件接没接上」，不断言「零件在不在」：断言按规则算出来的最终结果。</li><li>阴性结论必须附阳性证据：先问「我的量具看不看得见我要否认的东西」。</li><li>判据先在改动前的树上跑一遍，改前也红就是在量环境。</li></ol><p>另一条配套：复核子代理要复现它声称的现象，不能只核结论安不安全。</p></section>
+        <section class="fact"><h4>为什么</h4><p>这几种错最像成功：全绿、零错误、一片安静。规矩的作用是在它们长出来之前就挡住。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/three-rules-against-false-signals.md:3</code>「七条防假信号」、<code>:13</code>、<code>:14</code>、<code>:22</code>、<code>:23</code>、<code>:35</code>、<code>:56</code>「复核子代理」、<code>:60</code>、<code>:85</code></p>
+      </div>
+    </article>
+
+    <!-- 15 先红一次 -->
+    <article class="entry" id="me-red-first" data-scope="common" data-toc="先红一次">
+      <header class="entry-head">
+        <h3>判据先在改前的树上跑，看它红一次；红一次是必要的，不是充分的</h3>
+        <p class="entry-lede">写完的护栏先拿到改动前的树上跑：不红，说明它看不见你要防的那个错。红了也别急着信——再造一棵「零件在、但没接上」的树，判据还得红。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>一个回车就记一条的小输入框，有三棵树。可以在框里打字回车试试（用中文输入法选词时按回车，看「改前」会不会把半截拼音记进去）；再让两条判据各在三棵树上跑一遍。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="哪棵树">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-rf="before">改前</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-rf="after">改后</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-rf="unwired">改后但没接上</button>
+          </div>
+        </div>
+        <div class="me-rf" data-rf-box>
+          <div class="me-rf-app">
+            <label class="me-rf-field"><span>记一条（示例）</span><input type="text" data-rf-input autocomplete="off" placeholder="打字，回车记下"></label>
+            <ul class="me-rf-list" data-rf-list aria-label="已记下"></ul>
+          </div>
+          <pre class="me-rf-src" data-rf-src data-no-copy aria-label="这棵树的回车处理函数"></pre>
+        </div>
+        <div class="me-ctrl"><button type="button" class="me-btn me-btn-main" data-rf-run>两条判据 × 三棵树各跑一遍</button></div>
+        <table class="me-rf-tab" data-rf-tab hidden>
+          <thead><tr><th scope="col">判据</th><th scope="col">改前</th><th scope="col">改后</th><th scope="col">没接上</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">行为：组字回车不记、普通回车记一条</th><td data-rf-cell="b-before"></td><td data-rf-cell="b-after"></td><td data-rf-cell="b-unwired"></td></tr>
+            <tr><th scope="row">找字：源码里有没有isComposing</th><td data-rf-cell="s-before"></td><td data-rf-cell="s-after"></td><td data-rf-cell="s-unwired"></td></tr>
+          </tbody>
+        </table>
+        <p class="me-read" data-rf-read>还没跑判据。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>// 行为判据：真派一个组字中的回车，断言什么都没发生；再派普通回车，断言记了一条
+input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", isComposing: true }));
+expect(list.length).toBe(0);
+input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+expect(list.length).toBe(1);</code></pre>
+        </section>
+        <section class="fact"><h4>两条要领</h4><ol><li>突变要精确，一次只坏一件事：把整个文件弄崩只证明「测试能发现文件坏了」。plan那次：子代理的破坏让15条全红（没区分力）；换成精确破坏，恰好3条红、12条绿，红的正是库隔离那三条。</li><li>护栏要够得到真正会出错的那一层；突变按「一个坏人会怎么绕过它」来写。</li></ol></section>
+        <section class="fact"><h4>用在哪</h4><p>输入法回车的规矩（交互页<a href="interaction.html#ix-ime">输入法回车</a>）就是这样钉住的：先发<code>isComposing:true</code>的回车断言什么都没发生，再发普通回车断言正常提交。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/three-rules-against-false-signals.md:14</code>「测试先让它红一次」、<code>:16</code>、<code>:20</code>、<code>:35</code>、<code>:39</code>「突变自测」、<code>:85</code>「改前的树」；<code>memory/ime-enter-is-not-submit.md:17</code>「测试写法」、<code>:18</code></p>
+      </div>
+    </article>
+
+    <!-- 16 别读早 -->
+    <article class="entry" id="me-read-early" data-scope="common" data-toc="别读早">
+      <header class="entry-head">
+        <h3>读值要等它稳：动画走完、滚动停稳再读，FLIP读计算样式</h3>
+        <p class="entry-lede">点了马上读，读到的是过渡半路的值；读<code>el.style.transform</code>永远是空（FLIP设完反向位移立刻清成空串交给过渡）。要读终值等<code>transitionend</code>，要看「有没有在动」读<code>getComputedStyle</code>。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-hero-nav">总览 · 透明顶栏</a></p>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>方块每次滑到另一头（600ms过渡）。三种读法，读到的数写在下面。</p>
+        <div class="me-ctrl">
+          <button type="button" class="me-btn" data-re="now">滑过去，立刻读</button>
+          <button type="button" class="me-btn" data-re="settle">滑过去，等稳了读</button>
+          <button type="button" class="me-btn" data-re="flip">FLIP一下，读el.style</button>
+        </div>
+        <div class="me-re" data-re-track aria-hidden="true"><i class="me-re-box" data-re-box></i></div>
+        <ol class="me-re-log" data-re-log aria-label="读数"></ol>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>el.style.transform = `translateX(${x}px)`;          // 触发过渡
+await new Promise((r) => el.addEventListener("transitionend", r, { once: true }));
+const m = new DOMMatrix(getComputedStyle(el).transform);  // 终值
+// 判「有没有动」：同一刻读两次 computed，不读 el.style</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>本站外壳判「大图还压在顶栏底下」时，正文还在做进场位移（<code>page-in</code>的8px），第一帧量会判错；<code>star.js</code>按布局位置算、扣掉此刻的进场<code>translateY</code>，进场<code>animationend</code>再判一次。量具里「读早」也是常用的红探针：故意早读一次，判据必须红。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>减弱动效开着时过渡被关，立刻读也是终值——读早这条判据在那一档红不了，要在不减弱的档位让它红。</p></section>
+        <p class="source">出处：<code>tools/star/CLAUDE.md:91</code>「别读早」；控制室记录 <code>memory/three-rules-against-false-signals.md:81</code>「FLIP」</p>
+      </div>
+    </article>
+
+    <!-- 17 不掺自己加的量 -->
+    <article class="entry" id="me-own-quantity" data-scope="common" data-toc="不掺自己加的量">
+      <header class="entry-head">
+        <h3>护栏判据里不许掺自己加的量：相对阈值、量均值，不在台阶上取中位数</h3>
+        <p class="entry-lede">限帧、节流、去抖都会让量出来的间隔只剩几个离散值；阈值压在台阶上，降不降档就靠抛硬币。阈值按「这一档承诺的帧率」写成倍数，量这一窗口真送出去几帧（均值）。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>随机数模拟一个限帧29ms、60Hz刷新的3D岛（示意，不是真量）。同一份构建跑三次，看两种判据结论稳不稳；拖滑块换一台真的更慢的机器。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="判据">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-oq="median">旧：间隔中位数≥50ms降档</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-oq="mean">新：送出率&lt;承诺×0.6降档</button>
+          </div>
+        </div>
+        <div class="me-ctrl">
+          <label class="me-range"><span>这台机器画一帧</span><input type="range" min="10" max="64" step="1" value="33" data-oq-cost aria-label="这台机器画一帧要多少毫秒"><output data-oq-cost-out>33ms</output></label>
+          <button type="button" class="me-btn me-btn-main" data-oq-run>同一份构建跑三次</button>
+        </div>
+        <div class="me-oq" data-oq-box>
+          <div class="me-oq-hist" data-oq-hist aria-hidden="true"></div>
+          <ol class="me-oq-runs" data-oq-runs aria-label="三次的结论"></ol>
+        </div>
+        <p class="me-read" data-oq-read>点「跑三次」。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>实例</h4><p>小屋3D看门狗量帧间隔，间隔里掺着自己加的29ms限帧（rAF 60Hz ⇒ 只能是33.3 / 50 / 66.7），阈值恰好50压在台阶上，同一构建三次量到47.7 / 49.7 / 59.6——这就是屋主说的「有时候有3D有时候没有」。</p></section>
+        <section class="fact"><h4>做法</h4><ol><li>相对阈值：按「这一档自己要求的帧率」的比例写，不写绝对毫秒，人为限帧就被除掉了。</li><li>量连续的量：均值＝这一秒真送出去几帧，不在量化台阶上取中位数。做对之后，「限了帧」那类分支应当整个消失。</li><li>多条件相与时，至少一个是干净量、并且它能独立决定结果；更好的问法是「是不是我造成的」，而不是「现在好不好」。</li></ol></section>
+        <section class="fact trap"><h4>坑</h4><p>别改成「量画一帧花多久」就完事：WebGL是异步的，<code>performance.now()</code>夹着<code>render()</code>只量到CPU提交时间（<code>gl.finish()</code> 0.2ms对<code>readPixels</code> 95.6ms，差478倍），照字面改会得到一个「提交得快就算健康」的哑巴看门狗。节流器本身不受这条约束（限帧是闸门，不是判据）。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/three-rules-against-false-signals.md:23</code>「护栏的判据里」、<code>:24</code>、<code>:25</code>、<code>:29</code>、<code>:32</code>「别写成」、<code>:58</code>「更优的形式」</p>
+      </div>
+    </article>
+
+    <!-- 18 阴性结论附阳性证据 -->
+    <article class="entry" id="me-negative-evidence" data-scope="common" data-toc="阴性附阳性">
+      <header class="entry-head">
+        <h3>阴性结论必须附阳性证据；查残留进程按名字，不按端口</h3>
+        <p class="entry-lede">「没报错」「没降档」「清干净了」都要同时给出「好事确实发生过」的证据：画了多少帧、跑了多少用例、进程表里剩下什么。第一件事先问：我的量具看不看得见我要否认的那个东西？</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>一张示例进程表：量具跑完留了两个残留。换三种查法，看谁说「干净了」是真的。</p>
+        <div class="me-ctrl">
+          <div class="seg me-seg-wrap" role="radiogroup" aria-label="怎么查残留">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ne="port">按端口查监听</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ne="name">按名字查</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ne="ctrl">按名字＋排掉自己＋阳性对照</button>
+          </div>
+          <button type="button" class="me-btn me-btn-main" data-ne-run>查</button>
+          <button type="button" class="me-btn" data-ne-kill disabled>清掉查到的残留</button>
+        </div>
+        <div class="me-ne" data-ne-box>
+          <ul class="me-ne-ps" data-ne-ps aria-label="进程表（示例）"></ul>
+          <pre class="me-ne-out" data-ne-out data-no-copy>还没查。</pre>
+        </div>
+        <p class="me-read" data-ne-read>选一种查法，点「查」。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>// 先存一份快照，按名字查，排掉自己和整条祖先链；同一快照、同一过滤要先看见一个已知存在的进程
+const ps = execFileSync("ps", ["-axo", "pid=,comm=,command="], { encoding: "utf8" });
+const ctrl = spawn(process.execPath, ["-e", "setTimeout(()=>{},20000)", "prof-xx-ctrl"]);
+// 命中 ctrl 恰好1个 → 杀掉 → 0个，这把尺子才算看得见东西；然后再查真名字</code></pre>
+        </section>
+        <section class="fact"><h4>实例</h4><ul><li>验「30Hz屏上不许误杀」时第一版写坏了，岛压根没画，<code>tier=high</code>是假通过；重写成「每次请求等两个真实帧」才拿到435帧那个真数。</li><li>汇报「进程都清干净了」用的是查监听端口，残留的是个客户端（挂在已关掉的服务上42分钟），那条命令天生看不见它。</li></ul></section>
+        <section class="fact trap"><h4>坑</h4><p>本机zsh下未加引号的<code>$PIDS</code>不按空格拆，<code>kill</code>把12个PID当成一个参数、全失败，输出却一片干净——用数组，逐个PID复核。本机<code>grep</code>是ugrep的别名，<code>grep -v grep</code>排不掉它自己。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/three-rules-against-false-signals.md:60</code>「阴性结论必须附阳性证据」、<code>:63</code>、<code>:65</code>、<code>:69</code>、<code>:75</code>、<code>:77</code>、<code>:78</code>；量具写法照 <code>tools/star/CLAUDE.md:73</code>「测完按草稿区目录名查残留进程」</p>
+      </div>
+    </article>
+
+    <!-- 19 代价不对等 -->
+    <article class="entry" id="me-lighter" data-scope="common" data-toc="往后果轻的错">
+      <header class="entry-head">
+        <h3>两种错的代价不对等时，判据往后果轻的那边错</h3>
+        <p class="entry-lede">写任何降级、熔断、告警判据前，先问「误判」和「漏判」哪个后果重，把盲区放在轻的那一侧，并把理由写进注释——否则下一个人会以为两条规则打架。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-blur">全站 · 背景模糊</a></p>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>选一个实例，拖两边的代价，看拿不准时该往哪边错（代价是示意的打分）。</p>
+        <div class="me-ctrl">
+          <div class="seg me-seg-wrap" role="radiogroup" aria-label="实例">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-lc="blur">本站模糊自动档</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-lc="guard">刷刷3D帧守卫</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-lc="ime">拦回车认不认229</button>
+          </div>
+        </div>
+        <div class="me-lc" data-lc-box>
+          <label class="me-lc-side"><span><b class="me-lc-key">A</b><span data-lc-a-label></span></span><input type="range" min="1" max="10" step="1" value="9" data-lc-a aria-label="A那种错的代价"><output data-lc-a-out>9</output></label>
+          <div class="me-lc-beam" aria-hidden="true"><i class="me-lc-bar" data-lc-bar><b class="me-lc-pan me-lc-pan-a">A</b><b class="me-lc-pan me-lc-pan-b">B</b></i><i class="me-lc-pivot"></i></div>
+          <label class="me-lc-side"><span><b class="me-lc-key">B</b><span data-lc-b-label></span></span><input type="range" min="1" max="10" step="1" value="2" data-lc-b aria-label="B那种错的代价"><output data-lc-b-out>2</output></label>
+        </div>
+        <p class="me-lc-verdict" data-lc-verdict></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>三个实例</h4><ul><li>本站背景模糊「自动」：没测过显卡时先按lite（只压暗、不模糊）。误判成full是没显卡那台整页卡；误判成lite只是第一次打开少一点景深。</li><li>刷刷3D帧守卫：误判会关掉好机器上的3D、并且整个会话记住；漏判只是让一个匀速偏慢、还能看的画面继续跑。所以判据的盲区落在漏判那一侧；丢弃超长卡顿的上限也不放宽，放宽会把被节流的后台标签页误判成慢机器。</li><li>输入法：拦「提交」只认<code>isComposing</code>，不认229——安卓软键盘不在合成时也常报229，拦了会让键盘上的搜索键按了没反应（后果重）；「提前return不处理」可以两个都认（后果轻）。</li></ul></section>
+        <section class="fact"><h4>用在哪</h4><p>本站<code>boot.js</code>：「背景模糊：自动」在<code>star-gpu</code>没测过时先落lite，<code>star.js</code>空闲时测一次再改。</p></section>
+        <section class="fact"><h4>诊断法</h4><p>阈值老调不准时，先构造两个方向的反例：刷刷那次证明同一个判据「放过22帧的卡顿，却把流畅的30Hz屏判成慢」，两句同时成立，就说明光调阈值永远修不好，必须换判据。</p></section>
+        <p class="source">出处：<code>tools/star/assets/boot.js:11</code>「没测过也按 lite」、<code>:12</code>、<code>:13</code>；<code>tools/star/CLAUDE.md:92</code>「没测过先按 lite」；控制室记录 <code>memory/err-toward-lighter-consequence.md:10</code>「代价不对等时」、<code>:14</code>「诊断法」、<code>:16</code>；<code>memory/ime-enter-is-not-submit.md:24</code>「拦提交只认」</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================================================================ 测试环境 -->
+  <section class="group" id="g-env" data-scope="common">
+    <h2 class="group-title">测试环境</h2>
+
+    <!-- 20 测试不出声 -->
+    <article class="entry" id="me-mute" data-scope="common" data-toc="测试不出声">
+      <header class="entry-head">
+        <h3>测试绝不能让电脑出声：无头Chrome一律--mute-audio，测完按目录名查进程为0</h3>
+        <p class="entry-lede">要测「允许自动播放」也照样静音，验证看<code>audio.paused</code> / <code>currentTime</code>，不靠耳朵；不用浏览器面板去点任何播放按钮。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-25定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>模拟跑一轮带背景音乐页面的测试（这块不放任何声音，喇叭只是画的）。两个开关都关着跑一次，再都打开跑一次。</p>
+        <div class="me-ctrl">
+          <button type="button" class="me-chip" aria-pressed="false" data-mu-flag="mute">--mute-audio</button>
+          <button type="button" class="me-chip" aria-pressed="false" data-mu-flag="sweep">收尾按目录名查进程</button>
+          <button type="button" class="me-btn me-btn-main" data-mu-run>跑一轮（模拟）</button>
+        </div>
+        <div class="me-mu" data-mu-box data-state="idle">
+          <svg class="me-mu-spk" viewBox="0 0 64 48" aria-hidden="true"><path class="me-mu-cone" d="M6 18h10l13-10v32L16 30H6z"/><path class="me-mu-w me-mu-w1" d="M36 18a8 8 0 0 1 0 12"/><path class="me-mu-w me-mu-w2" d="M41 12a16 16 0 0 1 0 24"/><path class="me-mu-w me-mu-w3" d="M46 6a24 24 0 0 1 0 36"/><path class="me-mu-x" d="M38 16l16 16M54 16 38 32"/></svg>
+          <ol class="me-mu-log" data-mu-log aria-label="这一轮的记录"></ol>
+        </div>
+        <p class="me-read" data-mu-read>扬声器：没声音。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>const args = ["--headless=new", "--mute-audio", "--user-data-dir=" + profDir, …];
+// 要验「在播」：读 audio.paused === false、currentTime 在走——静音不影响这两个值
+// 要测音频文件：say -o 生成到文件（不出声），测完删掉</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>无头Chrome默认的自动播放策略就是「允许」，声音照样从扬声器出来。那次还叠了两个坑：测试页设了循环播放；脚本结束时<code>chrome.kill()</code>只杀了主进程，残留的渲染进程一直在循环放测试语音。</p></section>
+        <blockquote class="said"><p>「不要在电脑播放任何音乐……电脑播放音乐吵死了」</p><footer>屋主 · 2026-09-25（控制室记录）</footer></blockquote>
+        <section class="fact trap"><h4>别听反</h4><p>这句话说的是测试时电脑出声，不是让网站不放音乐——那次误删了网站的播放器，又放了回去。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/no-audio-during-tests.md:11</code>「吵死了」、<code>:13</code>、<code>:16</code>、<code>:17</code>、<code>:18</code>、<code>:19</code>；<code>tools/star/CLAUDE.md:70</code>「--mute-audio」</p>
+      </div>
+    </article>
+
+    <!-- 21 软件渲染怎么测 -->
+    <article class="entry" id="me-soft-render" data-scope="common" data-toc="软件渲染">
+      <header class="entry-head">
+        <h3>软件渲染怎么测：--disable-gpu --use-gl=swiftshader --enable-unsafe-swiftshader</h3>
+        <p class="entry-lede">复现屋主台式机用这三个旗标；不带unsafe那个，Chrome 122起WebGL根本拿不到；<code>--use-angle=swiftshader</code>会让严格探测也通过，别拿它测。Windows多一档WARP，Mac上模拟不出来，只能上真机。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>选一组旗标看实测出来的结果（各项目2026-09-23的真值表）；也可以让这台浏览器自己探测一次（真跑，只在点了时跑）。</p>
+        <div class="me-ctrl">
+          <div class="seg me-seg-wrap" role="radiogroup" aria-label="旗标">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-sr="none">不带旗标</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-sr="nogpu">--disable-gpu</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-sr="noflag">两个旗标（缺unsafe）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-sr="soft">三个旗标</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-sr="angle">--use-angle=swiftshader</button>
+          </div>
+        </div>
+        <dl class="me-sr" data-sr-out></dl>
+        <div class="me-ctrl"><button type="button" class="me-btn" data-sr-probe>探测这台浏览器</button></div>
+        <p class="me-read" data-sr-probe-out>还没探测。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>// 两段式：严格先要（有显卡的机器行为一字不变），拒了再放宽
+const strict = canvas.getContext("webgl", { failIfMajorPerformanceCaveat: true });
+const loose  = strict || canvas.getContext("webgl", { antialias: false });
+// 两段都拿不到：安安静静回静态版——零请求、控制台零输出</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>四家3D都带<code>failIfMajorPerformanceCaveat:true</code>，这个标志专门拒绝软件渲染，屋主没显卡的台式机因此永远看静态版。验「拿掉它能不能跑」时，带了unsafe旗标测出来「能」，不带测出来「照样拿不到」；屋主的浏览器不会带旗标，所以带旗标那次不能单独拿来下结论——Windows上行不行用工作区根目录的<code>3D诊断.html</code>在真机上跑。</p></section>
+        <section class="fact"><h4>还有一层</h4><p>没显卡时瓶颈其实是玻璃模糊，不是3D：一个24px方块在玻璃卡里变色，整页只有4fps；放到玻璃外120fps。量合成开销要用有窗口的浏览器，无头每帧整屏重画、数字偏悲观；新加的面挂不挂磨砂，用A/B量长帧个数（只看P95会漏掉稀疏卡顿）。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/webgl-software-render-gate.md:8</code>「这个标志专门用来拒绝软件渲染」、<code>:12</code>「测试陷阱」、<code>:14</code>、<code>:16</code>、<code>:18</code>「两段都拿不到」；<code>memory/ganggang-v120-pending.md:35</code>「四旗标真值表」；<code>memory/ysevan-web-state.md:62</code>「别用它测」；<code>memory/glass-blur-cpu-compositing.md:11</code>、<code>:15</code>、<code>:21</code>「只看 P95」</p>
+      </div>
+    </article>
+
+    <!-- 22 后台标签页暂停 rAF -->
+    <article class="entry" id="me-raf-pause" data-scope="common" data-toc="后台暂停rAF">
+      <header class="entry-head">
+        <h3>后台标签页暂停rAF：「监听在、值不更新」先查document.hidden</h3>
+        <p class="entry-lede">标签页在后台时浏览器暂停<code>requestAnimationFrame</code>（WAAPI与过渡时钟也停）。事件确认触发了、rAF循环里写的东西却永远不出现——「截图之后就好了」就是这个假象的签名。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-01定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>点「点我」：事件监听同步记一次，rAF循环把数写到页面上（碰过这块才开始跑rAF）。先点「模拟：进后台」再点几下，看哪个数不动；再「模拟：截图」。开始之后真切到别的标签页再回来，下面会记一条真的。</p>
+        <div class="me-ctrl">
+          <button type="button" class="me-btn me-btn-main" data-rp-hit>点我</button>
+          <button type="button" class="me-btn" aria-pressed="false" data-rp-bg>模拟：进后台</button>
+          <button type="button" class="me-btn" data-rp-shot>模拟：截图（顶到前台）</button>
+        </div>
+        <div class="me-rp" data-rp-box>
+          <p class="me-rp-n"><span>监听收到</span><b data-rp-ev>0</b></p>
+          <p class="me-rp-n"><span>rAF写到页面</span><b data-rp-raf>0</b></p>
+          <p class="me-rp-n"><span>document.hidden</span><b data-rp-hidden>false</b></p>
+        </div>
+        <ol class="me-rp-log" data-rp-log aria-label="可见性记录"></ol>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>量具里</h4>
+<pre><code>--disable-background-timer-throttling --disable-backgrounding-occluded-windows
+--disable-renderer-backgrounding
+Emulation.setFocusEmulationEnabled { enabled: true }
+// 每项结束断言 document.hidden === false；进了后台就作废重跑，不算红</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>浏览器面板的标签页常在后台，调门厅视差时在这上面耗了好几轮；无头Chrome加CDP也会中招：长跑的验收脚本跑到一半页面进了后台，rAF停、WAAPI不推进、对话框的<code>close</code>事件不来，判据红得冤。在面板里调rAF动效，把断言和触发放进同一批操作，前面先截一张图把标签页顶到前台。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/browser-pane-raf-pause.md:8</code>「浏览器面板」、<code>:9</code>、<code>:10</code>「截图之后就好了」、<code>:14</code>、<code>:17</code>「无头 Chrome + CDP 也会中招」、<code>:19</code>、<code>:21</code></p>
+      </div>
+    </article>
+
+    <!-- 23 量具放哪 -->
+    <article class="entry" id="me-verify-home" data-scope="common" data-toc="量具放哪">
+      <header class="entry-head">
+        <h3>长期要留的验收脚本放本机验收目录，不放会话草稿区</h3>
+        <p class="entry-lede">回归、验收这类下一版还要复跑的脚本，写完就拷进家目录下的<code>.ysevan-verify/&lt;项目&gt;/</code>并补一行说明；一次性的探针才留在草稿区。草稿区在系统临时目录里，零点按文件年龄清一批。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-28定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>拖时间滑过零点，看两个目录里的文件（示例）；再点「第二天复跑回归」。</p>
+        <div class="me-ctrl">
+          <label class="me-range"><span>时间</span><input type="range" min="0" max="12" step="1" value="0" data-vh-time aria-label="时间，从晚上十一点到次日一点"><output data-vh-time-out>23:00</output></label>
+          <button type="button" class="me-btn me-btn-main" data-vh-run>第二天复跑回归</button>
+        </div>
+        <div class="me-vh" data-vh-box>
+          <div class="me-vh-dir"><b>会话草稿区</b><small>系统临时目录</small><ul data-vh-dir="tmp"></ul></div>
+          <div class="me-vh-dir"><b>本机验收目录</b><small>家目录下 .ysevan-verify/项目/</small><ul data-vh-dir="home"></ul></div>
+        </div>
+        <p class="me-read" data-vh-read>23:00，两边都在。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>为什么</h4><p>草稿区是会话级的，而且会被清：2026-09-28刷刷的续做回归脚本就这样被删，是从会话记录里捞回heredoc再重放后续改动才恢复的；岗岗第十一轮放在草稿区的那批也被清掉。长期留的东西不放系统临时目录。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>本站的量具都在本机验收目录的<code>star/</code>下，各有一节说明怎么跑（不进仓库）。</p></section>
+        <p class="source">出处：控制室记录 <code>memory/verify-scripts-home.md:8</code>「控制室 2026-09-28 定」、<code>:12</code>「岗岗第十一轮」、<code>:15</code>「How to apply」；<code>memory/three-rules-against-false-signals.md:91</code>「零点会按文件年龄清」</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================================================================ 文档与交付 -->
+  <section class="group" id="g-docs" data-scope="common">
+    <h2 class="group-title">文档与交付</h2>
+
+    <!-- 24 文档实时更新与错话三形态 -->
+    <article class="entry" id="me-docs-current" data-scope="common" data-toc="错话三形态">
+      <header class="entry-head">
+        <h3>文档同一轮改；收尾回头找错话，错话有三种形态</h3>
+        <p class="entry-lede">改了什么就在同一轮把对应文档改掉，不留待办。收尾时把这一轮动过的概念关键词全仓grep一遍：数字过期、正确的指针指向错话、结论还对理由已悬空，三种的找法各不相同。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>这一轮改了：精简档像素比从「钉1」改成<code>min(devicePixelRatio, 1.5)</code>。下面七行（示例，改编自小屋那一轮）点出你觉得要改的，再交卷。</p>
+        <ul class="me-dc" data-dc-list></ul>
+        <div class="me-ctrl"><button type="button" class="me-btn me-btn-main" data-dc-check>交卷</button><button type="button" class="me-btn" data-dc-reset>重来</button></div>
+        <p class="me-read" data-dc-read>选好了点「交卷」。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>三种形态</h4><ol><li>数字过期（最好找）：拿旧值当关键词全仓grep。那次一把捞出13处，四个岛的实现和改动点旁的注释全对，漏的全是文件头总述块和文档正文——改一个值，要连「所有复述这个值的地方」一起改。</li><li>一个正确的指针指向一句错话：改动点写着「上限1.5（不再钉1，见文件头）」，文件头还写着「像素比1」。明确的「见X」是在命令下一个人去信那句错话——写「见X」时顺手打开X看一眼。</li><li>结论还对、理由已经悬空（最难找）：里面没有一个过期数字可grep，只能改完一个值，回头读一遍所有「解释这个值为什么是这个值」的段落。</li></ol></section>
+        <section class="fact"><h4>另外三条</h4><ul><li>跨文档引用一条规矩写内容短语，不写编号（编号会错位）。</li><li>撤掉一处实现时，要连带找出「哪些数字是在它身上量的」。</li><li>相似只是线索不是结论：看到相似的句子别一起改，每一处单独核。</li></ul></section>
+        <blockquote class="said"><p>「所有项目都文档全部都要实时更新」</p><footer>屋主 · 2026-09-02（控制室记录）</footer></blockquote>
+        <p class="source">出处：控制室记录 <code>memory/docs-always-current.md:11</code>「实时更新」、<code>:16</code>、<code>:23</code>「做法」、<code>:31</code>、<code>:45</code>「数字过期」、<code>:49</code>「正确的指针指向一句错话」、<code>:54</code>「结论还对、理由已经悬空」、<code>:58</code>「编号是最脆的一种指针」、<code>:69</code>「看到相似的句子就一起改」</p>
+      </div>
+    </article>
+
+    <!-- 25 打包靠白名单 -->
+    <article class="entry" id="me-whitelist" data-scope="common" data-toc="白名单打包">
+      <header class="entry-head">
+        <h3>精简版靠打包时的白名单挑出来，不靠从仓库里删</h3>
+        <p class="entry-lede">仓库保留历史与作废样张（它们回答「为什么不是那样」）；打包那一刻按白名单挑文件，两张表都没写到的新文件直接报错，不悄悄带走。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="me-cap"><b>演示</b>一个示例仓库。点「新加一个文件」往里加东西，看黑名单和白名单两种打包各自带走了什么（白名单规则照本站发布脚本）。</p>
+        <div class="me-ctrl">
+          <div class="seg" role="radiogroup" aria-label="怎么挑文件">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-wl="black">黑名单：排除这些</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-wl="white">白名单：只拿这些（现行）</button>
+          </div>
+          <button type="button" class="me-btn" data-wl-add>新加一个文件</button>
+          <button type="button" class="me-btn" data-wl-reset>重来</button>
+        </div>
+        <div class="me-wl" data-wl-box>
+          <div class="me-wl-col"><b>仓库</b><ul data-wl-repo></ul></div>
+          <div class="me-wl-col"><b>打出来的包</b><ul data-wl-pkg></ul></div>
+        </div>
+        <p class="me-read" data-wl-read>白名单：只拿网页运行要的。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>为什么</h4><ol><li>从工作树删根本不省体积：文件还在git历史里，<code>.git</code>一个字节不变；真要省得改写历史，那是拿追溯能力永久换几兆。</li><li>屋主要的是一份干净的能带走的副本，不是「尽可能小」；作废方案的样张，价值正在有人问「为什么不是那样」的时候。</li><li>白名单本来就会排掉概念图这类，目的已经达到，不需要再动仓库。</li></ol></section>
+        <section class="fact"><h4>用在哪</h4><p>本站发布到老站的脚本<code>scripts/publish-static.mjs</code>：只拷白名单里的文件，EXCLUDE是明确不放的，两张表都没写到的文件直接报错（新文件类型要显式加）；另扫本机路径、Key形态、实名线索。</p></section>
+        <blockquote class="said"><p>「全部都完成后，导出一个所有项目最精简的版本，一个压缩包就可以了，和之前的项目结构一样。」</p><footer>屋主 · 2026-09-23（控制室记录）</footer></blockquote>
+        <p class="source">出处：控制室记录 <code>memory/packaging-is-a-whitelist.md:13</code>「精简版」、<code>:16</code>、<code>:17</code>、<code>:18</code>；<code>memory/final-export-bundle.md:10</code>「屋主原话」；<code>tools/star/scripts/publish-static.mjs:14</code>「白名单拷贝」、<code>:32</code>、<code>:41</code></p>
+      </div>
+    </article>
+  </section>
+</main></body></html>

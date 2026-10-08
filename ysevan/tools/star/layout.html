@@ -1,0 +1,1124 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F5F9">
+<meta name="description" content="工具类的玻璃侧栏、clamp、以1440等比放大、断点与手机档；小屋的一屏名片、轨道叠放、日记流与零固定高度；dvh 与布局陷阱集。每条都能拖宽度、切写法看。">
+<title>布局与自适应 · 设计合集</title>
+<script src="assets/boot.js"></script>
+<link rel="stylesheet" href="assets/star.css">
+<link rel="stylesheet" href="assets/pages/layout.css">
+<script src="assets/star.js" defer></script>
+<script src="assets/pages/layout.js" defer></script>
+</head><body data-page="layout">
+<a class="skip" href="#main">跳到正文</a>
+<div id="shell-nav"></div><script src="assets/nav.js"></script>
+<main id="main" class="page">
+  <header class="page-head">
+    <h1 class="page-title">布局与自适应</h1>
+    <p class="page-sub">工具类是一条玻璃侧栏加内容区，按1440等比放大、900收顶栏、600换底部tab bar；小屋是一屏名片、一条轨道和一条日记流，内容容器一律不写高度。演示框都是「缩小的视口」：拖宽度、拖高度、切写法，读数是当场量出来的。</p>
+    <nav class="page-toc" aria-label="本页目录"></nav>
+  </header>
+
+  <!-- ============================ 工具 · 液态玻璃 ============================ -->
+  <section class="group" id="g-tools" data-scope="tools">
+    <h2 class="group-title">工具 · 液态玻璃</h2>
+    <p class="group-lede">四个工具（刷刷、岗岗、plan、card）和本站共用一套骨架与尺度：字号间距全用clamp，1440以上整体等比放大，断点只有900和600两个。屋主的三台设备是台式2040×1019@1.25（没显卡）、笔记本2552×1274@1.5、手机417×750@3.5，下面的演示都按这三档给了预设。</p>
+
+    <!-- 1 骨架 -->
+    <article class="entry" id="l-skeleton" data-scope="tools" data-toc="玻璃侧栏＋内容区">
+      <header class="entry-head">
+        <h3>玻璃侧栏＋内容区：品牌和外观控件钉在两头，只让中间的导航滚</h3>
+        <p class="entry-lede">左边一条一屏高的玻璃侧栏（品牌、线条图标导航、底部浅／深／自动与六个色点），右边内容区（大标题、灰副标题、卡片网格、分组列表）。侧栏装不下时只让导航那一段滚，外观控件永远看得见。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
+      </header>
+      <div class="specimen l-sk" data-demo="skeleton">
+        <p class="l-cap"><b>演示</b>拖「视口高」把窗口压矮，看侧栏底部那组外观控件去哪儿了。现行只让导航滚；反例一把整条侧栏写成<code>overflow:hidden</code>，控件被裁掉、不留痕；反例二让整条侧栏一起滚，控件跟着滚出视口。视口宽固定1440，文字是示例。</p>
+        <div class="l-ctrl">
+          <label class="l-range"><span>视口高</span><input type="range" min="420" max="900" step="10" value="600" data-sk-h><span class="l-val" data-sk-hout aria-hidden="true">600px</span></label>
+          <div class="seg l-seg" role="radiogroup" aria-label="侧栏装不下时怎么办">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-sk-mode="nav">现行：只让导航滚</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-sk-mode="clip">反例：整条裁掉</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-sk-mode="all">反例：整条一起滚</button>
+          </div>
+        </div>
+        <div class="l-vpbox" data-sk-box><div class="l-vp l-sk-vp" data-sk-vp></div></div>
+        <p class="l-read" data-sk-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>侧栏   position: sticky; top: 0; height: 100svh;                 /* 页面会滚的 sticky 列：svh（本页「高度单位按场景分」①） */
+       display: flex; flex-direction: column;
+       background: var(--glass);                    /* 不透明度.62的玻璃 + 磨砂，视口大小的面 */
+       overflow-y: auto;                            /* 兜底：真挤到连导航都不够时整条也能滚 */
+品牌   flex: none;                                  /* 钉在上头 */
+导航   flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+外观   flex: none;                                  /* 浅 / 深 / 自动、六个色点、版本，钉在下头 */
+内容区 大标题 clamp(26px…) 700、字距 -.4px + 灰副标题；
+       卡片网格 repeat(auto-fit, minmax(190px, 1fr))；入口用分组列表，不用卡片</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷、岗岗、plan的桌面形态（card没有侧栏，只有顶栏）。本站侧栏同一个结构：品牌与搜索格在上、外观三行在下，中间的导航单独滚。</p></section>
+        <section class="fact"><h4>为什么</h4><p>侧栏底部那组是切主题的<b>唯一入口</b>。侧栏按<code>--u</code>等比放大而视口高不跟，刷刷在2040×1019上只剩约24px余量，再挤一点那组就被裁掉，而且不留痕——用户只会以为「没有换色的地方」。刷刷的做法是整条侧栏<code>overflow-y:auto</code>；本站再进一步，只让导航滚，外观控件不用滚就看得见。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>导航那段的<code>min-height:0</code>不能省：flex子项默认最小高度是内容高度，不写它导航就把侧栏撑高、自己永远滚不起来。不用<code>scrollbar-gutter: stable</code>：它在所有尺寸都预留一条滚动条位，正常版面也被改了。</p></section>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:9「1. 结构」、:10「内容区」；tools/shua/design-proposal.md:449「侧栏加 overflow-y: auto」；tools/star/assets/star.css:419「导航区单独滚」</p>
+      </div>
+    </article>
+
+    <!-- 2 clamp -->
+    <article class="entry" id="l-clamp" data-scope="tools" data-toc="clamp自适应">
+      <header class="entry-head">
+        <h3>字号、间距、侧栏宽全用clamp()随视口插值；浏览器缩放就是视口变窄，不另写分支</h3>
+        <p class="entry-lede">每个尺寸令牌写成<code>clamp(下限, 斜率, 它在1440处的值)</code>：1440以下随宽度平滑收小，1440封住，再往上交给下一条的等比放大。⌘+放大到150%，1440的窗口在CSS里就是960宽，clamp照常插值、断点照常命中。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
+      </header>
+      <div class="specimen l-cl" data-demo="clamp">
+        <p class="l-cap"><b>演示</b>拖「视口宽」，或者点下面的缩放比例（在1440的窗口里按⌘+），看六个令牌当场量出来的值。条形的左端是下限、右端是1440处的上限。框里是缩小的示例页，宽不到900时侧栏收成顶栏。</p>
+        <div class="l-ctrl">
+          <label class="l-range"><span>视口宽</span><input type="range" min="600" max="1440" step="1" value="1100" data-cl-w><span class="l-val" data-cl-wout aria-hidden="true">1100px</span></label>
+          <div class="l-pills" role="group" aria-label="在1440的窗口里按⌘+">
+            <button type="button" class="l-pill" aria-pressed="false" data-cl-zoom="1">100%</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-cl-zoom="1.25">125%</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-cl-zoom="1.5">150%</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-cl-zoom="2">200%</button>
+          </div>
+        </div>
+        <div class="l-cl-grid">
+          <div class="l-vpbox" data-cl-box><div class="l-vp l-ms-vp" data-cl-vp></div></div>
+          <dl class="l-tokens" data-cl-tokens>
+            <div data-cl-t="title"><dt>标题字号</dt><dd><b data-v></b><i class="l-bar"><s data-bar></s></i></dd></div>
+            <div data-cl-t="body"><dt>正文字号</dt><dd><b data-v></b><i class="l-bar"><s data-bar></s></i></dd></div>
+            <div data-cl-t="gap"><dt>间距</dt><dd><b data-v></b><i class="l-bar"><s data-bar></s></i></dd></div>
+            <div data-cl-t="pad"><dt>卡片内边距</dt><dd><b data-v></b><i class="l-bar"><s data-bar></s></i></dd></div>
+            <div data-cl-t="side"><dt>侧栏宽</dt><dd><b data-v></b><i class="l-bar"><s data-bar></s></i></dd></div>
+            <div data-cl-t="pagex"><dt>页边距</dt><dd><b data-v></b><i class="l-bar"><s data-bar></s></i></dd></div>
+          </dl>
+        </div>
+        <p class="l-read" data-cl-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>--fs-title: clamp(26px, 1.4vw + 14px, 34.16px);
+--fs-body:  clamp(14px, .15vw + 12.84px, 15px);
+--gap:      clamp(10px, 1vw, 14.4px);
+--pad:      clamp(18px, .95vw + 14.32px, 28px);
+--side-w:   clamp(200px, 17vw, 244.8px);
+--page-x:   clamp(16px, 3vw, 43.2px);
+/* 上限就是它在1440处的值（1vw = 14.4px），所以 ≤1440与改版前逐位相同；
+   每条外面再乘 --scale（下一条），&gt;1440只由等比放大接手 */</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具与本站外壳的令牌。验收在1440 / 1100 / 900 / 768 / 600 / 390几档，外加960×600@1.5（约等于⌘+150%）断言<code>scrollWidth === innerWidth</code>。</p></section>
+        <section class="fact"><h4>为什么</h4><p>屋主明确要求跟着他的缩放走。浏览器缩放改的是CSS视口宽，和把窗口拖窄是同一件事：字号、间距既然已经按视口宽插值，缩放就自动对了，不需要监听缩放、也不需要另一套「缩放档」。</p></section>
+        <blockquote class="said"><p>「UI 要适配我页面的缩放大小」</p><footer>屋主，2026-09-23</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>clamp的上限要取「它在1440处的实算值」，不能拿设计稿上的整数凑：刷刷1441起改用「1440的设计值×<code>--u</code>」，和clamp在1440处插出来的值对不上，拖过这一格时侧栏244.8→240.2、内容内边距28.8→24、标题34.16→34.02各跳一次。任何宽度都不许出横向滚动条：判据跟目标宽度比，先注入一块撑破的元素让判据红一次。</p></section>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:3（屋主原话）、:61「4. 自适应」、:82「浏览器缩放」、:91「每个尺寸 token 写成」；tools/gang/design-proposal.md:939「10.12 自适应」；tools/shua/design-proposal.md:472「自适应」、:463「边界上的小跳」；tools/plan/docs/ui-redesign-proposal-v2.md:538「任何宽度都不出现横向滚动条」；tools/star/assets/star.css:174「--fs-title」</p>
+      </div>
+    </article>
+
+    <!-- 3 大屏等比放大 -->
+    <article class="entry" id="l-scale" data-scope="tools" data-toc="1440等比放大">
+      <header class="entry-head">
+        <h3>大屏以1440为基准等比放大，1.45封顶；断点、1px线、模糊半径、光晕不乘</h3>
+        <p class="entry-lede">一个比值<code>--scale = 视口 ÷ 1440</code>夹在1和1.45之间，构图里的每个尺寸都乘它：1440及以下一个数不变，2040正好放大1.417倍，2088起封顶。多出来的宽度只给卡片和列表轨道，不加列、不居中留白。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
+      </header>
+      <div class="specimen l-sc" data-demo="scale">
+        <p class="l-cap"><b>演示</b>选一台设备，读数按本站外壳的公式实算；曲线是两种写法的放大倍数——等比（现行）和刷刷写过的线性爬坡（被否）。点「装进来看」会把本站色彩页按那台设备的视口装进框里（只看、点不进去；跟着你现在的外观走，不会改外观设置），换设备只改框的尺寸。</p>
+        <div class="l-ctrl">
+          <div class="seg l-seg" role="radiogroup" aria-label="屋主的设备">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-sc-dev="mac">Mac 1440×900</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-sc-dev="desk">台式2040×1019</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-sc-dev="laptop">笔记本2552×1274</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-sc-dev="phone">手机417×750</button>
+          </div>
+        </div>
+        <div class="l-sc-grid">
+          <figure class="l-sc-chart">
+            <svg viewBox="0 0 600 236" role="img" aria-labelledby="l-sc-ct" data-sc-chart><title id="l-sc-ct">放大倍数随视口宽：等比与线性爬坡</title></svg>
+            <figcaption class="l-note" data-sc-cap></figcaption>
+          </figure>
+          <dl class="l-kv" data-sc-read>
+            <div><dt><code>--scale</code></dt><dd data-k="scale"></dd></div>
+            <div><dt>侧栏宽</dt><dd data-k="side"></dd></div>
+            <div><dt>标题字号</dt><dd data-k="title"></dd></div>
+            <div><dt>正文字号</dt><dd data-k="body"></dd></div>
+            <div><dt>内容宽：填满</dt><dd data-k="fill"></dd></div>
+            <div><dt>内容宽：严格等比</dt><dd data-k="strict"></dd></div>
+          </dl>
+        </div>
+        <div class="l-sc-live">
+          <div class="l-ctrl">
+            <button type="button" class="btn btn-tint l-sc-load" data-sc-load>装进来看（加载一页，点了才开）</button>
+            <button type="button" class="btn btn-glass l-sc-load" data-sc-unload hidden>收起</button>
+            <span class="l-note" data-sc-state></span>
+          </div>
+          <div class="l-vpbox l-sc-box" data-sc-box hidden></div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>:root {
+  --scale-max: 1.45;                                               /* 唯一的旋钮 */
+  --scale: clamp(1, tan(atan2(100vw, 1440px)), var(--scale-max));  /* 视口 ÷ 1440 */
+  --u: calc(1px * var(--scale));                                   /* N × --u = 1440处的 N px */
+}
+--fs-title: calc(clamp(26px, 1.4vw + 14px, 34.16px) * var(--scale));
+.nav-item  { height: calc(34 * var(--u)); border-radius: calc(10 * var(--u)); }
+/* card、刷刷的等价写法：--u: calc(clamp(1440px, 100vw, 2088px) / 1440) */
+
+乘：字号、行高、间距、内边距、圆角、图标、控件高、列表行高、侧栏宽、投影偏移、3D 槽位
+不乘：媒体查询断点、1px 分隔线与亮线、backdrop-filter 的 blur 半径、光晕的 vw 尺寸、焦点环2px
+不用 CSS zoom，也不用 transform 缩放</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具统一，本站外壳<code>star.css</code>第2节同一条公式。屋主台式2040拿到1.417（没到封顶，填满和严格等比是同一件事）；笔记本2552触到1.45封顶，多出来的宽度（按本站的令牌算464px）只给卡片与列表轨道吃，所以笔记本上构图比Mac紧一些——这是封顶的主动代价，高分屏上正文的物理大小和Mac差不多。</p></section>
+        <section class="fact"><h4>为什么</h4><p>屋主在Windows大屏上要「跟Mac一样」：构图不变、整体放大。初版抬clamp上限、≥1600拆多列，字只涨1.13–1.18倍、版面涨1.36倍还多一列，整屏变密，不像同一个设计。公式也必须是「视口÷1440」：刷刷写过1440→2560的线性爬坡，两端对、中间偏小，2040处只有1.241（等比给1.417，大14%），整屏小一圈，就是屋主反复说「刷刷跟Mac差距大」的来源。原则见总览<a href="index.html#taste-05">「构图不变，等比放大」</a>。</p></section>
+        <blockquote class="said"><p>「跟 mac 的差距很大，希望跟 mac 一样」</p><footer>屋主，2026-09-23（在Windows大屏上看刷刷）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p><code>zoom</code>和<code>transform</code>缩放会把边框宽度、文字光栅化、sticky / fixed的定位一起拖下水，<code>zoom</code>还不是标准属性。等比放大只管横向：屋主的屏比Mac扁（宽高比2.00对1.60），按视口高定尺寸的东西不会跟着<code>--u</code>走，要逐个单独决定（见本页「扁视口紧凑排」和「dvh」两条）。</p></section>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:65（屋主原话）、:67「填满」、:70「线性爬坡」、:87「4b. 大屏规则」、:92「CSS 里写死的像素」；tools/shua/design-proposal.md:409「引入长度单位」、:414「不乘 --u」、:423「为什么线性爬坡是错的」、:437「内容宽度是填满还是严格等比」；tools/gang/design-proposal.md:979「刻意不用 CSS zoom」；tools/card/CLAUDE.md:251「等比放大只解决横向」；tools/star/assets/star.css:171「--scale」</p>
+      </div>
+    </article>
+
+    <!-- 4 兜底探针 -->
+    <article class="entry" id="l-probe" data-scope="tools" data-toc="兜底探针用scale:">
+      <header class="entry-head">
+        <h3>不认三角函数的老内核走台阶，兜底探针写<code>scale:</code>，不写<code>width:</code></h3>
+        <p class="entry-lede"><code>tan(atan2(…))</code>算出来是无单位数，<code>width</code>本来就不收无单位数，拿它当探针在哪个内核里都是假，<code>@supports not</code>就恒真，把台阶值盖到所有浏览器上。<code>scale</code>收无单位数，探针才真的在测「认不认三角函数」。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen l-pb" data-demo="probe">
+        <p class="l-cap"><b>演示</b>下面两块是真的写在本页样式表里的<code>@supports not</code>，结果是这台浏览器当场判的；拖宽度看「公式」和「台阶」各给多少。</p>
+        <div class="l-pb-pair">
+          <figure class="l-pb-card" data-pb="width">
+            <figcaption><span class="l-flag l-flag-no">错</span>探针写 width:</figcaption>
+            <code class="l-pb-code">@supports not (width: tan(atan2(1px, 1px)))</code>
+            <p class="l-pb-hit" data-pb-hit></p>
+            <p class="l-note" data-pb-sup></p>
+          </figure>
+          <figure class="l-pb-card" data-pb="scale">
+            <figcaption><span class="l-flag l-flag-yes">对</span>探针写 scale:</figcaption>
+            <code class="l-pb-code">@supports not (scale: tan(atan2(1px, 1px)))</code>
+            <p class="l-pb-hit" data-pb-hit></p>
+            <p class="l-note" data-pb-sup></p>
+          </figure>
+        </div>
+        <div class="l-ctrl">
+          <label class="l-range"><span>视口宽</span><input type="range" min="1440" max="2600" step="8" value="2040" data-pb-w><span class="l-val" data-pb-wout aria-hidden="true">2040px</span></label>
+        </div>
+        <p class="l-read" data-pb-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>/* 对：只有真不认三角函数时才命中 */
+@supports not (scale: tan(atan2(1px, 1px))) {
+  :root { --scale: 1; }
+  @media (min-width: 1600px) { :root { --scale: 1.11; } }
+  @media (min-width: 1800px) { :root { --scale: 1.25; } }
+  @media (min-width: 2000px) { :root { --scale: 1.39; } }
+  @media (min-width: 2200px) { :root { --scale: 1.45; } }   /* 2400、2560两档也是1.45 */
+}
+/* 错：CSS.supports('width', 'tan(atan2(1px,1px))') 在 Chrome 实测是 false，
+   取反恒真，整个平滑公式被台阶盖掉 */
+@supports not (width: tan(atan2(1px, 1px))) { … }</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具与本站外壳（<code>star.css</code>第2节，紧跟在公式后面）。老内核走台阶，放大不连续但能放大。</p></section>
+        <section class="fact"><h4>为什么</h4><p>探针要测的是「这条声明能不能成立」。<code>width: 1.417</code>在任何浏览器里都不成立，所以那条探针测不出任何东西；<code>scale: 1.417</code>是合法值，认三角函数的内核里探针为真、不认的为假，<code>not</code>之后才正好只罩住老内核。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>台阶要按屋主的视口排：岗岗2026-09-27以前只写了三档（1600 / 1920→1.33 / 2088封顶），台式2040在老内核上只拿到1.33；改成六档后给1.39，离公式的1.417从差6%缩到差2%。探针错了不报错，只有在认三角函数的浏览器里量<code>--scale</code>才看得出来。</p></section>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:90「探针必须用 scale:」；tools/gang/design-proposal.md:982「三角函数兜底的坑」、:1000「六档表」；tools/star/assets/star.css:206「探针必须写 scale:」</p>
+      </div>
+    </article>
+
+    <!-- 5 断点 -->
+    <article class="entry" id="l-breakpoints" data-scope="tools" data-toc="900顶栏/600tab bar">
+      <header class="entry-head">
+        <h3>只有两个断点：900收成顶栏，600换成底部玻璃tab bar；断点不乘<code>--u</code></h3>
+        <p class="entry-lede">&gt;900左侧栏；601–900侧栏收成一条顶栏（品牌＋横排可滚的导航＋末尾「更多」），外观控件进「更多」面板；≤600底部iOS式玻璃tab bar。三份导航一起出，靠CSS断点切显示，不在JS里判视口。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a><a href="index.html#spot-more">全站 · 更多面板</a></p>
+      </header>
+      <div class="specimen l-bp" data-demo="breakpoints">
+        <p class="l-cap"><b>演示</b>拖框的右边沿（或用滑块、点预设）改视口宽，看三种形态在900和600两处切换。框里是缩小的示例页，按钮不跳转。</p>
+        <div class="l-ctrl">
+          <label class="l-range"><span>视口宽</span><input type="range" min="320" max="1440" step="1" value="1100" data-bp-w><span class="l-val" data-bp-wout aria-hidden="true">1100px</span></label>
+          <div class="l-pills" role="group" aria-label="常用宽度">
+            <button type="button" class="l-pill" aria-pressed="false" data-bp-preset="1440">1440</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-bp-preset="901">901</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-bp-preset="900">900</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-bp-preset="768">768</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-bp-preset="601">601</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-bp-preset="600">600</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-bp-preset="417">417</button>
+          </div>
+        </div>
+        <div class="l-bp-wrap">
+          <div class="l-vpbox" data-bp-box><div class="l-vp l-ms-vp" data-bp-vp></div></div>
+          <span class="l-bp-handle" data-bp-handle aria-hidden="true"><i></i></span>
+        </div>
+        <p class="l-read" data-bp-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>@media (max-width: 900px) {   /* 侧栏 → 顶栏：品牌 + 横排可滚的导航 + 「更多」；内容单列 */ }
+@media (max-width: 600px) {   /* 顶栏只剩品牌；底部 tab bar：玻璃底、顶边亮线、
+                                 线条图标 + 短标签、选中项强调色；主题控件在「更多」面板 */
+  .tabbar { position: fixed; left: 0; right: 0; bottom: 0;
+            padding-bottom: calc(6px + env(safe-area-inset-bottom)); }
+}
+各家 tab bar：刷刷4项（首页 / 专项练习 / 搜题 / 更多）、岗岗3项（目录 / 搜索 / 设置）、
+            plan 6项、card 没有（只留品牌图标 + 主题按钮）、本站5项（总览 / 色彩 / 交互 / 收藏 / 更多）</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具与本站。刷刷的<code>renderNav()</code>一次产出三份导航DOM（左侧栏、底部tab bar、「更多」层），本站的<code>nav.js</code>也一样，全靠CSS断点显示哪一份。</p></section>
+        <section class="fact"><h4>为什么</h4><p>900是SPEC给四个工具定的统一断点（岗岗从820改过来）。断点按CSS像素判，浏览器缩放时自然跟着走；它管的是「这一档用哪种形态」，不属于构图，所以不乘<code>--u</code>（媒体查询里本来也写不了<code>var()</code>）。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>tab bar和「更多」面板是<code>position:fixed</code>，不能放进带<code>backdrop-filter</code>的侧栏里：plan的「更多」面板一度挂在侧栏里，<code>bottom:0</code>量的是那条65px高的顶栏，面板贴在顶栏下沿被压扁（见本页陷阱集第1条）。</p></section>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:62「4. 自适应」；tools/gang/design-proposal.md:950「900 是 SPEC 给四个工具定的统一断点」；tools/shua/design-proposal.md:375「窄屏分两段，不在 JS 里判视口」；tools/plan/docs/ui-redesign-proposal-v2.md:542「两个踩过的坑」；tools/star/assets/star.css:778「12. 断点」</p>
+      </div>
+    </article>
+
+    <!-- 6 手机档细节 -->
+    <article class="entry" id="l-phone" data-scope="tools" data-toc="手机档细节">
+      <header class="entry-head">
+        <h3>手机档：顶栏不要，品牌进大标题；两个下拉并排；「更多」面板只写max-height</h3>
+        <p class="entry-lede">≤600一切写在一个媒体查询里，600以上逐像素不变。竖向最贵：一条只装着品牌的56px白带整条去掉，品牌图标挪进每页大标题前；统计卡2×2；「更多」从底部往上长，只限最大高度，不同时写<code>top</code>和<code>bottom</code>。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-more">全站 · 更多面板</a></p>
+      </header>
+      <div class="specimen l-ph" data-demo="phone">
+        <p class="l-cap"><b>演示</b>屋主手机417×750，示例首页。点tab bar上的「更多」打开面板，再切成反例「同时写top和bottom」：面板被撑满、每一行被拉高。顶栏也能切回改前（示意）看首屏少了什么。</p>
+        <div class="l-ctrl">
+          <div class="seg l-seg" role="radiogroup" aria-label="「更多」面板的写法">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ph-panel="maxh">面板只写max-height</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ph-panel="tb">反例：同时写top和bottom</button>
+          </div>
+          <div class="seg l-seg" role="radiogroup" aria-label="手机顶栏">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ph-top="none">不要顶栏</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ph-top="keep">改前：留一条（示意）</button>
+          </div>
+        </div>
+        <div class="l-ph-row">
+          <div class="l-vpbox l-phonebox" data-ph-box>
+            <div class="l-vp l-ph-vp" data-ph-vp>
+              <div class="l-ph-top" data-ph-topbar><i class="l-ph-logo"></i><b>刷刷</b></div>
+              <div class="l-ph-page">
+                <h4 class="l-ph-h"><i class="l-ph-logo"></i>首页</h4>
+                <p class="l-ph-sub">题库：综合业务（示例）</p>
+                <div class="l-ph-stats"><span><b>128</b>今日</span><span><b>86%</b>正确率</span><span><b>12</b>错题</span><span><b>7</b>连续天</span></div>
+                <div class="l-ph-card l-ph-ring"><i></i><span><b>今天的目标</b>还差12题</span></div>
+                <div class="l-ph-sels"><span class="l-ph-sel">全部题型</span><span class="l-ph-sel">全部难度</span></div>
+                <div class="l-ph-card"><span><b>最近学习</b>结算业务基础 · 第12题</span></div>
+                <div class="l-ph-card"><span><b>今日复习</b>到期9题</span></div>
+              </div>
+              <div class="l-ph-scrim" data-ph-scrim hidden></div>
+              <div class="l-ph-sheet" data-ph-sheet hidden>
+                <span>统计</span><span>错题与标记</span><span>题库管理</span><span>数据管理</span><span>外观：浅 / 深 / 自动</span>
+              </div>
+              <nav class="l-ph-tab"><span class="is-on">首页</span><span>专项练习</span><span>搜题</span><button type="button" data-ph-more aria-expanded="false">更多</button></nav>
+            </div>
+          </div>
+          <dl class="l-kv" data-ph-read></dl>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>@media (max-width: 600px) {           /* 600以上逐像素不变；需要 DOM 配合的地方桌面上 display:none */
+  .sidebar { display: none; }          /* 只剩「品牌 + 刷刷」的56px白带：整条不要 */
+  .page-title::before { … }            /* 品牌图标挪进每页大标题前：30px、圆角9，同一个图案文件 */
+  .stats { grid-template-columns: 1fr 1fr; }   /* 四张统计卡2×2，去小字和图标、数字20px */
+  .search-selects { grid-template-columns: 1fr 1fr; }   /* 两个下拉并排；select 宽100% + 省略号 */
+  .more-sheet { bottom: …; max-height: calc(100svh - …); overflow-y: auto; }   /* 封顶用 svh */
+              /* 不能再写 top：top 与 bottom 同时给定，网格把每一行拉高
+                 （417×750下：面板414 → 672px，每项44 → 73px） */
+}
+触控目标 ≥44px；env(safe-area-inset-*) 全程带着</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷3.11.x起的手机档（屋主在手机上提的六条）。本站的「更多」面板≤600也是从底部往上长、只写<code>max-height</code>。</p></section>
+        <section class="fact"><h4>为什么</h4><p>手机上竖向是最贵的：tab bar已经有了导航、「更多」里已经有了主题控件，顶上那条白带只剩品牌，换来的是首屏少一张卡。首页不堆信息：统计卡收成2×2，「随机20题」这类二级入口不放手机首页。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>照样张直接写<code>top</code>和<code>bottom</code>，面板就是一个定高的网格，<code>align-content</code>默认把多余高度平均分给每一行——看着像「行距变大了」，查不到哪一条规则写了行高。手机两档都要测：390×844@3和417×750@3.5，417更危险（更宽，两个下拉更容易挤在一行里撞上）。</p></section>
+        <p class="source">出处：tools/shua/design-proposal.md:377「≤600 px 的手机档」、:378「不要顶栏」、:380「首页不堆信息」、:382「搜题」、:473「417 更危险」、:29「移动端触控目标已被系统性补齐」、:30「安全区处理到位」；tools/star/assets/star.css:828「.more-panel」</p>
+      </div>
+    </article>
+
+    <!-- 7 plan 手机顶栏 -->
+    <article class="entry" id="l-plan-topbar" data-scope="tools" data-toc="手机顶栏两行90px">
+      <header class="entry-head">
+        <h3>手机顶栏照iOS大标题导航栏：两行90px，搜索点了才在两行之间展开</h3>
+        <p class="entry-lede">第一行左边切库、右边三个38px图标按钮（搜索、铃铛、新建）；第二行大标题，日期跟在后面。整行搜索框不常驻，点「搜索」才展开、自动聚焦，回车搜完收起，Esc和「取消」收起不搜。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-10-08定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-search">全站 · 搜索框</a></p>
+      </header>
+      <div class="specimen l-tb" data-demo="topbar">
+        <p class="l-cap"><b>演示</b>plan今日页，417宽，任务是示例。切「现在」后点放大镜：搜索框在两行之间展开，打字回车（输入法选词的回车不算）或按Esc收起，焦点回到放大镜。右边的读数是当场量的顶栏高和第一条任务的位置。</p>
+        <div class="l-ctrl">
+          <div class="seg l-seg" role="radiogroup" aria-label="手机顶栏">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tb-mode="before">改前：三行</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-tb-mode="after">现在：两行</button>
+          </div>
+          <div class="seg l-seg" role="radiogroup" aria-label="搜索框聚焦时的焦点环">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-tb-ring="one">焦点环一圈</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-tb-ring="two">修前：两圈</button>
+          </div>
+        </div>
+        <div class="l-ph-row">
+          <div class="l-vpbox l-phonebox" data-tb-box>
+            <div class="l-vp l-tb-vp" data-tb-vp data-mode-tb="after" data-ring="one">
+              <header class="l-tb-bar" data-tb-bar>
+                <div class="l-tb-r1">
+                  <span class="l-tb-space"><b>工作</b><span>生活</span></span>
+                  <span class="l-tb-acts">
+                    <button type="button" class="l-tb-ic" data-tb-search aria-expanded="false" aria-controls="l-tb-row" aria-label="搜索"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.2"/><path d="m15.6 15.6 4.2 4.2"/></svg></button>
+                    <span class="l-tb-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 16.8V11a5.5 5.5 0 0 1 11 0v5.8l1.6 1.7H4.9z"/><path d="M10 20.6a2 2 0 0 0 4 0"/></svg></span>
+                    <span class="l-tb-ic l-tb-new" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5.5v13M5.5 12h13"/></svg></span>
+                  </span>
+                </div>
+                <div class="l-tb-row" id="l-tb-row" data-tb-row hidden>
+                  <label class="l-tb-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.2"/><path d="m15.6 15.6 4.2 4.2"/></svg><input type="search" data-tb-input aria-label="搜索任务（示例）" placeholder="搜索任务、通知或附件"></label>
+                  <button type="button" class="l-tb-cancel" data-tb-cancel>取消</button>
+                </div>
+                <div class="l-tb-lead"><b>今日</b><span>10月8日 星期四</span></div>
+                <div class="l-tb-old">
+                  <label class="l-tb-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.2"/><path d="m15.6 15.6 4.2 4.2"/></svg><span>搜索任务、通知或附件</span></label>
+                  <div class="l-tb-oldacts"><span class="l-tb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 16.8V11a5.5 5.5 0 0 1 11 0v5.8l1.6 1.7H4.9z"/><path d="M10 20.6a2 2 0 0 0 4 0"/></svg></span><span class="l-tb-newbtn">＋ 新建任务</span></div>
+                </div>
+              </header>
+              <div class="l-tb-body">
+                <div class="l-tb-sum"><b>6</b><span>今天要做 · 逾期2</span><i><s></s></i></div>
+                <div class="l-tb-quick">快速记录一件事…</div>
+                <ul class="l-tb-tasks" data-tb-tasks>
+                  <li><i></i><span>交季度报表<em class="l-u-red">逾期2天</em></span></li>
+                  <li><i></i><span>回复审计邮件<em class="l-u-red">逾期1天</em></span></li>
+                  <li><i></i><span>整理合同附件<em class="l-u-orange">今天</em></span></li>
+                  <li><i></i><span>约体检<em class="l-u-yellow">明天</em></span></li>
+                  <li><i></i><span>读完那本书<em>10月20日</em></span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <dl class="l-kv" data-tb-read></dl>
+        </div>
+        <p class="l-note" data-tb-log aria-live="polite"></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>@media (max-width: 600px)        /* 桌面与601–900的顶栏不动 */
+.topbar.topbar-phone { flex-direction: column; align-items: stretch; gap: var(--sp-2);
+                       padding-top: var(--sp-2); padding-bottom: var(--sp-2); }
+第一行  切库「工作 | 生活」 ………… 搜索 · 铃铛 · 新建（38×38，新建是主按钮渐变的加号）
+第二行  大标题 + 日期，flex-wrap 基线对齐；放不下日期换行，不截断
+搜索    点了才在两行之间展开（顶栏90 → 134px）、autoFocus；
+        回车搜完收起；Esc、「取消」收起不搜；先判 isComposing，选词的回车不算
+焦点环  框子 .search-box:focus-within 画一圈；.search-box input:focus-visible { outline: none; }
+量出来  宽390 / 417：顶栏167 → 90px，第一条任务 y = 412 → 334</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>plan≤600的顶栏（<code>TopBar</code>）。本站的搜索框焦点环也是只画在整只框上（<code>:focus-within</code>），里面的输入框不另画。</p></section>
+        <section class="fact"><h4>为什么</h4><p>改前三行167px：标题＋日期＋切库｜整行搜索框｜铃铛＋「新建任务」；再加汇总卡和快速记录，第一条任务要到y=412才露头。常用的三件事收成图标，搜索按需展开，第一条任务提到334。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>搜索框聚焦时套两圈焦点环：框子一圈，里面的输入框又被全局<code>input:focus-visible</code>画一圈；桌面上同样有，一起修了。601–900那一档的内容区顶栏还是三行（768上175px），屋主的三台设备都碰不到，这一轮没扩范围，要改就照手机这套。</p></section>
+        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:2028「39.2 手机顶栏压矮」、:2031「现在」、:2034「才在两行之间展开」、:2035「量出来」、:2040「39.3 顺手修的」、:2045「601–900px 那一档」；tools/plan/app/src/App.css:6951「手机顶栏」；tools/plan/app/src/components/layout.tsx:528「输入法选词」</p>
+      </div>
+    </article>
+
+    <!-- 8 plan 侧栏磁贴 -->
+    <article class="entry" id="l-plan-tiles" data-scope="tools" data-toc="侧栏磁贴调轻">
+      <header class="entry-head">
+        <h3>侧栏磁贴调轻：一块一行「彩色线条小图标＋名字＋数字」，首屏最抢眼的不该是磁贴</h3>
+        <p class="entry-lede">四块仍是2×2，但不再是32px彩色图标块＋24px大数字：图标不带底块、仍按四类上色（文字档颜色），数字一律黑，只有「逾期」不为0时标红，为0的淡下去。点哪块去哪儿、四个数的口径都不变。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-10-08定</li></ul>
+      </header>
+      <div class="specimen l-ti" data-demo="tiles">
+        <p class="l-cap"><b>演示</b>plan侧栏顶上那一段，1440宽，数是示例。切改前 / 现在看磁贴区多高、导航第一项被推到哪；加减逾期、清空收件箱看数字的三种状态。</p>
+        <div class="l-ctrl">
+          <div class="seg l-seg" role="radiogroup" aria-label="侧栏磁贴">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ti-mode="before">改前：图标块＋大数字</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ti-mode="after">现在：一块一行</button>
+          </div>
+          <button type="button" class="l-pill" data-ti-over="1">逾期 +1</button>
+          <button type="button" class="l-pill" data-ti-over="0">逾期清零</button>
+          <button type="button" class="l-pill" aria-pressed="false" data-ti-inbox>收件箱清空</button>
+        </div>
+        <div class="l-ph-row">
+          <div class="l-ti-side" data-ti-side data-ti="after">
+            <div class="l-ti-brand"><i></i><b>日程安排</b></div>
+            <span class="l-ti-space"><b>工作</b><span>生活</span></span>
+            <span class="l-ti-new">＋ 新建任务</span>
+            <div class="l-ti-tiles" data-ti-tiles></div>
+            <ul class="l-ti-nav" data-ti-nav>
+              <li class="is-on"><i></i>今日<em>4</em></li><li><i></i>日程</li><li><i></i>全部任务</li><li><i></i>回顾</li><li><i></i>笔记</li>
+            </ul>
+          </div>
+          <dl class="l-kv" data-ti-read></dl>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>.sidebar-tiles { display: grid; grid-template-columns: 1fr 1fr; }   /* 仍是2×2 */
+.sidebar-tile  { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); }
+.sidebar-tile-icon  { color: var(--tile-ink); }   /* 16px 线条图标；今天 强调色文字档、逾期 红、本周 橙、收件箱 青 */
+.sidebar-tile-label { flex: 1 1 auto; font-size: var(--fs-13); }
+.sidebar-tile-count { font-size: var(--fs-15); font-weight: 600; color: var(--text-title); }
+.sidebar-tile.is-zero  .sidebar-tile-count { color: var(--text-muted); font-weight: 500; }
+.sidebar-tile.is-alert .sidebar-tile-count { color: var(--danger-500); }   /* 只有逾期 &gt; 0 */
+量出来  宽1440：磁贴区227 → 78px、单块109 → 35px，导航第一项 y = 363 → 214；
+        宽2040：磁贴区321 → 111px；数字24 → 15px，汇总卡大数字56px（差回到三倍多）</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>plan侧栏（&gt;900）与601–900顶栏里横排的磁贴（横排单块44→30px）。彩色图标块那套样式只有磁贴在用，一并从plan删了；刷刷、岗岗、card的列表行还在用它，见交互页<a href="interaction.html#ix-list">「入口用分组列表」</a>。</p></section>
+        <section class="fact"><h4>为什么</h4><p>屋主对照SuperTodo说一眼抓不住重点。诊断第4条：1440首屏最显眼的依次是「新建任务」按钮、侧栏四块磁贴（24px数字＋四色图标）、台历，正文排在后面，汇总卡的大数字反而被抢了。图标仍按类上色、不改成灰的：屋主说过不要灰的。</p></section>
+        <blockquote class="said"><p>「我觉得它这个一眼就能抓住重点，而我现在这个不知道为什么一眼不知道哪里是重点。」</p><footer>屋主，2026-10-08（看SuperTodo的截图之后）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>「今天」磁贴和「今日」导航项右边是同一个数，侧栏上出现两次；这一轮只调轻、不删入口。彩色线条图标用文字档颜色才过得了图形3:1：青没有单独的文字档，借回顾页库色那支（浅<code>#00608B</code> / 深<code>#5AC8F5</code>）。</p></section>
+        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1844「35. 层级改版」、:1854「第一眼落不到正文」、:2017「39.1 侧栏磁贴调轻」、:2024「量出来」、:2047（「今天」磁贴与导航重复）；tools/plan/app/src/App.css:155「侧栏磁贴」；tools/plan/app/src/components/layout.tsx:305「2026-10-08 调轻」、:331「青没有单独的文字档」</p>
+      </div>
+    </article>
+
+    <!-- 9 扁视口紧凑排 -->
+    <article class="entry" id="l-compact" data-scope="tools" data-toc="扁视口紧凑排">
+      <header class="entry-head">
+        <h3>扁视口紧凑排：宽高比大于1.6或高不到900时，侧栏只收竖向节奏</h3>
+        <p class="entry-lede">视口比1440×900扁，等比放大后的侧栏就比视口高。只收侧栏的竖向节奏——导航项34→28、分组标题上下距12/4→6/2、上下内边距与外观三行的间距——横向尺寸、字号、图标一个都不动，2040×930下导航不用滚。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-10-08定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
+      </header>
+      <div class="specimen l-cp" data-demo="compact">
+        <p class="l-cap"><b>演示</b>按本站侧栏的数搭的复制品（示意）：点视口预设或拖宽高，看媒体查询命中哪一条、导航要不要滚。切「改前」把紧凑排关掉对照。最下面一行是这一页此刻自己有没有命中。</p>
+        <div class="l-ctrl">
+          <div class="l-pills" role="group" aria-label="视口预设">
+            <button type="button" class="l-pill" aria-pressed="false" data-cp-preset="1440x900">1440×900</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-cp-preset="2040x1019">2040×1019</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-cp-preset="2040x930">2040×930带工具栏</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-cp-preset="2552x1274">2552×1274</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-cp-preset="2552x1180">2552×1180带工具栏</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-cp-preset="1280x720">1280×720</button>
+          </div>
+        </div>
+        <div class="l-ctrl">
+          <label class="l-range"><span>宽</span><input type="range" min="901" max="2600" step="1" value="2040" data-cp-w><span class="l-val" data-cp-wout aria-hidden="true">2040</span></label>
+          <label class="l-range"><span>高</span><input type="range" min="560" max="1300" step="1" value="930" data-cp-h><span class="l-val" data-cp-hout aria-hidden="true">930</span></label>
+          <div class="seg l-seg" role="radiogroup" aria-label="紧凑排">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-cp-mode="on">现行：紧凑排</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-cp-mode="off">改前：不收</button>
+          </div>
+        </div>
+        <div class="l-ph-row">
+          <div class="l-vpbox l-cp-box" data-cp-box><div class="l-vp l-cp-vp" data-cp-vp></div></div>
+          <dl class="l-kv" data-cp-read></dl>
+        </div>
+        <p class="l-note" data-cp-live></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>@media (min-width: 901px) and (min-aspect-ratio: 1601/1000),
+       (min-width: 901px) and (max-height: 899.98px) {
+  .side       { gap: 0; padding-top: calc(12 * var(--u)); padding-bottom: calc(8 * var(--u)); }  /* 18 / 14 → 12 / 8 */
+  .brand      { padding-top: 0; padding-bottom: calc(8 * var(--u)); }                             /* 14 → 8 */
+  .nav-item   { height: calc(28 * var(--u)); }                                                    /* 34 → 28 */
+  .side-group { margin-top: calc(6 * var(--u)); margin-bottom: calc(2 * var(--u)); }              /* 12 / 4 → 6 / 2 */
+  .theme      { gap: calc(6 * var(--u)); }                                                        /* 10 → 6 */
+  …搜索格、外观分段的上下内边距同样收一档
+}
+实测（软件渲染 DPR 1.25）：2040×1019、2040×930两档11项导航和外观控件全看得见、导航不滚；
+最后一组下面还空着：1019那档约130px、930那档约40px</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>本站侧栏（&gt;900）。屋主台式2040×1019、带浏览器工具栏实际是2040×930，笔记本2552×1274，三档都比1440×900扁。</p></section>
+        <section class="fact"><h4>为什么</h4><p>等比放大只管横向：侧栏按<code>--u</code>放大，竖向也跟着放大，可视口高没有跟着涨。刷刷当年否掉过「竖向单独压缩<code>--u-y</code>」——压竖向就是把构图改扁；所以这里不动内容区（照旧等比、照旧滚），只让侧栏这一块一屏高的面把竖向节奏收紧。条件用宽高比：宽≥1440时有效高＝高×1440÷宽，比900矮就等价于宽高比大于1.6；1440×900正好1.6、高900，两条都不中，一个像素不变。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>宽在901–1440之间<code>--scale</code>恒为1，只用宽高比判不出「扁」（1100×700宽高比只有1.57），所以还要另加一条「高不到900」。</p></section>
+        <p class="source">出处：tools/star/assets/star.css:1225「扁视口的紧凑侧栏」、:1233（媒体查询）；tools/star/CLAUDE.md:93「宽901–1440时」；tools/shua/design-proposal.md:455「竖向装不下：接受滚动」</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================ 小屋 · 暖纸 ============================ -->
+  <section class="group" id="g-xiaowu" data-scope="xiaowu">
+    <h2 class="group-title">小屋 · 暖纸</h2>
+    <p class="group-lede">小屋的六条原则里有一条就是「零固定高度」：内容多就往下长，内容少就居中留白。门厅是一张一屏名片，工具页是一条轨道上叠着的五层，随笔是一条日记流。断点是桌面优先的max-width 900 / 820 / 680 / 560。图是小屋的原画，按相对路径从老站引来。</p>
+
+    <!-- 10 门厅一屏名片 -->
+    <article class="entry" id="l-xw-hall" data-scope="xiaowu" data-toc="门厅名片等比缩放">
+      <header class="entry-head">
+        <h3>门厅一屏名片：整张卡挂在一个长度变量<code>--card-u</code>上，长宽比恒定1.8348</h3>
+        <p class="entry-lede">卡宽按两条法则取小——宽度法则跟视口宽、高度保险最多吃掉可用高的72%——再夹在440到900之间。所有装裱尺寸写成<code>calc(&lt;1440×900下的像素值&gt; * var(--card-px))</code>，巨字、内边距、右半宽同源，缩放的永远是同一张卡。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-22定</li></ul>
+      </header>
+      <div class="specimen xw l-ha" data-demo="hall">
+        <p class="l-cap l-cap-xw"><b>演示</b>拖宽、拖高，或点预设。现行按<code>--card-u</code>算；「旧」是冻结小样里三样各吃一条vw clamp的写法（示意），看长宽比怎么漂。画是小屋门厅原画。</p>
+        <div class="l-ctrl">
+          <div class="l-pills" role="group" aria-label="视口预设">
+            <button type="button" class="l-pill" aria-pressed="false" data-ha-preset="1440x900">1440×900</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-ha-preset="1030x742">1030×742</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-ha-preset="1440x460">1440×460矮窗</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-ha-preset="2040x1019">2040×1019</button>
+            <button type="button" class="l-pill" aria-pressed="false" data-ha-preset="2552x1274">2552×1274</button>
+          </div>
+        </div>
+        <div class="l-ctrl">
+          <label class="l-range"><span>宽</span><input type="range" min="821" max="2600" step="1" value="1440" data-ha-w><span class="l-val" data-ha-wout aria-hidden="true">1440</span></label>
+          <label class="l-range"><span>高</span><input type="range" min="440" max="1300" step="1" value="900" data-ha-h><span class="l-val" data-ha-hout aria-hidden="true">900</span></label>
+          <div class="seg l-seg" role="radiogroup" aria-label="卡片的定尺寸法">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ha-mode="new">现行：--card-u</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ha-mode="old">旧：各吃一条vw clamp</button>
+          </div>
+        </div>
+        <div class="l-vpbox l-xw-box" data-ha-box>
+          <div class="l-vp l-ha-vp" data-ha-vp data-ha="new">
+            <div class="l-xw-nav"><span class="l-xw-site"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 11.2 12 4.6l8.2 6.6"/><path d="M6 9.6v9.8h12V9.6"/><path d="M10.2 19.4v-5h3.6v5"/></svg>Ysevan的小屋</span><span class="l-xw-links"><b>小屋</b><span>工具</span><span>随笔</span></span></div>
+            <div class="l-ha-hall">
+              <div class="l-ha-set" data-ha-card="new">
+                <div class="l-ha-card">
+                  <div class="l-ha-blob"><p class="l-ha-h"><span class="l-ha-whose">Ysevan的</span><span class="l-ha-big">小屋</span></p><p class="l-ha-foot">门没锁，随便逛</p></div>
+                  <div class="l-ha-plate"><img src="../../../ysevan/xiaowu-plate.jpg" width="636" height="900" alt="" decoding="async"></div>
+                </div>
+              </div>
+              <div class="l-ha-set l-ha-old" data-ha-card="old" aria-hidden="true">
+                <div class="l-ha-card">
+                  <div class="l-ha-blob"><p class="l-ha-h"><span class="l-ha-whose">Ysevan的</span><span class="l-ha-big">小屋</span></p><p class="l-ha-foot">门没锁，随便逛</p></div>
+                  <div class="l-ha-plate"><img src="../../../ysevan/xiaowu-plate.jpg" width="636" height="900" alt="" decoding="async"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <dl class="l-kv l-kv-row" data-ha-read></dl>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>@media (min-width: 821px) {
+  .hall {
+    --card-room-h: calc(100svh - 66px - clamp(24px, 4svh, 52px) - clamp(44px, 8svh, 88px));
+                   /* 小屋代码现状写的是4vh / 8vh（裸 vh）；按「裸 vh 不许」该换 svh，还没改 */
+    --card-u: clamp(440px,
+                    min(calc(0.3514 * 100vw + 202.064px), calc(1.3231 * var(--card-room-h))),
+                    900px);
+    --card-px: calc(var(--card-u) / 708.08);      /* 「一个 1440×900 像素」，那一档正好1px */
+  }
+}
+.blob__big  { font-size: calc(136 * var(--card-px)); }                  /* 系数就是1440×900下的像素值 */
+.blob       { padding: calc(58 * var(--card-px)) calc(64 * var(--card-px)) calc(52 * var(--card-px));
+              width: fit-content; }                                      /* 色块宽由两个字撑出来 */
+.plate      { width: calc(281.6 * var(--card-px)); padding: calc(15.84 * var(--card-px)); }
+.hall__card { border-radius: calc(46 * var(--card-px)); }
+宽度法则过两点（1030→564、1440→708.08）；高度保险 = 卡最多吃掉可用高的72%；
+上界900是画的分辨率（源图636宽）；下界440。1px 发丝线、倾斜角、字距行高不缩放。</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>小屋门厅，以及工具页、随笔页门面那两张同款卡（两份样式表逐字相同）。门厅首屏就是这张卡，静态档（没有JS、减弱动效、≤900、省流量、WebGL不可用）是一屏、不能滚。≤820那一档不认<code>--card-u</code>，见下一条。</p></section>
+        <section class="fact"><h4>为什么</h4><p>以前巨字、内边距、右半宽各吃一条斜率不同的vw clamp，卡越小越方（长宽比1.868→1.746），缩放的不是同一张卡。现在一个自由量，1440×900按定义逐像素不变；矮窗口里高度保险接手，1440×460以前溢出视口15.9px，现在卡片自己收到440.8×241、离底还有86px。</p></section>
+        <blockquote class="said"><p>「不全屏的时候比例怪」</p><footer>屋主，2026-09-22</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>宽度法则的斜率与截距是配着挑的：1440那一档必须算出整708.08，708.0806时挂画投影的负扩散<code>-14.0000119px</code>会被1/64的布局单位取整成<code>-14.0156px</code>，投影那一圈就有3万个像素对不上。禁止给色块、右半写固定宽高或<code>aspect-ratio</code>，也不给整张卡写任何尺寸——它只是装裱层。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「1.1 定位」（「不能滚动的一屏」）、「4.2.1 --card-u：一个长度变量」（「斜率与截距是配着挑的」「长宽比因此恒定 1.8348」）、「4.3 fit-content 机制」（「三样同源」）、「4.6.3 同高与不裁切机制」（「独立决定」）；Ysevan_web/app/hall.module.css「--card-u」；旧写法 Ysevan_web/docs/design/xiaowu-mockup.html「.blob」、「.plate」、「.blob__big」</p>
+      </div>
+    </article>
+
+    <!-- 11 窄屏也横构图 -->
+    <article class="entry" id="l-xw-narrow" data-scope="xiaowu" data-toc="窄屏也横构图">
+      <header class="entry-head">
+        <h3>窄屏也保持左右两半的横构图，整张卡等比收小，不上下堆叠</h3>
+        <p class="entry-lede">≤820时右半先由一条更陡的clamp定宽（<code>clamp(100px, 30vw, 206px)</code>），色块吃掉剩下的全部；巨字改吃11.5vw并且不许折行。320宽也还是一张挂画。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-08-26定</li></ul>
+      </header>
+      <div class="specimen xw l-na" data-demo="narrow">
+        <p class="l-cap l-cap-xw"><b>演示</b>拖视口宽（320–820），数值是规格里≤820那一档的原值。切到「上下堆叠」看被否的那个样子（示意，照被否方案的<code>max-height: 300px</code>）。</p>
+        <div class="l-ctrl">
+          <label class="l-range"><span>视口宽</span><input type="range" min="320" max="820" step="1" value="417" data-na-w><span class="l-val" data-na-wout aria-hidden="true">417</span></label>
+          <div class="seg l-seg" role="radiogroup" aria-label="窄屏构图">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-na-mode="row">现行：左右两半</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-na-mode="stack">被否：上下堆叠</button>
+          </div>
+        </div>
+        <div class="l-vpbox l-xw-box" data-na-box>
+          <div class="l-vp l-na-vp" data-na-vp data-na="row">
+            <div class="l-na-wrap">
+              <div class="l-na-card">
+                <div class="l-na-blob"><p class="l-ha-h"><span class="l-na-whose">Ysevan的</span><span class="l-na-big">小屋</span></p><p class="l-na-foot">门没锁，随便逛</p></div>
+                <div class="l-na-plate"><img src="../../../ysevan/xiaowu-plate.jpg" width="636" height="900" alt="" decoding="async"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <dl class="l-kv l-kv-row" data-na-read></dl>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>@media (max-width: 820px) {
+  .blob { flex: 1 1 auto; min-width: 0; width: auto;       /* 定尺寸策略反过来：右半先定，色块吃剩下的 */
+          padding: clamp(20px, 5.6vw, 40px) clamp(12px, 3.8vw, 34px) clamp(18px, 4.6vw, 34px); }
+  .blob__whose { font-size: clamp(10.5px, 3vw, 13px); letter-spacing: .16em; margin-bottom: 6px; }
+  .blob__big   { font-size: clamp(40.25px, 11.5vw, 84px); white-space: nowrap; }
+  .blob__foot  { margin-top: clamp(12px, 3.4vw, 22px); padding-top: clamp(10px, 2.6vw, 16px);
+                 font-size: clamp(10.5px, 3vw, 13px); letter-spacing: .04em; }
+  .plate       { width: clamp(100px, 30vw, 206px); padding: clamp(6px, 1.8vw, 10px); }
+  .hall__card  { border-radius: clamp(20px, 5vw, 30px); }
+  .deco--pot   { display: none; }                         /* 往卡外挂的盆栽在窄屏收起 */
+}</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>小屋门厅与两个门面，≤820。≤560没有门厅相关的进一步收小档：上面这些clamp的下界（40.25px巨字、100px右半、20px圆角）已经兜住320宽。巨字下限和副标题字距是2026-10-08第二轮定的（原来38px、.08em）：门面副标题「六件自己做的东西」8个字，.08em时窄屏只放得下7个、把色块撑宽。</p></section>
+        <section class="fact"><h4>为什么</h4><p>原方案≤820转纵向（色块上、画下），屋主否了。那幅水彩是636×900的竖幅，窄右半正合适；一转纵向，画横过来铺满卡宽，要靠<code>max-height</code>硬砍高度，门厅从「一张挂画」变成「一张海报压着一块色块」。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>色块的<code>min-width:0</code>不能省：没有它flex子项的最小宽是内容宽，色块压不下去，卡片顶破容器。巨字的<code>nowrap</code>是硬约束：「小屋」断成两行会把卡顶高、把右半的画连带拉长。≥821起换成<code>--card-u</code>，两个媒体查询之间（820, 821）有一条缝（浏览器缩放会把视口宽算成小数），旧的clamp作为基础声明保留着兜底，不能删。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「10.1 @media (max-width: 820px) —— 门厅卡片等比收小」（「2026-08-26 用户裁定改写」「色块的定尺寸策略反过来」「巨字改吃」「≤560px 没有门厅相关的进一步收小档」「≥821px 起换成 --card-u 单一法则」）；Ysevan_web/app/hall.module.css「.blobBig」（「clamp(40.25px, 11.5vw, 84px)」「字距 .04em」）</p>
+      </div>
+    </article>
+
+    <!-- 12 工具页轨道 -->
+    <article class="entry" id="l-xw-rail" data-scope="xiaowu" data-toc="一条轨道五层叠放">
+      <header class="entry-head">
+        <h3>工具页一条轨道、一个钉住的舞台，五层叠在同一格里交接</h3>
+        <p class="entry-lede">门面和四个工具叠在舞台的同一个网格格子里，滚动只往轨道上写一个进度，每层按时间表算自己的入场、停留、退场。相邻两层的淡入淡出叠在一起，任何一刻至少有一件东西看得见；最后一层不退场，轨道正好停在它停留结束的地方。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-20定</li></ul>
+      </header>
+      <div class="specimen xw l-ra" data-demo="rail">
+        <p class="l-cap l-cap-xw"><b>演示</b>在框里上下滚（键盘：Tab进框后用方向键、PageDown），或拖下面的滑块。时间表是规格原值，框高就是「一屏」；条形是每一层此刻的在场程度，接指针的那层标着点。工具文案是示例，门面是工具页原画。</p>
+        <div class="l-ra-grid">
+          <div class="l-ra-scroll" data-ra-scroll tabindex="0" role="region" aria-label="工具页轨道（示例），上下滚动">
+            <div class="l-ra-rail" data-ra-rail>
+              <div class="l-ra-stage" data-ra-stage>
+                <div class="l-ra-layer l-ra-hero" data-ra-layer="hero">
+                  <div class="l-ra-herocard">
+                    <div class="l-ra-blob"><span>Ysevan的</span><b>工具</b><small>六件自己做的东西</small></div>
+                    <div class="l-ra-plate"><img src="../../../ysevan/xiaowu-shelf.jpg" width="636" height="900" alt="" decoding="async"></div>
+                  </div>
+                </div>
+                <div class="l-ra-layer" data-ra-layer="plan" style="--tb:#2563EB;--tbs:rgba(37,99,235,.11)">
+                  <div class="l-ra-copy"><p class="l-ra-no">01<span>日程</span></p><p class="l-ra-name">日程安排</p><p class="l-ra-desc">工作和生活两个库，今天的事一眼看完。</p><p class="l-ra-specs"><span><b>2</b>个库</span><span><b>本机</b>存储</span><span><b>离线</b>可用</span></p><span class="l-ra-open">打开日程安排</span></div>
+                  <div class="l-ra-visual"><i></i><i></i><i></i></div>
+                </div>
+                <div class="l-ra-layer" data-ra-layer="shua" style="--tb:#B4232C;--tbs:rgba(180,35,44,.10)">
+                  <div class="l-ra-copy"><p class="l-ra-no">02<span>刷题</span></p><p class="l-ra-name">刷刷</p><p class="l-ra-desc">离线刷题，错题自动收进错题本。</p><p class="l-ra-specs"><span><b>799</b>题</span><span><b>离线</b>可用</span><span><b>本机</b>存储</span></p><span class="l-ra-open">打开刷刷</span></div>
+                  <div class="l-ra-visual"><i></i><i></i><i></i></div>
+                </div>
+                <div class="l-ra-layer" data-ra-layer="gang" style="--tb:#8F1D2C;--tbs:rgba(143,29,44,.18)">
+                  <div class="l-ra-copy"><p class="l-ra-no">03<span>速查</span></p><p class="l-ra-name">岗岗</p><p class="l-ra-desc">柜面业务速查，材料清单与办理步骤。</p><p class="l-ra-specs"><span><b>60</b>项业务</span><span><b>4</b>步</span><span><b>离线</b>可用</span></p><span class="l-ra-open">打开岗岗</span></div>
+                  <div class="l-ra-visual"><i></i><i></i><i></i></div>
+                </div>
+                <div class="l-ra-layer" data-ra-layer="card" style="--tb:#10666E;--tbs:rgba(16,102,110,.12)">
+                  <div class="l-ra-copy"><p class="l-ra-no">04<span>卡集</span></p><p class="l-ra-name">card</p><p class="l-ra-desc">一套全息闪卡，Cover Flow翻着看。</p><p class="l-ra-specs"><span><b>13</b>张</span><span><b>3D</b>查看</span><span><b>全息</b>扫光</span></p><span class="l-ra-open">打开card</span></div>
+                  <div class="l-ra-visual"><i></i><i></i><i></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="l-ra-side">
+            <label class="l-range l-range-block"><span>滚进轨道 d</span><input type="range" min="0" max="352" step="1" value="0" data-ra-d><span class="l-val" data-ra-dout aria-hidden="true">0svh</span></label>
+            <ul class="l-ra-bars" data-ra-bars>
+              <li data-ra-bar="hero"><span>门面</span><i><s></s></i><b></b></li>
+              <li data-ra-bar="plan"><span>01 · 日程安排</span><i><s></s></i><b></b></li>
+              <li data-ra-bar="shua"><span>02 · 刷刷</span><i><s></s></i><b></b></li>
+              <li data-ra-bar="gang"><span>03 · 岗岗</span><i><s></s></i><b></b></li>
+              <li data-ra-bar="card"><span>04 · card</span><i><s></s></i><b></b></li>
+            </ul>
+            <p class="l-note" data-ra-read></p>
+          </div>
+        </div>
+        <figure class="l-ra-then">
+          <figcaption>一屏一屏要滚多远（1440×900实测，规格里的数；示意）</figcaption>
+          <div class="l-ra-then-row"><span>改前：每件一段</span><i class="l-ra-strip" data-ra-strip="before"></i><b>5916px</b></div>
+          <div class="l-ra-then-row"><span>现在：一条轨道</span><i class="l-ra-strip" data-ra-strip="after"></i><b>2514px</b></div>
+          <p class="l-note">实色＝有一件完全显示，斜纹＝交接中，空白＝什么都看不见。改前三段交接各约103svh是空白的纸，现在没有。</p>
+        </figure>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>轨道   .rail  { min-height: calc(100svh + var(--rail-end) * 1svh); }   /* --rail-end = 最后一层的 hold-end = 352 */
+舞台   .stage { position: sticky; top: 0; min-height: 100svh; display: grid; }  .layer { grid-area: 1 / 1; }
+时间表（单位 svh；d = 滚进轨道的距离，轨道顶碰到视口顶为0）
+       门面：0 → 12（没有入场）    01 · 日程安排：52 → 112    02 · 刷刷：152 → 192
+       03 · 岗岗：232 → 272        04 · card：312 → 352（最后一层：hold-end 就是轨道终点，不退场）
+淡入淡出  右栏 --fade 32、文案 --copy-fade 22、门面退场 (32 + 22) / 2 = 27
+       入场 t = clamp(0, (d − hold-start) / fade + 1, 1)；退场 t = clamp(0, (d − hold-end) / fade, 1)
+       两条都过 smoothstep（两端零速度；不用 ease-out，它起点最快，一碰滚轮内容就往上窜）
+在场   present = enter × (1 − exit)
+位移   文案 translateY((1 − enter) × 26px − exit × 26px)；图 (1 − enter) × 42px − exit × 34px
+接指针 只有 data-tool-active 那层（present 最大的；交接正中打平时给后一层），其余 pointer-events: none
+进度   脚本只写一个 --rail-progress（0 → 1），几何全在样式表</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>小屋<code>/projects</code>的「展台」（有3D展品的四件）。没有3D展品的travel与设计合集不进轨道，摆在轨道之后的「小架」上（2026-09-28），舞台放开后接着滚到，小架最后一件就是页底。每个工具只有「打开」那一条链接可聚焦，见交互页<a href="interaction.html#ix-xw-tabstop">「每个工具恰好一个Tab位」</a>。</p></section>
+        <section class="fact"><h4>为什么</h4><p>改前门面和三个工具各占一段、每段一个自己的舞台，「上一件完全显示→下一件完全显示」要滚142svh（1440×900下1278px），中间约一屏是空白的纸，屋主反馈切换不自然、间距太长。一条轨道之后交接只要40svh，两套文案只在交接正中4svh里同时出现、且都淡到0.025以下。最后一层的退场从<code>hold-end</code>起算，轨道到不了那之后，所以它结构上就不会退场。</p></section>
+        <blockquote class="said"><p>「滚到最后一件就不用再往下拉了」</p><footer>屋主，2026-09-19（看工具页预览）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>叠放的层透明了也照样接指针：五层叠在同一格，最上面那层（card）会吃掉底下所有的点击——点着日程安排的「打开」，打开的是card。所以叠放那一档默认<code>pointer-events:none</code>，只有在场的那层接。时间表写成纯数字、每层按名字取，脚本才读得出来（写成<code>calc()</code>链，读到的是字符串<code>"calc(12 + 40)"</code>）。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6. 工具页 /projects」（「2026-09-04 屋主裁定整节重写」）、「6.2 结构」（「切换不自然」）、「6.3 数值」（「轨道时间表」「右栏淡入淡出」「文案淡入淡出」「轨道高」「文案位移」「接指针」「smoothstep」「最后一层为什么不退场」）、「6.4 五个不会报错的坑」（「叠放的层透明了也照样接指针」）</p>
+      </div>
+    </article>
+
+    <!-- 13 默认竖排页 -->
+    <article class="entry" id="l-xw-vertical" data-scope="xiaowu" data-toc="默认竖排页">
+      <header class="entry-head">
+        <h3>默认样式就是一张竖排页，叠放、钉住、擦洗只写在<code>(scripting: enabled)</code>媒体查询里</h3>
+        <p class="entry-lede">同一份标记不加任何增强就是一张能读的竖排页：门面、四个工具、小架依次排下来。只有脚本能跑、宽于900、没开减弱动效三条同时成立，才在媒体查询里把它们叠起来。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-20定</li></ul>
+      </header>
+      <div class="specimen xw l-ve" data-demo="vertical">
+        <p class="l-cap l-cap-xw"><b>演示</b>拨三个环境开关（示意：真的媒体特性改不了，这里按同样的条件算），再切两种写法，看一个访客打开工具页第一眼能看到几件工具。最下面一行是这台浏览器真实的<code>scripting</code>结果。</p>
+        <div class="l-ctrl">
+          <div class="l-pills" role="group" aria-label="访客的环境">
+            <button type="button" class="l-tog" aria-pressed="true" data-ve-env="js">脚本能跑</button>
+            <button type="button" class="l-tog" aria-pressed="true" data-ve-env="wide">宽于900</button>
+            <button type="button" class="l-tog" aria-pressed="false" data-ve-env="reduce">开了减弱动效</button>
+          </div>
+          <div class="seg l-seg" role="radiogroup" aria-label="增强怎么写">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ve-way="add">现行：默认竖排，增强加上去</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ve-way="remove">反例：默认叠放，再用查询撤掉</button>
+          </div>
+        </div>
+        <div class="l-ve-mini" data-ve-mini data-ve="vertical">
+          <div class="l-ve-item" data-ve-i="hero"><b>Ysevan的 工具</b><small>门面</small></div>
+          <div class="l-ve-item" data-ve-i="1" style="--tb:#2563EB"><b>01 · 日程安排</b><small>打开日程安排</small></div>
+          <div class="l-ve-item" data-ve-i="2" style="--tb:#B4232C"><b>02 · 刷刷</b><small>打开刷刷</small></div>
+          <div class="l-ve-item" data-ve-i="3" style="--tb:#8F1D2C"><b>03 · 岗岗</b><small>打开岗岗</small></div>
+          <div class="l-ve-item" data-ve-i="4" style="--tb:#10666E"><b>04 · card</b><small>打开card</small></div>
+        </div>
+        <p class="l-read" data-ve-read></p>
+        <p class="l-note" data-ve-live></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>/* 默认：竖排页，不钉住、不擦洗；三张界面图竖排 */
+.layer { … }
+
+/* 增强只写在这一个媒体查询里 */
+@media (scripting: enabled) and (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .rail  { min-height: calc(100svh + var(--rail-end) * 1svh); }
+  .stage { position: sticky; top: 0; display: grid; }
+  .layer { grid-area: 1 / 1; pointer-events: none; }
+  .layer[data-tool-active] { pointer-events: auto; }
+  /* 时间表的数字也只写在这里：竖排页读到的是 NaN，读法返回 null，意思就是「此刻没有叠放」 */
+}</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>小屋工具页（<code>tools.module.css</code>文末那一个媒体查询）。禁用脚本、不认<code>scripting</code>这个特性的老浏览器、窄屏、减弱动效四种情况，第一帧就是这张竖排页。</p></section>
+        <section class="fact"><h4>为什么</h4><p>页面里不另写内联脚本（CSP的<code>script-src</code>只认构建时逐页算出的sha256哈希），「脚本能不能跑」只能交给<code>scripting</code>这个媒体特性来判。增强是加上去的一层：判断不出来、条件不满足，留下的就是能读的那一页——小屋「降级的终点就是今天那一页」同一个思路。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>反过来写（默认钉住擦洗、再用媒体查询撤掉）：窄屏和减弱动效撤得掉，禁用脚本却没有对应的查询能撤——宽屏访客停在进度0，而进度0时几个工具的<code>present</code>都是0。2026-09-20以前就是这样：无JS的1440宽访客只看得见门面，下面几个工具左栏、右栏的有效不透明度全是0（实测）。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.2 结构」（「叠放、钉住、擦洗全部写在一个媒体查询里」「只认构建时逐页算出的哈希」）、「6.3 数值」（「时间表只写在叠放那一档里」）、「6.4 五个不会报错的坑」（「默认样式必须是竖排页」）、「3.5 CSP 约束」（「sha256」）；Ysevan_web/app/projects/tools.module.css「@media (scripting: enabled)」</p>
+      </div>
+    </article>
+
+    <!-- 14 随笔日记流 -->
+    <article class="entry" id="l-xw-notes" data-scope="xiaowu" data-toc="随笔日记流">
+      <header class="entry-head">
+        <h3>随笔是iCity式日记流：一条一张卡，靠间距分隔，正文不截断</h3>
+        <p class="entry-lede">一张卡就是一条日记：左上签名、右上日期与年份、中间正文、底行天气心情地点与时间。没有标题、摘要、时间竖线，卡与卡之间不画线。页面两栏，左栏按内容自然宽、280封顶，≤900塌成单列。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-08-26定</li></ul>
+      </header>
+      <div class="specimen xw l-no" data-demo="notes">
+        <p class="l-cap l-cap-xw"><b>演示</b>拖宽度看两栏怎么塌成一列、左栏怎么跟着说明的长短变宽；切到「旧列表」看被换掉的样子（示意）。三条随笔是示例；左栏的长句是现行那句，短句是示意。签名头像在站上是一张小图，这里只画它的底色块。</p>
+        <div class="l-ctrl">
+          <label class="l-range"><span>视口宽</span><input type="range" min="360" max="1180" step="1" value="1080" data-no-w><span class="l-val" data-no-wout aria-hidden="true">1080</span></label>
+          <div class="seg l-seg" role="radiogroup" aria-label="随笔怎么排">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-no-mode="flow">现行：日记流</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-no-mode="old">旧：标题＋摘要＋时间竖线</button>
+          </div>
+          <button type="button" class="l-tog" aria-pressed="false" data-no-long>左栏说明换成长句</button>
+        </div>
+        <div class="l-vpbox l-xw-box" data-no-box>
+          <div class="l-vp l-no-vp" data-no-vp data-no="flow">
+            <div class="l-no-page">
+              <div class="l-no-head"><p class="l-no-p" data-no-p>想到什么写什么。</p><p class="l-no-acts"><span>翻翻以前写的 →</span><span>随笔球 →</span></p></div>
+              <div class="l-no-list">
+                <article class="l-no-card"><div class="l-no-top"><span class="l-no-who"><i></i>Ysevan</span><span class="l-no-date"><b>10月8日 · 星期四</b>2026</span></div><p class="l-no-text">下午把工具架上的卡片又对了一遍，左右两半终于等高了。
+
+晚上下了点雨。</p><p class="l-no-meta"><span>雨 · 平静 · 家里</span><time>21:40</time></p></article>
+                <article class="l-no-card"><div class="l-no-top"><span class="l-no-who"><i></i>Ysevan</span><span class="l-no-date"><b>10月6日 · 星期二</b>2026</span></div><p class="l-no-text">今天只做了一件事：把一条很长的路走完。</p><p class="l-no-meta"><span>晴 · 有点累 · 路上</span><time>18:05</time></p></article>
+                <article class="l-no-card"><div class="l-no-top"><span class="l-no-who"><i></i>Ysevan</span><span class="l-no-date"><b>10月2日 · 星期五</b>2026</span></div><p class="l-no-text">( ˘ω˘ )　放假第二天，睡到自然醒。</p><p class="l-no-meta"><span>多云 · 开心</span><time>10:12</time></p></article>
+              </div>
+              <div class="l-no-oldlist" aria-hidden="true">
+                <div class="l-no-old"><i></i><b>关于卡片对齐的一点记录</b><p>下午把工具架上的卡片又对了一遍，左右两半终于…</p><small>2026-10-08</small></div>
+                <div class="l-no-old"><i></i><b>走完一条很长的路</b><p>今天只做了一件事：把一条很长的路…</p><small>2026-10-06</small></div>
+                <div class="l-no-old"><i></i><b>放假第二天</b><p>( ˘ω˘ )　放假第二天，睡到自然…</p><small>2026-10-02</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <dl class="l-kv l-kv-row" data-no-read></dl>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>.notes   { display: grid; grid-template-columns: fit-content(280px) minmax(0, 1fr);
+           gap: clamp(30px, 4.4vw, 60px); align-items: start; }
+@media (max-width: 900px) { .notes { grid-template-columns: minmax(0, 1fr); } }   /* 日记卡本身没有断点 */
+#entries { display: flex; flex-direction: column; gap: clamp(12px, 1.6vw, 16px); } /* 靠间距分隔，没有发丝线 */
+.entry   { background: #FDFCF9; border: 1px solid var(--border); border-radius: 14px;
+           padding: clamp(14px, 1.8vw, 20px) clamp(16px, 2.2vw, 22px); }
+.entryAvatar { width: 30px; height: 30px; border-radius: 9px; }  /* 头像是图（2026-09-02起），图挂了露色块底 */
+.entry__day  { color: var(--xw-lava); }                            /* 「10月8日 · 星期四」，熔岩橙 */
+.entry__text { white-space: pre-wrap; overflow-wrap: anywhere; }   /* 纯文本直出，不截断、不做摘要 */
+没有卡内分隔线、阴影、标题、摘要</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>小屋<code>/notes</code>。正文的段首缩进、行距这些排法归排版章（随笔「中文论文排法」）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>旧列表「标题＋摘要＋时间竖线」把随手写的一句话包装成文章，读起来像博客归档，不像屋主自己的本子。左栏<code>fit-content(280px)</code>：说明一句话时左栏就窄，换成长句就长到280封顶，永远不为凑一个固定宽度留空白。正文不截断：卡上唯一的链接是右上那块日期，它已经是「进详情页」的意思，再截断就得再造一个「展开」开关。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>签名行（头像＋Ysevan）是一条日记的落款，不是自我介绍，不违反小屋「无自我介绍」那条红线；别因为红线把它删了。头像起初是楷书「屋」字，2026-09-02起是一张小图。左栏原来有标题「随笔本」，2026-09-05加了门面之后标题交给门面，左栏只留一句说明和两条小链接。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「7. 随笔页 /notes」（「框架对齐 iCity」「签名行」）、「7.1 两栏网格」（「左栏 fit-content(280px)」「≤900px 时塌成单列」）、「7.4 日记流」（「一张卡就是一条日记」「public/avatar.jpg」）、「3.4 各页用字对照」（「随笔签名头像」）、「7.6 随笔正文的排法 › 列表卡：按空行切段，不截断」（「为什么不做」）；Ysevan_web/app/notes/page.tsx「多半是工作里的琐事，偶尔是折腾工具的记录。」；Ysevan_web/app/notes/notes.module.css「.entryAvatar」</p>
+      </div>
+    </article>
+
+    <!-- 15 零固定高度 -->
+    <article class="entry" id="l-xw-zero" data-scope="xiaowu" data-toc="零固定高度">
+      <header class="entry-head">
+        <h3>零固定高度：内容容器一律不写高度，内容多就往下长，内容少就居中留白</h3>
+        <p class="entry-lede">固定尺寸只给图形元件（顶栏的最小高、图标方块、头像、边框）。内容容器用<code>min-height</code>、<code>fit-content</code>、<code>align-items: stretch</code>、<code>clamp()</code>、<code>minmax(0, 1fr)</code>；不许用<code>overflow:hidden</code>和固定行数省略去藏溢出。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-08-26定</li></ul>
+      </header>
+      <div class="specimen xw l-ze" data-demo="zero">
+        <p class="l-cap l-cap-xw"><b>演示</b>一张工具卡（文案是示例）。换文案长短、换「字宽一点」（示意：同一段字在别的系统字体上更宽），再切到反例「写死高度＋藏溢出」，读数是被藏掉的高度。</p>
+        <div class="l-ctrl">
+          <div class="seg l-seg" role="radiogroup" aria-label="说明文案">
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ze-len="short">短</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ze-len="mid">中</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ze-len="long">长</button>
+          </div>
+          <button type="button" class="l-tog" aria-pressed="false" data-ze-wide>字宽一点</button>
+          <div class="seg l-seg" role="radiogroup" aria-label="容器高度的写法">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ze-way="free">现行：不写高度</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ze-way="fixed">反例：写死高度＋藏溢出</button>
+          </div>
+        </div>
+        <div class="l-ze-stage">
+          <article class="l-ze-card" data-ze-card data-ze="free" style="--tb:#B4232C;--tbs:rgba(180,35,44,.10)">
+            <p class="l-ze-no">02<span>刷题</span></p>
+            <p class="l-ze-name"><i aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="7" y="3.8" width="12.5" height="15.2" rx="2.6"/><path d="M4.5 7.6v10.9A2.6 2.6 0 0 0 7.1 21.1h9"/><path d="m10.2 11.6 2.1 2.1 3.6-4.2"/></svg></i>刷刷</p>
+            <p class="l-ze-desc" data-ze-desc></p>
+            <p class="l-ze-specs"><span><b>799</b>题</span><span><b>离线</b>可用</span><span><b>本机</b>存储</span></p>
+            <span class="l-ze-open">打开刷刷</span>
+          </article>
+        </div>
+        <p class="l-read" data-ze-read></p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>固定尺寸只在图形元件上：顶栏 min-height 66px（≤560 58px）、图标方块46 / 54 / 48、头像30×30、
+                       边框1 / 2 / 3px、textarea min-height 108、&lt;img width="636" height="900"&gt;
+内容容器的手法：min-height（.shell { min-height: 100svh }）、fit-content（色块、随笔左栏）、
+               align-items: stretch + max-height: 100%（画跟着色块取高）、clamp()（40余处）、minmax(0, 1fr)
+禁止：内容容器上的 height、max-height；用 overflow: hidden 掩盖溢出；-webkit-line-clamp 固定行数省略；
+      position: absolute 摆主内容（只有绿植装饰可以）；百分比 padding-bottom 撑宽高比</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>小屋全站，六条原则第4条。全站唯一一处<code>max-height</code>是门厅画的<code>max-height:100%</code>——它不是限高，是「画跟着色块等高」那套机制的一部分。拿<code>overflow:hidden</code>藏溢出只有一个例外：<code>body</code>的<code>overflow-x</code>，用来兜住装饰；门厅卡上那个<code>overflow:hidden</code>是裁圆角，不是藏溢出。</p></section>
+        <section class="fact"><h4>为什么</h4><p>内容会变：题库会加题、随笔会变长、工具说明会改写、字体在不同系统上宽度不一。任何一处写死高度，都会在某台设备上把字截掉或留一块死白。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>藏溢出的毛病看不出来：在写的那台机器上刚好装下，换一台字体更宽的机器、或者文案多一句，最后一行就悄悄没了，不报错。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「1.2 六条原则」（「零固定高度」）、「11.1 零固定高度原则」（「除此之外，任何内容容器都不写高度」）、「11.2 禁止清单」、「11.5 为什么」（「内容会变」）</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================ 通用 ============================ -->
+  <section class="group" id="g-common" data-scope="common">
+    <h2 class="group-title">通用</h2>
+    <p class="group-lede">两种气质都会碰到的：高度用哪种视口单位，以及一组都踩过、都不报错的布局陷阱。</p>
+
+    <!-- 16 dvh / svh：控制室 10-08 按场景定 -->
+    <article class="entry" id="l-dvh" data-scope="common" data-toc="svh与dvh分场景">
+      <header class="entry-head">
+        <h3>高度单位按场景分：会滚的页面用svh，盖满可见区的浮层用dvh，封顶用svh，裸vh不许</h3>
+        <p class="entry-lede">手机地址栏一伸一缩，可视高差153px（屋主手机417宽：露着750，收起903）。页面本身会滚的——首屏、门面舞台、sticky舞台、滚动轨道长度——用svh，地址栏伸缩时不变；叠在页面上要正好盖满可见区的——全屏弹层、底部抽屉、整页不滚只在内部滚的应用外壳——用dvh；各种max-height封顶用svh，按最坏情况算；裸vh一律不许。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-10-08定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-more">全站 · 更多面板</a></p>
+      </header>
+      <div class="specimen l-dv" data-demo="dvh">
+        <p class="l-cap"><b>演示</b>屋主手机417宽（示意）。切「地址栏露着 / 收起」，三种场景各两台：左边按规矩写，右边写错。①看手指底下的内容和滚动时间表跳不跳，②看底下露不露缝，③看抽屉顶上有没有被裁。三种场景都在页面已经往下滚了300px的时候看。</p>
+        <div class="l-ctrl">
+          <div class="seg l-seg" role="radiogroup" aria-label="手机地址栏">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-dv-bar="show">地址栏露着（可视750）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-dv-bar="hide">滚动后收起（可视903）</button>
+          </div>
+        </div>
+        <div class="l-dv-scns" data-dv-scns data-bar="show">
+          <figure class="l-dv-scn" data-scn="1">
+            <figcaption><b>①</b>页面会滚：首屏、sticky舞台、轨道长度</figcaption>
+            <div class="l-dv-pair">
+              <div class="l-dv-ph" data-dv-ph="1" data-unit="svh"><div class="l-dv-chrome" aria-hidden="true"><i></i></div><div class="l-dv-screen"><div class="l-dv-page"><div class="l-dv-hero">首屏</div><div class="l-dv-card">第一张工具卡</div></div></div><div class="l-dv-tool" aria-hidden="true"></div><span class="l-dv-tag l-flag-yes">100svh</span></div>
+              <div class="l-dv-ph" data-dv-ph="1" data-unit="dvh"><div class="l-dv-chrome" aria-hidden="true"><i></i></div><div class="l-dv-screen"><div class="l-dv-page"><div class="l-dv-hero">首屏</div><div class="l-dv-card">第一张工具卡</div></div></div><div class="l-dv-tool" aria-hidden="true"></div><span class="l-dv-tag l-flag-no">100dvh</span></div>
+            </div>
+            <p class="l-dv-read" data-dv-read="1"></p>
+          </figure>
+          <figure class="l-dv-scn" data-scn="2">
+            <figcaption><b>②</b>盖满可见区：全屏弹层、底部抽屉、不滚的应用外壳</figcaption>
+            <div class="l-dv-pair">
+              <div class="l-dv-ph" data-dv-ph="2" data-unit="dvh"><div class="l-dv-chrome" aria-hidden="true"><i></i></div><div class="l-dv-screen"><div class="l-dv-under"></div><div class="l-dv-ov">全屏弹层</div><div class="l-dv-gap"></div></div><div class="l-dv-tool" aria-hidden="true"></div><span class="l-dv-tag l-flag-yes">100dvh</span></div>
+              <div class="l-dv-ph" data-dv-ph="2" data-unit="svh"><div class="l-dv-chrome" aria-hidden="true"><i></i></div><div class="l-dv-screen"><div class="l-dv-under"></div><div class="l-dv-ov">全屏弹层</div><div class="l-dv-gap"></div></div><div class="l-dv-tool" aria-hidden="true"></div><span class="l-dv-tag l-flag-no">100svh</span></div>
+            </div>
+            <p class="l-dv-read" data-dv-read="2"></p>
+          </figure>
+          <figure class="l-dv-scn" data-scn="3">
+            <figcaption><b>③</b>封顶：长内容底部抽屉的max-height</figcaption>
+            <div class="l-dv-pair">
+              <div class="l-dv-ph" data-dv-ph="3" data-unit="svh"><div class="l-dv-chrome" aria-hidden="true"><i></i></div><div class="l-dv-screen"><div class="l-dv-under"></div><div class="l-dv-sheet"><b>更新记录</b><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="l-dv-cut"></div></div><div class="l-dv-tool" aria-hidden="true"></div><span class="l-dv-tag l-flag-yes">100svh−40</span></div>
+              <div class="l-dv-ph" data-dv-ph="3" data-unit="vh"><div class="l-dv-chrome" aria-hidden="true"><i></i></div><div class="l-dv-screen"><div class="l-dv-under"></div><div class="l-dv-sheet"><b>更新记录</b><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="l-dv-cut"></div></div><div class="l-dv-tool" aria-hidden="true"></div><span class="l-dv-tag l-flag-no">100vh−40</span></div>
+            </div>
+            <p class="l-dv-read" data-dv-read="3"></p>
+          </figure>
+        </div>
+        <div class="l-dv-calc">
+          <p class="l-sub">内容尺寸：<code>min(calc(540 × --u), calc(100svh − 其余各块))</code>，例：卡集画廊的舞台，台式2040（--u 1.417）。可用高度那一项是封顶，按③用svh。</p>
+          <div class="l-ctrl">
+            <label class="l-range"><span>视口高</span><input type="range" min="560" max="1300" step="1" value="930" data-dv-h><span class="l-val" data-dv-hout aria-hidden="true">930</span></label>
+            <label class="l-range"><span>其余各块</span><input type="range" min="120" max="420" step="1" value="260" data-dv-rest><span class="l-val" data-dv-restout aria-hidden="true">260</span></label>
+          </div>
+          <div class="l-dv-bars" data-dv-bars>
+            <div><span>等比项540×u</span><i><s data-dv-a></s></i><b data-dv-av></b></div>
+            <div><span>可用高度项</span><i><s data-dv-b></s></i><b data-dv-bv></b></div>
+            <div><span>写死69svh（被否）</span><i><s data-dv-c></s></i><b data-dv-cv></b></div>
+          </div>
+          <p class="l-read" data-dv-calcread></p>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>/* ① 页面本身会滚：首屏、门面舞台、sticky 舞台、滚动轨道长度 → svh */
+.hero  { min-height: 100svh; }
+.stage { position: sticky; top: 0; min-height: 100svh; }
+.rail  { min-height: calc(100svh + var(--rail-end) * 1svh); }   /* 地址栏伸缩时长度不变，时间表不跳 */
+
+/* ② 叠在页面上、要正好盖满可见区：全屏弹层、底部抽屉、整页不滚只在内部滚的应用外壳 → dvh */
+.overlay { position: fixed; inset: 0; height: 100dvh; }
+body.shell { height: 100dvh; overflow: hidden; }            /* 页面不滚，只在里面滚 */
+
+/* ③ 各种封顶 → svh，按地址栏露着的最坏情况 */
+.sheet { max-height: calc(100svh - 40px - env(safe-area-inset-top)); }
+
+/* ④ 裸 vh 一律不许：手机上它按地址栏收起时算（903），露着时多出153px压到屏幕外 */
+
+/* 内容尺寸：等比项与可用高度项取小，可用高度是封顶，用 svh */
+min-height: clamp(&lt;下限&gt;, min(calc(&lt;系数&gt; * var(--u)), calc(100svh - &lt;这一屏上其余各块&gt;)), &lt;上限&gt;);</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4>
+          <div class="l-tablewrap"><table class="l-table">
+            <caption class="sr-only">三种场景各用哪种单位、例子</caption>
+            <thead><tr><th scope="col">场景</th><th scope="col">单位</th><th scope="col">例子</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">①页面会滚</th><td><code>svh</code></td><td>小屋门厅首屏、工具页的sticky舞台与452svh的轨道；本站的body最小高、侧栏</td></tr>
+              <tr><th scope="row">②盖满可见区</th><td><code>dvh</code></td><td>全屏弹层、底部抽屉的定位；card画廊整页不滚（body按100dvh排成一列、舞台flex:1吃剩余）</td></tr>
+              <tr><th scope="row">③封顶</th><td><code>svh</code></td><td>「更多」面板、kit弹层、照片区的max-height；内容尺寸公式里的可用高度项</td></tr>
+            </tbody>
+          </table></div>
+          <p>本站已照这四条改完（2026-10-08）：body的最小高与侧栏只写svh，不再接一行dvh；「更多」面板、kit居中与底部弹层、照片区的封顶都是svh，原来的dvh、裸vh和100vh兜底行都删了。小屋2026-10-09也照这四条改完了规格和代码（规格11.6「视口单位的四条」，仓库里加了永久门禁）。</p>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>地址栏只在手机上滚动时伸缩。会滚的页面里用dvh，地址栏一收，首屏、舞台、轨道跟着长153px：手指底下的内容往下跳一截，按「滚了多少svh」写的时间表也被拉长、倒回去一段。盖满可见区的东西用svh，地址栏一收，底下就露出153px的缝，看得见后面的页面。封顶要在地址栏露着时也放得下，所以按小的那个svh算；裸vh手机上按地址栏收起时算，露着时就压到屏幕外。来历：两份记录原来说法相反——控制室记录（2026-09-23）写「一屏容器用100dvh、各种封顶用svh」，小屋规格写「占满一屏的容器用100svh、内容尺寸的兜底上限用100dvh」；控制室2026-10-08按场景定成上面四条：会滚的照小屋规格用svh，盖满可见区的用dvh，封顶照控制室记录用svh。</p></section>
+        <blockquote class="said"><p>「我希望他就在一面里面，上下不对称看着不舒服，右边的那个（滚动条）可以直接不要了」</p><footer>屋主，2026-09-23（卡集画廊；后来改成整页按100dvh排成一列、舞台吃剩余高度，就是②）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>「刚好装下」不合格：卡集舞台写死69svh，在2040×1019上量到卡底只剩4px就算装下，屋主真机上浏览器工具栏、任务栏、远程桌面都在吃高度，必然溢出（原则见总览<a href="index.html#taste-09">「上下留白对称，『刚好装下』不合格」</a>）。验收用带工具栏的真实高度：台式2040×930、笔记本2552×1180、手机417×750（判装不装得下用750，判会不会显得空用903），断言<code>scrollHeight === clientHeight</code>。只有一行<code>auto</code>的grid里子元素的<code>max-height:100%</code>不生效，上限直接写成<code>calc(100svh - 40px - env(safe-area-inset-top))</code>，不再补一行100vh当兜底——裸vh不许，屋主三台设备的Edge 153都认svh。</p></section>
+        <p class="source">出处：控制室10-08定（按场景分的四条）；memory/owner-devices-viewports.md:23「417×750 与 417×903」、:25「一屏容器用 100dvh」、:16（三台都是Edge 153）；Ysevan_web/docs/xiaowu-ui-spec.md「11.1 零固定高度原则」（「100svh 而不是 100vh」）、「11.6 内容尺寸：主项是等比单位，视口单位只当兜底」（「以前写的是」「视口单位的四条」「余量必须来自结构」）、「6.3 数值」（「轨道高」）；tools/card/CLAUDE.md:168「第三个实例」、:187「首屏装进一屏、上下留白相等」、:188（body 按100dvh排成一列）；tools/star/CLAUDE.md:96「只有一行 auto 的 grid 里」；本站 tools/star/assets/star.css:342、:387、:513、:831、tools/star/assets/kit.css:85、:208、:278</p>
+      </div>
+    </article>
+
+    <!-- 17 布局陷阱集 -->
+    <article class="entry" id="l-traps" data-scope="common" data-toc="布局陷阱集">
+      <header class="entry-head">
+        <h3>布局陷阱集：每一个都踩过、都不报错，桌面上常常还看不出来</h3>
+        <p class="entry-lede">十一个，每个一个能复现的小框：先看反例的样子和量出来的数，再点「看修法」。前六个出自四个工具，中间三个出自小屋，最后两个是本站自己踩的。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-22起陆续</li></ul>
+      </header>
+      <div class="specimen l-tr" data-demo="traps">
+        <p class="l-cap"><b>演示</b>每个小框右下角「看修法」切换反例和修法，读数当场量。第1个要在框里滚到中间再看底栏在哪；第11个点「跳到第3节」。</p>
+        <div class="l-trs">
+          <!-- 1 fixed -->
+          <div class="l-trap" data-trap="fixed">
+            <p class="l-trap-t"><b>1</b>玻璃卡里的fixed不贴屏幕</p>
+            <div class="l-trap-stage" data-fix="0">
+              <div class="l-tf-view" tabindex="0" role="region" aria-label="可滚动的示例框">
+                <div class="l-tf-panel">
+                  <p>题型：单选 · 多选 · 判断</p><p>难度：全部</p><p>题库：综合业务</p><p>数量：20题</p><p>顺序：随机</p><p>只做错题：否</p><p>计时：关</p><p>最后一组选项</p>
+                  <div class="l-tf-bar">开始练习</div>
+                </div>
+              </div>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+          <!-- 2 grid stretch -->
+          <div class="l-trap" data-trap="stretch">
+            <p class="l-trap-t"><b>2</b>min-height的grid把空白分给每一行</p>
+            <div class="l-trap-stage" data-fix="0">
+              <div class="l-ts-shell"><div class="l-ts-top">顶栏（内容40px）</div><div class="l-ts-main">正文</div></div>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+          <!-- 3 column flex margin auto -->
+          <div class="l-trap" data-trap="colauto">
+            <p class="l-trap-t"><b>3</b>列flex里margin:auto顶掉stretch</p>
+            <div class="l-trap-stage" data-fix="0">
+              <div class="l-tc-col"><div class="l-tc-stage">舞台</div><div class="l-tc-foot">页脚</div></div>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+          <!-- 4 two margin-left auto -->
+          <div class="l-trap" data-trap="twoauto">
+            <p class="l-trap-t"><b>4</b>两个兄弟都挂margin-left:auto</p>
+            <div class="l-trap-stage" data-fix="0">
+              <div class="l-tw-row"><b>今天</b><span class="l-tw-grp"><a class="l-tw-link">全部 ›</a><span class="l-tw-count">6</span></span></div>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+          <!-- 5 percent padding -->
+          <div class="l-trap" data-trap="pct">
+            <p class="l-trap-t"><b>5</b>绝对定位的百分比padding按包含块宽算</p>
+            <div class="l-trap-stage" data-fix="0">
+              <div class="l-tp-brand"><span class="l-tp-box"><span class="l-tp-img"></span></span><b>岗岗</b><small>柜面速查</small></div>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+          <!-- 6 input newline -->
+          <div class="l-trap" data-trap="input">
+            <p class="l-trap-t"><b>6</b>&lt;input&gt;把换行吃掉</p>
+            <div class="l-trap-stage" data-fix="0">
+              <input class="l-ti-in" type="text" aria-label="记一条（示例，input 写法）" data-ti-in>
+              <textarea class="l-ti-in" rows="1" aria-label="记一条（示例，textarea 写法）" data-ti-ta></textarea>
+              <button type="button" class="l-pill" data-ti-fill>填入两行</button>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+          <!-- 7 figure margin -->
+          <div class="l-trap xw" data-trap="figure">
+            <p class="l-trap-t"><b>7</b>reset漏了figure，卡片凭空宽80px</p>
+            <div class="l-trap-stage" data-fix="0">
+              <div class="l-tg-card"><div class="l-tg-blob">小屋</div><figure class="l-tg-plate"><span></span></figure></div>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+          <!-- 8 negative right -->
+          <div class="l-trap xw" data-trap="negright">
+            <p class="l-trap-t"><b>8</b>装饰写负right，overflow-x:hidden挡不住</p>
+            <div class="l-trap-stage" data-fix="0">
+              <div class="l-tn-page"><div class="l-tn-wrap"><p>主列内容</p><i class="l-tn-deco" aria-hidden="true"></i></div></div>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+          <!-- 9 deco in overflow hidden -->
+          <div class="l-trap xw" data-trap="clipdeco">
+            <p class="l-trap-t"><b>9</b>装饰挂在裁圆角的卡上，被裁掉</p>
+            <div class="l-trap-stage" data-fix="0">
+              <div class="l-td-set"><div class="l-td-card">卡片<i class="l-td-pot l-td-in" aria-hidden="true"></i></div><i class="l-td-pot l-td-out" aria-hidden="true"></i></div>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+          <!-- 10 grid max-height -->
+          <div class="l-trap" data-trap="gridmax">
+            <p class="l-trap-t"><b>10</b>单行auto的grid里max-height:100%不生效</p>
+            <div class="l-trap-stage" data-fix="0">
+              <div class="l-tm-vp"><div class="l-tm-grid"><div class="l-tm-sheet" tabindex="0" role="region" aria-label="示例弹层"><p>更新记录（示例）</p><p>0.3.0：外壳用上合集</p><p>0.2.0：每条都有演示</p><p>0.1.0：第一版样张</p><p>第39周 搭外壳</p><p>第40周 写色彩页</p><p>第41周 写交互页</p><p>最后一行</p></div></div></div>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+          <!-- 11 scroll padding twice -->
+          <div class="l-trap" data-trap="anchor">
+            <p class="l-trap-t"><b>11</b>吸顶栏的高度被算了两次</p>
+            <div class="l-trap-stage" data-fix="0">
+              <div class="l-ta-view" data-ta-view tabindex="0" role="region" aria-label="带吸顶栏的示例页"><div class="l-ta-bar">吸顶顶栏</div><p class="l-ta-sec">第1节</p><p class="l-ta-sec">第2节</p><p class="l-ta-sec" data-ta-target>第3节</p><p class="l-ta-sec">第4节</p><p class="l-ta-sec">第5节</p></div>
+              <button type="button" class="l-pill" data-ta-go>跳到第3节</button>
+            </div>
+            <div class="l-trap-foot"><button type="button" class="l-tog" aria-pressed="false" data-trap-fix>看修法</button><span class="l-trap-read" data-trap-read></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code> 1、祖先带 backdrop-filter / filter / transform 时，position: fixed 改以它为参照
+    → 玻璃卡里要贴底贴顶一律 position: sticky; bottom: 导航高 + 8u；非要 fixed 就挪出玻璃卡
+      （演示框里用一个静态 transform 代替磨砂：同一条规则，框里不新增 backdrop-filter）
+ 2、min-height 的 grid 默认 align-content: stretch，多余空白平均分给每一行 → align-content: start
+ 3、列 flex 里 margin: auto 顶掉 stretch，子项缩成内容宽 → 显式 width: 100%
+ 4、flex 两个兄弟各挂一个 margin-left: auto，剩余空间被均分 → 先合成一个右侧组再整体靠右
+ 5、百分比 padding 参照包含块的宽（品牌字在内约200px），padding: 8% 把34px的图标压到2px
+    → 尺寸写死成 calc(var(--brand-box) * .84)
+ 6、单行输入的值不含换行，浏览器直接吞掉 \n → 「第一行当标题」用 rows="1" 的 &lt;textarea&gt;
+ 7、figure 默认 margin: 1em 40px → reset 那一行要有 figure：p, h1, h2, h3, ul, ol, li, figure { margin: 0; }
+ 8、overflow-x: hidden 不显示滚动条，但挡不住 scrollWidth 被顶大（iOS 照样能左右拖）
+    → 锚在 right: 0，要往外挪用 right: clamp(0px, 5vw, 84px)；往外挂的装饰必须有收起的断点
+ 9、overflow: hidden 裁圆角的卡会把挂在它身上的装饰一起裁掉 → 装饰挂在外面那一层
+10、只有一行 auto 的 grid，格子不定高，子元素 max-height: 100% 算不出来
+    → max-height: calc(100svh - 40px - env(safe-area-inset-top))（封顶用 svh，不再补一行裸 vh）
+11、吸顶顶栏的高度只让 html 的 scroll-padding-top 管一次；条目的 scroll-margin-top 只留12px</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>①刷刷「开始练习」底栏（3.11.0–3.12.0手机上滚动途中看不到、滚到底盖住最后一组36px）、plan「更多」面板；②plan的<code>.app-shell</code>（顶栏形态下侧栏那行凭空长出两百多像素）；③card画廊（整条舞台从950缩到594）；④plan分组小标题的动作链接与计数；⑤岗岗品牌图标；⑥plan笔记页「记一条」；⑦⑧⑨小屋门厅；⑩本站的底部弹层（更新记录面板撑到2849px）；⑪本站601–900宽的锚点（768下顶栏下面空76px）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>这些都不报错，常常只在某一档宽度、滚到中途、或者换一台机器才露馅：只看页面顶部截图、只在开发机上看，三轮验收都没发现第1个。所以每个修法都配了量法：量滚动顶中底三处的位置、量<code>scrollWidth</code>、量计算样式，不靠目测。</p></section>
+        <p class="source">出处：1 memory/glass-panel-breaks-fixed.md:8、:10、tools/shua/design-proposal.md:379「玻璃面板里的贴底」、tools/plan/docs/ui-redesign-proposal-v2.md:542「两个踩过的坑」；2 tools/plan/docs/ui-redesign-proposal-v2.md:547「平均分给每一行」；3 tools/card/CLAUDE.md:190「列 flex 里 margin:auto」；4 tools/plan/docs/ui-redesign-proposal-v2.md:302「flex 的 margin-left: auto」；5 tools/gang/design-proposal.md:1159「这里刻意不用百分比 padding」；6 tools/plan/CLAUDE.md:174「八点五、&lt;input&gt; 会把换行吃掉」；7 Ysevan_web/docs/xiaowu-ui-spec.md「11.3 CSS reset 必须覆盖 figure」（「一定要在这一行里」）；8 Ysevan_web/docs/xiaowu-ui-spec.md「11.4 实现避坑」（「装饰禁用负 right 偏移」）；9 Ysevan_web/docs/xiaowu-ui-spec.md「11.4 实现避坑」（「装饰不要挂在带 overflow: hidden 的容器上」）；10 tools/star/CLAUDE.md:96「只有一行 auto 的 grid 里」；11 tools/star/CLAUDE.md:94「吸顶顶栏的高度」</p>
+      </div>
+    </article>
+  </section>
+</main>
+</body></html>

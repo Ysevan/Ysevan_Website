@@ -48,6 +48,7 @@ body[data-page="collection"] {
   display: inline-block;
   margin: 0 calc(2 * var(--u));
   font-weight: 700;
+  font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
 }
 
@@ -137,6 +138,7 @@ body[data-page="collection"] {
   color: var(--label2);
   font-size: var(--fs-xs);
   font-weight: 400;
+  font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
 }
 
@@ -179,6 +181,7 @@ body[data-page="collection"] {
   margin-left: calc(5 * var(--u));
   color: var(--label2);
   font-size: var(--fs-xs);
+  font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
 }
 
@@ -192,6 +195,7 @@ body[data-page="collection"] {
   color: var(--label2);
   font-size: var(--fs-small);
   font-weight: 600;
+  font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
 }
 
@@ -478,7 +482,7 @@ body[data-page="collection"] {
   font-size: 1em;
   overflow-wrap: anywhere;
 }
-.col-added time { font-variant-numeric: tabular-nums; }
+.col-added time { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 
 /* ---------- 现场演示（demo 字段；行为见 collection.js「现场演示」） ---------- */
 .col-demo { min-width: 0; margin: 0; }
@@ -695,7 +699,7 @@ body[data-page="collection"] {
 .col-sketch .sk-accent { fill: var(--accent); }
 .col-sketch .sk-on-accent { stroke: #FFFFFF; stroke-width: 2; stroke-linecap: round; fill: none; }
 .col-sketch .sk-on-accent-fill { fill: #FFFFFF; }
-.col-sketch .sk-on-accent-text { fill: #FFFFFF; font-variant-numeric: tabular-nums; }
+.col-sketch .sk-on-accent-text { fill: #FFFFFF; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .col-sketch .sk-wave { stroke: #FFFFFF; stroke-width: 3; stroke-linecap: round; }
 
 /* link：缩略图 + 去交互页玩 */

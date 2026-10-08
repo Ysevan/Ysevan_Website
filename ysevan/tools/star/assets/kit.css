@@ -7,7 +7,7 @@
  *   ix-sheet-ring     ≤600 底部面板 translateY(105%)→0 .5s；遮罩 #000 压到 .4、.5s（任何档位）；圆环 1.2s、delay .5s
  *   ix-sheet-ruler    53根周刻度：.16 → 走过的 .78，每根错开 16.7ms；今天那根叠强调色；编号每字 .2s、错开 50ms
  *   ix-sheet-photo    照片 1.08→1 .8s；抽屉 margin-top:-22px，translateY(100%)→0 .55s delay .12s；进度条 .8s delay .6s
- *   ix-dialog         >600 居中大卡片：lg 宽 min(920 × --u, 92vw)、高上限 86vh；标题行与底栏固定，只有正文区滚动
+ *   ix-dialog         >600 居中大卡片：lg 宽 min(920 × --u, 92vw)、高上限 86svh；标题行与底栏固定，只有正文区滚动
  *   ix-lightbox       遮罩 rgba(12,14,20,.62)；幽灵外框非等比缩放当裁切、内图反向缩放（动画在 kit.js 里，WAAPI）
  *   曲线 --kit-ease = cubic-bezier(.2,.7,.2,1)（sheets.css 的 --sh-ease）；关闭 --kit-ease-in = cubic-bezier(.4,0,1,1)。
  *
@@ -82,7 +82,7 @@ html[data-blur="full"] .kit-layer[data-kind="plain"][data-state="open"] .kit-scr
   position: relative; z-index: 1;
   display: flex; flex-direction: column;
   width: min(calc(520 * var(--u)), 92vw);
-  max-height: 86vh;
+  max-height: 86svh;
   border-radius: calc(26 * var(--u));
   background: var(--raised); color: var(--label);
   box-shadow: var(--shadow-pop);
@@ -139,7 +139,7 @@ html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-panel { background: va
 /* 面板 .5 秒落定后再画：delay .5s；同一条曲线 1.2 秒画到比例（--kit-off = 100 − 100 × value / max） */
 .kit-ring.is-on .kit-ring-arc { stroke-dashoffset: var(--kit-off); transition: stroke-dashoffset 1.2s var(--kit-ease) var(--kit-delay, .5s); }
 .kit-ring-center { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; }
-.kit-ring-num { font-size: calc(46 * var(--u)); line-height: 1; font-weight: 700; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.kit-ring-num { font-size: calc(46 * var(--u)); line-height: 1; font-weight: 700; letter-spacing: -1px; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .kit-ring-unit { margin-top: calc(4 * var(--u)); color: var(--label2); font-size: calc(13 * var(--u)); }
 
 /* ================================================================ 刻度尺（ix-sheet-ruler） */
@@ -174,9 +174,9 @@ html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-panel { background: va
 .kit-ruler.is-on .kit-tick-dot { opacity: .55; transition: opacity .24s var(--kit-ease) calc(var(--kit-delay, .5s) + var(--i) * 16.7ms); }
 .kit-ruler.is-on .kit-tick-dot[data-level="2"] { opacity: .78; }
 .kit-ruler.is-on .kit-tick-dot[data-level="3"] { opacity: 1; }
-.kit-ruler-axis { display: flex; justify-content: space-between; color: var(--label2); font-size: calc(11 * var(--u)); font-variant-numeric: tabular-nums; }
+.kit-ruler-axis { display: flex; justify-content: space-between; color: var(--label2); font-size: calc(11 * var(--u)); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .kit-ruler-stat { display: flex; justify-content: space-between; margin: calc(12 * var(--u)) 0 0; font-size: calc(13 * var(--u)); color: var(--label2); }
-.kit-ruler-stat b { color: var(--label); font-variant-numeric: tabular-nums; }
+.kit-ruler-stat b { color: var(--label); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 
 /* 遮住的编号：每个字一个 inline-block 槽位，先占好最终宽度和行高；展开只换 opacity / transform */
 .kit-code-card { display: flex; align-items: center; gap: calc(10 * var(--u)); margin: calc(16 * var(--u)) 0 0; padding: calc(12 * var(--u)) calc(14 * var(--u)); border-radius: calc(16 * var(--u)); background: var(--well); }
@@ -205,7 +205,7 @@ html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-panel { background: va
 .kit-layer[data-kind="photo"][data-state="open"] .kit-panel { transform: none; transition: opacity .25s var(--kit-ease); }
 .kit-photo {
   position: relative; flex: none; overflow: hidden;
-  height: min(calc(300 * var(--u)), 42vh);
+  height: min(calc(300 * var(--u)), 42svh);
   color: #FFFFFF;
 }
 /* 封面：没有照片、照片还没到、照片加载不到时露出来的那块——强调色渐变 + 调用方给的线条图标 */
@@ -256,7 +256,7 @@ html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-panel { background: va
 .kit-drawer-body { min-width: 0; }
 .kit-progress-head { display: flex; justify-content: space-between; align-items: baseline; gap: calc(12 * var(--u)); margin: 0; }
 .kit-progress-head span { color: var(--label2); font-size: calc(13 * var(--u)); }
-.kit-progress-head b { font-size: calc(22 * var(--u)); font-variant-numeric: tabular-nums; }
+.kit-progress-head b { font-size: calc(22 * var(--u)); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .kit-progress { position: relative; flex: none; height: calc(8 * var(--u)); overflow: hidden; border-radius: 999px; background: var(--fill); }
 .kit-progress-fill {
   position: absolute; inset: 0; border-radius: inherit;
@@ -275,7 +275,7 @@ html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-panel { background: va
   .kit-panel, .kit-layer[data-size="lg"] .kit-panel {
     /* 高度上限写成视口减上沿留白：图层是只有一行 auto 的 grid，max-height:100% 对着不定高的格子不生效，
        长内容会把面板撑到视口外、又没有地方滚（2026-10-08 主窗口实测：417 下更新记录面板高2849px，下半截点不到） */
-    width: 100%; max-height: calc(100vh - 40px - env(safe-area-inset-top)); max-height: calc(100dvh - 40px - env(safe-area-inset-top));
+    width: 100%; max-height: calc(100svh - 40px - env(safe-area-inset-top));
     border-radius: 26px 26px 0 0;
     padding-bottom: env(safe-area-inset-bottom);
     opacity: 0; transform: translateY(105%);

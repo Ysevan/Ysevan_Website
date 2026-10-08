@@ -19,7 +19,7 @@
  *   <div id="shell-nav"></div><script src="assets/nav.js"></script>
  *   <main id="main" class="page">
  *     <header class="page-head"><h1 class="page-title">色彩</h1><p class="page-sub">一句副标题</p>
- *       <nav class="page-toc" aria-label="本页目录"></nav></header>        star.js 按 .group-title 与 .entry h3 自动生成
+ *       <nav class="page-toc" aria-label="本页目录"></nav></header>        star.js 按 .group-title 与 .entry h3自动生成
  *     <section class="group" id="g-tools" data-scope="tools"><h2 class="group-title">工具 · 液态玻璃</h2> …条目… </section>
  *   </main></body></html>
  *   · 不写内联脚本、不写内联事件处理器；内联 style="" 可以。
@@ -37,7 +37,7 @@
  *       <section class="fact"><h4>数值 / 代码</h4><pre><code>…</code></pre></section>     pre 由 star.js 自动加「复制」
  *       <section class="fact"><h4>用在哪</h4><p>…</p></section>
  *       <section class="fact"><h4>为什么</h4><p>…</p></section>
- *       <blockquote class="said"><p>屋主原话</p><footer>2026-09-23 屋主</footer></blockquote>
+ *       <blockquote class="said"><p>屋主原话</p><footer>屋主，2026-09-23</footer></blockquote>
  *       <section class="fact trap"><h4>坑</h4><p>…</p></section>
  *       <p class="source">出处：<code>文件:行号</code>「小节名」</p>
  *     </div>
@@ -78,12 +78,12 @@
  *                          transform（走完撤掉），元素自己别在按下时靠 CSS transform 做别的事。.specimen 里的行不归外壳，要接管写 data-press。
  *   data-press-block        按在它里面不倾（卡片里的「详情」按钮、外链、折叠的 summary 这类）。外壳已经默认拦 button / a[href] / summary /
  *                          input / select / textarea / .specimen / iframe 这些后代；被按的元素自己就是链接或按钮时照常倾。
- *   data-hero               大图（≤900 时顶栏压在它上面变透明，ix-oldnav）。写在 main.page 的第一个子元素上，star.css 在 ≤900 给它
+ *   data-hero               大图（≤900时顶栏压在它上面变透明，ix-oldnav）。写在 main.page 的第一个子元素上，star.css 在 ≤900给它
  *                          margin-top: calc(-1 * (var(--topbar-h) + var(--page-pt)))，让图顶到顶栏底下；图自己的内容要让出顶栏那一截
  *                          （padding-top 至少 var(--topbar-h)）——这条 padding 不能省：没有它，图里第一个子元素（如 h1）的上 margin
- *                          会和这条负 margin 折叠，图停不到顶（实测 417 下停在 18.75px，顶栏就判成「没压在图上」）。
- *                          左右要出血就自己加 margin-inline: calc(-1 * var(--page-x))（≤600 是 -16px）。
- *                          透明时顶栏不画底、不描边、不模糊，字和图标改白：可读性交给图自己的压暗（整张图压一层 ≥.45 的黑，
+ *                          会和这条负 margin 折叠，图停不到顶（实测417下停在18.75px，顶栏就判成「没压在图上」）。
+ *                          左右要出血就自己加 margin-inline: calc(-1 * var(--page-x))（≤600是 -16px）。
+ *                          透明时顶栏不画底、不描边、不模糊，字和图标改白：可读性交给图自己的压暗（整张图压一层 ≥.45的黑，
  *                          照 ix-oldnav 的 .6）。页面晚加 [data-hero] 后调 StarShell.refreshHero()。
  *                          开页第一帧就要透明：在 <body> 上写 data-hero-top（body 一解析出来就生效）；不写也有 :has 退路，
  *                          但 <main> 还没解析到的那一帧看不见图，会先画一帧玻璃（实测）。判定扣掉正文进场的8px位移。
@@ -93,7 +93,7 @@
  *   偏好存 localStorage「star-blur」= auto / on / off（外观里「背景模糊：自动 / 开 / 关」）；boot.js 在样式表前解析好：
  *   on → full；off → off；auto → 有显卡 full、没显卡 lite（WebGL failIfMajorPerformanceCaveat 探测，缓存「star-gpu」，
  *   没测过先按 lite）。JS 读档位：StarShell.blurTier()（或 StarTheme.blur()）。
- *     full  整页遮罩背景从清楚糊到26px（1s cubic-bezier(.2,.7,.2,1)，关 .3s），只糊不压暗；弹层面板 .88 玻璃 + 自己的磨砂
+ *     full  整页遮罩背景从清楚糊到26px（1s cubic-bezier(.2,.7,.2,1)，关 .3s），只糊不压暗；弹层面板 .88玻璃 + 自己的磨砂
  *     lite  整页遮罩不模糊、压暗淡入（--scrim-dim，浅 rgba(20,24,36,.28) / 深 rgba(0,0,0,.5)）；弹层面板不模糊、底提到 .97；
  *           侧栏 / 顶栏 / tab bar 的常驻磨砂照旧。实测合成开销约基线1.3×，模糊2.9–3.3×（数字见交互页「毛玻璃浮层」那条）
  *     off   同 lite，并且侧栏 / 顶栏 / tab bar 的常驻磨砂也关、玻璃提到近乎不透明（同第5节「做不出磨砂」）
@@ -103,8 +103,8 @@
  *                              不挡点击；按档位自己选做法。做不出磨砂、用户要求减少透明度时 full 也走压暗。
  *                              减弱动效下外壳关掉一切过渡：开关直接到位。
  *     .sheet-glass              弹层面板：full = --glass-panel + blur(30px) saturate(160%)；lite / off = --glass-panel-solid、不模糊。
- *   z-index 梯子：侧栏 20、tab bar 30、「更多」遮罩 / 面板 40 / 41、搜索遮罩 / 面板 / 结果 44 / 45 / 46、提示条 50、
- *                复制气泡 60、跳到正文 60、跳转点亮光环 70、kit 弹层 80、kit 灯箱 90。
+ *   z-index 梯子：侧栏20、tab bar 30、「更多」遮罩 / 面板40 / 41、搜索遮罩 / 面板 / 结果44 / 45 / 46、提示条50、
+ *                复制气泡60、跳到正文60、跳转点亮光环70、kit 弹层80、kit 灯箱90。
  *
  * ── 过渡（第二阶段加）──────────────────────────────────────────────────
  *   切明暗：document.startViewTransition，新画面从点的那个控件处圆形揭开（clip-path circle，420ms cubic-bezier(.25,.5,.3,1)，理由见 star.js 第1条）；
@@ -122,11 +122,13 @@
  *   .specimen.is-overflow-visible
  *                          .specimen 默认 overflow-x:auto（宽样例在框里横滑，不撑破页面）；但 overflow-x 一旦不是
  *                          visible，纵向也会被裁——联想浮层、确认框这类伸出框外的东西会被切掉。这种样例加这个类
- *                          改回 overflow:visible；前提是样例本身在窄屏上不会比框宽（自己在 417 档量过）。
+ *                          改回 overflow:visible；前提是样例本身在窄屏上不会比框宽（自己在417档量过）。
  *   data-rm="fade"         prefers-reduced-motion: reduce 下，外壳用 !important 关掉全部 transition / animation；
  *                          元素加这个属性时只保留 opacity 过渡（时长取 --rm-fade，默认 .2s），其余照关——
  *                          「原地淡入淡出」用这个。别在页面里拿更高特异性 + !important 放回过渡。
  *                          要原地淡、不要位移缩放的，页面在同一个媒体查询里把 transform 钉住即可（普通特异性就够）。
+ *                          注意外壳写的是 animation / transition: none，不是0.01ms：被关掉的动画不会发 animationend / transitionend。
+ *                          靠这两个事件收尾的组件必须再挂一个兜底计时器（「事件＋兜底」），否则减弱动效下会卡在半路（动画章 mo-reduce 演示了）。
  *
  * ── 令牌写法：一行写一对「浅值 / 深值」────────────────────────────────────
  *   --bg: var(--lt, #F4F5F9) var(--dk, #0B0C10);
@@ -137,10 +139,22 @@
  *   由 prefers-color-scheme 接住深色。
  *   token 名字说用途、不说颜色（SPEC-apple-glass.md「命名教训」）：--accent-tint 实色软底、--accent-shadow 投影 …
  *
- * ── 尺寸：以 1440 为基准等比放大，1.45 封顶（SPEC §4b）────────────────────
+ * ── 字体令牌 ────────────────────────────────────────────────────────────
+ *   --font      正文：中文字族打头（家族契约 A.1）。
+ *   --font-num  数字（SPEC §3a「数字字体」，2026-10-08）：凡写了 font-variant-numeric: tabular-nums 的规则，同一条里必须写
+ *               font-family: var(--font-num)。苹方在 Chrome 里不认 tabular-nums / "tnum"，--font 下写了也照样跳（40px 600的
+ *               「1111」宽65.6、「0000」宽96.0）；BlinkMacSystemFont（Mac 的 Chrome）/ -apple-system（Safari、iOS）/ "Segoe UI"（Windows）/
+ *               system-ui 的数字认；中文仍落到后面那串中文字族上。Windows 待核（SPEC §3a 末条）。
+ *               body 不写 tabular-nums（写了也只在认它的字体上生效，还会让人以为全站数字都等宽）；要等宽的数字各自写这两条。
+ *               护栏：本机量具 phase3/type/fontnum-guard.mjs（源码扫描 + 浏览器里量「1111」「0000」「8888」，差 ≤0.5px 才算等宽）。
+ *   --mono      代码（真等宽字族）；写了 tabular-nums 的代码块用它也算数。Mac 的 Chrome 按名字取不到 ui-monospace、"SF Mono"，
+ *               Mac 上也没有 Consolas，所以 "SF Mono" 后面插 Menlo（Safari 认 ui-monospace；Windows 取到 Consolas，未核实）。
+ *   --font-kai  小屋楷书（.xw 样例里用）。
+ *
+ * ── 尺寸：以1440为基准等比放大，1.45封顶（SPEC §4b）────────────────────
  *   --scale = clamp(1, tan(atan2(100vw, 1440px)), 1.45)；--u = 1px × --scale。
- *   每个尺寸令牌 = 「1440 处的值 × --scale」，1440 及以下 --scale 恒为 1，一个数都不变。
- *   不乘 scale 的：媒体查询断点、1px 线、blur 半径、光晕 vw 尺寸、焦点环 2px。不用 CSS zoom。
+ *   每个尺寸令牌 = 「1440处的值 × --scale」，1440及以下 --scale 恒为1，一个数都不变。
+ *   不乘 scale 的：媒体查询断点、1px 线、blur 半径、光晕 vw 尺寸、焦点环2px。不用 CSS zoom。
  * ========================================================================== */
 
 /* ---------- 1. 明暗开关 ---------- */
@@ -179,7 +193,9 @@
   --tabbar-h: 60px;
 
   --font: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, sans-serif;
-  --mono: ui-monospace, "SF Mono", Consolas, "Courier New", monospace;
+  /* 等宽数字专用（SPEC §3a）：前四个按「谁会先取到」排，中文落到后面的中文字族；用法见文件头「字体令牌」 */
+  --font-num: BlinkMacSystemFont, -apple-system, "Segoe UI", system-ui, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;   /* Menlo：Mac 的 Chrome 取不到前两个，没有它就一路落到 Courier New（控制室10-08实测） */
   --font-kai: "Kaiti SC", "STKaiti", "KaiTi", serif;
 
   /* 跟随文字色的图标：mask-image 取形状、background:currentColor 上色（换主题、换强调色自动跟上） */
@@ -196,10 +212,10 @@
   @media (min-width: 2200px) { :root { --scale: 1.45; } }
 }
 
-/* ---------- 3. 六个强调色的原始值（浅 / 深两支，下面第 4 节按明暗取一支）----------
-   a 填充 / a2 渐变浅端 / at 文字档（HIG 增强对比度）/ ati 实色软底 / ash 投影 / b1–b3 三团光晕。
+/* ---------- 3. 六个强调色的原始值（浅 / 深两支，下面第4节按明暗取一支）----------
+   a 填充 / a2渐变浅端 / at 文字档（HIG 增强对比度）/ ati 实色软底 / ash 投影 / b1–b3三团光晕。
    深色 a2：样张 shua-glass.html 深色只重写了蓝（#64D2FF），其余沿用浅色那组——与岗岗、card 一致（SPEC「各家有记录的偏离」）。
-   实色软底：浅 = 填充色兑 11% 进白（岗岗算法），深 = 填充色兑 18% 进 #17181C（card 算法）；文字档压上去实算 ≥4.59。 */
+   实色软底：浅 = 填充色兑11% 进白（岗岗算法），深 = 填充色兑18% 进 #17181C（card 算法）；文字档压上去实算 ≥4.59。 */
 :root, [data-accent="blue"] {
   --a-l: #007AFF; --a-d: #0A84FF; --a2-l: #5AC8FA; --a2-d: #64D2FF; --at-l: #0040DD; --at-d: #409CFF;
   --ati-l: #E3F0FF; --ati-d: #152B45; --ash-l: rgba(0,122,255,.13); --ash-d: rgba(10,132,255,.2);
@@ -247,11 +263,11 @@
   --glass-panel: var(--lt, rgba(255,255,255,.88)) var(--dk, rgba(36,38,48,.9));
   --glass-edge: var(--lt, rgba(255,255,255,.9)) var(--dk, rgba(255,255,255,.12));
   --sep: var(--lt, rgba(60,60,67,.12)) var(--dk, rgba(84,84,88,.5));
-  /* 文字三级（SPEC §5c）：次级 .76 / .62 承载文字；三级 .32 只给 chevron 与装饰 */
+  /* 文字三级（SPEC §5c）：次级 .76 / .62承载文字；三级 .32只给 chevron 与装饰 */
   --label: var(--lt, #1C1C1E) var(--dk, #F2F2F7);
   --label2: var(--lt, rgba(60,60,67,.76)) var(--dk, rgba(235,235,245,.62));
   --label3: var(--lt, rgba(60,60,67,.32)) var(--dk, rgba(235,235,245,.32));
-  /* 承载文字的底一律实色：--fill 浅 = 白兑正文色 11%，深 = 深底兑正文色 20%（SPEC §5c） */
+  /* 承载文字的底一律实色：--fill 浅 = 白兑正文色11%，深 = 深底兑正文色20%（SPEC §5c） */
   --fill: var(--lt, #E6E6E6) var(--dk, #393A3E);
   --well: var(--lt, #F7F8FA) var(--dk, #16171C);
   --code-bg: var(--lt, #F3F4F8) var(--dk, #15161B);
@@ -265,7 +281,7 @@
   --shadow: var(--lt, 0 10px 30px rgba(20,30,60,.08)) var(--dk, 0 10px 30px rgba(0,0,0,.35)), inset 0 1px 0 var(--glass-edge);
   --shadow-sm: var(--lt, 0 1px 3px rgba(20,30,60,.12)) var(--dk, 0 1px 3px rgba(0,0,0,.4));
   --shadow-pop: var(--lt, 0 24px 60px rgba(20,30,60,.18)) var(--dk, 0 24px 60px rgba(0,0,0,.55)), inset 0 1px 0 var(--glass-edge);
-  /* 语义色固定、不随强调色：填充 / 文字档 / 实色软底。深色红字 HIG #FF6961 压强玻璃最不利角（青光晕）只有 4.49，本地提亮到 #FF6E66（4.63） */
+  /* 语义色固定、不随强调色：填充 / 文字档 / 实色软底。深色红字 HIG #FF6961压强玻璃最不利角（青光晕）只有4.49，本地提亮到 #FF6E66（4.63） */
   --red: var(--lt, #FF3B30) var(--dk, #FF453A);
   --red-text: var(--lt, #D70015) var(--dk, #FF6E66);
   --red-tint: var(--lt, #FFE9E8) var(--dk, #412021);
@@ -280,7 +296,7 @@
   --scope-tools-text: var(--lt, #0040DD) var(--dk, #409CFF);
   --scope-xw-tint: var(--lt, #E1E0CE) var(--dk, #3A3C34);
   --scope-xw-text: var(--lt, #4A4D35) var(--dk, #E0D7BD);
-  /* 强调色：按明暗取第 3 节里的一支 */
+  /* 强调色：按明暗取第3节里的一支 */
   --accent: var(--lt, var(--a-l)) var(--dk, var(--a-d));
   --accent-2: var(--lt, var(--a2-l)) var(--dk, var(--a2-d));
   --accent-text: var(--lt, var(--at-l)) var(--dk, var(--at-d));
@@ -294,7 +310,7 @@
 [data-mode] { color: var(--label); }
 
 /* ---------- 5. 降级：做不出磨砂 / 用户要求减少透明度 → 玻璃提到近乎不透明 ----------
-   探针必须把 -webkit- 前缀一起测（iOS Safari 18 以前只认前缀），外层那对括号不能省。 */
+   探针必须把 -webkit- 前缀一起测（iOS Safari 18以前只认前缀），外层那对括号不能省。 */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   :root, [data-mode], [data-accent] {
     --glass: var(--lt, rgba(255,255,255,.9)) var(--dk, rgba(40,42,52,.92));
@@ -323,8 +339,7 @@ html {
 html[data-jump] { scroll-behavior: auto; }
 body {
   margin: 0;
-  min-height: 100svh;
-  min-height: 100dvh;
+  min-height: 100svh;   /* 视口高单位按场景（控制室10-08定）：会滚的页面与它的首屏、舞台用 svh；盖满可见区的浮层用 dvh；封顶用 svh；不写裸 vh */
   display: grid;
   grid-template-columns: var(--side-w) minmax(0, 1fr);
   align-items: start;
@@ -332,7 +347,6 @@ body {
   font-family: var(--font);
   font-size: var(--fs-body);
   line-height: 1.6;
-  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
 }
 /* 光晕：三团固定在视口。用 body::before{position:fixed}，不用 background-attachment:fixed（iOS 不支持）。 */
@@ -370,7 +384,7 @@ code, pre, kbd { font-family: var(--mono); }
 /* ---------- 7. 外壳：侧栏（>900）/ 顶栏（≤900）---------- */
 .side {
   position: sticky; top: 0; z-index: 20;
-  height: 100svh; height: 100dvh;
+  height: 100svh;
   display: flex; flex-direction: column; gap: 2px;
   padding: calc(18 * var(--u)) calc(12 * var(--u)) calc(14 * var(--u));
   padding-left: max(calc(12 * var(--u)), env(safe-area-inset-left));
@@ -395,14 +409,14 @@ code, pre, kbd { font-family: var(--mono); }
   width: calc(24 * var(--u)); height: calc(24 * var(--u));
   fill: none; stroke: #FFFFFF; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
 }
-/* 屋主自己的图标（brand/brand-icon.svg|png）：star.js 探测到才挂 .has-file，绝对定位居中占方块 84% */
+/* 屋主自己的图标（brand/brand-icon.svg|png）：star.js 探测到才挂 .has-file，绝对定位居中占方块84% */
 .brand-file { position: absolute; inset: 0; margin: auto; width: 84%; height: 84%; object-fit: contain; }
 .brand-icon.has-file .brand-svg { visibility: hidden; }
 .brand-text { min-width: 0; }
 .brand-text b { display: block; font-size: calc(17 * var(--u)); line-height: 1.25; white-space: nowrap; }
 .brand-text span { display: block; font-size: var(--fs-xs); color: var(--label2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* 导航区单独滚、品牌与外观控件钉在上下两头：视口比 1440 构图扁的时候（屋主台式 2040×1019、带工具栏 2040×930），
+/* 导航区单独滚、品牌与外观控件钉在上下两头：视口比1440构图扁的时候（屋主台式2040×1019、带工具栏2040×930），
    等比放大后的侧栏装不下，余量从结构里来——只让中间的导航滚，外观控件永远看得见。 */
 .side-nav {
   flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
@@ -480,7 +494,7 @@ a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
 .theme-reset:hover { background: var(--hover); color: var(--label); }
 .theme-reset .i { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
 
-/* ---------- 底部 tab bar（≤600 才显示）---------- */
+/* ---------- 底部 tab bar（≤600才显示）---------- */
 .tabbar { display: none; }
 .tab {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
@@ -490,13 +504,13 @@ a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
 .tab .i { width: 23px; height: 23px; }
 .tab[aria-current="page"], .tab[aria-expanded="true"] { color: var(--accent-text); background: var(--glass-strong); font-weight: 600; }
 
-/* ---------- 「更多」面板（≤900 才有入口）：浮在正文上，玻璃提到 .88 让字的底可预测 ---------- */
+/* ---------- 「更多」面板（≤900才有入口）：浮在正文上，玻璃提到 .88让字的底可预测 ---------- */
 /* 遮罩是 .scrim-frost（第13节），按模糊档位糊开或压暗 */
 .more-panel {
   position: fixed; z-index: 41;
   top: calc(var(--topbar-h) + 8px); right: max(12px, env(safe-area-inset-right));
   width: min(360px, calc(100vw - 24px));
-  max-height: calc(100dvh - var(--topbar-h) - 24px); overflow-y: auto; overscroll-behavior: contain;
+  max-height: calc(100svh - var(--topbar-h) - 24px); overflow-y: auto; overscroll-behavior: contain;
   padding: 14px 14px 12px; border-radius: 22px;
   background: var(--glass-panel);
   -webkit-backdrop-filter: blur(30px) saturate(160%);
@@ -533,7 +547,7 @@ a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
   animation: page-in 260ms cubic-bezier(.2, .8, .2, 1) backwards;
 }
 @keyframes page-in { from { opacity: 0; transform: translateY(8px); } }
-/* 带 #锚点 打开（boot.js 挂 jump-in）：只淡入不上移——浏览器按带位移的盒子算锚点落点，会偏 8px（实测 16 → 7.6） */
+/* 带 #锚点 打开（boot.js 挂 jump-in）：只淡入不上移——浏览器按带位移的盒子算锚点落点，会偏8px（实测16 → 7.6） */
 html.jump-in .page { animation-name: page-fade; }
 @keyframes page-fade { from { opacity: 0; } }
 .page-head { padding: var(--pad); border-radius: var(--r-lg); background: var(--glass-strong); box-shadow: var(--shadow); }
@@ -559,7 +573,7 @@ html.jump-in .page { animation-name: page-fade; }
 .group-title::before { content: ""; flex: none; width: calc(6 * var(--u)); height: calc(22 * var(--u)); border-radius: 3px; background: linear-gradient(180deg, var(--accent), var(--accent-2)); }
 .group[data-scope="xiaowu"] .group-title::before { background: linear-gradient(180deg, #5E6144, #8B8C6D); }
 .group[data-scope="common"] .group-title::before { background: linear-gradient(180deg, #8E8E93, #C7C7CC); }
-/* 分组下的说明直接压在光晕上：只用正文色（次级色压光晕中心实测只有 3.5，见色彩页「对比度」条目） */
+/* 分组下的说明直接压在光晕上：只用正文色（次级色压光晕中心实测只有3.5，见色彩页「对比度」条目） */
 .group-lede { margin: calc(-4 * var(--u)) 0 calc(16 * var(--u)); max-width: var(--measure); color: var(--label); }
 
 /* ---------- 9. 条目组件 ---------- */
@@ -692,7 +706,7 @@ a.row:hover { background: var(--hover); }
 .row .t { flex: 1; min-width: 0; }
 .row .t b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .row .t small { display: block; margin-top: 1px; color: var(--label2); font-size: var(--fs-small); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.row .badge { flex: none; padding: calc(2 * var(--u)) calc(9 * var(--u)); border-radius: 999px; background: var(--fill); color: var(--label2); font-size: calc(12.5 * var(--u)); white-space: nowrap; }
+.row .badge { flex: none; padding: calc(2 * var(--u)) calc(9 * var(--u)); border-radius: 999px; background: var(--fill); color: var(--label2); font-size: calc(12.5 * var(--u)); white-space: nowrap; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .row .chev { flex: none; display: grid; color: var(--label3); }
 .row .chev .i { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
 .row[aria-disabled="true"] { cursor: default; }
@@ -702,7 +716,7 @@ a.row:hover { background: var(--hover); }
 
 /* 点一下复制：button[data-copy]。「已复制」气泡（ix-lightbox 气泡那半）挂 body、position:fixed（按钮常在
    overflow 裁切的样例框里，挂在按钮里会被裁），浮在按钮上方、箭头指着按钮中心；贴边时整体挪进来，箭头按 --ax 反向移；
-   上方被顶栏 / 视口顶挡住就翻到下方（.is-below）。出现 160ms，1400ms 后 .is-leaving 淡出 140ms 再删。实色。 */
+   上方被顶栏 / 视口顶挡住就翻到下方（.is-below）。出现160ms，1400ms 后 .is-leaving 淡出140ms 再删。实色。 */
 [data-copy] { position: relative; cursor: pointer; }
 .copy-bubble {
   position: fixed; left: 0; top: 0; z-index: 60;
@@ -727,9 +741,9 @@ a.row:hover { background: var(--hover); }
 }
 
 /* ---------- 11. .xw 小屋暖纸作用域（Ysevan_web/app/globals.css 的色值；夜里 .xw[data-mode="dark"]）----------
-   色值按 globals.css 里的 HSL 实算（夜里那组的十六进制注释是近似值，差 1–8 个色阶，以 HSL 为准）。
+   色值按 globals.css 里的 HSL 实算（夜里那组的十六进制注释是近似值，差1–8个色阶，以 HSL 为准）。
    令牌声明挂在 .xw 与 .xw 里任何带 data-mode 的元素上，局部切白天 / 夜里都会重算；
-   夜里是「冷夜暖灯」：底沉进 225 色相的青蓝炭，字与灯全是暖的（42–45）。 */
+   夜里是「冷夜暖灯」：底沉进225色相的青蓝炭，字与灯全是暖的（42–45）。 */
 .xw, .xw [data-mode] {
   --xw-paper: var(--lt, #F8F6F1) var(--dk, #15171B);
   --xw-card: var(--lt, #FDFCF9) var(--dk, #1E1F25);
@@ -772,7 +786,7 @@ a.row:hover { background: var(--hover); }
   }
   .brand { flex: none; padding: 0 6px 0 0; }
   .brand-text span { display: none; }
-  .side-nav { flex: 1; min-width: 0; display: flex; gap: 4px; margin: 0; padding: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .side-nav { flex: 1; min-width: 0; position: relative; display: flex; gap: 4px; margin: 0; padding: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }   /* relative：下面读屏用的分组标题是 absolute，不给它一个参照就以吸顶的 .side 为参照、不受导航框裁切，十章全上线后在768把整页撑到1167 */
   .side-nav::-webkit-scrollbar { display: none; }
   .side-sec { display: flex; }
   .side-sec:not(:has(li:not(.is-pending))) { display: none; }
@@ -788,8 +802,8 @@ a.row:hover { background: var(--hover); }
   }
   .top-more .i { width: 18px; height: 18px; }
   .top-more[aria-expanded="true"] { background: var(--accent-tint); color: var(--accent-text); }
-  /* 吸顶顶栏的高度只让 html 的 scroll-padding 管一次；条目自己只留 12px（两处都加顶栏高时，768 下锚点落在
-     132px 处——顶栏下面空出 76px，2026-10-08 搜索跳转实测）。落点 = 64 + 12 = 76，顶栏下留 20，和 ≤600 一样 */
+  /* 吸顶顶栏的高度只让 html 的 scroll-padding 管一次；条目自己只留12px（两处都加顶栏高时，768下锚点落在
+     132px 处——顶栏下面空出76px，2026-10-08搜索跳转实测）。落点 = 64 + 12 = 76，顶栏下留20，和 ≤600一样 */
   .entry, .group { scroll-margin-top: 12px; }
   html { scroll-padding-top: calc(var(--topbar-h) + 8px); }
 }
@@ -814,7 +828,7 @@ a.row:hover { background: var(--hover); }
   .more-panel {
     top: auto; left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right)); width: auto;
     bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 10px);
-    max-height: calc(100dvh - var(--tabbar-h) - env(safe-area-inset-bottom) - 40px);
+    max-height: calc(100svh - var(--tabbar-h) - env(safe-area-inset-bottom) - 40px);
   }
   .page { padding: 16px max(16px, env(safe-area-inset-right)) calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 32px) max(16px, env(safe-area-inset-left)); }
   .toc-group { grid-template-columns: minmax(0, 1fr); }
@@ -840,7 +854,7 @@ a.row:hover { background: var(--hover); }
 
 /* ---------- 13. 模糊档位与整页遮罩 ---------- */
 /* .scrim-frost + .is-open：整页遮罩（「更多」面板、搜索浮层、kit 弹层共用）。
-   默认（lite / off / 没写档位）= ix-sheet-frosted 的降级做法：不模糊、压暗淡入（开 1s、关 .3s）。 */
+   默认（lite / off / 没写档位）= ix-sheet-frosted 的降级做法：不模糊、压暗淡入（开1s、关 .3s）。 */
 .scrim-frost {
   position: fixed; inset: 0; z-index: 40;
   background: var(--scrim-dim);
@@ -898,7 +912,7 @@ html[data-blur="off"] .side, html[data-blur="off"] .tabbar {
 }
 
 /* ---------- 14. 过渡：切明暗、切强调色、切页（View Transition）---------- */
-/* 跨页：两页都写了才生效（http(s) 与 file:// 同目录都行，Chrome 155 实测）。减弱动效不开；lite / off 由脚本跳过。
+/* 跨页：两页都写了才生效（http(s) 与 file:// 同目录都行，Chrome 155实测）。减弱动效不开；lite / off 由脚本跳过。
    boot.js 还用构造样式表再挂了一份同样的规则：file:// 下只靠这里的话，新页判开关那一刻外部样式表时有时无（20次9–10次被中止）。 */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition { navigation: auto; }
@@ -914,13 +928,13 @@ html.vt-nav::view-transition-new(root) { animation: vt-in 260ms cubic-bezier(.2,
 /* 切明暗：新画面整张盖在旧画面上，由 star.js 在 ::view-transition-new(root) 上动 clip-path 圆（420ms），这里关掉默认的交叉淡入 */
 html.vt-reveal::view-transition-old(root),
 html.vt-reveal::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
-/* 切强调色：默认交叉淡入，时长改 260ms */
+/* 切强调色：默认交叉淡入，时长改260ms */
 html.vt-fade::view-transition-group(root),
 html.vt-fade::view-transition-old(root),
 html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
 
 /* ---------- 15. 搜索 ---------- */
-/* 侧栏里的搜索框（>900）；≤900 这一格藏起来，整个 form 被 star.js 搬进 #search-sheet */
+/* 侧栏里的搜索框（>900）；≤900这一格藏起来，整个 form 被 star.js 搬进 #search-sheet */
 .side-search { flex: none; padding: 0 calc(2 * var(--u)) calc(8 * var(--u)); }
 .search-field {
   position: relative;
@@ -991,7 +1005,7 @@ html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
 .search-slot { flex: 1; min-width: 0; }
 .search-sheet .search-field { min-height: 42px; padding: 4px 8px 4px 11px; border-radius: 13px; }
 .search-sheet .search-ic .i { width: 18px; height: 18px; }
-.search-sheet .search-input { height: 32px; font-size: 16px; }   /* iOS 上输入框字号小于 16px 会在聚焦时整页放大 */
+.search-sheet .search-input { height: 32px; font-size: 16px; }   /* iOS 上输入框字号小于16px 会在聚焦时整页放大 */
 .search-sheet .search-chip { height: 28px; font-size: 13px; }
 .search-cancel {
   flex: none; height: 42px; padding: 0 10px; border: 0; border-radius: 12px;
@@ -1002,7 +1016,7 @@ html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
 }
 
 /* 结果列表：挂 body、fixed 贴着输入框（侧栏有 overflow 与 backdrop-filter，放里面会被裁、fixed 会错参照）。
-   实色、不挂磨砂（ix-suggest：浮层挂上磨砂，没显卡那台整页 P95 翻倍） */
+   实色、不挂磨砂（ix-suggest：浮层挂上磨砂，没显卡那台整页 P95翻倍） */
 .search-pop {
   position: fixed; z-index: 46; left: 0; top: 0;
   margin: 0; padding: calc(4 * var(--u)); overflow-y: auto; overscroll-behavior: contain;
@@ -1025,11 +1039,11 @@ html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
 .so-tag .so-line { align-items: center; }
 .so-hash { flex: none; display: grid; place-items: center; color: var(--label2); }
 .so[aria-selected="true"] .so-hash { color: inherit; }
-.so-n { flex: none; margin-left: auto; font-size: var(--fs-xs); color: var(--label2); }
+.so-n { flex: none; margin-left: auto; font-size: var(--fs-xs); color: var(--label2); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .search-note, .search-foot { margin: 0; padding: calc(6 * var(--u)) calc(10 * var(--u)) calc(4 * var(--u)); font-size: var(--fs-xs); line-height: 1.5; color: var(--label2); }
 .search-foot { margin-top: calc(4 * var(--u)); border-top: 1px solid var(--sep); }
 
-/* 「更多」面板顶上的搜索入口（≤600 顶栏随页面滚走） */
+/* 「更多」面板顶上的搜索入口（≤600顶栏随页面滚走） */
 .more-search {
   display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; margin: 2px 0 4px; padding: 0 10px 0 12px;
   border: 0; border-radius: 12px; background: var(--fill); color: var(--label2); font-size: 15px; text-align: left; cursor: pointer;
@@ -1149,7 +1163,7 @@ html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
 .used-here a:hover { text-decoration: underline; text-underline-offset: .2em; }
 
 /* ---------- 18. 大图上的透明顶栏（ix-oldnav）----------
-   页面契约：[data-hero] 写在 main.page 的第一个子元素上；≤900 这里把它往上拉到顶栏底下（抵掉顶栏高与正文上内边距）。
+   页面契约：[data-hero] 写在 main.page 的第一个子元素上；≤900这里把它往上拉到顶栏底下（抵掉顶栏高与正文上内边距）。
    html[data-over-hero]（star.js 判：整条顶栏都压在图上）：顶栏不画底、不描边、不模糊，字和图标改白。
    开页预判：star.js 第一次判之前（还没有 data-hero-checked）先按「压在图上」画——defer 脚本跑之前浏览器可能已经画了几帧，
    不预判的话那几帧是玻璃、随后才变透明。两种预判：
@@ -1205,17 +1219,17 @@ html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
   html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .top-search { background: transparent; }
 }
 
-/* ≤900 浮层开着时，结果列表被 star.js 搬进 #search-sheet（aria-modal 对话框里，读屏才读得到）：挂在面板下沿 */
+/* ≤900浮层开着时，结果列表被 star.js 搬进 #search-sheet（aria-modal 对话框里，读屏才读得到）：挂在面板下沿 */
 .search-sheet .search-pop { position: absolute; top: calc(100% + 6px); left: 0; right: 0; }
 
-/* ---------- 19. 扁视口的紧凑侧栏（>900、视口比 1440×900 扁）----------
-   侧栏按 --u 等比放大，竖向也跟着放大；视口比 1440×900 扁时（屋主台式 2040×1019、带工具栏 2040×930，
-   笔记本 2552×1274）放大后的侧栏比视口高，导航要滚。这里只收竖向节奏：导航项 34→28、分组标题上下距 12/4→6/2、
+/* ---------- 19. 扁视口的紧凑侧栏（>900、视口比1440×900扁）----------
+   侧栏按 --u 等比放大，竖向也跟着放大；视口比1440×900扁时（屋主台式2040×1019、带工具栏2040×930，
+   笔记本2552×1274）放大后的侧栏比视口高，导航要滚。这里只收竖向节奏：导航项34→28、分组标题上下距12/4→6/2、
    侧栏上下内边距、品牌与搜索格、外观三行的间距与分段高度；横向尺寸、字号、图标一个都不动。
-   条件：宽高比大于 1.6（宽 ≥1440 时，有效高度 = 高 × 1440 ÷ 宽，比 900 矮就等于宽高比大于 1.6）；
-   宽在 901–1440 之间 --scale 恒为1，宽高比量不出来，另加「高不到 900」。1440×900 正好 1.6、高 900，两条都不中，一个像素不变。
-   实测（软件渲染 DPR 1.25）：2040×1019 与 2040×930 两档 11 项导航和外观控件全看得见、导航不滚；
-   最后一组下面还空着：1019 那档约130px、930 那档约40px（量具 accept-shell.mjs 的 side 段）。 */
+   条件：宽高比大于1.6（宽 ≥1440时，有效高度 = 高 × 1440 ÷ 宽，比900矮就等于宽高比大于1.6）；
+   宽在901–1440之间 --scale 恒为1，宽高比量不出来，另加「高不到900」。1440×900正好1.6、高900，两条都不中，一个像素不变。
+   实测（软件渲染 DPR 1.25）：2040×1019与2040×930两档11项导航和外观控件全看得见、导航不滚；
+   最后一组下面还空着：1019那档约130px、930那档约40px（量具 accept-shell.mjs 的 side 段）。 */
 @media (min-width: 901px) and (min-aspect-ratio: 1601/1000), (min-width: 901px) and (max-height: 899.98px) {
   .side { gap: 0; padding-top: calc(12 * var(--u)); padding-bottom: calc(8 * var(--u)); }
   .brand { padding-top: 0; padding-bottom: calc(8 * var(--u)); }

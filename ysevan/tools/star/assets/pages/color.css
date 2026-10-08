@@ -155,7 +155,7 @@
 .calc-sample { margin: 0; font-size: calc(18 * var(--u)); font-weight: 600; }
 .calc-swatch small { font-family: var(--mono); font-size: var(--fs-xs); opacity: .8; }
 .calc-ratio { margin: 0; line-height: 1.1; }
-.calc-ratio b { font-size: calc(34 * var(--u)); letter-spacing: -.5px; }
+.calc-ratio b { font-size: calc(34 * var(--u)); letter-spacing: -.5px; font-family: var(--font-num); font-variant-numeric: tabular-nums; }   /* 拖着会变的读数：等宽（SPEC §3a） */
 .calc-ratio span { margin-left: 4px; font-size: calc(16 * var(--u)); font-weight: 600; color: var(--label2); }
 .calc-verdict { list-style: none; display: flex; flex-wrap: wrap; gap: calc(6 * var(--u)); margin: 0; padding: 0; }
 .calc-verdict li { padding: calc(2 * var(--u)) calc(10 * var(--u)); border-radius: 999px; background: var(--fill); color: var(--label2); font-size: var(--fs-xs); font-weight: 600; }
@@ -556,7 +556,7 @@
 .urg-field { flex: 1 1 calc(300 * var(--u)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: calc(10 * var(--u)); max-width: calc(520 * var(--u)); font-size: var(--fs-small); }
 .urg-field > span { color: var(--label); font-weight: 600; }
 .urg-field input { width: 100%; min-width: 0; accent-color: var(--accent); }
-.urg-field output { min-width: 6.2em; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.urg-field output { min-width: 6.2em; font-weight: 700; text-align: right; font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .urg-sum { margin: 0; font-size: var(--fs-small); color: var(--label2); }
 .urg-sum b { color: var(--label); }
 .urg-rows { list-style: none; margin: 0; padding: 0; display: grid; }

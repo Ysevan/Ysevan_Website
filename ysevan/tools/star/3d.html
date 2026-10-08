@@ -1,0 +1,635 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F5F9">
+<meta name="description" content="3D在这几个站里只是点缀：叠在静态版上、两段式探测、没显卡走精简档、看门狗量送出率、停稳重画、着色像水彩。">
+<title>3D与性能 · 设计合集</title>
+<script src="assets/boot.js"></script>
+<link rel="stylesheet" href="assets/star.css">
+<link rel="stylesheet" href="assets/kit.css">
+<link rel="stylesheet" href="assets/pages/3d.css">
+<script src="assets/star.js" defer></script>
+<script src="assets/kit.js" defer></script>
+<script src="assets/pages/3d.js" defer></script>
+</head><body data-page="3d">
+<a class="skip" href="#main">跳到正文</a>
+<div id="shell-nav"></div><script src="assets/nav.js"></script>
+<main id="main" class="page">
+  <header class="page-head">
+    <h1 class="page-title">3D与性能</h1>
+    <p class="page-sub">3D在这几个站里只是点缀：叠在静态版上面，没显卡的机器走精简档，扛不住就安静退回。演示大多真跑WebGL：滚到才建上下文、滚走就还给浏览器，同一时间只跑一个；拿不到WebGL的浏览器停在说明，这本身就是这一章讲的降级。</p>
+    <nav class="page-toc" aria-label="本页目录"></nav>
+  </header>
+
+  <!-- ============================================================== 通用 -->
+  <section class="group" id="g-common" data-scope="common">
+    <h2 class="group-title">通用</h2>
+    <p class="group-lede">刷刷、岗岗、plan、小屋四处的3D用的是同一套纪律：先有静态版，3D叠在上面；探测、分档、看门狗、限帧、按需渲染、打包，四家一个口径（各家现状不一样的地方逐条写明）。</p>
+
+    <!-- 1 叠加不替换 -->
+    <article class="entry" id="d-overlay" data-scope="common" data-toc="叠加不替换">
+      <header class="entry-head">
+        <h3>3D只是点缀：叠在静态版上面，首屏零3D字节，不够格的设备一个字节都不下</h3>
+        <p class="entry-lede">页面对3D的每次调用都是发出即走：不等它、不拦点击、不改渲染顺序。3D关着时界面和今天逐像素相同；3D的包等首屏画完、第一次滚动之后的空闲时刻才取。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-20定</li></ul>
+      </header>
+      <div class="specimen td-ov" data-demo="overlay">
+        <p class="td-cap"><b>现场演示</b>左边是一页缩小的示例页，右边是这一页发出去的请求（文件名和大小取刷刷的数，示例）。先选这台机器是哪种，再点「模拟第一次滚动」：够格的才下载3D，下载完叠在海报上面，下面那段字一像素不动。打开「反例：替换」看看把海报换成画布会怎样。</p>
+        <div class="td-ctl">
+          <div class="td-field"><span class="td-lbl" id="td-ov-dev-l">这台机器</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-ov-dev-l" data-ov-dev>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="gpu">有显卡</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="soft">只有软件渲染</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="none">拿不到WebGL</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="rm">开了减弱动效</button>
+            </div>
+          </div>
+          <button type="button" class="td-tog" aria-pressed="false" data-ov-bad>反例：替换（示意）</button>
+        </div>
+        <div class="td-ov-wrap">
+          <div class="td-ov-page" data-ov-page>
+            <p class="td-ov-h">首页 · 今日复习<span>示例</span></p>
+            <div class="td-ov-slot" data-ov-slot>
+              <svg class="td-ov-poster" data-ov-poster viewBox="0 0 240 150" role="img" aria-label="一叠纸做的闪卡（静态海报，示例）">
+                <ellipse cx="124" cy="132" rx="70" ry="9" fill="rgba(74,77,53,.16)"/>
+                <g transform="rotate(-7 118 76)"><rect x="70" y="26" width="96" height="104" rx="7" fill="#F6F5F1" stroke="#E4E0D6"/></g>
+                <g transform="rotate(4.5 124 74)"><rect x="76" y="22" width="96" height="104" rx="7" fill="#FFFDFA" stroke="#E4E0D6"/>
+                  <path d="M90 50h64M90 64h52M90 78h60M90 92h40" stroke="#3E3C35" stroke-opacity=".28" stroke-width="2.4" stroke-linecap="round"/>
+                  <path d="m130 104 9 9 18-22" fill="none" stroke="#B4232C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+              </svg>
+              <div class="td-ov-3d" data-ov-3d aria-hidden="true">
+                <div class="td-ov-stack" data-ov-stack><i></i><i></i><i></i></div>
+                <span class="td-ov-tag" data-ov-tag>3D</span>
+              </div>
+            </div>
+            <p class="td-ov-text" data-ov-text>下面这段字：错题3道，上次做到第24题（示例）。</p>
+          </div>
+          <div class="td-ov-side">
+            <p class="td-sub">这一页发出去的请求</p>
+            <ol class="td-ov-net" data-ov-net aria-label="请求列表（示例）"></ol>
+            <p class="td-ov-sum" data-ov-sum></p>
+            <div class="td-btns">
+              <button type="button" class="td-btn td-btn-main" data-ov-scroll>模拟第一次滚动</button>
+              <button type="button" class="td-btn" data-ov-reset>重来</button>
+            </div>
+            <p class="td-read" data-ov-read></p>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>首屏    只多一个经典脚本 effects.js（判定与调度，几KB），首屏里 three / gsap 都是0字节
+时机    首屏画完 → 第一次滚动（滚轮、触摸、PageDown / 空格 / 方向键）→ requestIdleCallback（兜底1.2秒）→ 下载
+不够格  减弱动效 / 省流量 / 两段都拿不到 WebGL → 一个字节都不下，留在静态版
+叠加    海报上盖一层3D画布；海报不 display:none、不摘出 DOM（读屏照读 alt）
+        3D 关着时槽位 display:none，降级的终点 = 今天的界面
+调用    业务只调空操作入口（plan 的 fxFlipIn / fxSlip / fxNudge）：3D 没加载时什么都不做，
+        业务代码里没有「3D 开没开」的分支；动画没播完就点下一题，直接跳到终点、不排队</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷三处纸闪卡（首页牌堆、做题小牌堆、结算落堆）、岗岗案头手册、plan台历、小屋工具页展品与走进小屋、随笔球、漂浮层。刷刷另有一条「槽位只在3D能成时撑开」：本机成功过（记号<code>shua-fx-ok</code>）首帧就撑开、3D到了直接淡入；从没成功过就等就绪再撑开（0.3秒过渡），每台设备只跳这一次。小屋工具页更严：物件准备好了也要等它那一层看不见时才接管。</p></section>
+        <section class="fact"><h4>为什么</h4><p>3D在这几个站里不承载信息：刷刷答题、岗岗查业务、plan排期都是一步不多、一毫秒不等。降级的终点就是今天那一页，关掉3D不用另做一套界面；读屏、键盘、SEO走的一直是静态那一层。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>「进入视口前N像素再下载」在手机视口里一开场就满足，等于没拦住，所以触发用「第一次滚动」。Lighthouse不滚动、不动鼠标，量不到这些懒加载层，要另写脚本化滚动来量。首屏零3D字节不等于零增量：小屋每页首屏仍多约0.9KB gzip（组件登记表一行，加上为保留GSAP版权注释一起留下的许可头）。</p></section>
+        <p class="source">出处：tools/shua/design-proposal.md:250「原则」、:251、:267「加载与体积」、:310「本机从没成功加载过」；tools/gang/design-proposal.md:436「什么时候不出现」；tools/plan/docs/3d-decor-proposal.md:24「不抢首屏」、:68「bus.ts」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9 3D 展品」（「3D 是叠加层」）、「6.9.3 滚动编排」（「只在看不见的时候接管」）、「6.9.6 加载纪律」（「首屏零 3D 字节，但不是零增量」「等第一次滚动再下载」）</p>
+      </div>
+    </article>
+
+    <!-- 2 两段式探测 -->
+    <article class="entry" id="d-probe" data-scope="common" data-toc="两段式探测">
+      <header class="entry-head">
+        <h3>WebGL两段式探测：严参数先要，被拒就放宽走精简档，两段都拿不到才安静回静态</h3>
+        <p class="entry-lede">第一段带<code>failIfMajorPerformanceCaveat</code>，有显卡的机器在这里拿到，之后一字不变；被拒多半是只有软件渲染，换一块新画布、只放宽这一条并关抗锯齿再要；还拿不到就探一次WebGL1记进诊断，不用它。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-blur">全站 · 背景模糊</a></p>
+      </header>
+      <div class="specimen td-pr" data-demo="probe">
+        <p class="td-cap"><b>现场跑</b>滚到这一屏时在你这台浏览器上真探一次（三块临时画布，探完立刻loseContext还回去）；也可以切到另外三种机器看示意。最下面一行是本站外壳自己的判断：背景模糊的「自动」档靠的是同一个标志。</p>
+        <div class="td-ctl">
+          <div class="td-field"><span class="td-lbl" id="td-pr-mode-l">看哪台机器</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-pr-mode-l" data-pr-mode>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="live">这台（现场）</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="gpu">有显卡</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="soft">只有软件渲染</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="none">拿不到WebGL</button>
+            </div>
+          </div>
+          <button type="button" class="td-btn" data-pr-run>再测一次</button>
+        </div>
+        <ol class="td-pr-flow" data-pr-flow>
+          <li data-step="strict"><b>① 严参数WebGL2</b><small>failIfMajorPerformanceCaveat: true</small><span class="td-pill" data-st>—</span></li>
+          <li data-step="loose"><b>② 宽参数WebGL2</b><small>只放宽这一条，再关抗锯齿；换一块新画布</small><span class="td-pill" data-st>—</span></li>
+          <li data-step="gl1"><b>③ 宽参数WebGL1</b><small>只探不用，记进诊断</small><span class="td-pill" data-st>—</span></li>
+          <li data-step="tier" class="td-pr-out"><b>落在</b><small data-pr-why>—</small><span class="td-pill" data-st>—</span></li>
+        </ol>
+        <dl class="td-dl" data-pr-dl>
+          <div><dt>渲染器</dt><dd data-k="renderer">—</dd></div>
+          <div><dt>判成软件渲染</dt><dd data-k="software">—</dd></div>
+          <div><dt>内存 · 核数</dt><dd data-k="hw">—</dd></div>
+          <div><dt>探测用时</dt><dd data-k="ms">—</dd></div>
+        </dl>
+        <p class="td-pr-star" data-pr-star>本站外壳：—</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>const strict = { alpha: false, antialias: true, depth: true, stencil: false, premultipliedAlpha: true,
+                 preserveDrawingBuffer: false, powerPreference: "default", failIfMajorPerformanceCaveat: true };
+const loose  = { ...strict, antialias: false, failIfMajorPerformanceCaveat: false };
+
+严 WebGL2 → 宽 WebGL2 → （都不成）宽 WebGL1只探一次、记进诊断、立刻 loseContext()
+每一段一块新画布；拿到的那个上下文直接交给渲染器，不另建
+拿到严那段  → 按内存、核数起步（≤4 → 均衡，其余 → 高）
+只拿到宽那段 → 一律 soft，不看内存、核数、指针、会话记账
+两段都拿不到 → 静态：零请求、控制台零输出</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷<code>effects.js</code>（3.11.2起）、岗岗<code>desk-book.js</code>、小屋四个岛（各岛<code>quality.ts</code>的<code>probeWebGL()</code>，漂浮层在<code>hall-float.tsx</code>里自己一份）、card查看器（2026-10-08跟上，<code>acquireContext()</code>：严参数被拒、或渲染器名是软件渲染，就关抗锯齿走省力档）。plan已定要跟（控制室10-08定：照这套四家样板，严参数先要、被拒走精简档、两段都拿不到才回静态），现状仍是「只有软件渲染就不出」，正在对齐。本站外壳的背景模糊「自动」档也靠这个标志判有没有显卡：只探一段WebGL1严参数，拿不到就按没显卡，模糊落lite（只压暗不模糊）；结果连UA存<code>star-gpu</code>，没测过先按lite。</p></section>
+        <section class="fact"><h4>为什么</h4><p>一刀切拒绝软件渲染，屋主那台没显卡的台式机（Windows走WARP）就永远只看静态版。只放宽一条、其余参数照旧，有显卡的机器第一段就拿到，行为一字不变。判出软件渲染就钉soft、不看内存核数：那台机器32G、20核，按内存核数会判成高档，软件渲染跑高档就是灾难。</p></section>
+        <blockquote class="said"><p>虚拟机小屋打开后为什么没有3D</p><footer>屋主，2026-09-23</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>测这条要带对旗标：Chrome 122起默认不给SwiftShader的WebGL，<code>--disable-gpu</code>不带<code>--enable-unsafe-swiftshader</code>时三次全是null（这时正确行为就是安静回静态，不是报错）；<code>--use-angle=swiftshader</code>会让严参数也通过，页面按高档跑，不是屋主那台的情形。Windows多一档WARP，Mac上模拟不出来，要上真机跑工作区根目录的<code>3D诊断.html</code>。</p><p>渲染器名：岗岗多一条正则（名字里有swiftshader、basic render这类也算软件渲染）；小屋裁定不加——屋主那台本来就过不了严参数，这条救不到任何机器，只多一处误伤有显卡虚拟机的可能，名字只进诊断。增强层反过来：小屋画内景深盖在一张已经好看的图上，只要严参数、不做第二段，「做不好就别做」。</p></section>
+        <p class="source">出处：tools/shua/design-proposal.md:281「精简 3D：soft」、:298「精简档只看这一次探测」；tools/gang/design-proposal.md:445「两段都拿不到 WebGL2 上下文」、:472「渲染器名」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「虚拟机小屋打开后为什么没有 3D」「两段取上下文」「enable-unsafe-swiftshader」「不按渲染器名判精简档」）、「4.6.1 视差层只在真显卡上挂」（「做不好就别做」）；Ysevan_web/components/hall-walk/quality.ts「strictAttributes」、「probeWebGL」；tools/plan/docs/3d-decor-proposal.md:46「plan 暂不跟」（现状）；控制室10-08定（plan、card跟四家样板）；tools/card/collection/shared/viewer.js:189「四家样板」、:220「acquireContext」（card 537d878）；tools/star/assets/star.js:644「probeGpu」；memory/webgl-software-render-gate.md:12「测试陷阱」</p>
+      </div>
+    </article>
+
+    <!-- 3 soft 档参数 -->
+    <article class="entry" id="d-soft" data-scope="common" data-toc="soft档参数">
+      <header class="entry-head">
+        <h3>软件渲染走精简档：少画像素、少出帧、不跟指针，画质不另砍</h3>
+        <p class="entry-lede">soft档只砍三样：每帧多少像素、每秒几帧、什么时候出帧，另关抗锯齿和鼠标倾斜。投影、纸纹、张数逐项砍过，帧率差别都在噪声里——那台机器的瓶颈是玻璃模糊，不在3D。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen td-so" data-demo="soft">
+        <p class="td-cap"><b>算给你看</b>选屋主的一台机器、选一家的口径，算出那块画布的档位、像素比、绘制缓冲和帧率；右边是同一张示例小画按算出来的缓冲画、再拉伸到同样大小（示意，按你这块屏放大）。</p>
+        <div class="td-ctl">
+          <div class="td-field"><span class="td-lbl" id="td-so-dev-l">机器</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-so-dev-l" data-so-dev>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="desk">台式2040@1.25没显卡</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="laptop">笔记本2552@1.5</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="phone">手机417@3.5</button>
+            </div>
+          </div>
+          <div class="td-field"><span class="td-lbl" id="td-so-who-l">口径</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-so-who-l" data-so-who>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="tools">刷刷 · 岗岗</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="xw">小屋</button>
+            </div>
+          </div>
+        </div>
+        <div class="td-so-wrap">
+          <dl class="td-dl td-so-dl" data-so-dl></dl>
+          <figure class="td-so-fig">
+            <canvas class="td-so-cv" data-so-cv width="260" height="170" role="img" aria-label="同一张示例小画按算出来的缓冲画出来的样子"></canvas>
+            <figcaption data-so-cap>—</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>              刷刷 · 岗岗                         小屋（四个岛）
+像素比        ≤1（高1.75 / 均衡1.25）              min(dpr, 1.5) 与面积上限取小
+绘制缓冲      物理长边 ≤640，CSS 尺寸不变          展品80万 · 走动60万 / 停稳325万 · 随笔球100万 · 漂浮层60万
+帧率          限30，按到期时刻跳帧                 同左（四处共用lib/frame-pacer.ts，2026-10-09起；原来按间隔，29ms）
+抗锯齿        关                                    关（无 MSAA）
+指针 / 滚动   不跟指针、不随滚动                    —
+画质          同均衡档，不另砍                      关纸纹、各向异性1、几何同均衡
+判档          只看这一次探测：拿到宽松那段就是 soft，排在会话记账、内存、核数之前
+手机          —                                     随笔球手机版面 min(dpr, 2) 与130万取小，什么都不砍</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷3.11.2起三档；岗岗同日；小屋四个岛2026-09-23跟进；card查看器2026-10-08跟进，它的省力档只关抗锯齿、像素比不压（画不许为性能牺牲：2040×1019@1.25下关抗锯齿帧耗时约40→19ms，再压像素比只多省4ms却发糊）。plan已定要跟（控制室10-08定），正在对齐（见上一条）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>在屋主视口（2040×1019@1.25，SwiftShader）逐项开关投影、双面两遍、张数减半、纸纹、分辨率、抗锯齿，出帧都在9–13帧之间晃，差别在噪声里；把全站<code>backdrop-filter</code>和光晕的<code>filter</code>去掉，精简3D立刻稳定30帧、页面100帧。砍画质换不来帧率，所以只砍像素和帧。小屋把像素比从钉1改成<code>min(dpr, 1.5)</code>：屋主那台DPR 1.25，钉1只画64%的像素，他看得见糊、看不见少了几片叶子，像素预算先给分辨率。手机的2和精简的1.5别统一成一个数：一个封软件光栅器的CPU填充率，一个封高密度屏的绝对像素数——1.5在3.5的屏上只剩18%的像素，卡片标题当场糊。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>判soft要排在一切记账之前（小屋<code>initialTier()</code>第一句就是<code>if (probe.software) return "soft";</code>）：排在会话记账、内存、核数之后，会被「本会话降过」或「内存大」带偏。无头Chrome的软件合成每帧整屏重画，比有窗口时悲观，量合成开销要用有窗口的浏览器。没显卡时真正的瓶颈是模糊不是3D，见<a href="material.html#m-cost">材质章「模糊的代价」</a>。</p></section>
+        <p class="source">出处：tools/shua/design-proposal.md:281「精简 3D：soft」、:304「精简档为什么只砍这几样」；tools/gang/design-proposal.md:480「像素比上限」、:518「soft 没有砍画质」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「精简档本身」「限帧怎么排」「像素比（精简档）」「手机那一行的像素比上限是 2」）、「6.9.7 门禁」（「initialTier」）；Ysevan_web/components/hall-walk/quality.ts「softMaxPixels」；Ysevan_web/lib/frame-pacer.ts「createFramePacer」；memory/glass-blur-cpu-compositing.md:11「去掉全站」</p>
+      </div>
+    </article>
+
+    <!-- 4 看门狗 -->
+    <article class="entry" id="d-watchdog" data-scope="common" data-toc="看门狗">
+      <header class="entry-head">
+        <h3>看门狗量送出率，按这一档承诺帧率的比例判；不用中位帧间隔，不写绝对毫秒</h3>
+        <p class="entry-lede">攒够3秒活跃时长判一次：送出率＝帧数÷活跃时长。限了帧的档目标就是那个帧率（soft 30×0.6＝18帧）；不限帧的档目标按这块屏实测估（帧间隔第5百分位，夹在30–120），低于55%才降一档。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen td-wd" data-demo="watchdog">
+        <p class="td-cap"><b>模拟</b>这块画布每送出一帧才转一下。每帧耗时是模拟的（不真占CPU），点「开始」后照这台浏览器的rAF节奏跑、每攒够3秒判一次，同一段帧用新旧两种判据各判一遍。试试：高档加「每4帧卡120ms」——新判据降档、旧判据说正常；高档加「模拟30Hz屏」——旧判据误杀。</p>
+        <div class="td-ctl">
+          <div class="td-field"><span class="td-lbl" id="td-wd-tier-l">起步档</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-wd-tier-l" data-wd-tier>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="high">高（不限帧）</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="soft">精简（限30帧）</button>
+            </div>
+          </div>
+          <label class="td-field td-range"><span class="td-lbl">每帧耗时（模拟）<output data-wd-cost-out>8ms</output></span>
+            <input type="range" min="2" max="120" step="1" value="8" data-wd-cost aria-describedby="td-wd-cost-d"></label>
+          <span class="sr-only" id="td-wd-cost-d">每送出一帧之后，这么久之内的rAF都不出帧</span>
+          <button type="button" class="td-tog" aria-pressed="false" data-wd-stall>每4帧卡120ms</button>
+          <button type="button" class="td-tog" aria-pressed="false" data-wd-30>模拟30Hz屏</button>
+        </div>
+        <div class="td-wd-wrap">
+          <div class="td-wd-stage">
+            <canvas class="td-wd-cv" data-wd-cv width="240" height="160" role="img" aria-label="模拟画布：每送出一帧，纸卡转一点"></canvas>
+            <div class="td-btns">
+              <button type="button" class="td-btn td-btn-main" data-wd-run aria-pressed="false">开始</button>
+              <button type="button" class="td-btn" data-wd-reset>重来</button>
+            </div>
+          </div>
+          <div class="td-wd-side">
+            <dl class="td-dl" data-wd-dl>
+              <div><dt>现在的档</dt><dd data-k="tier">高</dd></div>
+              <div><dt>这一窗</dt><dd data-k="now">还没开始</dd></div>
+            </dl>
+            <div class="td-wd-chart" data-wd-chart aria-hidden="true"><span class="td-wd-empty">每攒够3秒一根柱，横线是那一窗的线</span></div>
+            <ol class="td-wd-log" data-wd-log aria-label="每一窗的判定（最新在上）"></ol>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>const cappedTargetFps = { soft: 30 };                // 限了帧的档才有常数
+const degradeBelow = { capped: 0.6, free: 0.55 };
+const refreshFpsRange = [30, 120];
+const watchWindowMs = 3_000;                         // 攒够3秒活跃时长判一次
+const pauseMs = 200;                                 // 走进小屋：相邻两帧隔200ms以上算中间停过，不计入
+                                                     // 工具页、随笔球：这一拍没画就断开
+// 判一次
+const delivered = (activeFrames * 1000) / activeMs;                   // 送出率
+const fastestMs = sorted[Math.floor(sorted.length * 0.05)] || 16.7;   // 第5百分位
+const screenFps = Math.min(120, Math.max(30, 1000 / fastestMs));      // 估这块屏
+const target = capped ?? screenFps;
+const ratio = capped ? degradeBelow.capped : degradeBelow.free;
+if (delivered &lt; target * ratio) 降一档;           // 高 → 均衡 → 静态；soft 扛不住直接记静态</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋三个three岛（工具页展品、走进小屋、随笔球）同一套判据，只有「中间停过」那段怎么断开两种写法（见代码注释）；随笔球手机版面目标固定30、拖动那一段不进窗口。刷刷：窗口是最近40个帧间隔，同样0.6／0.55，另加「出帧≥50帧一律不算慢」，soft要连续两个慢窗口才关，关了本会话记住。岗岗：「自身绘制耗时中位数」与「整页帧间隔均值」同时超标、累计2秒动画时间才卸载，soft的两条线按承诺帧率写（66.7ms、33.3ms）。漂浮层至今没有看门狗。</p></section>
+        <section class="fact"><h4>为什么</h4><p>旧写法「N秒中位帧间隔＞X毫秒」两头都错：限30帧后间隔只有33.3／50／66.7三个值，中位数在一半一半处整体翻面，旧阈值又正好是50——同一构建三次量到47.7／49.7／59.6ms，活不活得下来靠抛硬币；每隔几帧卡120ms的页面真实只有22帧，中位数照样报正常；干净的30Hz屏上30.1帧反被判慢。三条规矩缺一不可：相对阈值；量平均送出率；不限帧的档目标从这块屏估，不写死60。做对了之后<code>capped</code>那类分支整个消失，一张表管所有档。</p></section>
+        <blockquote class="said"><p>有时候有3D有时候没有</p><footer>屋主，2026-09-23（控制室记录）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>取第5百分位估刷新率不违反「不用中位数」：禁的是拿分位数当判快慢的判据，这里估的是一个外部常量。限帧闸门（小屋的<code>lib/frame-pacer.ts</code>，原来是各岛的<code>softFrameMs</code>）是节流器不是判据，别顺手判红。两种错代价不对等时往后果轻的那边错：误判会关掉好机器的3D、整个会话记住，漏判只是让匀速偏慢的画面继续跑——所以「匀速16.5–30帧不判慢」这块盲区故意留在漏判一侧。两个条件相与时（岗岗），至少一个得是不掺自己限帧的干净量，并且它能独立决定结果。小屋规格里两张降级表原来还留着「中位帧时长」的旧行，2026-10-09已照代码改成现状（判送出率、每攒够3秒活跃时长判一次）。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级 › 看门狗的判据：送出率 + 相对阈值」（「47.7 / 49.7 / 59.6」「规矩三条」「取值」「pauseMs」「漂浮层根本没有看门狗」）、「4.9.3 什么时候有跑道（分档与降级）」（「看门狗的判据」）；Ysevan_web/components/hall-walk/scene/index.ts「cappedTargetFps」、「delivered」；tools/shua/design-proposal.md:292「运行中出帧太少」、:294「往后果轻的那边错」；tools/gang/design-proposal.md:485「出帧间隔均值超标线」、:511「岗岗为什么没有出现小屋那种抛硬币」；memory/three-rules-against-false-signals.md:31「有时候有 3D 有时候没有」</p>
+      </div>
+    </article>
+
+    <!-- 5 限帧按到期时刻 -->
+    <article class="entry" id="d-cap" data-scope="common" data-toc="限帧到期时刻">
+      <header class="entry-head">
+        <h3>限帧按到期时刻排：落后不到一个间隔就接着排，落后超过一个间隔从当下重排</h3>
+        <p class="entry-lede">soft档限30帧。每一拍先看到没到该出帧的时刻（容差4ms）；画了就把到期时刻往后推一个间隔，落后超过一个间隔就不补帧，从「当下＋间隔」重排。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen td-cp" data-demo="cap">
+        <p class="td-cap"><b>模拟</b>同一串rAF时间戳交给三种限帧器，每根竖线是rAF的一拍，实心的是真画了的那拍。把rAF调到45拍或40拍（软件合成下常见），看按间隔的那行怎么掉到每两拍一帧；打开「插一次200ms卡顿」，看累积欠账那行卡完连画一串。「慢放」让三个点按各自的出帧走一遍。</p>
+        <div class="td-ctl">
+          <div class="td-field"><span class="td-lbl" id="td-cp-hz-l">rAF节奏</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-cp-hz-l" data-cp-hz>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="60">60拍</button>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="45">45拍</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="40">40拍</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="30">30拍</button>
+            </div>
+          </div>
+          <button type="button" class="td-tog" aria-pressed="false" data-cp-jit>±3ms抖动</button>
+          <button type="button" class="td-tog" aria-pressed="false" data-cp-stall>插一次200ms卡顿</button>
+          <button type="button" class="td-btn" data-cp-play>慢放</button>
+        </div>
+        <div class="td-cp-rows" data-cp-rows></div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>// 刷刷 effects-3d.js、岗岗 desk-book.js、小屋 lib/frame-pacer.ts 是同一个式子
+const FRAME_INTERVAL_SLACK_MS = 4;
+if (soft &amp;&amp; SOFT.frameIntervalMs &gt; 0) {
+  const now = performance.now();
+  if (nextDrawAt &amp;&amp; now &lt; nextDrawAt - FRAME_INTERVAL_SLACK_MS) return;   // 还没到：这一拍不画，ticker 不摘
+  nextDrawAt = nextDrawAt &amp;&amp; now - nextDrawAt &lt; SOFT.frameIntervalMs
+    ? nextDrawAt + SOFT.frameIntervalMs      // 落后不到一个间隔：接着排
+    : now + SOFT.frameIntervalMs;            // 落后超过：从当下重排，不累积欠账
+}</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷、岗岗的soft档；小屋2026-10-09跟上：工具页展品、走进小屋、随笔球三个岛和门厅漂浮层共用一份<code>lib/frame-pacer.ts</code>（精简档和随笔球手机版面那道30帧闸门都是它），同一个式子、容差4ms。改前小屋是按间隔排（<code>now - drawnAt &lt; softFrameMs</code>，29ms＝33.3留4ms）：rAF满60拍时同样是30帧，不满60拍时掉到每两拍一帧（45拍时约22帧，上面第一行）；改后45拍、40拍都回到30帧。</p></section>
+        <section class="fact"><h4>为什么</h4><p>软件合成下rAF本来就常常不满60拍，按「离上一帧多久」排会被凑成每两拍画一次（约23帧）；按到期时刻排，长期平均仍是30帧。真正让固定4ms容差够用的是「落后超过一个间隔就重新基准」这一句：欠账一旦累积，卡顿之后就会连画补帧或持续跳帧。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>岗岗中途改过「半拍容差」（<code>max(4ms, 上一拍间隔/2)</code>），理由是固定容差在整页只有10–20拍时会掉到7帧——后来复现不出来，已撤销：建两份只差这一行的副本，在被磨砂拖到30拍以下的一档各跑3次，出帧/拍均值0.63对0.75，区间大幅重叠，当时机器上还有几十个Chrome在跑，这点差别立不住。一个「安全但不存在」的故障，会换来一个永远没人敢删的多余机械。</p></section>
+        <p class="source">出处：tools/gang/design-proposal.md:490「为什么按到期时刻」、:492「限帧容差写死 4ms」、:499「重新基准」、:501「安全但不存在」；tools/gang/desk-book.js:863「到期时刻」；tools/shua/effects-3d.js:76「FRAME_INTERVAL_SLACK_MS」、:764「到期时刻」；Ysevan_web/lib/frame-pacer.ts「createFramePacer」、「pacingSlackMs」（「不累积欠账」）；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「限帧怎么排」「45 拍只出 22.5 帧」）</p>
+      </div>
+    </article>
+
+    <!-- 6 按需渲染 -->
+    <article class="entry" id="d-ondemand" data-scope="common" data-toc="按需渲染">
+      <header class="entry-head">
+        <h3>按需渲染：只在动的时候出帧，静止零帧；看不见、页面藏起、弹层开着都停</h3>
+        <p class="entry-lede">循环每一帧先问还要不要下一帧：补间在跑、阻尼没收敛、指针在拖才要，不要就退出rAF。另加三道闸：舞台在视口里、页面可见、没有整页弹层开着。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-20定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-globe">总览 · 条目星球</a></p>
+      </header>
+      <div class="specimen td-od" data-demo="ondemand">
+        <p class="td-cap"><b>现场跑</b>鼠标在纸卡上移动（或聚焦后按方向键），纸卡按140ms阻尼朝指针倾斜；停下来阻尼收敛就不再要帧，「这一秒画了几帧」回到0。打开「自转」它就一直要帧——这时三道闸才起作用：把这条滚出视口、切到别的标签页、或点「开一个弹层」，计数都会停。「反例」是一直跑rAF的写法。</p>
+        <div class="td-ctl">
+          <button type="button" class="td-tog" aria-pressed="false" data-od-spin>自转（像总览的星球）</button>
+          <button type="button" class="td-tog" aria-pressed="false" data-od-bad>反例：一直跑rAF</button>
+          <button type="button" class="td-btn" data-od-sheet aria-haspopup="dialog">开一个弹层</button>
+        </div>
+        <div class="td-od-wrap">
+          <div class="td-od-stage" data-od-stage tabindex="0" role="application" aria-label="纸卡（示例）：方向键让它倾斜，Home回正">
+            <canvas class="td-od-cv" data-od-cv width="280" height="180"></canvas>
+          </div>
+          <div class="td-od-side">
+            <ul class="td-gates" data-od-gates aria-label="三道闸">
+              <li data-g="vis"><span class="td-pill" data-st>看得见</span></li>
+              <li data-g="page"><span class="td-pill" data-st>页面可见</span></li>
+              <li data-g="kit"><span class="td-pill" data-st>没弹层</span></li>
+            </ul>
+            <dl class="td-dl" data-od-dl>
+              <div><dt>这一秒画了</dt><dd data-k="fps">0帧</dd></div>
+              <div><dt>rAF累计</dt><dd data-k="total">0次</dd></div>
+              <div><dt>状态</dt><dd data-k="state">静止·零帧</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>// 本站总览的条目星球（assets/pages/index.js，回调名 globeFrame，量具按名字数）
+function running() {
+  return visible &amp;&amp; !document.hidden &amp;&amp; !kitOpen()               // 三道闸
+      &amp;&amp; (spin &gt; 0 || vel !== 0 || !!target || !stopped());        // 还有东西在动
+}
+function globeFrame(now) {
+  raf = 0;
+  …算这一帧，只写 transform…
+  if (running()) raf = requestAnimationFrame(globeFrame);       // 不要就退出：静止零帧
+}
+function kick() { if (!raf &amp;&amp; visible &amp;&amp; !document.hidden &amp;&amp; !kitOpen()) raf = requestAnimationFrame(globeFrame); }
+// IntersectionObserver 改 visible 后 kick()；visibilitychange 后 kick()</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷：全站一个WebGL上下文、一块画布在三个槽位间移动，只在动画或指针阻尼进行中出帧，标签页隐藏时停。岗岗手册静止时不跑任何帧。plan只有补间在跑时才渲染。小屋工具页展品只在进度在变、主题在过渡、刚改尺寸或刚接管时画；随笔球离开视口或标签页隐藏就停。本站总览开头的条目星球照这套写：只在星球看得见、页面可见、没有整页弹层开着时跑rAF。</p></section>
+        <section class="fact"><h4>为什么</h4><p>3D是点缀，静止时不该花任何电和帧。按需渲染也是看门狗判得对的前提：只统计动画进行中的帧，静止那段不进窗口，否则「没画」会被当成「画得慢」。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>任何一个「一直在动」的小东西都会让循环永不退出：小屋夜里的灯呼吸就是这样被发现的（见本页<a href="#d-rest">停稳重画</a>）。后台标签页rAF停摆，量具跑到一半页面进了后台会红得冤：启动加<code>--disable-renderer-backgrounding</code>这类旗标，每项结束断言<code>document.hidden</code>为false。</p></section>
+        <p class="source">出处：tools/shua/design-proposal.md:306「渲染纪律」；tools/gang/design-proposal.md:422「静止」；tools/plan/docs/3d-decor-proposal.md:25「静止不耗电」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.3 滚动编排」（「按需渲染」）、「7.5.4 3D（接管之后）」（「按需渲染」）；tools/star/assets/pages/index.js:16「globeFrame」、:320「running」；memory/browser-pane-raf-pause.md:17「无头 Chrome + CDP 也会中招」</p>
+      </div>
+    </article>
+
+    <!-- 7 打包纪律 -->
+    <article class="entry" id="d-bundle" data-scope="common" data-toc="打包纪律">
+      <header class="entry-head">
+        <h3>打包纪律：SSR守卫原样写、three逐符号引、许可注释留着</h3>
+        <p class="entry-lede">浏览器专用的重库只经一处动态<code>import()</code>进来，那一行原样写<code>import.meta.env.SSR</code>守卫；three按需打子集，不写<code>import *</code>；压缩时保留<code>@license</code>注释（GSAP许可证禁止删）。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-19定</li></ul>
+      </header>
+      <div class="specimen td-bd" data-demo="bundle">
+        <p class="td-cap"><b>示意</b>三处写法各换一种，看打包结果怎么变。数字是小屋（vinext）当时实测的服务端那份构建（那时部署在Cloudflare Workers；2026-10起小屋改纯静态，这份只在构建期预渲染时用、不发布），右边那排是各项目真在跑的门禁会怎么判。</p>
+        <div class="td-bd-wrap">
+          <div class="td-bd-ctl">
+            <div class="td-field"><span class="td-lbl" id="td-bd-ssr-l">场景怎么引进来</span>
+              <div class="td-radios" role="radiogroup" aria-labelledby="td-bd-ssr-l" data-bd="ssr">
+                <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="guard">原样守卫</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="var">经变量中转</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="effect">写在useEffect里</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="dynamic">next/dynamic ssr:false</button>
+              </div>
+            </div>
+            <div class="td-field"><span class="td-lbl" id="td-bd-imp-l">three怎么import</span>
+              <div class="td-radios" role="radiogroup" aria-labelledby="td-bd-imp-l" data-bd="imp">
+                <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="named">逐符号</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="star">import * as THREE</button>
+              </div>
+            </div>
+            <div class="td-field"><span class="td-lbl" id="td-bd-lic-l">压缩时的许可注释</span>
+              <div class="td-radios" role="radiogroup" aria-labelledby="td-bd-lic-l" data-bd="lic">
+                <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="legal">comments.legal</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="default">默认（会删）</button>
+              </div>
+            </div>
+          </div>
+          <div class="td-bd-out">
+            <div class="td-bd-code" data-bd-code></div>
+            <div class="td-bars" data-bd-bars></div>
+            <ul class="td-checks" data-bd-checks aria-label="门禁"></ul>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>// 唯一入口：小屋 tool-3d.tsx 里那一行，逐字
+const loadScene = import.meta.env.SSR ? null : () =&gt; import("./scene");
+
+// scene/ 里逐符号（全仓只有 scene/ 能 import three 与 gsap）
+import { WebGLRenderer, PerspectiveCamera, Mesh /* … */ } from "three";   // 禁止 import * as THREE
+
+// vite.config.ts：压缩时保留许可注释
+build.rolldownOptions.output.comments = { legal: true, annotation: false, jsdoc: false };</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋三个three岛。刷刷用esbuild把场景和两个vendor子集打成经典脚本IIFE（file://下也能注入）：three子集17个符号547KB（gzip 140KB），整包是742KB；GSAP只取核心；许可注释原样保留，另加来源说明与NOTICE。岗岗three子集13个导出符号、GSAP用官方UMD，两份许可注释原样保留。plan构建门禁：首屏入口chunk不得含three／gsap特征串，3D chunk必须含两份许可注释、不超过200KB gzip。</p></section>
+        <section class="fact"><h4>为什么</h4><p>「不执行」不等于「不打包」：写在<code>useEffect</code>里、用<code>next/dynamic</code>的<code>ssr: false</code>，打包器照样给服务端再产一份three和gsap。经变量中转（先<code>const env = import.meta.env</code>再<code>env.SSR</code>），Vite的文本替换认不出来。整包比按需多约48KB。GSAP 3.13起全部免费，但许可证禁止删版权注释，而压缩默认会删。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>门禁只认原样那一行；而且要断言「零件接没接上」：只查名字在不在的门禁，名字都在、只是不再连着用了照样是绿的。保留注释的开关是全局的，React、lucide这些依赖的许可头也一起留下，每页首屏多约825字节gzip。three 0.186不自带类型，要装<code>@types/three</code>。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.6 加载纪律」（「SSR 守卫」「必须原样写」「当时它是 Worker」「禁止 import * as THREE」「不从 CDN 挂」「825 字节」）；memory/vinext-client-only-import-leak.md:11「不执行」、:13「Worker 只 +11 KiB」、:19「经变量中转」、:22「许可证禁止删」、:23「@types/three」；tools/shua/design-proposal.md:268「经典脚本 bundle」、:269「three 用按需子集」、:270「许可注释保留」；tools/gang/design-proposal.md:529「13 个导出符号」；tools/plan/docs/3d-decor-proposal.md:70「许可注释」、:71「门禁」</p>
+      </div>
+    </article>
+
+    <!-- 8 各家3D一览 -->
+    <article class="entry" id="d-roster" data-scope="common" data-toc="各家3D一览">
+      <header class="entry-head">
+        <h3>各家3D一览：同一种纸、同一套降级；挑一台机器，看每处此刻落在哪一档</h3>
+        <p class="entry-lede">三档口径四处同一条：有显卡→完整档，只有软件渲染→精简档，拿不到WebGL才静态。card查看器2026-10-08跟上；plan已定照这条走（控制室10-08定），正在对齐；card画廊不靠WebGL。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen td-ro" data-demo="roster">
+        <p class="td-cap"><b>对照表</b>选一台机器，每一行右边显示它在那台机器上落在哪一档；点一行，下面写出它的依据和出处。</p>
+        <div class="td-ctl">
+          <div class="td-field"><span class="td-lbl" id="td-ro-dev-l">这台机器</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-ro-dev-l" data-ro-dev>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="gpu">有显卡</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="soft">屋主台式（软件渲染）</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="none">拿不到WebGL</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="phone">屋主手机417</button>
+            </div>
+          </div>
+        </div>
+        <ul class="td-ro-list" data-ro-list></ul>
+        <p class="td-ro-note" data-ro-note aria-live="off">点一行看依据。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>刷刷   纸闪卡：首页牌堆（≥1180）、做题小牌堆、结算落堆      three 子集 + GSAP 核心，经典脚本 bundle
+岗岗   案头手册：宽屏（&gt;1120）右栏末尾一本摊开的书       three 子集 + GSAP UMD
+plan   纸台历：侧栏空白处；甘特板落位；纸条飞进台历           three + GSAP，一个模块 import
+card   画廊 Cover Flow：纯 CSS 3D，不靠 WebGL；查看器：three   importmap + ES module
+小屋   工具页展品（three + GSAP，唯一用 ScrollTrigger）、走进小屋、随笔球；
+       画内景深与漂浮层是手写 WebGL（约3.4KB / 岛约1.3KB gzip）
+三档   有显卡 → 完整档（高 / 均衡）；只有软件渲染 → 精简档；拿不到 WebGL → 静态</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>开新网站要加3D时先看这张表：落点放在本来就空着的地方（岗岗右栏末尾、plan侧栏空白、刷刷题数旁的小槽），物件照左边图标做成有厚度的同一个东西。手机上要不要3D按值不值算：小屋随笔球做了手机版面；岗岗手机3D屋主嫌代价大，一句话砍掉。</p></section>
+        <section class="fact"><h4>为什么</h4><p>同一个屋主、同一台没显卡的台式机：哪一处在那台机器上是什么样子，得一眼查得到，否则「这台看不到3D」要逐个项目翻代码。差异也要写明：plan「只有软件渲染就不出」原来是有意没跟、留着待定，现在已定照岗岗那套四家样板走（控制室10-08定：严参数先要、被拒走精简档、两段都拿不到才回静态），表里写的是现状，正在对齐。card查看器原来不带<code>failIfMajorPerformanceCaveat</code>、软件渲染下照跑完整的three，2026-10-08改成两段，省力档只关抗锯齿、像素比不压。</p></section>
+        <blockquote class="said"><p>岗可以不管</p><footer>屋主，2026-09-23（控制室记录；答「岗岗手机端3D要一个子代理工作日」）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>「看不到3D」先让那台设备跑工作区根目录的<code>3D诊断.html</code>（严／宽松参数、WebGL1/2、渲染器名、核数、内存、减弱动效一次列全），别拿本机无头Chrome猜。窄屏与减弱动效是「呈现条件」不是「机器能力」：中途拖窄或打开减弱动效当场拆掉，反过来要等下一次滚动才重新来。</p></section>
+        <p class="source">出处：tools/shua/design-proposal.md:259「首页题库牌堆」、:269「three 用按需子集」、:280「触屏起步」；tools/gang/design-proposal.md:410「位置」、:441「窗口 ≤1120px」；tools/plan/docs/3d-decor-proposal.md:14「侧栏导航」、:36「视口宽度 ≤900px」、:40「只有软件渲染」；tools/card/CLAUDE.md:160「Cover Flow」、:193「画廊不再依赖 WebGL」；tools/card/collection/shared/viewer.js:220「acquireContext」；tools/card/CLAUDE.md:194「查看器拿 WebGL 分两段」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9 3D 展品」（「不引 three」）、「6.9.5 分档与降级」（「三档口径」「随笔球」「随笔球·手机版面」）、「7.5.5 分档与降级」（「网格」）、「4.6.1 视差层只在真显卡上挂」（「failIfMajorPerformanceCaveat」）、「4.8.4 触发与降级」（「拿到宽松那一遍」「触摸屏」）；memory/ship-staged-not-perfect.md:8「岗可以不管」；memory/webgl-software-render-gate.md:16「3D诊断.html」；控制室10-08定（plan、card软件渲染照四家样板）</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================================================== 小屋 · 暖纸 -->
+  <section class="group" id="g-xiaowu" data-scope="xiaowu">
+    <h2 class="group-title">小屋 · 暖纸</h2>
+    <p class="group-lede">这四条是小屋定下来的画法和接管方式（工具类的3D也照抄了着色）。样例框是暖纸作用域，跟着本站的浅深走。</p>
+
+    <!-- 9 像水彩不像 CG -->
+    <article class="entry" id="d-paint" data-scope="xiaowu" data-toc="像水彩">
+      <header class="entry-head">
+        <h3>着色像水彩不像CG：平涂两三档、背光掺冷影、纸纹±3%、颜料边、柔边假投影</h3>
+        <p class="entry-lede">自写轻量着色器，不用three的写实材质：只取家族色板，光是平涂不是高光；不开实时阴影、不用PBR，金属、玻璃、塑料、发光材质一概不引。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-19定</li></ul>
+      </header>
+      <div class="specimen xw td-gl-spec" data-demo="paint">
+        <p class="td-cap td-cap-xw"><b>现场跑</b>WebGL画的两张纸卡（示例）。拖动或聚焦后按方向键转它，静止时一帧不画。切「水彩」「CG」看同一个物件两种画法；水彩下面六个开关一样一样拆开看。</p>
+        <div class="td-ctl">
+          <div class="td-field"><span class="td-lbl" id="td-pa-mode-l">画法</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-pa-mode-l" data-pa-mode>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="wc">水彩</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="cg">CG（反例）</button>
+            </div>
+          </div>
+          <div class="td-togs" role="group" aria-label="水彩的六样">
+            <button type="button" class="td-tog" aria-pressed="true" data-pa="steps">平涂三档</button>
+            <button type="button" class="td-tog" aria-pressed="true" data-pa="cool">背光冷影</button>
+            <button type="button" class="td-tog" aria-pressed="true" data-pa="grain">纸纹±3%</button>
+            <button type="button" class="td-tog" aria-pressed="true" data-pa="edge">颜料边</button>
+            <button type="button" class="td-tog" aria-pressed="true" data-pa="shadow">假投影</button>
+            <button type="button" class="td-tog" aria-pressed="false" data-pa="night">入夜</button>
+          </div>
+        </div>
+        <div class="td-gl" data-gl-host data-aspect="0.62" tabindex="0" role="application" aria-label="两张纸卡（示例）：拖动或按方向键转动"><p class="td-gl-msg" data-gl-msg>滚到这里才建WebGL上下文。</p></div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>色板    纸面 #FFFDFA / #F6F5F1 · 纸边 #E4E0D6 · 墨 #3E3C35 · 冷影海湾蓝 #6E8A93
+光      漫反射量化成两三档平涂，没有镜面高光、没有反射
+冷影    背光面掺一点海湾蓝（同门厅垂柳「后层掺海湾蓝」）
+纸纹    着色器里程序化纸纤维，亮度 ±3%，不新增贴图
+颜料边  每个面靠边深一圈（同「洇一层纸」转场外缘那圈）
+投影    物件下一块柔边椭圆 rgba(74,77,53,.22)，运行时画，不开实时阴影
+入夜    跟墙壁开关与系统深色，整体压暗偏冷（程序化的纸 .30 / .33 / .45）</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋工具页四件物件（<code>paper.ts</code>）；刷刷纸闪卡照搬这一套（纸色v3.11.0起对齐界面上的半透明白卡）；岗岗案头手册（颜色全走<code>--book-*</code>令牌，读不到就不画）；plan台历（现状：侧栏改深色后，2026-09-22由假投影改成three阴影贴图的真投影）。card的镭射是全场唯一「亮」的东西：一条随倾角滑过卡面的软带，只加不乘，加完照样压平涂、纸纹、颜料边。</p></section>
+        <section class="fact"><h4>为什么</h4><p>物件和门厅那幅水彩画、洇纸转场说同一种话：它们是纸做的文具，不是产品渲染图。card的卡身是唯一的例外色（深蓝哑光<code>#182B3D</code>），因为全息闪卡本来就不是纸做的，拿纸色去涂只会得到一张「纸卡」；这两支色只归card用。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>颜色不走three的色彩管理：贴图<code>NoColorSpace</code>、输出原样sRGB，和页面里那张图逐值一致，乘法都在sRGB上做。屋主的画贴上去也照加纸纹（台历那三张界面图不加，那是真实界面），否则贴了画的纸和旁边没贴的纸像两种材料。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.2 着色：像水彩，不像 CG」（「只取家族色板」「唯一的例外是 card」「光是平涂」「纸纹」「颜料边」「假投影」「入夜」「镭射」）、「4.9.2 接管：接缝为什么看不出来」（「不走 three 的色彩管理」）；tools/shua/design-proposal.md:252「同一种纸」；tools/gang/design-proposal.md:426「着色器自写」、:427「令牌读不到就不画」；tools/plan/docs/3d-decor-proposal.md:61「真投影」</p>
+      </div>
+    </article>
+
+    <!-- 10 屏幕门抖动 -->
+    <article class="entry" id="d-dither" data-scope="xiaowu" data-toc="抖动交接">
+      <header class="entry-head">
+        <h3>两件物件交接用屏幕门抖动：按4×4 Bayer阈值丢片元，不用半透明混合</h3>
+        <p class="entry-lede">同一块画布上的两件物件没法各给各的CSS透明度。着色器里每件一个<code>uFade</code>，按4×4 Bayer阈值丢片元；相邻两件阈值互补，叠在一起时各占各的像素；<code>uFade</code>＝1时一个片元都不丢。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-20定</li></ul>
+      </header>
+      <div class="specimen xw td-gl-spec" data-demo="dither">
+        <p class="td-cap td-cap-xw"><b>现场跑</b>WebGL画的两件纸物件（示例）：一叠纸卡交接给一座台历。拖进度（或点「交接一遍」）；切到「半透明混合」看排序问题，关掉「阈值互补」看缝；右边放大镜把画布中间一块放大4倍看网点，像素比切到1更明显。</p>
+        <div class="td-ctl">
+          <label class="td-field td-range"><span class="td-lbl">交接进度<output data-di-out>40%</output></span>
+            <input type="range" min="0" max="100" step="1" value="40" data-di-p></label>
+          <div class="td-field"><span class="td-lbl" id="td-di-mode-l">做法</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-di-mode-l" data-di-mode>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="dither">屏幕门抖动</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="blend">半透明混合（反例）</button>
+            </div>
+          </div>
+          <div class="td-field"><span class="td-lbl" id="td-di-dpr-l">像素比</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-di-dpr-l" data-di-dpr>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="1">1</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="2">2</button>
+            </div>
+          </div>
+          <button type="button" class="td-tog" aria-pressed="true" data-di-flip>阈值互补</button>
+          <button type="button" class="td-btn" data-di-play>交接一遍</button>
+        </div>
+        <div class="td-di-wrap">
+          <div class="td-gl" data-gl-host data-aspect="0.62" role="img" aria-label="纸卡交接给台历（示例）"><p class="td-gl-msg" data-gl-msg>滚到这里才建WebGL上下文。</p></div>
+          <figure class="td-di-mag"><canvas data-di-mag width="128" height="128" aria-hidden="true"></canvas><figcaption>中间放大4倍</figcaption></figure>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>// 片元着色器（本页演示的写法）：每件物件一个 uFade（= 这一层的 present）
+float bayer2(vec2 a) { a = floor(a); return fract(a.x * .5 + a.y * a.y * .75); }
+float bayer4(vec2 a) { return bayer2(.5 * a) * .25 + bayer2(a); }    // 4×4，0..15/16
+float th = bayer4(gl_FragCoord.xy) + 1. / 32.;
+if (uFadeFlip &gt; .5) th = 1. - th;     // 相邻两件阈值互补（按层的单双）
+if (uFade &lt; th) discard;              // uFade = 1：一个都不丢，停留姿态逐像素不变
+// 投影本来就是半透明的一层：alpha 直接乘 uFade；深度测试照常</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋工具页：四件物件挂在同一块sticky舞台的画布上，相邻两件交接时同时看得见，各用自己的相机取景、后一层画在前一层上面。</p></section>
+        <section class="fact"><h4>为什么</h4><p>不用半透明混合，就不用给翻动的纸页排序，深度测试照常；停留时<code>uFade</code>＝1，画面和不抖动时逐像素相同。要真透明得给两件各开一块离屏缓冲再合成，多两块画布大小的显存（1440×900、像素比1.75时带4倍多重采样约110MB，不带约25MB但交接时边缘有锯齿）。屋主2026-09-20看过实机后裁定：抖动就这样，不做离屏合成。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>抖动是一格格的像素：2倍屏上读作一层细纹理，1倍屏、尤其夜里浅色物件压在深底上看得出网点。它只出现在交接那几十svh里，停留时没有——那是已知代价，不是遗留缺陷，别因为「网点看得见」把这条重开。阈值不互补时两件抢同一批像素：一半像素两件都画（深度定输赢），另一半谁都不画、露出底色。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.3 滚动编排」（「屏幕门抖动」「4×4 Bayer」「uFadeFlip」「投影本来就是半透明的一层」「已知取舍」「110 MB」「抖动就这样，不做离屏合成」「一个渲染器、一块画布」）</p>
+      </div>
+    </article>
+
+    <!-- 11 静态海报 = 终态 -->
+    <article class="entry" id="d-poster" data-scope="xiaowu" data-toc="海报＝终态">
+      <header class="entry-head">
+        <h3>静态海报就是3D终态那一帧：用脚本滚到停留姿态截出来，不挑好看的中间帧</h3>
+        <p class="entry-lede">访客在3D准备好之前一路滚过去，那一格一直是海报；3D只在看不见时接管。海报要是和终态不是同一帧，换成3D的那一刻姿态就会跳。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-20定</li></ul>
+      </header>
+      <div class="specimen xw td-gl-spec" data-demo="poster">
+        <p class="td-cap td-cap-xw"><b>现场跑</b>WebGL画一张翻一圈、落到3/4角的纸卡（示例）。「截一张海报」把选中的那一帧压成WebP放进槽位；「让3D接管」把槽位换成活的3D终态，右边逐像素对比两者差多少、差在哪。换成「好看的中间帧」再截一次，看会跳多少。</p>
+        <div class="td-ctl">
+          <div class="td-field"><span class="td-lbl" id="td-po-at-l">海报取哪一帧</span>
+            <div class="seg td-seg" role="radiogroup" aria-labelledby="td-po-at-l" data-po-at>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="end">终态那一帧</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="mid">好看的中间帧（反例）</button>
+            </div>
+          </div>
+          <div class="td-btns">
+            <button type="button" class="td-btn" data-po-shot>截一张海报</button>
+            <button type="button" class="td-btn td-btn-main" data-po-take>让3D接管</button>
+            <button type="button" class="td-btn" data-po-play>从头播一遍</button>
+          </div>
+        </div>
+        <div class="td-po-wrap">
+          <figure class="td-po-slot">
+            <div class="td-gl td-po-gl" data-gl-host data-aspect="0.6667" role="img" aria-label="纸卡（示例）：静态海报或3D画面"><p class="td-gl-msg" data-gl-msg>滚到这里才建WebGL上下文。</p></div>
+            <img class="td-po-img" data-po-img alt="纸卡静态海报（示例，WebP）" hidden>
+            <figcaption data-po-cap>槽位</figcaption>
+          </figure>
+          <figure class="td-po-diff">
+            <canvas data-po-diff width="240" height="160" aria-hidden="true"></canvas>
+            <figcaption>差异：越红差越多</figcaption>
+            <dl class="td-dl" data-po-dl>
+              <div><dt>通道差＞8的像素</dt><dd data-k="p8">—</dd></div>
+              <div><dt>最大差</dt><dd data-k="max">—</dd></div>
+              <div><dt>平均差</dt><dd data-k="mean">—</dd></div>
+            </dl>
+          </figure>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>海报    尺寸960×640（3:2），透明底 WebP，每张 ≤40KB；.poster 带 aspect-ratio: 3 / 2，图没到也按3:2占位
+截法    scripts/render-tool-posters.mjs：Node 自带 WebSocket 走 Chrome 调试协议，打开本机生产预览，
+        滚到停留姿态，轮询 --rail-progress 直到停住并核对等于目标（不相等就报错、不写图），
+        按 .visual 的矩形截图，sharp 转 WebP；生产代码里不为它留任何开关或调试路由
+重截    改了造型、着色、时间线或停留姿态都要重截；--only shua / gang / card 只重截一张
+实测    视口1440×900、2倍像素比、同一块991×660设备像素：通道差 &gt;8的像素0.89%、最大差53、平均0.60
+        （换图前截在进度0.6的那张：5.01%、最大差228）</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋工具页刷刷、岗岗、card三张海报；减弱动效、窄屏、低端机看到的就是它，取代了原来的虚线占位块。</p></section>
+        <section class="fact"><h4>为什么</h4><p>3D是叠加层，静态版自己就得是完整的一页。最后一件不退场，访客先滚过去再回来时停的就是海报，所以海报必须等于终态。海报是截出来的、不是画的：造型和着色只有一份，换了画面重跑脚本就行。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>最后一件的每个动作都要在停留结束前落定，并留一截静止（card留5.6svh，门禁要求≥5），海报截的就是这一截。岗岗第一版海报截在进度0.6（第二页正翻着），和终态对不上，换掉了。截图前不等进度停住也不会报错，所以脚本要核对进度等于目标。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.4 静态版」（「海报 960×640」「最后一层的海报 = 3D 终态」「不许挑好看的中间帧」「v1 是在进度 0.6 截的」「通道差 &gt;8 的像素 0.89%」「海报是截出来的，不是画的」「核对它等于目标」）、「6.9.3 滚动编排」（「最后一件的每个动作」）</p>
+      </div>
+    </article>
+
+    <!-- 12 停稳重画 -->
+    <article class="entry" id="d-rest" data-scope="xiaowu" data-toc="停稳重画">
+      <header class="entry-head">
+        <h3>停稳重画：走动时按小预算画，停稳后排下一帧按屏幕像素画满一次</h3>
+        <p class="entry-lede">软件渲染精简档里，走进小屋走动时绘制缓冲封在60万像素；停稳在墙角后排下一帧用325万（屋主那台按DPR 1.25画满）重画一次，之后一帧不画。这一帧不进看门狗采样。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen xw td-gl-spec" data-demo="rest">
+        <p class="td-cap td-cap-xw"><b>现场跑</b>WebGL现画的一幅示例水彩小画（不是屋主的画）。拖动它、点「走两步」或聚焦后按方向键就是「走动」：按屋主那台走动时的像素比0.537画，明显发糊；停下后下一帧按这块屏的像素比重画一次，右边记下这一帧多久、之后又画了几帧。打开「反例：不分档」看停下来也一直糊。</p>
+        <div class="td-ctl">
+          <button type="button" class="td-tog" aria-pressed="false" data-re-bad>反例：不分档</button>
+          <div class="td-btns">
+            <button type="button" class="td-btn" data-re-walk="in">走两步（拉近）</button>
+            <button type="button" class="td-btn" data-re-walk="out">退两步</button>
+          </div>
+        </div>
+        <div class="td-re-wrap">
+          <div class="td-gl" data-gl-host data-aspect="0.6" tabindex="0" role="application" aria-label="示例水彩小画：拖动或按方向键走动，停下后重画"><p class="td-gl-msg" data-gl-msg>滚到这里才建WebGL上下文。</p></div>
+          <dl class="td-dl" data-re-dl>
+            <div><dt>现在</dt><dd data-k="state">—</dd></div>
+            <div><dt>绘制缓冲</dt><dd data-k="buf">—</dd></div>
+            <div><dt>停稳那一帧</dt><dd data-k="cost">—</dd></div>
+            <div><dt>停稳后又画了</dt><dd data-k="after">—</dd></div>
+          </dl>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4><pre><code>// Ysevan_web/components/hall-walk/quality.ts
+export const softMaxPixels  =   600_000;   // 走动：画被放大到远超源图，多画的像素买不到细节
+export const softRestPixels = 3_250_000;   // 停稳：(2040×1.25)×(1019×1.25) = 3,248,062.5，向上取整
+// 岛：循环要停的那一刻（heading === 0 &amp;&amp; !wants）排下一帧调 scene.resize(restDensity, true)
+//     改密度、改尺寸、重画在同一个同步任务里做完，合成器看不到中间状态（不闪）
+//     重新起步时 kick() 先 resize(density, false) 换回走动那一档；这一帧清 lastRenderAt，不进看门狗</code></pre></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋走进小屋的精简档（屋主那台没显卡的台式机走的就是它）。</p></section>
+        <section class="fact"><h4>为什么</h4><p>墙角每幅画在屏幕上只有465 CSS宽，比源图636还小；走动预算只给它画250个像素，而门厅第一屏那张<code>&lt;img&gt;</code>都有396——走进去之后比走进去之前更糊，同一页里就有对照组。墙角完全静止，rAF当场退出，所以停稳重画是一次性开销（2026-09-24实测约18ms，readPixels强制同步量）；走动中一直保持ratio 1.0是98.6ms一帧，补不回来。验收判据因此换成「走进去之后那幅画的清晰度不得低于门厅第一屏里同一幅画」。</p></section>
+        <blockquote class="said"><p>小屋走进去之后糊的很，页面都看不清</p><footer>屋主，2026-09-23</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>精简档不让灯呼吸：呼吸是停下来之后唯一还在动的东西，留着它<code>render()</code>永远返回true，夜里根本不存在「停稳」，重画没机会发生——这是读代码发现的，不是验收。量这一帧耗时别用<code>gl.finish()</code>：Chrome 153上它不等画完（只读到1.8–2.0ms），紧接着的<code>readPixels</code>还要等17–28ms。验「不闪」要真交出一帧空画面：只改尺寸、隔200ms才画，Chrome会沿用上一帧，判据红不了。</p></section>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「4.9.8 精简档：走动一档预算，停稳另一档」（「小屋走进去之后糊的很」「比源图的 636 还小」「验收判据」「98.6ms」「17.8 / 18.8 / 18.6ms」「finish() 在这台 Chrome（153）上不等画完」「排下一帧」「不会闪」「精简档不让灯呼吸」）；Ysevan_web/components/hall-walk/quality.ts「softMaxPixels」、「softRestPixels」（「3,248,062.5」）</p>
+      </div>
+    </article>
+  </section>
+</main>
+</body></html>

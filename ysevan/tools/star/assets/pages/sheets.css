@@ -87,7 +87,7 @@
 .sh-page-list li:nth-child(2) i { background: var(--orange); }
 .sh-page-list li:nth-child(3) i { background: var(--accent); }
 .sh-page-list span { flex: 1; min-width: 0; }
-.sh-page-list b { color: var(--label2); font-weight: 600; font-variant-numeric: tabular-nums; }
+.sh-page-list b { color: var(--label2); font-weight: 600; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .sh-page .sh-open { margin-top: auto; }
 
 /* 舞台里的按钮按 --k 缩放（外观沿用外壳 .btn / .btn-tint / .btn-glass） */
@@ -171,9 +171,9 @@
   transform: scaleY(var(--r));
   transition: transform 266.7ms var(--sh-ease) calc(var(--i) * 66.7ms);
 }
-.sh-month-name { font-size: calc(12 * var(--k)); color: var(--label2); font-variant-numeric: tabular-nums; }
+.sh-month-name { font-size: calc(12 * var(--k)); color: var(--label2); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .sh-frost-sum { display: flex; justify-content: space-between; align-items: baseline; margin: 0; font-size: calc(13 * var(--k)); color: var(--label2); }
-.sh-frost-sum b { font-size: calc(22 * var(--k)); color: var(--label); font-variant-numeric: tabular-nums; }
+.sh-frost-sum b { font-size: calc(22 * var(--k)); color: var(--label); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 
 /* 变体（data-variant 写在舞台上）。blur = 原样；dim = 降级做法（开关打开时）；
    fixed、none 只给性能实测用：fixed = 模糊固定26px、只过渡这一层的 opacity；none = 基线，同一面板动画、背景什么都不加 */
@@ -232,9 +232,9 @@
 /* 面板 .5 秒落定后再画：delay .5s；同一条曲线 1.2 秒画到剩余比例（剩 26/40 = .65 → offset 35） */
 .sh-ring.is-open .sh-ring-arc { stroke-dashoffset: var(--off); transition: stroke-dashoffset 1.2s var(--sh-ease) .5s; }
 .sh-ring-center { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; }
-.sh-ring-num { font-size: calc(46 * var(--k)); line-height: 1; font-weight: 700; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.sh-ring-num { font-size: calc(46 * var(--k)); line-height: 1; font-weight: 700; letter-spacing: -1px; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .sh-ring-unit { margin-top: calc(4 * var(--k)); color: var(--label2); font-size: calc(13 * var(--k)); }
-.sh-meta { display: flex; justify-content: center; gap: calc(14 * var(--k)); margin: 0 0 calc(16 * var(--k)); color: var(--label2); font-size: calc(13 * var(--k)); font-variant-numeric: tabular-nums; }
+.sh-meta { display: flex; justify-content: center; gap: calc(14 * var(--k)); margin: 0 0 calc(16 * var(--k)); color: var(--label2); font-size: calc(13 * var(--k)); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 
 /* ================================================================ 3 刻度尺进度 */
 .sh-ruler { display: flex; align-items: flex-end; justify-content: space-between; height: calc(40 * var(--k)); margin: calc(18 * var(--k)) 0 calc(6 * var(--k)); }
@@ -253,9 +253,9 @@
   font-size: calc(11 * var(--k)); line-height: 1.6; white-space: nowrap; opacity: 0; transition: opacity .2s var(--sh-ease-in);
 }
 .sh-ruler-sheet.is-open .sh-tick-flag { opacity: 1; transition: opacity .3s var(--sh-ease) calc(.5s + var(--i) * 16.7ms + .1s); }
-.sh-ruler-axis { display: flex; justify-content: space-between; color: var(--label2); font-size: calc(11 * var(--k)); font-variant-numeric: tabular-nums; }
+.sh-ruler-axis { display: flex; justify-content: space-between; color: var(--label2); font-size: calc(11 * var(--k)); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .sh-ruler-stat { display: flex; justify-content: space-between; margin: calc(12 * var(--k)) 0 0; font-size: calc(13 * var(--k)); color: var(--label2); }
-.sh-ruler-stat b { color: var(--label); font-variant-numeric: tabular-nums; }
+.sh-ruler-stat b { color: var(--label); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 
 /* 遮住的编号：每个字一个 inline-block 槽位，先占好最终宽度和行高；展开只换 opacity / transform */
 .sh-code-card { display: flex; align-items: center; gap: calc(10 * var(--k)); margin: calc(16 * var(--k)) 0; padding: calc(12 * var(--k)) calc(14 * var(--k)); border-radius: calc(16 * var(--k)); background: var(--well); }
@@ -322,7 +322,7 @@
 .sh-photo-pane.is-open .sh-drawer { transform: translateY(0); transition: transform .55s var(--sh-ease) .12s; }
 .sh-drawer-head { display: flex; justify-content: space-between; align-items: baseline; margin: 0; }
 .sh-drawer-head span { color: var(--label2); font-size: calc(13 * var(--k)); }
-.sh-drawer-head b { font-size: calc(22 * var(--k)); font-variant-numeric: tabular-nums; }
+.sh-drawer-head b { font-size: calc(22 * var(--k)); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .sh-progress { position: relative; height: calc(8 * var(--k)); overflow: hidden; border-radius: 999px; background: var(--fill); }
 .sh-progress-fill {
   position: absolute; inset: 0; border-radius: inherit;
@@ -336,7 +336,7 @@
 .sh-rows li { display: flex; justify-content: space-between; gap: calc(12 * var(--k)); min-height: calc(36 * var(--k)); align-items: center; font-size: calc(14 * var(--k)); }
 .sh-rows li + li { border-top: 1px solid var(--sep); }
 .sh-rows span { color: var(--label2); }
-.sh-rows b { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+.sh-rows b { font-weight: 600; font-family: var(--font-num); font-variant-numeric: tabular-nums; text-align: right; }
 .sh-drawer .btn { margin-top: auto; }
 
 /* ================================================================ 5 原地翻面 */
@@ -371,13 +371,13 @@
 .sh-card-kicker { margin: 0; font-size: calc(12 * var(--k)); opacity: .9; }
 .sh-card-name { margin: calc(2 * var(--k)) 0 0; font-size: calc(22 * var(--k)); font-weight: 700; line-height: 1.25; }
 .sh-card-foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; font-size: calc(13 * var(--k)); }
-.sh-card-foot b { font-size: calc(18 * var(--k)); font-variant-numeric: tabular-nums; }
+.sh-card-foot b { font-size: calc(18 * var(--k)); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .sh-card-code { margin: calc(2 * var(--k)) 0 calc(8 * var(--k)); font-family: var(--mono); font-size: calc(20 * var(--k)); font-weight: 600; letter-spacing: .5px; font-variant-numeric: tabular-nums; }
 /* 示意条码：等宽重复的竖条，纯装饰，不编码任何内容 */
 .sh-barcode { height: calc(34 * var(--k)); border-radius: calc(4 * var(--k)); background: repeating-linear-gradient(90deg, var(--label) 0 2px, transparent 2px 4px, var(--label) 4px 5px, transparent 5px 8px, var(--label) 8px 11px, transparent 11px 13px); opacity: .85; }
 .sh-card-rows { display: grid; grid-template-columns: auto 1fr; gap: calc(2 * var(--k)) calc(12 * var(--k)); margin: calc(10 * var(--k)) 0 0; font-size: calc(12.5 * var(--k)); }
 .sh-card-rows dt { color: var(--label2); }
-.sh-card-rows dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.sh-card-rows dd { margin: 0; text-align: right; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 /* 翻面按钮是一枚真 <button>，盖在整张卡上；卡里的字不包进按钮 */
 .sh-flip-btn { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; padding: 0; border: 0; border-radius: calc(18 * var(--k)); background: transparent; cursor: pointer; }
 .sh-pop-foot { display: flex; align-items: center; justify-content: space-between; gap: calc(10 * var(--k)); }
@@ -398,7 +398,7 @@
   background: var(--raised); box-shadow: 0 calc(10 * var(--k)) calc(30 * var(--k)) rgba(20,30,60,.16);
 }
 .sh-pull-upper::after { content: ""; position: absolute; left: calc(14 * var(--k)); right: calc(14 * var(--k)); bottom: 0; border-bottom: 2px dashed var(--sep); }
-.sh-pull-big { margin: calc(12 * var(--k)) 0 0; font-size: calc(28 * var(--k)); line-height: 1.15; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sh-pull-big { margin: calc(12 * var(--k)) 0 0; font-size: calc(28 * var(--k)); line-height: 1.15; font-weight: 700; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .sh-pull-meta { margin: calc(4 * var(--k)) 0 0; color: var(--label2); font-size: calc(13 * var(--k)); }
 .sh-pull-upper .btn { margin-top: calc(12 * var(--k)); height: calc(34 * var(--k)); padding: 0 calc(14 * var(--k)); font-size: calc(14 * var(--k)); }
 .sh-pull-body { position: relative; height: var(--sh-pull-d); }
@@ -422,7 +422,7 @@
 .sh-pull-sheet.is-expanded .sh-pull-lower { transform: translateY(var(--sh-pull-d)) rotate(0deg); transition: transform .45s var(--sh-ease); }
 .sh-pull-lower.is-dragging { transition: none; }
 .sh-pull-seat { display: flex; justify-content: space-between; align-items: baseline; font-size: calc(13 * var(--k)); color: var(--label2); }
-.sh-pull-seat b { color: var(--label); font-size: calc(17 * var(--k)); font-variant-numeric: tabular-nums; }
+.sh-pull-seat b { color: var(--label); font-size: calc(17 * var(--k)); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .sh-pull-handle {
   display: grid; justify-items: center; align-content: center; gap: calc(6 * var(--k));
   margin: auto calc(-18 * var(--k)) 0; padding: calc(10 * var(--k)) 0 calc(12 * var(--k));
@@ -456,7 +456,7 @@
 
 /* ---------- 实测表 ---------- */
 .sh-table-wrap { min-width: 0; overflow-x: auto; }
-.sh-table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
+.sh-table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .sh-table th, .sh-table td { padding: calc(6 * var(--u)) calc(10 * var(--u)); border-bottom: 1px solid var(--sep); text-align: right; white-space: nowrap; }
 .sh-table th:first-child, .sh-table td:first-child { text-align: left; white-space: normal; }
 .sh-table thead th { color: var(--label2); font-weight: 600; }

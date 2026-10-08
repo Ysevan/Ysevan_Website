@@ -1112,7 +1112,7 @@
     function paint(dark) {
       frame.setAttribute("data-mode", dark ? "dark" : "light");
       sw.setAttribute("aria-checked", dark ? "true" : "false");
-      sw.setAttribute("aria-label", dark ? "开灯（切换到日间）" : "关灯（切换到夜间）");
+      sw.setAttribute("aria-label", "夜间模式");   // 名字固定，开没开由 aria-checked 读（同小屋 theme-toggle.tsx）
       sw.setAttribute("title", dark ? "开灯" : "关灯");
     }
     paint(start);

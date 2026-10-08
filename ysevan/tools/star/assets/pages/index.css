@@ -98,7 +98,9 @@
 .gl-dot { position: relative; flex: none; width: calc(8 * var(--u)); height: calc(8 * var(--u)); border-radius: 50%; background: var(--c); box-shadow: 0 0 calc(10 * var(--u)) var(--g); }
 .gl-dot::after { content: ""; position: absolute; inset: calc(-6 * var(--u)); border-radius: 50%; }   /* 只剩点时也好点中 */
 /* 字：背面不显示、转到正面渐显；前面互相压着时离得远的那个淡掉（index.js 写 opacity，这里管过渡） */
-.gl-name { opacity: 0; will-change: opacity; transition: opacity .25s ease; }
+/* 长短名（「只动transform/opacity」）截成省略号，全名在下面那行。不挂 will-change：152个点时字再各占一层，
+   2040软件渲染下合成每帧中位从5.1ms涨到6.5ms（perf.mjs --css A/B）；字只在跨档时变，过渡期间浏览器自己会临时提层 */
+.gl-name { max-width: calc(132 * var(--u)); overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity .25s ease; }
 .gl-pt.is-hover { background: rgba(255,255,255,.14); }
 .globe:focus-visible .gl-pt.is-sel, .globe.is-kbd .gl-pt.is-sel { background: rgba(255,255,255,.18); box-shadow: 0 0 0 2px #FFFFFF; }
 /* 悬停 / 键盘选中那条的全名：只是内容，不是操作提示（ix-xw-globe「球上不叠任何操作提示」） */
@@ -538,11 +540,11 @@
 .tp9-read { font-size: var(--fs-small); line-height: 1.6; color: var(--label); }
 .tp9-read b { color: var(--red-text); }
 
-/* 10 先做出来再慢慢完善：分阶段时间线（五个阶段：进度线从第1格中心画到第5格中心，左右各留半格＝10%） */
+/* 10 先做出来再慢慢完善：分阶段时间线（六个阶段：进度线从第1格中心画到第6格中心，左右各留半格＝1/12；默认选中最后一格，线画满） */
 .tp10-track { position: relative; }
-.tp10-line { position: absolute; left: 10%; right: 10%; top: calc(17 * var(--u)); height: 3px; overflow: hidden; border-radius: 999px; background: var(--fill); }
-.tp10-fill { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform: scaleX(.75); transform-origin: 0 50%; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
-.tp10-steps { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: calc(6 * var(--u)); }
+.tp10-line { position: absolute; left: calc(100% / 12); right: calc(100% / 12); top: calc(17 * var(--u)); height: 3px; overflow: hidden; border-radius: 999px; background: var(--fill); }
+.tp10-fill { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform: scaleX(1); transform-origin: 0 50%; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.tp10-steps { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: calc(6 * var(--u)); }
 .tp10-step { display: grid; justify-items: center; gap: calc(5 * var(--u)); min-width: 0; padding: 0 calc(2 * var(--u)) calc(4 * var(--u)); border: 0; border-radius: calc(10 * var(--u)); background: none; color: var(--label2); font-size: var(--fs-xs); text-align: center; cursor: pointer; }
 .tp10-dot { display: grid; place-items: center; width: calc(34 * var(--u)); height: calc(34 * var(--u)); border-radius: 50%; background: var(--raised); box-shadow: var(--shadow-sm); color: var(--label2); font-size: calc(15 * var(--u)); font-weight: 700; }
 .tp10-step.is-done .tp10-dot { background: var(--accent-tint); color: var(--accent-text); }

@@ -1,0 +1,694 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F5F9">
+<meta name="description" content="液态玻璃怎么写、挂在哪、做不出来怎么退、没显卡的机器上要付多少；小屋的暖墨阴影与水彩绿植。每条都能拖、能切着看。">
+<title>材质 · 设计合集</title>
+<script src="assets/boot.js"></script>
+<link rel="stylesheet" href="assets/star.css">
+<link rel="stylesheet" href="assets/pages/material.css">
+<script src="assets/star.js" defer></script>
+<script src="assets/pages/material.js" defer></script>
+</head><body data-page="material">
+<a class="skip" href="#main">跳到正文</a>
+<div id="shell-nav"></div><script src="assets/nav.js"></script>
+<main id="main" class="page">
+  <header class="page-head">
+    <h1 class="page-title">材质</h1>
+    <p class="page-sub">液态玻璃怎么写、挂在哪、做不出来时怎么退、在没显卡的机器上要付多少；小屋那边是暖墨阴影和水彩绿植。颜色层级在色彩页，这里讲写法、降级与代价。</p>
+    <nav class="page-toc" aria-label="本页目录"></nav>
+  </header>
+
+  <!-- ============================ 工具 · 液态玻璃 ============================ -->
+  <section class="group" id="g-tools" data-scope="tools">
+    <h2 class="group-title">工具 · 液态玻璃</h2>
+    <p class="group-lede">玻璃.62／.78、三团光晕的色值见色彩页「<a href="color.html#c-glass">中性底与玻璃</a>」「<a href="color.html#c-halo">背景光晕</a>」。这一章的样例里真的挂了磨砂：只在样例滚到视口附近时挂，滚走就摘。</p>
+
+    <!-- 1 两档玻璃 -->
+    <article class="entry" id="m-glass" data-scope="tools" data-toc="两档玻璃">
+      <header class="entry-head">
+        <h3>液态玻璃＝半透明底＋两档模糊＋顶边亮线：侧栏30px·160%，卡片24px·150%</h3>
+        <p class="entry-lede">后面糊开、再提一点饱和度，上沿一道<code>inset 0 1px 0</code>的白线当受光的边。视口大小的面用重的一档，浮在内容上的小卡用轻的一档。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
+      </header>
+      <div class="specimen" data-m-heavy>
+        <p class="m-cap"><b>切着看</b>同一张玻璃卡放在四种底上：光晕（浅）、光晕（深）、花底、没有光晕的平底。切强度、关亮线，看哪一项在哪种底上最显。卡上那行字是这张卡此刻的计算值。</p>
+        <div class="m-ctrl">
+          <div class="seg m-seg" role="radiogroup" aria-label="玻璃强度" data-m-glass-tier>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="30">视口面30px·160%</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="24">卡片24px·150%</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="0">不模糊</button>
+          </div>
+          <button type="button" class="m-tog" aria-pressed="true" data-m-glass-edge>顶边亮线</button>
+        </div>
+        <div class="m-glass-grid" data-m-glass data-tier="30" data-edge="on">
+          <figure class="m-gbg">
+            <div class="m-gwin m-halo" data-mode="light" aria-hidden="true"><span class="m-word">光</span><div class="m-gcard m-frost"><b>玻璃.62</b><code data-m-glass-read>blur(30px) saturate(1.6)</code></div></div>
+            <figcaption>光晕 · 浅</figcaption>
+          </figure>
+          <figure class="m-gbg">
+            <div class="m-gwin m-halo" data-mode="dark" aria-hidden="true"><span class="m-word">光</span><div class="m-gcard m-frost"><b>玻璃.55</b><code data-m-glass-read>blur(30px) saturate(1.6)</code></div></div>
+            <figcaption>光晕 · 深</figcaption>
+          </figure>
+          <figure class="m-gbg">
+            <div class="m-gwin m-halo m-gwin-photo" data-mode="light" aria-hidden="true"><span class="m-word">花</span><div class="m-gcard m-frost"><b>玻璃.62</b><code data-m-glass-read>blur(30px) saturate(1.6)</code></div></div>
+            <figcaption>花底（像照片）</figcaption>
+          </figure>
+          <figure class="m-gbg">
+            <div class="m-gwin m-halo m-gwin-flat" data-mode="light" aria-hidden="true"><span class="m-word">平</span><div class="m-gcard m-frost"><b>玻璃.62</b><code data-m-glass-read>blur(30px) saturate(1.6)</code></div></div>
+            <figcaption>平底，没有光晕</figcaption>
+          </figure>
+        </div>
+        <p class="m-read">读法：平底上玻璃几乎看不出来——磨砂得有东西可糊，光晕和玻璃是一套。花底上「不模糊」那档，后面的字和色块直接透上来。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>/* 视口大小的面：侧栏、顶栏、tab bar、手机底部面板 */
+.side {
+  background: var(--glass);                      /* 浅 rgba(255,255,255,.62) / 深 rgba(40,42,52,.55) */
+  -webkit-backdrop-filter: blur(30px) saturate(160%);
+  backdrop-filter: blur(30px) saturate(160%);
+  border-right: 1px solid var(--glass-edge);     /* 侧栏的亮边 */
+}
+/* 浮在内容上的小卡、列表、对话框、提示条 */
+.card {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  backdrop-filter: blur(24px) saturate(150%);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(20,30,60,.08),
+              inset 0 1px 0 var(--glass-edge);   /* 这一段就是顶边亮线 */
+}
+--glass-edge: rgba(255,255,255,.9);              /* 深色 rgba(255,255,255,.12) */</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>plan：侧栏、tab bar、手机底部面板用重的一档（<code>--blur-glass-strong</code>），顶栏、详情对话框、菜单、提示条用轻的一档（<code>--blur-glass</code>）。会随正文长的面不在这里，见下面「磨砂放在哪」。本站：侧栏、顶栏、tab bar、「更多」面板都是30px·160%，条目卡不挂。</p></section>
+        <section class="fact"><h4>为什么</h4><p>屋主要「参考苹果的UI和配色」；分层只靠玻璃、投影和分隔线，不用边框（反例在色彩页「中性底与玻璃」的对照里）。亮线放在阴影里，不占盒子、不改尺寸；浅色下.9的白很显，深色下只留.12。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>样张<code>shua-glass.html</code>是旧写法：侧栏、卡片是标准属性在前，玻璃按钮只写了<code>backdrop-filter: blur(20px)</code>、没配前缀。照着抄要按下面「前缀顺序」那条改过来。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:12</code>「不用边框分层」、<code>:3</code>「屋主原话」；<code>tools/plan/docs/design/shua-glass.html:36</code><code>.side</code>、<code>:59</code><code>.card</code>、<code>:11</code><code>--shadow</code>、<code>:56</code><code>.btn.glass</code>；<code>tools/plan/app/src/styles/tokens.css:356</code>「--blur-glass」；<code>tools/plan/app/src/App.css:39</code>「--blur-glass-strong」（<code>.sidebar</code>）、<code>:517</code>「--blur-glass」（<code>.topbar</code>）；<code>tools/star/assets/star.css:392</code>「blur(30px) saturate(160%)」（<code>.side</code>）</p>
+      </div>
+    </article>
+
+    <!-- 2 光晕画在哪 -->
+    <article class="entry" id="m-halo" data-scope="tools" data-toc="光晕画在哪">
+      <header class="entry-head">
+        <h3>固定的渐变背景画在body::before上；底色只写html，body透明</h3>
+        <p class="entry-lede">光晕是<code>position:fixed; z-index:-1</code>的伪元素，不用<code>background-attachment:fixed</code>。html和body都写了背景时，body的底画在光晕上面，把它整个盖掉。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="m-cap"><b>切着看</b>左边是缩小的「页面」：外框当html、里面一层当body，body::before画三团光晕。把底色同时写到body上，光晕就没了。这是浏览器真的绘制顺序，不是换图。</p>
+        <div class="m-ctrl">
+          <div class="seg m-seg" role="radiogroup" aria-label="底色写在哪" data-m-halo-seg>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="good">只写html，body透明</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="bad">html和body都写（反例）</button>
+          </div>
+        </div>
+        <div class="m-halo-demo" data-m-halo data-state="good">
+          <div class="m-fhtml" aria-hidden="true">
+            <div class="m-fbody">
+              <p class="m-ftitle">示例页面</p>
+              <div class="m-fcard">强玻璃.78的卡；光晕在它后面</div>
+            </div>
+            <span class="m-ftag" data-m-halo-tag>body { background: transparent }</span>
+          </div>
+          <ol class="m-paint" aria-label="这一层里的绘制顺序（从下往上）">
+            <li data-l="1">html的底<small>画布，<code>#F4F5F9</code></small></li>
+            <li data-l="2">body::before的光晕<small><code>z-index:-1</code>，排在画布之后</small></li>
+            <li data-l="3">body自己的底<small data-m-halo-note>没写，透明——这一层什么都不画</small></li>
+            <li data-l="4">正文与玻璃卡</li>
+          </ol>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>html { background: var(--bg); }                 /* 底色只写这里 */
+body { /* 不写 background */ }
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(38vw 38vw at 12% 8%,   var(--blob1), transparent 60%),
+    radial-gradient(34vw 34vw at 92% 18%,  var(--blob2), transparent 60%),
+    radial-gradient(40vw 40vw at 70% 100%, var(--blob3), transparent 60%);
+  filter: blur(10px);
+}</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具同一段；本站<code>star.css</code>第6节同样只给html写底。小屋走另一条路：暖雾直接写在body的背景上、<code>background-attachment:fixed</code>，规格写明这是「屋子不动，人在里面走」的观感来源。</p></section>
+        <section class="fact"><h4>为什么</h4><p>只写body时，它的底会传给画布、画在最下面；html也写了，body的底就不再上交，画在body自己的盒子上——绘制顺序在z-index为负的伪元素之后，光晕被盖住。不用固定附着，是因为iOS Safari上它不生效，滚动时背景会跟着走。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>光晕被盖掉以后，离线算的对比度照样「成立」，脚本发现不了，只能看画面（刷刷2026-09-23验收时抓到的）。</p></section>
+        <p class="source">出处：<code>tools/shua/design-proposal.md:350</code>「光晕不显示的坑」；<code>tools/plan/app/src/styles/tokens.css:652</code>「背景光晕」；<code>tools/star/assets/star.css:259</code>「底色只写在html上」；小屋<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「2.4 body 背景」（「屋子不动，人在里面走」）</p>
+      </div>
+    </article>
+
+    <!-- 3 前缀顺序 -->
+    <article class="entry" id="m-prefix" data-scope="tools" data-toc="前缀顺序">
+      <header class="entry-head">
+        <h3>backdrop-filter成对写：-webkit-在前、标准在后</h3>
+        <p class="entry-lede">Chrome只认标准那条，iOS Safari 18以前只认前缀那条，两条都要。顺序写反，过Vite 8（lightningcss）压缩会把标准那条并掉，Chrome上的玻璃就没了磨砂。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
+      </header>
+      <div class="specimen" data-m-heavy>
+        <p class="m-cap"><b>换着看</b>左边是源码，中间是交出去的CSS，右边的玻璃块套的就是中间那份。选「过Vite 8压缩」再把顺序写反：产物里只剩前缀那条。压缩器那一步是照plan实测写的示意；玻璃块糊不糊是本浏览器的真结果。</p>
+        <div class="m-ctrl">
+          <div class="m-ctrl-row"><span class="m-label" id="m-pfx-l1">源码顺序</span>
+            <div class="seg m-seg" role="radiogroup" aria-labelledby="m-pfx-l1" data-m-pfx-order>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="wk">前缀在前</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="std">标准在前</button>
+            </div>
+          </div>
+          <div class="m-ctrl-row"><span class="m-label" id="m-pfx-l2">怎么交付</span>
+            <div class="seg m-seg" role="radiogroup" aria-labelledby="m-pfx-l2" data-m-pfx-build>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="static">静态站，不过压缩</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="vite">过Vite 8压缩</button>
+            </div>
+          </div>
+        </div>
+        <div class="m-pfx" data-m-pfx>
+          <figure class="m-pane"><figcaption>源码</figcaption><pre data-no-copy data-m-pfx-src></pre></figure>
+          <figure class="m-pane"><figcaption>交出去的CSS</figcaption><pre data-no-copy data-m-pfx-out></pre></figure>
+          <figure class="m-pane m-pfx-prev"><figcaption>套上产物的玻璃块</figcaption>
+            <div class="m-pfx-win m-halo" aria-hidden="true"><span class="m-word">字</span><div class="m-pfx-tile" data-m-pfx-tile>玻璃</div></div>
+          </figure>
+        </div>
+        <p class="m-read" data-m-pfx-read>—</p>
+        <p class="m-read" data-m-pfx-env>—</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>.glass {
+  -webkit-backdrop-filter: blur(24px) saturate(150%);   /* 前缀在前 */
+  backdrop-filter: blur(24px) saturate(150%);           /* 标准在后 */
+}
+/* 出货 CSS 里两条数量相等、成对出现 */</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>只有plan过Vite 8构建，顺序在它那儿是真故障：源码18处，产物里标准属性只剩2处。刷刷、岗岗、card是静态页、不过压缩器，顺序不影响结果，四家还是统一前缀在前，省得哪天接了构建再踩一遍。本站<code>star.css</code>、<code>kit.css</code>全部前缀在前。</p></section>
+        <section class="fact"><h4>为什么</h4><p>Chrome从来不认<code>-webkit-backdrop-filter</code>（上面那行本浏览器的回答就是），产物里只剩它，Chrome上就等于没写；<code>build.cssTarget</code>拦不住。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>dev预览不压缩，看着一切正常，只有构建产物里没磨砂。验收要打开产物读<code>getComputedStyle(el).backdropFilter</code>；数源码里字符串出现几次不算数，压缩会合并规则。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:103</code>「-webkit-在前、标准在后」；<code>tools/plan/app/src/App.css:2</code>「构建陷阱」；<code>memory/lightningcss-backdrop-filter-drop.md:14</code>「Chrome从来不支持」、<code>:19</code>「How to apply」；<code>tools/star/CLAUDE.md:33</code>「-webkit-在前、标准在后」</p>
+      </div>
+    </article>
+
+    <!-- 4 降级探针 -->
+    <article class="entry" id="m-probe" data-scope="tools" data-toc="降级探针">
+      <header class="entry-head">
+        <h3>降级探针连前缀一起测：@supports not ((A) or (B))，外层括号不能省</h3>
+        <p class="entry-lede">做不出磨砂时把玻璃提到.9不透明。只测标准写法，iOS Safari 18以前恒命中，手机上玻璃全成实心白块；少了外层括号，整条<code>@supports</code>语法不对、被丢掉，真做不出磨砂的浏览器又退不下来。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
+      </header>
+      <div class="specimen" data-m-heavy>
+        <p class="m-cap"><b>选着看</b>三种探针写法×三类浏览器（示意）。右边的玻璃卡按选中的组合显示那台设备上会看到的样子。最下面那张表是本浏览器对这三条的真实回答。</p>
+        <div class="m-ctrl">
+          <div class="m-ctrl-row"><span class="m-label" id="m-pr-l1">探针写法</span>
+            <div class="seg m-seg" role="radiogroup" aria-labelledby="m-pr-l1" data-m-probe-way>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="good">对：not ((A) or (B))</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="narrow">窄：not (A)</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="noparen">少括号：not (A) or (B)</button>
+            </div>
+          </div>
+          <div class="m-ctrl-row"><span class="m-label" id="m-pr-l2">设备</span>
+            <div class="seg m-seg" role="radiogroup" aria-labelledby="m-pr-l2" data-m-probe-dev>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="modern">Chrome、Safari 18+</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="ios17">iOS Safari 17</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="old">做不出磨砂的</button>
+            </div>
+          </div>
+        </div>
+        <div class="m-probe-grid">
+          <div class="m-probe-stack">
+            <div class="m-pane"><pre data-no-copy data-m-probe-code></pre></div>
+            <p class="m-verdict" data-m-probe-verdict>—</p>
+          </div>
+          <div class="m-probe-win m-halo" data-m-probe-win data-look="frost" aria-hidden="true">
+            <span class="m-word">后面的字</span>
+            <div class="m-probe-card"><b>玻璃卡</b><span data-m-probe-look>磨砂</span></div>
+          </div>
+        </div>
+        <div class="m-table-wrap" style="margin-top: calc(14 * var(--u))">
+          <table class="m-table m-table-stack" data-m-probe-live>
+            <caption>本浏览器实测（A＝<code>backdrop-filter: blur(1px)</code>，B＝<code>-webkit-backdrop-filter: blur(1px)</code>）</caption>
+            <thead><tr><th scope="col">写法</th><th scope="col">条件成立？（成立＝走兜底）</th><th scope="col">这条@supports留下了吗</th></tr></thead>
+            <tbody>
+              <tr data-q="good"><th scope="row"><code>not ((A) or (B))</code></th><td data-h="条件成立？">—</td><td data-h="留下了吗">—</td></tr>
+              <tr data-q="narrow"><th scope="row"><code>not (A)</code></th><td data-h="条件成立？">—</td><td data-h="留下了吗">—</td></tr>
+              <tr data-q="noparen"><th scope="row"><code>not (A) or (B)</code></th><td data-h="条件成立？">—</td><td data-h="留下了吗">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root, [data-mode], [data-accent] {
+    --glass:        var(--lt, rgba(255,255,255,.9))  var(--dk, rgba(40,42,52,.92));
+    --glass-strong: var(--lt, rgba(255,255,255,.96)) var(--dk, rgba(44,46,58,.96));
+  }
+}
+@media (prefers-reduced-transparency: reduce) { /* 同一套数 */ }</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>四家现在都写对了（刷刷<code>styles.css</code>、岗岗三处、plan<code>tokens.css</code>、card<code>theme.css</code>）。本站<code>star.css</code>第5节、<code>kit.css</code>与交互页的弹窗样式同一写法。</p></section>
+        <section class="fact"><h4>为什么</h4><p>探针写错的两个方向代价不一样：测宽了，个别设备看到它撑不住的效果；测窄了，一整类设备永远看不到做好的东西，而且不报错、不留痕，只能靠人眼发现。<code>not (A) or (B)</code>是不合法的条件，整条规则直接被丢掉——表里第三行就是本浏览器丢掉它的样子。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>刷刷3.11.1在屋主手机上「从来没出过磨砂」就是窄探针（声明本身成对、都对）。改完别只看<code>CSS.supports</code>的返回值，要在旧Safari或真机上肉眼看一次。plan的构建产物一直是对的（压缩器会把探针补成两种写法），只有dev预览中招。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:97</code>「降级探针必须同时测前缀形式」、<code>:101</code>「手机上玻璃全变成实心白块」；<code>tools/gang/design-proposal.md:914</code>「外层那对括号不能省」；<code>memory/supports-probe-too-narrow.md:17</code>「降级探针的错误方向是不对称的」、<code>:21</code>「四家最终账」；<code>tools/plan/app/src/styles/tokens.css:680</code>；<code>tools/star/assets/star.css:312</code>「降级」</p>
+      </div>
+    </article>
+
+    <!-- 5 磨砂放在哪 -->
+    <article class="entry" id="m-where" data-scope="tools" data-toc="磨砂放在哪">
+      <header class="entry-head">
+        <h3>磨砂只挂视口大小的面；随正文长的面用.78不磨砂，压在正文上的浮层用实色</h3>
+        <p class="entry-lede">侧栏、顶栏、tab bar、弹层的高度是常数，可以磨砂。条目卡、阅读栏、结算面板会随内容长到好几屏，挂磨砂会超出显卡纹理上限；联想浮层压在密排的正文上，半透明让两层字叠在一起。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-22定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a><a href="index.html#spot-search">全站 · 搜索框</a></p>
+      </header>
+      <div class="specimen" data-m-heavy>
+        <p class="m-cap"><b>拖着看</b>左边拖「面板有多长」，看它在屋主的设备上折成多少设备像素；挂着磨砂又超过16384，就是岗岗、刷刷踩过的整层丢弃。右边切浮层的两种做法，看压在字上读不读得清。</p>
+        <div class="m-where">
+          <div class="m-where-half">
+            <h5>随内容变长的面板</h5>
+            <div class="m-ctrl-row"><span class="m-label" id="m-wh-l1">设备</span>
+              <div class="seg m-seg" role="radiogroup" aria-labelledby="m-wh-l1" data-m-where-dev>
+                <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="phone">手机417×750@3.5</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="desk">台式2040×1019@1.25</button>
+              </div>
+            </div>
+            <label class="m-range"><span class="m-label">面板有多长</span><input type="range" min="1" max="20" step="0.5" value="3" data-m-where-len><output data-m-where-len-out>3屏</output></label>
+            <div class="m-ctrl-row"><span class="m-label" id="m-wh-l2">这块面板</span>
+              <div class="seg m-seg" role="radiogroup" aria-labelledby="m-wh-l2" data-m-where-frost>
+                <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="solid">.78不磨砂（现行）</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="frost">也挂磨砂（反例）</button>
+              </div>
+            </div>
+            <div class="m-meter" data-m-where-meter><i></i><b></b></div>
+            <div class="m-meter-legend"><span>0</span><span data-m-where-limit>16384设备像素（纹理上限）</span></div>
+            <p class="m-read" data-m-where-read>—</p>
+          </div>
+          <div class="m-where-half">
+            <h5>压在正文上的联想浮层</h5>
+            <div class="seg m-seg" role="radiogroup" aria-label="浮层的底" data-m-where-pop>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="solid">实色（现行）</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="glass">半透明＋磨砂（反例）</button>
+            </div>
+            <div class="m-pop-win">
+              <p class="m-pop-text">示例正文：岗位手册里的密排段落，一行接一行，字压着字。联想浮层弹出来时正好盖在这几行上面，用户要一边读浮层里的候选，一边不被底下的字干扰。示例正文：再来一段同样密的字，好让浮层底下确实有东西。</p>
+              <ul class="m-pop m-frost" data-m-where-popel data-look="solid" aria-label="联想候选（示例）">
+                <li>示例候选一 · 现金业务</li>
+                <li>示例候选二 · 对公开户</li>
+                <li>示例候选三 · 挂失补办</li>
+              </ul>
+            </div>
+            <p class="m-read" data-m-where-pop-read>—</p>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>/* 视口大小的面：可以磨砂 */
+.side, .topbar, .tabbar, .sheet { background: var(--glass); -webkit-backdrop-filter: …; backdrop-filter: …; }
+/* 随正文长的面：只靠不透明度 */
+.entry, .reader, .panel.summary { background: var(--glass-strong); }     /* .78，深 .72 */
+/* 压在正文上的浮层：实色 */
+.suggest { background: var(--raised); box-shadow: var(--shadow-pop); }   /* 浅 #FFF / 深 #2C2D35 */
+/* 刷刷的写法：强玻璃色压在页面底色上，同样不透明 */
+.suggest { background: linear-gradient(var(--glass-strong), var(--glass-strong)), var(--bg); }</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>岗岗的白名单只有五处：工作台头、目录栏（不是整列）、吸底条、≤900的目录抽屉、≤600的手机快捷栏与速查卡抽屉。刷刷3.14.0起结算面板改<code>--glass-strong</code>底，错题卡的模糊一并去掉。本站：条目卡不挂磨砂，搜索结果列表与复制气泡是实色。</p></section>
+        <section class="fact"><h4>为什么</h4><p>岗岗2026-09-22真机实测：三栏各19,570px，超过纹理上限整层被丢，切配色后整栏空白、等下次滚动才出现；不超限也要每次滚动把整层重新光栅化。刷刷结算页模拟考60道错题时6.9–9屏高，手机上折合23661设备像素。浮层跟着打字频繁开合，挂磨砂等于把开销挪到最高频的那个动作上。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>以后新加会随内容变长的面板（列表、回顾、历史记录），先想它最长能有几屏。卡片里每张小卡各自再模糊一层，代价叠着算：刷刷结算页2040软件渲染滚动，原样66.7ms一帧，只去面板33.3ms，连错题卡一起去才16.7ms。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:110</code>「磨砂只放在视口大小的表面」；<code>tools/gang/design-proposal.md:898</code>「磨砂只放在视口大小的表面上」、<code>:909</code>「实测三栏各19,570px」、<code>:1396</code>「为什么不加磨砂」；<code>tools/shua/design-proposal.md:371</code>「长面板不加」、<code>:581</code>「实底」</p>
+      </div>
+    </article>
+
+    <!-- 6 模糊的代价 -->
+    <article class="entry" id="m-cost" data-scope="tools" data-toc="模糊的代价">
+      <header class="entry-head">
+        <h3>没显卡的机器上，瓶颈是模糊不是3D：玻璃底下有一处在变，整块模糊就每帧重算</h3>
+        <p class="entry-lede">软件合成时，玻璃后面任何一处重画都要把整块模糊重算一遍。半径不是关键，4px和24px一样掉帧；只留saturate、不模糊，才回到满帧。四个工具都还留着磨砂，关不关归屋主定；star自己做了降级档（下一条）。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-blur">全站 · 背景模糊</a></p>
+      </header>
+      <div class="specimen" data-m-heavy data-m-cost-spec>
+        <p class="m-cap"><b>拖着看</b>拖模糊半径；打开「玻璃底下有一块在变色」，右上的数是这台机器此刻的整页帧间隔（只在打开时量）——在屋主没显卡的台式机上打开，看到的就是那台的真代价。下面是各家在没显卡那档（2040×1019@1.25软件合成）量过的数，按半径对上。</p>
+        <div class="m-ctrl">
+          <label class="m-range"><span class="m-label">模糊半径</span><input type="range" min="0" max="40" step="1" value="24" data-m-cost-r><output data-m-cost-r-out>24px</output></label>
+          <button type="button" class="m-tog" aria-pressed="false" data-m-cost-run>玻璃底下有一块在变色</button>
+          <button type="button" class="m-tog" aria-pressed="false" data-m-cost-off>整条backdrop-filter关掉（基线）</button>
+        </div>
+        <div class="m-cost">
+          <div class="m-cost-win m-halo" data-m-cost-win aria-hidden="true">
+            <div class="m-cost-lines"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <span class="m-cost-dot" data-m-cost-dot></span>
+            <div class="m-cost-glass m-frost"><small>示例 · 今日复习</small><b>24px</b><small data-m-cost-glass-read>blur(24px) saturate(150%)</small></div>
+          </div>
+          <div class="m-cost-side">
+            <div class="m-gauge"><h5>这台机器此刻</h5><p data-m-cost-live>没在量。打开「玻璃底下有一块在变色」才开始量。</p></div>
+            <div class="m-gauge"><h5>没显卡那档（各家实测）</h5><p data-m-cost-ref>—</p><div class="m-bar" data-m-cost-bar><i></i></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+          <div class="m-table-wrap">
+          <table class="m-table">
+            <caption class="sr-only">各家实测：软件合成下模糊的代价</caption>
+            <thead><tr><th scope="col">谁、什么情形</th><th scope="col">挂着模糊</th><th scope="col">去掉模糊</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">刷刷：3D关着，只让玻璃卡里一个24px方块每帧变色（有窗口的Chrome）</th><td class="is-num">约4帧／秒（放在不压玻璃的角落是120帧）</td><td class="is-num">去掉全站磨砂与光晕滤镜：页面100帧</td></tr>
+              <tr><th scope="row">刷刷：按压列表行，2040@1.25软件渲染</th><td class="is-num">帧间隔中位33.3ms（blur 4px也是33.3）</td><td class="is-num">只留saturate(150%)：16.7ms</td></tr>
+              <tr><th scope="row">岗岗：来回滚动6秒，SwiftShader</th><td class="is-num">整页16–23拍／秒</td><td class="is-num">59–60拍／秒</td></tr>
+              <tr><th scope="row">岗岗：联想浮层的坏副本挂blur(30px)，2040@1.25</th><td class="is-num">P95 33.4ms，长帧34–52个</td><td class="is-num">实色版P95 16.7ms，长帧0–1个</td></tr>
+              <tr><th scope="row">交互页「毛玻璃浮层」打开那1秒，合成器每帧</th><td class="is-num">2.9–3.3倍</td><td class="is-num">压暗不模糊1.3倍（基线1）</td></tr>
+              <tr><th scope="row">本页这块玻璃，底下每帧变色；本机无头Chrome软件合成（2040@1.25，CPU快的Mac）</th><td class="is-num">0–40px各档帧间隔中位16.7ms、长帧0</td><td class="is-num">16.7ms、长帧0</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <p>有显卡的手机档（417×750@3.5走GPU）上，岗岗的浮层坏副本一个长帧都不多，交互页毛玻璃四种做法也分不出差别。本页那一行是反过来的提醒：快CPU扛得住这么小一块，代价只在慢机器上显形——判据先让它红过一次（每帧空转30ms时33.3ms、每秒长帧28个，判据是灵的），要看就在屋主那台上打开上面的「这台机器此刻」。</p>
+        </section>
+        <section class="fact"><h4>怎么量</h4><p>相对判据：改动和基线跑同一串操作，交替跑3次合并，比整页<code>requestAnimationFrame</code>间隔的中位、P95，<b>另数长帧（&gt;25ms）的个数</b>；要看合成器自己，另开tracing量每帧<code>Display::DrawAndSwap</code>。新加一块磨砂之前先做这个A/B。</p></section>
+        <section class="fact"><h4>为什么</h4><p>CPU合成时，玻璃卡里任何一处重画都要重算整块模糊；砍3D画质（投影、张数、纸纹、分辨率）逐项都在噪声里。所以3D精简档只管少画、少出帧，不去碰界面层的磨砂。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>只看P95会漏掉稀疏卡顿：每次更新卡30ms的坏副本，卡帧不到总数5%，P95纹丝不动，必须另数长帧（让它红一次才发现）。无头Chrome每帧整屏重画，比有窗口时悲观，数字只当相对代价看；Windows的WARP未必和SwiftShader一样贵，屋主那台没实地量过。</p></section>
+        <p class="source">出处：<code>tools/shua/design-proposal.md:304</code>「精简档为什么只砍这几样」、<code>:396</code>「软件渲染下是30帧」；<code>tools/gang/design-proposal.md:919</code>「软件渲染下磨砂的代价」、<code>:1402</code>「量过」；<code>memory/glass-blur-cpu-compositing.md:13</code>「Why」、<code>:21</code>「只看P95会漏掉稀疏卡顿」；交互页<a href="interaction.html#ix-sheet-frosted">「毛玻璃浮层」</a>的实测表；本页那一行是2026-10-08本机无头Chrome量的</p>
+      </div>
+    </article>
+
+    <!-- 7 模糊三档 -->
+    <article class="entry" id="m-tiers" data-scope="tools" data-toc="模糊三档">
+      <header class="entry-head">
+        <h3>背景模糊分三档：自动／开／关；自动靠WebGL探测有没有显卡，没测过先按「只压暗」</h3>
+        <p class="entry-lede">full：整页遮罩把背景糊到26px。lite：遮罩只压暗、弹层不模糊，侧栏这些常驻磨砂照旧。off：连常驻磨砂也关，玻璃提到近乎不透明。「自动」＝WebGL带<code>failIfMajorPerformanceCaveat</code>拿得到上下文就full，拿不到（软件渲染）就lite。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-10-08定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-blur">全站 · 背景模糊</a><a href="index.html#spot-more">全站 · 更多面板</a></p>
+      </header>
+      <div class="specimen" data-m-heavy>
+        <p class="m-cap"><b>点着看</b>小窗是本站的缩样：左边侧栏常驻磨砂，「打开面板」弹出「更多」那样的整页遮罩。切档位看三档各做什么——只改这个小窗，不改全站设置。右边是这台机器上「自动」的真实判法。</p>
+        <div class="m-ctrl">
+          <div class="seg m-seg" role="radiogroup" aria-label="小窗的模糊档位" data-m-tier-seg>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="full">full · 开（磨砂）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="lite">lite · 只压暗</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="off">off · 关</button>
+          </div>
+        </div>
+        <div class="m-tier">
+          <div class="m-tier-win m-halo" data-m-tier-win data-tier="full">
+            <div class="m-tier-side m-frost" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="m-tier-main">
+              <span class="m-word" aria-hidden="true">正文</span>
+              <p class="m-read" style="margin:0">示例正文：遮罩打开时，这几行字就是被糊开或被压暗的「背景」。</p>
+              <button type="button" class="btn" data-m-tier-open aria-expanded="false" aria-controls="m-tier-panel">打开面板</button>
+            </div>
+            <div class="m-tier-scrim" data-m-tier-scrim aria-hidden="true"></div>
+            <div class="m-tier-panel" id="m-tier-panel" role="dialog" aria-label="示例面板" data-m-tier-panel>
+              <button type="button" class="m-tier-x" data-m-tier-close>关闭</button>
+              <h5>示例面板</h5>
+              <p data-m-tier-say>full：遮罩糊开26px、不压暗；面板.88玻璃＋自己的磨砂。</p>
+            </div>
+          </div>
+          <div class="m-cost-side">
+            <div class="m-gauge"><h5>这台机器上</h5>
+              <dl class="m-dl">
+                <dt>你的设置</dt><dd data-m-tier-pref>—</dd>
+                <dt>此刻全站档位</dt><dd data-m-tier-now>—</dd>
+                <dt>显卡探测缓存</dt><dd data-m-tier-gpu>—</dd>
+                <dt>现测一次</dt><dd data-m-tier-probe>还没测</dd>
+              </dl>
+              <button type="button" class="btn btn-tint" data-m-tier-test style="margin-top: calc(10 * var(--u)); height: calc(32 * var(--u)); font-size: var(--fs-small)">现在测一次（不存）</button>
+            </div>
+            <div class="m-gauge"><h5>「自动」怎么判</h5>
+              <ol class="m-flow" data-m-tier-flow>
+                <li data-k="on">选了「开」→ full</li>
+                <li data-k="off">选了「关」→ off</li>
+                <li data-k="gpu">自动 · 测过、有显卡 → full</li>
+                <li data-k="soft">自动 · 测过、没显卡 → lite</li>
+                <li data-k="none">自动 · 还没测过 → lite</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>/* boot.js：样式表之前同步跑，首帧就是对的档位 */
+function blurTier() {
+  if (blurPref === "on") return "full";
+  if (blurPref === "off") return "off";
+  return gpu === true ? "full" : "lite";      // 没测过（null）也按 lite
+}
+/* star.js：load 之后空闲时测一次，连 UA 存进 star-gpu，UA 变了重测 */
+var gl = canvas.getContext("webgl", { failIfMajorPerformanceCaveat: true });
+ok = !!gl;                                    // 拿不到＝软件渲染＝没显卡
+if (gl) { var lose = gl.getExtension("WEBGL_lose_context"); if (lose) lose.loseContext(); }</code></pre>
+        </section>
+        <section class="fact"><h4>三档各做什么</h4>
+          <ul>
+            <li><b>full</b>：整页遮罩背景从清楚糊到26px（开1s、关.3s），只糊不压暗；弹层面板.88玻璃＋自己的磨砂。切主题的圆形揭开、强调色淡入、跨页过渡只在这一档做。</li>
+            <li><b>lite</b>：遮罩不模糊、压暗淡入（浅<code>rgba(20,24,36,.28)</code>／深<code>rgba(0,0,0,.5)</code>），弹层面板不模糊、底提到.97；侧栏、顶栏、tab bar的常驻磨砂照旧。</li>
+            <li><b>off</b>：同lite，并且常驻磨砂也关、玻璃提到近乎不透明，和「做不出磨砂」那套数一样。</li>
+          </ul>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>代价不对等，往后果轻的那边错：误判成full，是没显卡那台整页卡；误判成lite，只是第一次打开少一点景深。所以没测过先按lite。过渡类只在full做，是因为View Transition要整屏截图，软件合成下最贵。降级的样子照交互页「毛玻璃浮层」的推荐：直接不模糊、压暗淡入、面板底提高，代价接近基线。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>无头Chrome测软件渲染，<code>--use-gl=swiftshader</code>要配<code>--enable-unsafe-swiftshader</code>才拿得到上下文；屋主的浏览器不会带旗标，带旗标那次的「能用」不能当结论。Windows还多一档WARP，macOS这边模拟不出来。圆环、刻度尺、照片抽屉三种弹层任何档位都只压暗。</p></section>
+        <p class="source">出处：<code>tools/star/assets/star.css:92</code>「模糊档位」；<code>tools/star/assets/boot.js:11</code>「on → full；off → off；auto」；<code>tools/star/assets/star.js:644</code>「probeGpu」；<code>tools/star/CLAUDE.md:92</code>「自动模糊档」；<code>memory/err-toward-lighter-consequence.md:10</code>「代价不对等时，往后果轻的那边错」；<code>memory/webgl-software-render-gate.md:12</code>「测试陷阱」；交互页<a href="interaction.html#ix-sheet-frosted">「毛玻璃浮层」</a>「推荐」</p>
+      </div>
+    </article>
+
+    <!-- 8 圆角阶 -->
+    <article class="entry" id="m-radius" data-scope="tools" data-toc="圆角阶">
+      <header class="entry-head">
+        <h3>玻璃风圆角阶：图标块9、品牌块10、按钮12、磁贴14、卡18、面板20、胶囊999；大屏上圆角跟着等比放大</h3>
+        <p class="entry-lede">以1440为基准等比放大时，圆角和别的尺寸一起乘缩放系数；不乘，卡变大了角显得硬。小屋另有4／6／8／12一套，只管小屋。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-brand">全站 · 品牌方块</a></p>
+      </header>
+      <div class="specimen">
+        <p class="m-cap"><b>拖着看</b>拖「大屏缩放」从1到1.45（屋主台式2040宽是1.417），一组零件等比放大；打开「圆角不跟着乘」，看卡和面板的角在大屏上变硬。</p>
+        <div class="m-ctrl">
+          <label class="m-range"><span class="m-label">大屏缩放</span><input type="range" min="1" max="1.45" step="0.005" value="1" data-m-rad-s><output data-m-rad-s-out>1.000</output></label>
+          <button type="button" class="m-tog" aria-pressed="false" data-m-rad-bad>圆角不跟着乘（反例）</button>
+        </div>
+        <div class="m-radius m-halo" data-m-rad>
+          <figure class="m-rpart"><div class="m-rshape is-ico" style="--w:32;--h:32;--r:9"></div><figcaption>图标块<b data-r="9">9px</b></figcaption></figure>
+          <figure class="m-rpart"><div class="m-rshape is-grad" style="--w:34;--h:34;--r:10"></div><figcaption>品牌块<b data-r="10">10px</b></figcaption></figure>
+          <figure class="m-rpart"><div class="m-rshape is-grad" style="--w:96;--h:38;--r:12"></div><figcaption>按钮<b data-r="12">12px</b></figcaption></figure>
+          <figure class="m-rpart"><div class="m-rshape" style="--w:64;--h:64;--r:14"></div><figcaption>磁贴<b data-r="14">14px</b></figcaption></figure>
+          <figure class="m-rpart"><div class="m-rshape" style="--w:150;--h:92;--r:18"></div><figcaption>卡<b data-r="18">18px</b></figcaption></figure>
+          <figure class="m-rpart"><div class="m-rshape" style="--w:120;--h:110;--r:20"></div><figcaption>面板<b data-r="20">20px</b></figcaption></figure>
+          <figure class="m-rpart"><div class="m-rshape is-fill" style="--w:76;--h:24;--r:999"></div><figcaption>胶囊<b data-r="999">999px</b></figcaption></figure>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+<pre><code>--ui-scale: clamp(1, tan(atan2(100vw, 1440px)), 1.45);
+--r-mark: calc(10px * var(--ui-scale));   /* 品牌块 */
+--r-btn:  calc(12px * var(--ui-scale));   /* 按钮 */
+--r-tile: calc(14px * var(--ui-scale));   /* 磁贴 */
+--r-card: calc(18px * var(--ui-scale));   /* 卡 */
+--r-pane: calc(20px * var(--ui-scale));   /* 面板、抽屉、弹层 */
+--r-pill: 999px;                          /* 胶囊；图标块9 */</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>plan的<code>tokens.css</code>就是这一套；岗岗的表C同一档（目录条目与输入框10、按钮12、中等面14、卡18、抽屉弹层20、胶囊999）。本站按钮12、品牌块10、图标块9、导航项10和这一套一致。star主窗口2026-10-08定：条目卡与页头22、样例框16保留——条目卡是整宽长卡，面积比工具里的卡大得多，圆角跟面积大一档；家族圆角阶管的是工具界面。</p></section>
+        <section class="fact"><h4>为什么</h4><p>大屏等比放大时圆角同样乘缩放系数——不跟着放大，卡变大了角显得硬，构图就不等比了。数值来自样张：卡18、按钮12、品牌块10、图标块9。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>家族契约里的<code>4 / 6 / 8 / 12</code>圆角阶与暖墨阴影，2026-09-23起只约束小屋；工具端以液态玻璃规格为准，两套别混用。</p></section>
+        <p class="source">出处：<code>tools/plan/app/src/styles/tokens.css:280</code>「圆角」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:350</code>「圆角」；<code>tools/plan/docs/design/SPEC-apple-glass.md:91</code>「圆角同样乘--ui-scale」；<code>tools/gang/design-proposal.md:699</code>「表C：圆角与流式尺度」；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.3 圆角、阴影、焦点环」（「只约束小屋本身」）；<code>tools/star/assets/star.css:188</code>「--r-xs」；本站条目卡圆角：star主窗口2026-10-08定</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================ 小屋 · 暖纸 ============================ -->
+  <section class="group" id="g-xiaowu" data-scope="xiaowu">
+    <h2 class="group-title">小屋 · 暖纸</h2>
+    <p class="group-lede">小屋没有磨砂。它的材质是纸：暖纸底、卡纸白、发丝线、暖墨阴影和水彩。色值见色彩页「<a href="color.html#x-paper">暖纸色板</a>」「<a href="color.html#x-shadow">暖墨阴影与发丝线</a>」。</p>
+
+    <!-- 9 暖墨阴影 -->
+    <article class="entry" id="m-xw-shadow" data-scope="xiaowu" data-toc="暖墨阴影">
+      <header class="entry-head">
+        <h3>阴影是装裱的一部分：地毯上的卡浮起、墙上的画沉一倍；夜里发丝线和投影成对翻过来</h3>
+        <p class="entry-lede">白天一律暖墨<code>rgba(74,77,53,…)</code>，不用纯黑。挂画的大投影放在伪元素上、跟着倾斜挪<code>transform</code>，不去动<code>box-shadow</code>。三根发丝线的分工见色彩页「暖墨阴影与发丝线」。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-22定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="m-cap"><b>切着看</b>墙上一张门厅卡（挂画投影），地毯上一只工具截图框（浮起）。切到「纯黑」看暖纸上的阴影发不发灰；切「夜里」看发丝线和投影一起翻；拖「倾斜」看大投影跟着挪，卡片自己贴边那层不动。</p>
+        <div class="m-ctrl">
+          <div class="seg m-seg" role="radiogroup" aria-label="阴影的样子" data-m-sh-seg>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="warm">白天 · 暖墨</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="black">白天 · 纯黑（反例）</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="night">夜里</button>
+          </div>
+          <label class="m-range"><span class="m-label">倾斜</span><input type="range" min="-1" max="1" step="0.05" value="0" data-m-sh-tilt><output data-m-sh-tilt-out>0</output></label>
+        </div>
+        <div class="m-sh xw" data-mode="light" data-ink="warm" data-m-sh>
+          <figure class="m-sh-wall">
+            <div class="m-sh-stage"><div class="m-hset" data-m-sh-set>
+              <div class="m-hcard" aria-hidden="true"><div class="m-hblob"><span class="xw-kai">小屋</span></div><div class="m-hplate"><div class="m-hpaper"></div></div></div>
+            </div></div>
+            <figcaption data-m-sh-cap1>墙上：挂画投影<code>0 16px 34px -14px</code>暖墨.22</figcaption>
+          </figure>
+          <figure class="m-sh-rug">
+            <div class="m-rug"><div class="m-tool" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+            <figcaption data-m-sh-cap2>地毯上：浮起<code>0 8px 20px -10px</code>暖墨.11</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>/* 挂画的大投影在 .set 的伪元素上：跟着倾斜挪 transform，模糊只画一次 */
+.set::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  box-shadow: 0 16px 34px -14px rgba(74, 77, 53, 0.22);
+  transform: translate3d(calc(var(--hall-tilt-x, 0) * -9px), calc(var(--hall-tilt-y, 0) * 5px), 0);
+}
+.card { border: 1px solid rgba(74, 77, 53, 0.17); box-shadow: 0 1px 2px rgba(74, 77, 53, 0.05); }  /* 贴地 */
+.shotFrame { box-shadow: 0 8px 20px -10px rgba(74, 77, 53, 0.11); }                               /* 浮起 */
+
+/* 夜里成对翻：卡纸变夜卡纸、墨色发丝线变浅色、投影换黑加深 */
+.dark .card       { border-color: rgba(231, 225, 208, 0.11); background: #20232b; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); }
+.dark .set::before { box-shadow: 0 16px 34px -14px rgba(0, 0, 0, 0.55); }
+.dark .plate img  { box-shadow: 0 0 0 1px rgba(231, 225, 208, 0.08); }</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>纯黑阴影压在暖纸上会发灰。两档之外不要第三档，hover也不换档。工具卡摆在地毯上，门厅卡挂在墙上，投影要更沉。动<code>box-shadow</code>等于每帧重画一大片34px的模糊（小屋实测掉帧就掉在这），挪到独立伪元素上用<code>transform</code>移动，模糊只画一次，之后全在合成器上走。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>夜里那条选择器特异性更高，要在≥821px那个媒体查询段里再写一遍按卡片缩放的版本，否则夜里的投影冻在固定像素、不跟卡片缩放。色块与画纸各自不加投影，否则接缝处叠出一道脏影。</p></section>
+        <p class="source">出处：<code>Ysevan_web/app/hall.module.css</code>「.set::before」（「挂画的大投影」）、「.card」（「动box-shadow本身等于每帧重画一大片模糊」）、「夜里的装裱」；<code>Ysevan_web/app/projects/tools.module.css</code>「.shotFrame」（「浮起档，暖墨色不用纯黑」）；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.3 圆角、阴影、焦点环」（「阴影用暖墨色」）、「4.6.2 数值」（「挂画投影在卡片上」「必须在同一个min-width: 821px段里再写一遍」）</p>
+      </div>
+    </article>
+
+    <!-- 10 水彩绿植 -->
+    <article class="entry" id="m-xw-plant" data-scope="xiaowu" data-toc="水彩绿植">
+      <header class="entry-head">
+        <h3>水彩绿植＝四层叠：水洗底、后层浅叶＋冷影、前层中叶＋二道水</h3>
+        <p class="entry-lede">一片叶子在<code>&lt;defs&gt;</code>里定义一次，<code>&lt;use&gt;</code>摆位；两层「重影」是同一组叶子换色、降透明度、偏几像素再画一遍。缺一层就成了扁平图标。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-08-25定</li></ul>
+      </header>
+      <div class="specimen">
+        <p class="m-cap"><b>一层一层看</b>门厅右上那枝垂柳，坐标原样搬来（只把取景框收到枝条那一块）。逐层开关；「只留前层」就是扁平图标的样子；切「夜里」看整体收一档亮度。</p>
+        <div class="m-plant xw" data-mode="light" data-m-plant>
+          <div class="m-plant-art" aria-hidden="true">
+            <svg viewBox="100 -20 200 330" fill="none" focusable="false">
+              <defs>
+                <radialGradient id="mDcWash" cx="50%" cy="36%" r="62%">
+                  <stop offset="0" stop-color="#7E9367" stop-opacity=".16"/>
+                  <stop offset="1" stop-color="#7E9367" stop-opacity="0"/>
+                </radialGradient>
+                <path id="mDcLeaf" d="M0 0C11-7 30-6.6 45.5-.6C30 6.2 11 7 0 0Z"/>
+                <g id="mDcBack">
+                  <use href="#mDcLeaf" transform="translate(270,22) rotate(106) scale(.88)"/>
+                  <use href="#mDcLeaf" transform="translate(265,58) rotate(70) scale(.78)"/>
+                  <use href="#mDcLeaf" transform="translate(256,96) rotate(119) scale(.95)"/>
+                  <use href="#mDcLeaf" transform="translate(244,133) rotate(78) scale(.84)"/>
+                  <use href="#mDcLeaf" transform="translate(229,169) rotate(113) scale(.9)"/>
+                  <use href="#mDcLeaf" transform="translate(212,203) rotate(66) scale(.76)"/>
+                  <use href="#mDcLeaf" transform="translate(193,236) rotate(109) scale(.85)"/>
+                  <use href="#mDcLeaf" transform="translate(175,267) rotate(88) scale(.68)"/>
+                </g>
+                <g id="mDcFront">
+                  <use href="#mDcLeaf" transform="translate(227,16) rotate(119) scale(1)"/>
+                  <use href="#mDcLeaf" transform="translate(224,53) rotate(62) scale(.88)"/>
+                  <use href="#mDcLeaf" transform="translate(218,92) rotate(127) scale(1.06)"/>
+                  <use href="#mDcLeaf" transform="translate(210,131) rotate(73) scale(.92)"/>
+                  <use href="#mDcLeaf" transform="translate(200,171) rotate(121) scale(1.01)"/>
+                  <use href="#mDcLeaf" transform="translate(189,209) rotate(61) scale(.83)"/>
+                  <use href="#mDcLeaf" transform="translate(178,245) rotate(113) scale(.9)"/>
+                  <use href="#mDcLeaf" transform="translate(169,273) rotate(91) scale(.72)"/>
+                </g>
+              </defs>
+              <ellipse data-layer="wash" cx="198" cy="146" rx="94" ry="150" fill="url(#mDcWash)"/>
+              <g opacity=".6">
+                <g data-layer="back">
+                  <path d="M272-12C266 66 244 132 216 188 196 228 174 264 158 292" stroke="#9BAE86" stroke-width="1.5" stroke-linecap="round"/>
+                  <g fill="#A9BC96"><use href="#mDcBack"/></g>
+                </g>
+                <g data-layer="cool" fill="#6E8A93" opacity=".42" transform="translate(-7,5)"><use href="#mDcBack"/></g>
+              </g>
+              <g data-layer="front">
+                <path d="M230-12C228 58 220 118 208 172 198 216 186 250 174 280" stroke="#6F855C" stroke-width="1.7" stroke-linecap="round" opacity=".8"/>
+                <g fill="#7E9367" opacity=".72"><use href="#mDcFront"/></g>
+              </g>
+              <g data-layer="second" fill="#4F5B3E" opacity=".17" transform="translate(2.5,3.5)"><use href="#mDcFront"/></g>
+            </svg>
+          </div>
+          <div>
+            <ul class="m-layers" aria-label="逐层开关">
+              <li><button type="button" class="m-layer" aria-pressed="true" data-m-layer="wash"><i style="--sw:rgba(126,147,103,.3)"></i><span>①水洗底<small>径向渐变，绿雾.16 → 0</small></span></button></li>
+              <li><button type="button" class="m-layer" aria-pressed="true" data-m-layer="back"><i style="--sw:#A9BC96"></i><span>②后层浅叶<small>#A9BC96，整组压到.6</small></span></button></li>
+              <li><button type="button" class="m-layer" aria-pressed="true" data-m-layer="cool"><i style="--sw:#6E8A93"></i><span>②b冷调叶影<small>海湾蓝.42，向左下偏(-7,5)</small></span></button></li>
+              <li><button type="button" class="m-layer" aria-pressed="true" data-m-layer="front"><i style="--sw:#7E9367"></i><span>③前层中叶<small>#7E9367 .72，深枝#6F855C</small></span></button></li>
+              <li><button type="button" class="m-layer" aria-pressed="true" data-m-layer="second"><i style="--sw:#4F5B3E"></i><span>③b二道水<small>#4F5B3E .17，向右下偏(2.5,3.5)</small></span></button></li>
+            </ul>
+            <div class="m-ctrl">
+              <button type="button" class="m-xw-tog" data-m-plant-preset="all">全开</button>
+              <button type="button" class="m-xw-tog" data-m-plant-preset="flat">只留前层（扁平）</button>
+              <div class="seg m-seg" role="radiogroup" aria-label="时辰" data-m-plant-time>
+                <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="light">白天</button>
+                <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="dark">夜里</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>&lt;!-- ① 水洗底：一团极淡的绿雾，让枝叶像是从纸里洇出来的 --&gt;
+&lt;ellipse cx="198" cy="146" rx="94" ry="150" fill="url(#dcWashHall)"/&gt;
+&lt;!-- ② 后层：浅绿 + 一层偏移的海湾蓝冷影 --&gt;
+&lt;g opacity=".6"&gt;
+  &lt;g fill="#A9BC96"&gt;&lt;use href="#dcVineBack"/&gt;&lt;/g&gt;
+  &lt;g fill="#6E8A93" opacity=".42" transform="translate(-7,5)"&gt;&lt;use href="#dcVineBack"/&gt;&lt;/g&gt;
+&lt;/g&gt;
+&lt;!-- ③ 前层：中绿 + 一层更深的「二道水」重影 --&gt;
+&lt;g fill="#7E9367" opacity=".72"&gt;&lt;use href="#dcVineFront"/&gt;&lt;/g&gt;
+&lt;g fill="#4F5B3E" opacity=".17" transform="translate(2.5,3.5)"&gt;&lt;use href="#dcVineFront"/&gt;&lt;/g&gt;
+
+/* 夜里：整体收一档，不逐叶改色 */
+.dark .deco { filter: brightness(0.78) saturate(0.85); }</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>小屋全站就这几处：门厅右上垂柳、门厅卡左下盆栽加一株四叶草，另有随笔页一枝小枝（工具页那枝随轨道改版删了）。完全不占布局、不接事件、没有动画——这是名片，不是花园。</p></section>
+        <section class="fact"><h4>为什么</h4><p>冷影是「阴天里叶子的反光」，二道水是水彩第二遍上色的叠印感；四层叠出来才像水彩，缺一层就是扁平图标。叶片的位置、角度、大小是手调的，不抽象成「传参生成叶子」的组件——参数化只会变丑、更难改。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>SVG里的<code>id</code>要全局唯一：同一页有两处装饰时，撞了名<code>&lt;use&gt;</code>和<code>fill="url(#…)"</code>会引到别人的定义（本页就把id全换成了m开头）。宿主容器要<code>position:relative; z-index:1</code>，少写一个装饰就盖到字上。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「9.4 SVG 内部结构（defs + use 复用）」（「四层叠出水彩的观感」「四处的id必须全局唯一」）、「9.5 实现形态」（「不抽象成传参生成叶子的通用组件」）、「9. 绿植装饰」、「9.1 八条硬约束」（「数量克制」）、「9.6 夜里」；<code>Ysevan_web/app/page.tsx</code>「VineDeco」</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================ 通用 ============================ -->
+  <section class="group" id="g-common" data-scope="common">
+    <h2 class="group-title">通用</h2>
+
+    <!-- 11 backdrop root -->
+    <article class="entry" id="m-vt-root" data-scope="common" data-toc="backdrop root">
+      <header class="entry-head">
+        <h3>起了view-transition-name的元素是backdrop root：它里面的磨砂只糊得到它自己</h3>
+        <p class="entry-lede">子元素的<code>backdrop-filter</code>够不着父元素后面的东西，看着像磨砂没了。父元素<code>opacity</code>小于1、带<code>filter</code>也一样。star的侧栏只在跨页过渡那一下起名，磨砂一直挂在侧栏自己身上。</p>
+        <ul class="entry-tags"><li class="scope">通用</li><li>2026-10-08定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
+      </header>
+      <div class="specimen" data-m-heavy>
+        <p class="m-cap"><b>切着看</b>条纹底上一个空心父框，里面一枚磨砂小卡。给父框加不同的属性，小卡的磨砂都没了——这是本浏览器的真结果（Chrome 155实测）。小卡下面那行是它此刻的计算值：值一直没变。</p>
+        <div class="m-ctrl">
+          <div class="seg m-seg" role="radiogroup" aria-label="父框加了什么" data-m-root-seg>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="none">什么都不加</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="vt">view-transition-name</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="opacity">opacity: .99</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-v="filter">filter: saturate(100%)</button>
+          </div>
+        </div>
+        <div class="m-root-win" aria-hidden="true">
+          <div class="m-root-parent" data-m-root-parent data-p="none"><span data-m-root-tag>父框</span>
+            <div class="m-root-chip m-frost"><b>磨砂小卡</b><code data-m-root-read>blur(12px) saturate(1.5)</code></div>
+          </div>
+        </div>
+        <p class="m-read" data-m-root-say>—</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>/* 只在跨页过渡那一下起名：boot.js 在 pagereveal、star.js 在 pageswap 时挂 html.vt-nav */
+html.vt-nav .side   { view-transition-name: star-side; }
+html.vt-nav .tabbar { view-transition-name: star-tabbar; }
+/* 侧栏的磨砂挂在侧栏自己身上，不挪到伪元素或子元素上 */
+.side { -webkit-backdrop-filter: blur(30px) saturate(160%); backdrop-filter: blur(30px) saturate(160%); }</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>本站切页时侧栏、tab bar原地不动，靠的是临时起名；平时不起名。任何用View Transition的玻璃站都会碰到：起了名的元素里面别再放要糊后面的玻璃。</p></section>
+        <section class="fact"><h4>为什么</h4><p><code>backdrop-filter</code>只往上糊到最近的backdrop root为止。起了<code>view-transition-name</code>、<code>opacity</code>小于1、带<code>filter</code>、<code>clip-path</code>、<code>mask</code>的元素都会成为这一层的根（Chrome 155逐个实测过；<code>transform</code>、<code>will-change</code>不会）——里面的磨砂只糊得到这层根自己画的东西，根后面的页面够不着。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>计算值照样是<code>blur(…)</code>：读<code>getComputedStyle</code>的量具看不出来，只能截图看。这一点是star第二阶段做跨页过渡时撞上的，所以侧栏的磨砂也别为了过渡方便挪到伪元素上。</p></section>
+        <p class="source">出处：<code>tools/star/CLAUDE.md:87</code>「起了view-transition-name的元素是backdrop root」；<code>tools/star/assets/star.css:118</code>「backdrop root」、<code>:921</code>「html.vt-nav .side」；本页演示2026-10-08在Chrome 155无头实测</p>
+      </div>
+    </article>
+  </section>
+</main></body></html>

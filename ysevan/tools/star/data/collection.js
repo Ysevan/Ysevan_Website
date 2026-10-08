@@ -420,7 +420,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "星空", "粒子", "Canvas 2D"],
     added: "2026-09-27",
-    notes: "收藏，原作者：Jhey Tompkins（推测）。",
+    notes: "收藏，原作者不详。",
     demo: { type: "iframe", src: "../../../网站素材/特效/星空宇宙/超光速粒子/index.html", note: "在框里按住鼠标就跃迁。" }
   },
   {
@@ -459,7 +459,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "星空", "Canvas 2D"],
     added: "2026-09-27",
-    notes: "收藏，原作者：Jack Rugile（推测）。",
+    notes: "收藏，原作者不详。",
     demo: { type: "iframe", src: "../../../网站素材/特效/星空宇宙/能量射线/index.html", note: "在框里按住鼠标会变样。" }
   },
   {
@@ -513,7 +513,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "粒子", "Canvas 2D"],
     added: "2026-09-27",
-    notes: "收藏，原作者：cantelope（推测）。",
+    notes: "收藏，原作者不详。",
     demo: { type: "iframe", src: "../../../网站素材/特效/粒子/粒子旋涡/demo.html" }
   },
   {
@@ -552,7 +552,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "粒子", "Canvas 2D"],
     added: "2026-09-27",
-    notes: "收藏，原作者：Ikeda Ryou（推测）。",
+    notes: "收藏，原作者不详。",
     demo: { type: "iframe", src: "../../../网站素材/特效/粒子/花里胡哨的粒子/demo.html", vw: 640, note: "点一下换形状。" }
   },
   {
@@ -565,7 +565,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "粒子", "WebGL", "regl"],
     added: "2026-09-27",
-    notes: "收藏，原作者：Caleb Miller（推测）。【吃显卡】",
+    notes: "收藏，原作者不详。【吃显卡】",
     demo: { type: "iframe", src: "../../../网站素材/特效/粒子/喷泉/index.html", heavy: true }
   },
   {
@@ -693,7 +693,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "小游戏", "Construct 2"],
     added: "2026-09-27",
-    notes: "收藏，原作者：DoonDookStudio，Construct 2商业模板。同样要用「打开老站」起本地服务器。",
+    notes: "收藏，原作者不详，Construct 2商业模板。同样要用「打开老站」起本地服务器。",
     demo: { type: "iframe", src: "../../../网站素材/小游戏/立方体跳跃/HTML5/index.html", online: "https://old.ysevan.com/网站素材/小游戏/立方体跳跃/HTML5/", sound: "游戏音效，点进游戏才响" }
   },
   {

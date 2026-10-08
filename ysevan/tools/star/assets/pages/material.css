@@ -1,0 +1,432 @@
+/*
+ * 材质页（material.html）专用样式。外壳（令牌、条目卡、.btn、.seg、.xw 暖纸令牌）在 assets/star.css；
+ * 这里只写本页样例零件，类名一律 m- 开头，不改外壳的类。尺寸一律「1440 处的值 × --u」。
+ *
+ * 规矩：
+ * - 这一页讲的就是磨砂，所以样例里有 backdrop-filter（CLAUDE.md「条目卡不挂磨砂」那条的例外，同交互页「毛玻璃浮层」）：
+ *   · 只挂在样例里的小块玻璃上，条目卡本身照旧不挂；
+ *   · 一律经 .is-live 开关：样例框滚到视口附近（material.js 的 IntersectionObserver）才挂，滚走就摘——
+ *     软件合成下，视口里挂着模糊的面每滚一帧都要重算（交互页「毛玻璃浮层」实测），屏外的不该付这笔账；
+ *   · -webkit- 在前、标准在后成对写；做不出磨砂的浏览器由外壳第5节把 --glass 提到 .9，样例跟着走。
+ * - 动画只动 transform / opacity。例外（写在用到的地方）：「模糊三档」小窗的遮罩照外壳动 backdrop-filter 半径；
+ *   「模糊的代价」那块变色方块每帧改 background-color——它就是刷刷那次实测的做法（玻璃底下一处重画），被演示的正是这个代价。
+ * - 样例里局部切明暗只改样例容器的 data-mode，不碰外壳保留属性。
+ * - 减弱动效：外壳已把全部 transition / animation 关掉；JS 那边不起动画，直接到位。
+ */
+
+/* ---------- 通用小件 ---------- */
+.m-cap { margin: 0 0 calc(14 * var(--u)); max-width: var(--measure); color: var(--label2); font-size: calc(12.5 * var(--u)); line-height: 1.7; }
+.m-cap > b:first-child {
+  display: inline-block; margin-right: calc(6 * var(--u)); padding: 0 calc(7 * var(--u)); border-radius: 999px;
+  background: var(--accent-tint); color: var(--accent-text); font-size: calc(11.5 * var(--u)); line-height: 1.7; font-weight: 600;
+}
+.m-ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: calc(10 * var(--u)) calc(16 * var(--u)); margin: 0 0 calc(14 * var(--u)); min-width: 0; }
+.m-ctrl-row { display: flex; flex-wrap: wrap; align-items: center; gap: calc(8 * var(--u)); min-width: 0; }
+.m-label { font-size: var(--fs-xs); font-weight: 600; color: var(--label2); white-space: nowrap; }
+.m-seg { max-width: 100%; flex-wrap: wrap; }
+.m-seg button { flex: 1 1 auto; padding-left: calc(12 * var(--u)); padding-right: calc(12 * var(--u)); }
+.m-tog {
+  display: inline-flex; align-items: center; gap: calc(7 * var(--u));
+  min-height: calc(32 * var(--u)); padding: calc(4 * var(--u)) calc(14 * var(--u)); border: 0; border-radius: 999px;
+  background: var(--fill); color: var(--label); font-size: var(--fs-small); cursor: pointer;
+}
+.m-tog::before {
+  content: ""; flex: none; width: calc(10 * var(--u)); height: calc(10 * var(--u)); border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--label2);
+}
+.m-tog[aria-pressed="true"] { background: var(--accent-tint); color: var(--accent-text); font-weight: 600; }
+.m-tog[aria-pressed="true"]::before { background: currentColor; box-shadow: none; }
+.m-range { display: grid; grid-template-columns: auto minmax(calc(120 * var(--u)), 1fr) auto; align-items: center; gap: calc(10 * var(--u)); min-width: 0; flex: 1 1 calc(300 * var(--u)); }
+.m-range input[type="range"] { width: 100%; min-width: 0; margin: 0; accent-color: var(--accent); }
+.m-range output { min-width: calc(54 * var(--u)); font-size: var(--fs-small); font-weight: 600; color: var(--label); text-align: right; white-space: nowrap; }
+.m-read { margin: calc(10 * var(--u)) 0 0; max-width: var(--measure); color: var(--label2); font-size: calc(12.5 * var(--u)); line-height: 1.7; }
+.m-read b { color: var(--label); font-weight: 600; }
+.page .m-read code, .page .m-legend code, .page .m-paint code { font-size: .92em; }
+.m-chip {
+  display: inline-flex; align-items: center; gap: calc(4 * var(--u)); min-height: calc(22 * var(--u)); padding: 0 calc(9 * var(--u));
+  border-radius: 999px; font-size: calc(12 * var(--u)); font-weight: 600; line-height: 1.5; vertical-align: 1px;
+  background: var(--fill); color: var(--label2);
+}
+.m-chip[data-tone="good"] { background: var(--green-tint); color: var(--green-text); }
+.m-chip[data-tone="bad"] { background: var(--red-tint); color: var(--red-text); }
+.m-chip[data-tone="warn"] { background: var(--orange-tint); color: var(--orange-text); }
+
+/* 样例里的「后面有东西」：三团光晕（跟这一块自己的明暗与强调色走），玻璃糊的就是它 */
+.m-halo {
+  position: relative; isolation: isolate; overflow: hidden; background: var(--bg); color: var(--label);
+}
+.m-halo::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(60% 75% at 12% 10%, var(--blob1), transparent 64%),
+    radial-gradient(55% 70% at 94% 16%, var(--blob2), transparent 64%),
+    radial-gradient(65% 75% at 70% 104%, var(--blob3), transparent 64%);
+}
+/* 压在玻璃后面的大字：有它，糊没糊一眼看得出来 */
+.m-word {
+  position: absolute; z-index: 0; pointer-events: none; user-select: none;
+  font-weight: 800; letter-spacing: -.02em; line-height: 1; color: var(--accent);
+}
+
+/* 样例自己的玻璃值：不跟全站「背景模糊：关」走（外壳在 off 档把 --glass 提到 .9，样例要演示的正是 .62 的玻璃）；
+   做不出磨砂、用户要求减少透明度时照外壳第5节那套提到近乎不透明。声明挂在样例框和它里面局部切明暗的元素上，令牌就地重算。 */
+.specimen, .specimen [data-mode] {
+  --m-glass: var(--lt, rgba(255,255,255,.62)) var(--dk, rgba(40,42,52,.55));
+  --m-glass-panel: var(--lt, rgba(255,255,255,.88)) var(--dk, rgba(36,38,48,.9));
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .specimen, .specimen [data-mode] {
+    --m-glass: var(--lt, rgba(255,255,255,.9)) var(--dk, rgba(40,42,52,.92));
+    --m-glass-panel: var(--lt, rgba(255,255,255,.97)) var(--dk, rgba(36,38,48,.97));
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .specimen, .specimen [data-mode] {
+    --m-glass: var(--lt, rgba(255,255,255,.9)) var(--dk, rgba(40,42,52,.92));
+    --m-glass-panel: var(--lt, rgba(255,255,255,.97)) var(--dk, rgba(36,38,48,.97));
+  }
+}
+
+/* 磨砂开关：样例框看得见（.is-live）才挂；--m-bf 由各样例自己给 */
+.m-frost { background: var(--m-glass); }
+.is-live .m-frost {
+  -webkit-backdrop-filter: var(--m-bf, blur(24px) saturate(150%));
+  backdrop-filter: var(--m-bf, blur(24px) saturate(150%));
+}
+
+/* ---------- 1. 两档玻璃：同一张卡放在四种底上 ---------- */
+.m-glass-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(170 * var(--u)), 1fr)); gap: calc(12 * var(--u)); margin: 0; }
+.m-gbg { margin: 0; display: grid; gap: calc(8 * var(--u)); min-width: 0; }
+.m-gbg figcaption { font-size: var(--fs-xs); font-weight: 600; color: var(--label2); }
+.m-gwin { height: calc(150 * var(--u)); border-radius: calc(14 * var(--u)); display: grid; place-items: center; padding: calc(12 * var(--u)); }
+.m-gwin .m-word { left: 8%; top: 18%; font-size: calc(54 * var(--u)); opacity: .9; }
+.m-gwin-photo::before {
+  background:
+    radial-gradient(40% 55% at 20% 30%, #FF9F0A, transparent 70%),
+    radial-gradient(45% 60% at 80% 25%, #5AC8FA, transparent 70%),
+    radial-gradient(50% 60% at 55% 95%, #FF2D55, transparent 70%),
+    repeating-linear-gradient(115deg, rgba(255,255,255,.35) 0 6px, transparent 6px 18px),
+    linear-gradient(160deg, #34C759, #5856D6);
+}
+.m-gwin-photo .m-word { color: #FFFFFF; }
+.m-gwin-flat::before { background: none; }
+.m-gwin-flat .m-word { color: var(--label3); }
+.m-gcard {
+  position: relative; z-index: 1; display: grid; gap: calc(3 * var(--u)); width: 78%; min-width: 0;
+  padding: calc(12 * var(--u)) calc(14 * var(--u)); border-radius: calc(18 * var(--u));
+  box-shadow: 0 10px 30px var(--lt, rgba(20,30,60,.08)) var(--dk, rgba(0,0,0,.35)), inset 0 1px 0 var(--glass-edge);
+}
+.m-glass-grid[data-edge="off"] .m-gcard { box-shadow: 0 10px 30px var(--lt, rgba(20,30,60,.08)) var(--dk, rgba(0,0,0,.35)); }
+.m-gcard b { font-size: calc(14 * var(--u)); }
+.page .m-gcard code { padding: 0; background: none; color: var(--label2); font-size: calc(11.5 * var(--u)); overflow-wrap: anywhere; }
+.m-glass-grid[data-tier="30"] { --m-bf: blur(30px) saturate(160%); }
+.m-glass-grid[data-tier="24"] { --m-bf: blur(24px) saturate(150%); }
+.m-glass-grid[data-tier="0"] { --m-bf: none; }
+
+/* ---------- 2. 光晕画在哪：缩小的「页面」，外框当 html、里面一层当 body ---------- */
+.m-halo-demo { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: calc(16 * var(--u)); align-items: start; }
+/* 真的绘制顺序：外框是层叠上下文（isolation），body 不是；body::before 的 z-index:-1 落在外框这一层里，
+   排在外框的底之后、body 自己的底之前——所以 body 一旦写了不透明的底，就把光晕整个盖住。和真页面上 html / body 同一个顺序。 */
+.m-fhtml { position: relative; isolation: isolate; overflow: hidden; min-height: calc(200 * var(--u)); padding: calc(14 * var(--u)); border-radius: calc(14 * var(--u)); background: var(--bg); box-shadow: inset 0 0 0 1px var(--sep); }
+.m-fbody { min-height: calc(172 * var(--u)); }
+.m-fbody::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(70% 95% at 12% 8%, var(--blob1), transparent 62%),
+    radial-gradient(60% 90% at 92% 18%, var(--blob2), transparent 62%),
+    radial-gradient(70% 95% at 70% 100%, var(--blob3), transparent 62%);
+  filter: blur(10px);
+}
+.m-halo-demo[data-state="bad"] .m-fbody { background: var(--bg); }
+.m-ftitle { margin: 0 0 calc(10 * var(--u)); font-size: calc(18 * var(--u)); font-weight: 700; }
+.m-fcard { padding: calc(12 * var(--u)); border-radius: calc(14 * var(--u)); background: var(--glass-strong); box-shadow: var(--shadow); font-size: var(--fs-small); color: var(--label2); }
+.m-ftag { position: absolute; right: calc(10 * var(--u)); bottom: calc(8 * var(--u)); font-family: var(--mono); font-size: calc(11 * var(--u)); color: var(--label2); }
+.m-paint { margin: 0; padding: 0; list-style: none; display: grid; gap: calc(6 * var(--u)); counter-reset: m-paint; }
+.m-paint li {
+  position: relative; padding: calc(7 * var(--u)) calc(10 * var(--u)) calc(7 * var(--u)) calc(34 * var(--u));
+  border-radius: calc(10 * var(--u)); background: var(--raised); box-shadow: var(--shadow-sm); font-size: var(--fs-small); line-height: 1.55;
+  counter-increment: m-paint;
+}
+.m-paint li::before {
+  content: counter(m-paint); position: absolute; left: calc(10 * var(--u)); top: calc(8 * var(--u));
+  width: calc(17 * var(--u)); height: calc(17 * var(--u)); border-radius: 50%; display: grid; place-items: center;
+  background: var(--fill); color: var(--label2); font-size: calc(11 * var(--u)); font-weight: 700;
+}
+.m-paint small { display: block; color: var(--label2); font-size: var(--fs-xs); }
+.m-paint [data-l="3"] { opacity: .45; }
+.m-halo-demo[data-state="bad"] .m-paint [data-l="3"] { opacity: 1; background: var(--red-tint); color: var(--red-text); }
+.m-halo-demo[data-state="bad"] .m-paint [data-l="3"] small { color: var(--red-text); }
+.m-halo-demo[data-state="bad"] .m-paint [data-l="2"] { text-decoration: line-through; text-decoration-color: var(--red-text); }
+
+/* ---------- 3. 前缀顺序：源码 → 产物 → 产物真的套在玻璃块上 ---------- */
+.m-pfx { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(calc(170 * var(--u)), .8fr); gap: calc(12 * var(--u)); align-items: stretch; }
+.m-pane { margin: 0; display: grid; grid-template-rows: auto 1fr; gap: calc(6 * var(--u)); min-width: 0; }
+.m-pane figcaption { font-size: var(--fs-xs); font-weight: 600; color: var(--label2); }
+.specimen .m-pane pre { margin: 0; padding: calc(10 * var(--u)) calc(12 * var(--u)); font-size: calc(12 * var(--u)); line-height: 1.6; white-space: pre; overflow-x: auto; border: 1px solid var(--sep); border-radius: var(--r-sm); background: var(--code-bg); color: var(--label); }
+.m-pane pre .m-gone { color: var(--red-text); text-decoration: line-through; }
+.m-pane pre .m-kept { color: var(--green-text); }
+.m-pfx-win { height: 100%; min-height: calc(120 * var(--u)); border-radius: calc(14 * var(--u)); display: grid; place-items: center; padding: calc(10 * var(--u)); }
+.m-pfx-win .m-word { left: 16%; top: 26%; font-size: calc(54 * var(--u)); }
+.m-pfx-tile { position: relative; z-index: 1; width: 70%; padding: calc(14 * var(--u)) calc(10 * var(--u)); border-radius: calc(16 * var(--u)); background: var(--m-glass); box-shadow: var(--shadow); text-align: center; font-size: var(--fs-small); font-weight: 600; }
+
+/* ---------- 4. 降级探针：写法 × 设备 ---------- */
+.m-probe-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(calc(220 * var(--u)), .9fr); gap: calc(14 * var(--u)); align-items: start; }
+.m-probe-stack { display: grid; gap: calc(10 * var(--u)); min-width: 0; }
+.m-probe-win { min-height: calc(150 * var(--u)); border-radius: calc(14 * var(--u)); padding: calc(14 * var(--u)); display: grid; place-items: center; }
+.m-probe-win .m-word { left: 6%; top: 12%; font-size: calc(48 * var(--u)); opacity: .85; }
+.m-probe-card { position: relative; z-index: 1; width: 82%; padding: calc(12 * var(--u)) calc(14 * var(--u)); border-radius: calc(16 * var(--u)); box-shadow: var(--shadow); font-size: var(--fs-small); }
+.m-probe-card b { display: block; font-size: calc(14 * var(--u)); }
+/* 三种样子：磨砂 / 兜底的实心 .9（外壳第5节那套数）/ 没磨砂也没兜底（.62 直接压在字上） */
+.m-probe-win[data-look="frost"] .m-probe-card { background: var(--m-glass); }
+.is-live .m-probe-win[data-look="frost"] .m-probe-card { -webkit-backdrop-filter: blur(24px) saturate(150%); backdrop-filter: blur(24px) saturate(150%); }
+.m-probe-win[data-look="solid"] .m-probe-card { background: var(--lt, rgba(255,255,255,.9)) var(--dk, rgba(40,42,52,.92)); }
+.m-probe-win[data-look="bare"] .m-probe-card { background: var(--lt, rgba(255,255,255,.62)) var(--dk, rgba(40,42,52,.55)); }
+.m-verdict { margin: 0; font-size: var(--fs-small); line-height: 1.7; }
+.m-table-wrap { min-width: 0; overflow-x: auto; }
+.m-table { width: 100%; border-collapse: collapse; font-size: calc(12.5 * var(--u)); line-height: 1.55; }
+.m-table caption { caption-side: top; text-align: left; padding: 0 0 calc(6 * var(--u)); font-size: var(--fs-xs); font-weight: 600; color: var(--label2); }
+.m-table th, .m-table td { padding: calc(6 * var(--u)) calc(8 * var(--u)); border-bottom: 1px solid var(--sep); text-align: left; vertical-align: top; }
+.m-table thead th { font-size: var(--fs-xs); color: var(--label2); font-weight: 600; white-space: nowrap; }
+.m-table td.is-num { font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.page .m-table code { font-size: calc(11.5 * var(--u)); }
+
+/* ---------- 5. 磨砂放在哪：面板有多长 / 浮层压在字上 ---------- */
+.m-where { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(16 * var(--u)); align-items: start; }
+.m-where-half { display: grid; gap: calc(10 * var(--u)); min-width: 0; padding: calc(14 * var(--u)); border-radius: calc(14 * var(--u)); background: var(--raised); box-shadow: var(--shadow-sm); }
+.m-where-half h5 { margin: 0; font-size: var(--fs-small); font-weight: 700; }
+.m-meter { position: relative; height: calc(16 * var(--u)); border-radius: 999px; background: var(--fill); overflow: hidden; }
+.m-meter i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform-origin: 0 50%; transform: scaleX(var(--m-p, .2)); }
+.m-meter[data-over="true"] i { background: linear-gradient(90deg, var(--orange), var(--red)); }
+.m-meter b { position: absolute; top: -3px; bottom: -3px; width: 2px; left: var(--m-limit, 50%); background: var(--label); border-radius: 1px; }
+.m-meter-legend { display: flex; justify-content: space-between; gap: calc(8 * var(--u)); font-size: var(--fs-xs); color: var(--label2); }
+.m-pop-win { position: relative; min-height: calc(150 * var(--u)); padding: calc(12 * var(--u)); border-radius: calc(12 * var(--u)); background: var(--well); box-shadow: inset 0 0 0 1px var(--sep); overflow: hidden; }
+.m-pop-text { margin: 0; font-size: var(--fs-small); line-height: 1.75; color: var(--label); }
+.m-pop {
+  position: absolute; left: 14%; top: calc(46 * var(--u)); z-index: 2; width: 62%; margin: 0; padding: calc(4 * var(--u)); list-style: none;
+  border-radius: var(--r-sm); box-shadow: var(--shadow-pop); color: var(--label);
+}
+.m-pop li { padding: calc(5 * var(--u)) calc(10 * var(--u)); border-radius: calc(8 * var(--u)); font-size: var(--fs-small); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-pop li:first-child { background: var(--accent-tint); color: var(--accent-text); }
+.m-pop[data-look="solid"] { background: var(--raised); --m-bf: none; }
+.m-pop[data-look="glass"] { background: var(--m-glass); --m-bf: blur(30px) saturate(160%); }
+.m-pop[data-look="glass"] li:first-child { background: transparent; color: var(--label); font-weight: 600; }
+
+/* ---------- 6. 模糊的代价：拖半径、玻璃底下一块每帧变色 ---------- */
+.m-cost { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(calc(230 * var(--u)), 1fr); gap: calc(14 * var(--u)); align-items: start; }
+.m-cost-win { height: calc(210 * var(--u)); border-radius: calc(14 * var(--u)); }
+.m-cost-lines { position: absolute; inset: calc(16 * var(--u)) 0 auto calc(16 * var(--u)); display: grid; gap: calc(9 * var(--u)); width: 60%; }
+.m-cost-lines i { display: block; height: calc(9 * var(--u)); border-radius: 5px; background: var(--label); opacity: .55; }
+.m-cost-lines i:nth-child(2n) { width: 78%; }
+.m-cost-lines i:nth-child(3n) { width: 64%; }
+/* 每帧变色的方块：刷刷那次实测就是「玻璃卡里一个24px方块每帧变色」。例外（不是 transform / opacity）：
+   被演示的正是「玻璃底下有一处重画」的代价，换成合成器上的 transform 就不是同一件事了。 */
+.m-cost-dot { position: absolute; left: 58%; top: 46%; z-index: 0; width: calc(30 * var(--u)); height: calc(30 * var(--u)); border-radius: calc(8 * var(--u)); background: var(--accent); }
+.m-cost-glass {
+  position: absolute; right: calc(14 * var(--u)); top: calc(14 * var(--u)); bottom: calc(14 * var(--u)); z-index: 1; width: 52%;
+  display: grid; align-content: end; gap: calc(2 * var(--u)); padding: calc(14 * var(--u)); border-radius: calc(18 * var(--u));
+  background: var(--m-glass); box-shadow: var(--shadow);
+  --m-bf: blur(calc(var(--m-r, 24) * 1px)) saturate(150%);
+}
+.m-cost-win[data-off="true"] .m-cost-glass { --m-bf: none; }
+.m-cost-glass b { font-size: calc(22 * var(--u)); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.m-cost-glass small { color: var(--label2); font-size: var(--fs-xs); }
+.m-cost-side { display: grid; gap: calc(10 * var(--u)); min-width: 0; }
+.m-gauge { padding: calc(12 * var(--u)) calc(14 * var(--u)); border-radius: calc(12 * var(--u)); background: var(--raised); box-shadow: var(--shadow-sm); }
+.m-gauge h5 { margin: 0 0 calc(4 * var(--u)); font-size: var(--fs-xs); font-weight: 600; color: var(--label2); }
+.m-gauge p { margin: 0; font-size: var(--fs-small); line-height: 1.65; }
+.m-gauge .m-big { font-size: calc(20 * var(--u)); font-weight: 700; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.m-bar { position: relative; height: calc(8 * var(--u)); margin-top: calc(6 * var(--u)); border-radius: 999px; background: var(--fill); overflow: hidden; }
+.m-bar i { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform-origin: 0 50%; transform: scaleX(var(--m-p, 0)); }
+.m-bar[data-tone="bad"] i { background: linear-gradient(90deg, var(--orange), var(--red)); }
+
+/* ---------- 7. 模糊三档：本站「更多」面板的缩样 ---------- */
+.m-tier { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(calc(230 * var(--u)), 1fr); gap: calc(14 * var(--u)); align-items: start; }
+.m-tier-win { display: grid; grid-template-columns: 30% minmax(0, 1fr); height: calc(230 * var(--u)); border-radius: calc(14 * var(--u)); }
+.m-tier-side { position: relative; z-index: 1; display: grid; align-content: start; gap: calc(6 * var(--u)); padding: calc(12 * var(--u)) calc(10 * var(--u)); border-right: 1px solid var(--glass-edge); --m-bf: blur(30px) saturate(160%); }
+.m-tier-side i { display: block; height: calc(9 * var(--u)); border-radius: 5px; background: var(--label2); opacity: .5; }
+.m-tier-side i:first-child { width: 70%; height: calc(12 * var(--u)); background: var(--accent); opacity: .8; }
+.m-tier-main { position: relative; display: grid; align-content: start; gap: calc(8 * var(--u)); padding: calc(14 * var(--u)); }
+.m-tier-main .m-word { position: static; font-size: calc(30 * var(--u)); }
+.m-tier-main .btn { justify-self: start; height: calc(32 * var(--u)); font-size: var(--fs-small); }
+/* off：侧栏常驻磨砂也关、玻璃提到近乎不透明（同外壳 html[data-blur="off"]） */
+.m-tier-win[data-tier="off"] .m-tier-side { background: var(--lt, rgba(255,255,255,.9)) var(--dk, rgba(40,42,52,.92)); }
+.is-live .m-tier-win[data-tier="off"] .m-tier-side { -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* 遮罩：lite / off 压暗淡入；full 只糊不压暗，半径 0 → 26px（例外：动的是 backdrop-filter 半径，照外壳第13节原样） */
+.m-tier-scrim {
+  position: absolute; inset: 0; z-index: 3; border-radius: inherit;
+  background: var(--scrim-dim); opacity: 0; visibility: hidden;
+  transition: opacity .3s cubic-bezier(.4, 0, 1, 1), visibility 0s linear .3s;
+}
+.m-tier-win.is-open .m-tier-scrim { opacity: 1; visibility: visible; transition: opacity 1s cubic-bezier(.2, .7, .2, 1), visibility 0s; }
+.m-tier-win[data-tier="full"] .m-tier-scrim {
+  background: transparent; opacity: 1;
+  -webkit-backdrop-filter: blur(0px); backdrop-filter: blur(0px);
+  transition: -webkit-backdrop-filter .3s cubic-bezier(.4, 0, 1, 1), backdrop-filter .3s cubic-bezier(.4, 0, 1, 1), visibility 0s linear .3s;
+}
+.m-tier-win[data-tier="full"].is-open .m-tier-scrim {
+  -webkit-backdrop-filter: blur(26px); backdrop-filter: blur(26px);
+  transition: -webkit-backdrop-filter 1s cubic-bezier(.2, .7, .2, 1), backdrop-filter 1s cubic-bezier(.2, .7, .2, 1), visibility 0s;
+}
+.m-tier-panel {
+  position: absolute; z-index: 4; right: calc(12 * var(--u)); top: calc(12 * var(--u)); width: 56%;
+  display: grid; gap: calc(6 * var(--u)); padding: calc(12 * var(--u)) calc(14 * var(--u)); border-radius: calc(16 * var(--u));
+  box-shadow: var(--shadow-pop); opacity: 0; visibility: hidden; transform: translateY(6px) scale(.97);
+  transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
+}
+.m-tier-win.is-open .m-tier-panel { opacity: 1; visibility: visible; transform: none; transition: opacity .25s ease, transform .3s cubic-bezier(.2, .8, .2, 1), visibility 0s; }
+.m-tier-win[data-tier="full"] .m-tier-panel { background: var(--m-glass-panel); --m-bf: blur(30px) saturate(160%); }
+.is-live .m-tier-win[data-tier="full"] .m-tier-panel { -webkit-backdrop-filter: var(--m-bf); backdrop-filter: var(--m-bf); }
+.m-tier-win[data-tier="lite"] .m-tier-panel, .m-tier-win[data-tier="off"] .m-tier-panel { background: var(--glass-panel-solid); }
+.m-tier-panel h5 { margin: 0; font-size: var(--fs-small); font-weight: 700; }
+.m-tier-panel p { margin: 0; font-size: var(--fs-xs); color: var(--label2); line-height: 1.6; }
+.m-tier-x { justify-self: end; margin-top: calc(-4 * var(--u)); height: calc(26 * var(--u)); padding: 0 calc(10 * var(--u)); border: 0; border-radius: 999px; background: var(--fill); color: var(--label); font-size: var(--fs-xs); cursor: pointer; }
+.m-tier-panel .m-tier-x { order: -1; }
+.m-dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: calc(5 * var(--u)) calc(12 * var(--u)); margin: 0; font-size: calc(12.5 * var(--u)); line-height: 1.55; }
+.m-dl dt { color: var(--label2); white-space: nowrap; }
+.m-dl dd { margin: 0; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.m-flow { margin: 0; padding-left: 1.2em; font-size: calc(12.5 * var(--u)); line-height: 1.7; color: var(--label); }
+.m-flow li[data-on="true"] { color: var(--accent-text); font-weight: 600; }
+
+/* ---------- 8. 圆角阶 ---------- */
+.m-radius { --m-s: 1; display: flex; flex-wrap: wrap; align-items: flex-end; gap: calc(14 * var(--u)) calc(18 * var(--u)); padding: calc(16 * var(--u)); border-radius: calc(14 * var(--u)); }
+.m-rpart { display: grid; justify-items: center; gap: calc(6 * var(--u)); margin: 0; }
+.m-rpart figcaption { font-size: var(--fs-xs); color: var(--label2); text-align: center; line-height: 1.45; white-space: nowrap; }
+.m-rpart figcaption b { display: block; color: var(--label); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.m-rshape {
+  width: calc(var(--w) * var(--m-s) * var(--u)); height: calc(var(--h) * var(--m-s) * var(--u));
+  border-radius: calc(var(--r) * var(--m-s) * var(--u));
+  background: var(--glass-strong); box-shadow: var(--shadow);
+}
+.m-radius[data-bad="true"] .m-rshape { border-radius: calc(var(--r) * var(--u)); }
+.m-rshape.is-grad { background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 calc(6 * var(--u)) calc(14 * var(--u)) var(--accent-shadow), inset 0 1px 0 rgba(255,255,255,.45); }
+.m-rshape.is-ico { background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0)), #34C759; box-shadow: 0 2px 5px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.45); }
+.m-rshape.is-fill { background: var(--fill); box-shadow: none; }
+
+/* ---------- 9. 小屋 · 暖墨阴影：墙上的门厅卡 + 地毯上的工具卡 ---------- */
+.m-sh { --m-ink: 74,77,53; --m-tx: 0; --m-ty: 0; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: calc(26 * var(--u)); align-items: center; padding: calc(26 * var(--u)) calc(22 * var(--u)) calc(30 * var(--u)); border: 1px solid rgba(74,77,53,.17); border-radius: var(--r-md); }
+.m-sh[data-ink="black"] { --m-ink: 0,0,0; }
+.m-sh-wall, .m-sh-rug { display: grid; gap: calc(10 * var(--u)); justify-items: center; margin: 0; min-width: 0; }
+.m-sh-wall figcaption, .m-sh-rug figcaption { font-size: var(--fs-xs); color: var(--xw-ink-2); text-align: center; }
+.m-sh-stage { width: 100%; perspective: calc(900 * var(--u)); }
+/* .m-hset ＝ 小屋 hall.module.css 的 .set：挂画投影在它的 ::before 上，跟着倾斜挪 transform，不动 box-shadow */
+.m-hset { position: relative; isolation: isolate; width: 100%; transform: rotateY(calc(var(--m-tx) * 4deg)) rotateX(calc(var(--m-ty) * -3deg)); transition: transform .2s ease; }
+.m-hset::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: calc(26 * var(--u));
+  box-shadow: 0 calc(16 * var(--u)) calc(34 * var(--u)) calc(-14 * var(--u)) rgba(var(--m-ink), .22);
+  transform: translate3d(calc(var(--m-tx) * -9px), calc(var(--m-ty) * 5px), 0);
+  transition: transform .2s ease;
+}
+.m-hcard {
+  display: grid; grid-template-columns: 1fr 1.25fr; aspect-ratio: 16 / 9; overflow: hidden;
+  border: 1px solid rgba(74,77,53,.17); border-radius: calc(26 * var(--u)); background: #FFFDFA;
+  box-shadow: 0 1px 2px rgba(var(--m-ink), .05);
+}
+.m-hblob { display: grid; place-items: center; background: var(--xw-block); color: var(--xw-olive-deep); font-size: calc(34 * var(--u)); }
+.m-hplate { display: grid; place-items: center; padding: calc(12 * var(--u)); background: #FFFDFA; border-left: 1px solid rgba(74,77,53,.14); }
+.m-hpaper {
+  width: 100%; height: 100%; border-radius: calc(10 * var(--u)); box-shadow: 0 0 0 1px rgba(74,77,53,.09);
+  background:
+    radial-gradient(60% 50% at 50% 70%, rgba(126,147,103,.45), transparent 70%),
+    radial-gradient(40% 30% at 70% 30%, rgba(110,138,147,.3), transparent 70%),
+    #FFFFFF;
+}
+.m-tool {
+  width: 82%; aspect-ratio: 4 / 3; border-radius: calc(16 * var(--u)); overflow: hidden;
+  border: 1px solid var(--xw-line); background: var(--xw-card);
+  box-shadow: 0 8px 20px -10px rgba(var(--m-ink), .11);
+  display: grid; align-content: start; gap: calc(6 * var(--u)); padding: calc(12 * var(--u));
+}
+.m-tool i { display: block; height: calc(8 * var(--u)); border-radius: 4px; background: var(--xw-muted); }
+.m-tool i:first-child { width: 46%; height: calc(10 * var(--u)); background: var(--xw-olive-tint); }
+.m-rug { width: 100%; display: grid; justify-items: center; padding: calc(16 * var(--u)) 0; border-radius: calc(14 * var(--u)); background: var(--xw-muted); }
+/* 夜里成对翻（hall.module.css「夜里的装裱」）：卡纸变夜卡纸、墨色发丝线变浅色发丝线、投影换黑加深；工具卡的浮起档夜里没另写，照旧 */
+.m-sh[data-mode="dark"] .m-hcard { border-color: rgba(231,225,208,.11); background: #20232B; box-shadow: 0 1px 2px rgba(0,0,0,.4); }
+.m-sh[data-mode="dark"] .m-hset::before { box-shadow: 0 calc(16 * var(--u)) calc(34 * var(--u)) calc(-14 * var(--u)) rgba(0,0,0,.55); }
+.m-sh[data-mode="dark"] .m-hplate { background: #20232B; border-left-color: rgba(231,225,208,.1); }
+.m-sh[data-mode="dark"] .m-hpaper { box-shadow: 0 0 0 1px rgba(231,225,208,.08); filter: brightness(.7); }
+.m-sh[data-mode="dark"] { border-color: rgba(231,225,208,.11); }
+
+/* ---------- 10. 小屋 · 水彩绿植四层 ---------- */
+.m-plant { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: calc(20 * var(--u)); align-items: center; padding: calc(18 * var(--u)); border: 1px solid rgba(74,77,53,.17); border-radius: var(--r-md); }
+.m-plant[data-mode="dark"] { border-color: rgba(231,225,208,.11); }
+.m-plant-art { display: grid; place-items: center; min-width: 0; }
+.m-plant-art svg { display: block; width: min(100%, calc(200 * var(--u))); height: auto; overflow: visible; }
+/* 夜里（xiaowu-ui-spec §9.6）：整体收一档亮度，不逐叶改色 */
+.m-plant[data-mode="dark"] .m-plant-art svg { filter: brightness(.78) saturate(.85); }
+.m-plant [data-layer][data-off="true"] { opacity: 0; }
+.m-layers { display: grid; gap: calc(6 * var(--u)); margin: 0; padding: 0; list-style: none; }
+.m-layer {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: calc(10 * var(--u)); width: 100%;
+  padding: calc(7 * var(--u)) calc(10 * var(--u)); border: 0; border-radius: calc(10 * var(--u));
+  background: var(--xw-card); color: var(--xw-ink-body); box-shadow: 0 1px 2px rgba(74,77,53,.05), 0 0 0 1px var(--xw-line);
+  font-size: var(--fs-small); text-align: left; cursor: pointer;
+}
+.m-layer i { width: calc(18 * var(--u)); height: calc(18 * var(--u)); border-radius: 50%; background: var(--sw); box-shadow: inset 0 0 0 1px rgba(74,77,53,.18); }
+.m-layer small { display: block; color: var(--xw-ink-2); font-size: var(--fs-xs); }
+.m-layer[aria-pressed="false"] { background: transparent; color: var(--xw-ink-2); box-shadow: 0 0 0 1px var(--xw-line); }
+.m-layer[aria-pressed="false"] i { opacity: .25; }
+.m-plant .m-ctrl { margin: calc(10 * var(--u)) 0 0; }
+.m-plant .seg { background: var(--xw-muted); }
+.m-plant .seg button { color: var(--xw-ink-body); }
+.m-plant .seg button[aria-checked="true"] { background: var(--xw-card); }
+.m-xw-tog { min-height: calc(30 * var(--u)); padding: calc(3 * var(--u)) calc(12 * var(--u)); border: 0; border-radius: 999px; background: var(--xw-muted); color: var(--xw-ink-body); font-size: var(--fs-xs); cursor: pointer; }
+
+/* ---------- 11. backdrop root：父框加了什么，里面的磨砂就够不着后面 ---------- */
+.m-root-win {
+  position: relative; display: grid; place-items: center; height: calc(190 * var(--u)); border-radius: calc(14 * var(--u)); overflow: hidden;
+  background: repeating-linear-gradient(90deg, var(--label) 0 calc(9 * var(--u)), var(--bg) calc(9 * var(--u)) calc(20 * var(--u)));
+}
+.m-root-parent {
+  position: relative; display: grid; place-items: center; width: 72%; height: 74%; border-radius: calc(16 * var(--u));
+  background: var(--lt, rgba(255,255,255,.12)) var(--dk, rgba(40,42,52,.12)); box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.m-root-parent > span { position: absolute; left: calc(10 * var(--u)); top: calc(6 * var(--u)); font-family: var(--mono); font-size: calc(11 * var(--u)); color: var(--accent-text); background: var(--raised); padding: 0 calc(6 * var(--u)); border-radius: 6px; }
+.m-root-parent[data-p="vt"] { view-transition-name: m-root-demo; }
+.m-root-parent[data-p="opacity"] { opacity: .99; }
+.m-root-parent[data-p="filter"] { filter: saturate(100%); }
+.m-root-chip {
+  display: grid; gap: calc(2 * var(--u)); width: 64%; padding: calc(12 * var(--u)) calc(14 * var(--u)); border-radius: calc(14 * var(--u));
+  box-shadow: var(--shadow); text-align: center; font-size: var(--fs-small);
+  --m-bf: blur(12px) saturate(150%);
+}
+.m-root-chip b { font-size: calc(14 * var(--u)); }
+.page .m-root-chip code { padding: 0; background: none; color: var(--label2); font-size: calc(11.5 * var(--u)); overflow-wrap: anywhere; }
+
+/* ---------- 断点 ---------- */
+@media (max-width: 1100px) {
+  .m-pfx { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .m-pfx-prev { grid-column: 1 / -1; }
+  .m-pfx-win { min-height: calc(110 * var(--u)); }
+}
+@media (max-width: 900px) {
+  .m-cost, .m-tier, .m-probe-grid, .m-halo-demo { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .m-where, .m-sh, .m-plant { grid-template-columns: minmax(0, 1fr); }
+  .m-pfx { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  /* 窄屏：样例里的代码框折行（不留横滑，免得多一个Tab位、藏一截看不见的字）；本浏览器实测表改成一行一块 */
+  .specimen .m-pane pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .m-table td.is-num { white-space: normal; }
+  .m-table-stack, .m-table-stack tbody, .m-table-stack tr, .m-table-stack th, .m-table-stack td { display: block; }
+  .m-table-stack thead { display: none; }
+  .m-table-stack tr { padding: 8px 0; border-bottom: 1px solid var(--sep); }
+  .m-table-stack th, .m-table-stack td { padding: 2px 0; border: 0; }
+  .m-table-stack td::before { content: attr(data-h) "："; color: var(--label2); }
+  .m-plant-art svg { width: min(70%, 200px); }
+  .m-glass-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .m-gwin { height: 120px; padding: 8px; }
+  .m-gwin .m-word { font-size: 40px; }
+  .m-gcard { width: 92%; padding: 9px 10px; }
+  .m-range { grid-template-columns: minmax(0, 1fr) auto; }
+  .m-range > .m-label { grid-column: 1 / -1; }
+  .m-tier-win { grid-template-columns: 26% minmax(0, 1fr); height: 250px; }
+  .m-tier-panel { width: 78%; }
+  .m-sh { padding: 18px 14px 22px; gap: 20px; }
+  .m-radius { gap: 12px 14px; padding: 12px; }
+}
+/* 减弱动效：外壳已关全部过渡；这里把倾斜钉回原位以外的东西都不用管（倾斜是用户拖出来的，照拖的值直接到位） */
+@media (prefers-reduced-motion: reduce) {
+  .m-tier-panel { transform: none; }
+}

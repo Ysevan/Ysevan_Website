@@ -2,8 +2,9 @@
  * 总览页专属脚本（defer，排在 star.js → kit.js → data/search-index.js → data/updates.js 之后）。
  *
  * 一、开头的门面（第二阶段，2026-10-08；规格取自交互页 / 色彩页对应条目的「数值 / 代码」）
- *   条目星球（ix-xw-globe，底是 c-stage 星野舞台）：星上每个点是色彩、交互两章的一条（STAR_SEARCH 里 p 为 color /
- *     interaction 的，字用短名 n、去掉括号注记，没有 n 就截标题），按章节着色（nav.js PAGES 的 tint）。
+ *   条目星球（ix-xw-globe，底是 c-stage 星野舞台）：星上每个点是十章里的一条（STAR_SEARCH 里 p 为 nav.js PAGES 里
+ *     除总览、收藏以外各页的项，0.4.0 起152条），字用短名 n、去掉括号注记，没有 n 就截标题，按章节着色（PAGES 的 tint）；
+ *     舞台副标题与读屏说明里的「除收藏外9章的152条」从数据现算（收藏的卡片不是条目，不上星）。
  *     朝里那半边只留点、不显示字，转到正面渐显；朝外那半边两个标签框相交时，离观者远的那个字淡掉、点留着
  *     （只改字的 opacity，框按开页量好的宽高乘缩放算，每帧不读布局）。约80秒一圈；手按下去立刻停，
  *     鼠标停在点上、键盘选中时也停，放开后慢慢恢复；按下那一点跟着指针走（转速 = 1 / 半径），俯仰限位 ±0.7 弧度，
@@ -13,8 +14,9 @@
  *     星点 aria-hidden；聚焦后 ←→ 换「选中」的那颗、转到正面、播报标题，Home / End 到头尾，Enter 打开。
  *     减弱动效：不自转、不带惯性，拖动照常，换选中直接到位。
  *     性能：只在星球看得见（IntersectionObserver）、页面可见、没有整页弹层开着时跑 rAF（回调名 globeFrame，量具按名字数）；
- *     每帧只写 transform（透明度、层级、能不能点只在变了时写）。星点闪烁同样只在舞台看得见时走。
- *   随便翻一条（c-button 的主按钮）：是个链接，href 在色彩、交互两章里随机挑一条；回到本页（bfcache）时重挑。
+ *     每帧只写 transform（透明度、层级、能不能点只在变了时写）；没人碰、自己慢慢转时画面更新压到约30帧
+ *     （152个点各占一层，没显卡时合成按层算）。星点闪烁同样只在舞台看得见时走。
+ *   随便翻一条（c-button 的主按钮）：是个链接，href 在星上那些条目（十章）里随机挑一条；回到本页（bfcache）时重挑。
  *   本书进度（ix-sheet-ring）：StarKit.sheet kind:"ring"，圆环与中心数字都是「已上线的章 / 全部章」（nav.js PAGES 现算，
  *     总览不算一章），下面列各章状态与条数（count；收藏按 STAR_SEARCH 里 p=collection 的条数）。
  *   更新记录（ix-sheet-ruler）：StarKit.sheet kind:"ruler"，StarKit.ruler 画53周、today 传 new Date()；marks 是
@@ -125,8 +127,22 @@
     var m = String(tint || "").match(/#[0-9a-f]{6}/gi);
     return m ? m[Math.floor(m.length / 2)] : "#FFFFFF";
   }
-  var GLOBE_PAGES = ["color", "interaction"];
+  /* 星上收哪几章：nav.js PAGES 里除了总览、收藏的页（「做法」「避坑」两组），顺序照 PAGES */
+  var GLOBE_PAGES = NAV ? NAV.pages.filter(function (p) { return p.id !== "index" && p.id !== "collection"; }).map(function (p) { return p.id; }) : ["color", "interaction"];
   var globeItems = SEARCH ? SEARCH.items.filter(function (it) { return GLOBE_PAGES.indexOf(it.p) >= 0 && it.f; }) : [];
+  /* 星上实际有条目的章（索引还没跟上的章不算）：「除收藏外9章」/「色彩、交互两章」/「3章」。
+     收藏也算一章（「本书进度」的10章里有它），但它的卡片不是条目、不上星，所以写明除了它 */
+  var globeChapters = GLOBE_PAGES.filter(function (id) { return globeItems.some(function (it) { return it.p === id; }); });
+  function globeScope() {
+    var n = globeChapters.length;
+    if (n > 1 && n === GLOBE_PAGES.length) {
+      var left = NAV ? NAV.pages.filter(function (p) { return p.id !== "index" && GLOBE_PAGES.indexOf(p.id) < 0; }).map(function (p) { return p.title; }) : [];
+      return (left.length ? "除" + left.join("、") + "外" : "全部") + n + "章";
+    }
+    if (n === 1) return pageTitle(globeChapters[0]);
+    if (n === 2) return globeChapters.map(pageTitle).join("、") + "两章";
+    return n + "章";
+  }
   function kitOpen() { return !!(KIT && KIT.isOpen && KIT.isOpen()); }
   var globeKick = function () {};
 
@@ -136,7 +152,9 @@
     var host = $("[data-globe]");
     if (!hero || !host) return;
     var nOut = $("[data-globe-n]");
+    var scopeOut = $("[data-globe-scope]");
     if (nOut && globeItems.length) nOut.textContent = String(globeItems.length);
+    if (scopeOut && globeItems.length) scopeOut.textContent = globeScope();
     if (!globeItems.length || !window.requestAnimationFrame) return;
     var ball = $(".globe-ball", host);
     var cap = $(".globe-cap", host);
@@ -178,14 +196,13 @@
     ball.insertBefore(orb, ball.firstChild);
 
     /* 整颗星一个Tab位：容器可聚焦，星点 aria-hidden（球本身在 HTML 里是 aria-hidden，这里有了内容才放出来） */
-    var chapterNames = GLOBE_PAGES.map(pageTitle).filter(Boolean).join("、");
     host.removeAttribute("aria-hidden");
     ball.setAttribute("aria-hidden", "true");
     cap.setAttribute("aria-hidden", "true");
     host.setAttribute("tabindex", "0");
     host.setAttribute("role", "application");
     host.setAttribute("aria-roledescription", "条目星球");
-    host.setAttribute("aria-label", "条目星球：" + chapterNames + "两章共" + N + "条。左右方向键换一条并转到正面，Home、End到头尾，回车打开那一条。");
+    host.setAttribute("aria-label", "条目星球：" + globeScope() + "共" + N + "条。左右方向键换一条并转到正面，Home、End到头尾，回车打开那一条。");
 
     var yaw = 0.35, pitch = -0.16, vel = 0, spin = reduced() ? 0 : 1, target = null;
     var pressed = null, hovering = -1, kbd = false, sel = -1;
@@ -199,10 +216,14 @@
       var lw = 0, lh = 0;
       /* 每个标签的盒子（不含 transform）只在这里量一次，每帧避让按它乘缩放算，不再读布局 */
       for (var j = 0; j < N; j++) {
-        pts[j].w = pts[j].el.offsetWidth;
-        pts[j].h = pts[j].el.offsetHeight;
-        lw = Math.max(lw, pts[j].w);
-        lh = Math.max(lh, pts[j].h);
+        var pj = pts[j], dot = pj.el.firstChild;
+        pj.w = pj.el.offsetWidth;
+        pj.h = pj.el.offsetHeight;
+        /* 点相对标签中心的横向偏移与半径（点在标签最左边）：避让时点也算一个小框 */
+        pj.dx = dot.offsetLeft + dot.offsetWidth / 2 - pj.w / 2;
+        pj.dr = dot.offsetWidth / 2 + 3;
+        lw = Math.max(lw, pj.w);
+        lh = Math.max(lh, pj.h);
       }
       /* 最宽那个名字在左右两边也不出框：横向留半个名字宽，纵向留半个名字高 */
       var ax = w / 2 - lw * 0.45;
@@ -231,9 +252,8 @@
         p.sc = s * (on ? 1.12 : 1);
         var tf = "translate3d(" + p.X.toFixed(1) + "px," + p.Y.toFixed(1) + "px,0) scale(" + p.sc.toFixed(3) + ") translate(-50%,-50%)";
         if (tf !== p.tf) { p.tf = tf; p.el.style.transform = tf; }
-        /* 背面淡、正面亮（.12 → 1），只在跨过 1/40 档时写 */
-        var o = on ? 1 : Math.round((0.12 + 0.88 * Math.pow((z2 + 1) / 2, 2)) * 40) / 40;
-        if (o !== p.o) { p.o = o; p.el.style.opacity = String(o); }
+        /* 背面淡、正面亮（.12 → 1）；真正写进去在 declutter 里（被前面的字压着的点还要再压淡），只在跨过 1/40 档时写 */
+        p.ob = on ? 1 : Math.round((0.12 + 0.88 * Math.pow((z2 + 1) / 2, 2)) * 40) / 40;
         var zi = on ? 99 : Math.round((z2 + 1) * 20);
         if (zi !== p.zi) { p.zi = zi; p.el.style.zIndex = String(zi); }
         /* 只有朝前的那半能点：背面那些被前面的挡着，点不准 */
@@ -243,12 +263,14 @@
       }
       declutter();
     }
-    /* 前半球的避让：从离观者最近的往后排（悬停 / 键盘选中的那颗排最前），后来的标签框和已摆下的相交，
-       它的字就淡掉、点留着。只改字的 opacity（过渡 .25s 在 CSS 里），框大小用 measure() 量好的宽高乘缩放，不读布局。
+    /* 前半球的避让：从离观者最近的往后排（悬停 / 键盘选中的那颗排最前），后来的标签框和已摆下的字框相交、
+       或者压着更近的那些点，它的字就淡掉、点留着；更远的点落在已摆下的字框里，整颗压到 .1（不从字缝里透出来）。
+       只改 opacity（字的过渡 .25s 在 CSS 里），框大小用 measure() 量好的宽高乘缩放，不读布局。
        已经显示的允许压2px、还没显示的要先空出3px才亮：转到边界上时不来回闪。 */
     var order = [];
     for (var oi = 0; oi < N; oi++) order.push(oi);
-    var boxes = [];
+    var boxes = [];     /* 已摆下的字框：中心 x、y、半宽、半高 */
+    var dots = [];      /* 已经过的（更近的）朝前那半的点：中心 x、y、半径 */
     function nearFirst(a, b) {
       var la = lit(a), lb = lit(b);
       if (la !== lb) return la ? -1 : 1;
@@ -256,20 +278,37 @@
     }
     function declutter() {
       order.sort(nearFirst);
-      var nb = 0;
+      var nb = 0, nd = 0, b;
       for (var k = 0; k < N; k++) {
         var j = order[k], p = pts[j], on = lit(j), a = 0;
+        var px = p.X + p.dx * p.sc, pr = p.dr * p.sc;
+        /* 这颗点落在更近那些已摆下的字框里：压淡，免得从字缝里透出来 */
+        var under = false;
+        if (!on) {
+          for (b = 0; b < nb; b += 4) {
+            if (Math.abs(px - boxes[b]) < boxes[b + 2] && Math.abs(p.Y - boxes[b + 1]) < boxes[b + 3]) { under = true; break; }
+          }
+        }
         if (on || p.depth > NAME_Z0) {
           a = on ? 1 : Math.min(1, Math.round((p.depth - NAME_Z0) / NAME_ZR * 10) / 10);
-          var hw = p.w * p.sc / 2, hh = p.h * p.sc / 2, m = p.na > 0 ? -2 : 3, hit = false;
-          if (!on) {
-            for (var b = 0; b < nb; b += 4) {
+          var hw = p.w * p.sc / 2, hh = p.h * p.sc / 2, m = p.na > 0 ? -2 : 3, hit = under;
+          if (!on && !hit) {
+            for (b = 0; b < nb; b += 4) {
               if (Math.abs(p.X - boxes[b]) < hw + boxes[b + 2] + m && Math.abs(p.Y - boxes[b + 1]) < hh + boxes[b + 3] + m) { hit = true; break; }
+            }
+          }
+          /* 字框压着更近的点（那颗点画在字上面）也不显示 */
+          if (!on && !hit) {
+            for (b = 0; b < nd; b += 3) {
+              if (Math.abs(p.X - dots[b]) < hw + dots[b + 2] + m && Math.abs(p.Y - dots[b + 1]) < hh + dots[b + 2] + m) { hit = true; break; }
             }
           }
           if (hit) a = 0;
           else if (a > 0) { boxes[nb++] = p.X; boxes[nb++] = p.Y; boxes[nb++] = hw; boxes[nb++] = hh; }
         }
+        if (p.depth > NAME_Z0 && !under) { dots[nd++] = px; dots[nd++] = p.Y; dots[nd++] = pr; }
+        var o = under ? Math.min(p.ob, 0.1) : p.ob;
+        if (o !== p.o) { p.o = o; p.el.style.opacity = String(o); }
         if (a !== p.na) {
           p.na = a;
           p.name.style.opacity = String(a);
@@ -280,6 +319,8 @@
     function stopped() { return reduced() || !!pressed || kbd || hovering >= 0; }
     function running() { return visible && !doc.hidden && !kitOpen() && (spin > 0 || vel !== 0 || !!target || !stopped()); }
     /* 回调名给量具用：按函数名数 rAF 次数（看不见、页面在后台时必须是0） */
+    var drawnAt = 0;
+    var IDLE_MS = 30;             /* 自转时两次画面更新至少隔30ms（≈30帧） */
     function globeFrame(now) {
       raf = 0;
       var dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
@@ -298,9 +339,12 @@
         vel *= Math.pow(0.05, dt);
         if (Math.abs(vel) < 0.01) vel = 0;
       }
-      apply();
+      /* 降帧：只在「没人碰、自己慢慢转」时把画面更新压到约30帧（每帧位移不到1px，看不出来），
+         152个点各占一层，没显卡的机器上合成那一步按层算；拖动、惯性、转到选中那颗、停下的那一帧照常每帧画 */
+      var idle = !target && !pressed && vel === 0 && spin === 1 && hovering < 0 && !kbd;
+      if (!idle || now - drawnAt >= IDLE_MS || !drawnAt) { drawnAt = now; apply(); }
       if (running()) raf = window.requestAnimationFrame(globeFrame);
-      else last = 0;
+      else { last = 0; drawnAt = 0; }
     }
     function kick() {
       if (raf || !visible || doc.hidden || kitOpen()) return;
@@ -496,7 +540,7 @@
     kick();
   })();
 
-  /* ---- 随便翻一条（c-button 主按钮）：链接，href 在两章里随机挑；回到本页时重挑 ---- */
+  /* ---- 随便翻一条（c-button 主按钮）：链接，href 在星上那些条目里随机挑；回到本页时重挑 ---- */
   (function initRandom() {
     var a = $("[data-random]");
     if (!a || !globeItems.length) return;
@@ -532,8 +576,11 @@
     });
     var sum = doc.createElement("p");
     sum.className = "pg-sum";
-    sum.textContent = "上线的" + ready.length + "章共收" + total + "条：" + parts.join("、") + "。其余" + (chapters.length - ready.length) +
-      "章还没写，导航里标「" + NAV.pendingLabel + "」。";
+    /* 全部上线时不写「其余0章还没写」 */
+    sum.textContent = ready.length === chapters.length
+      ? chapters.length + "章都已上线，共收" + total + "条：" + parts.join("、") + "。"
+      : "上线的" + ready.length + "章共收" + total + "条：" + parts.join("、") + "。其余" + (chapters.length - ready.length) +
+        "章还没写，导航里标「" + NAV.pendingLabel + "」。";
     body.appendChild(sum);
     var html = "";
     NAV.groups.forEach(function (g) {

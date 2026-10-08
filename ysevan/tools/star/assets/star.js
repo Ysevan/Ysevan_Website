@@ -53,7 +53,7 @@
  *      g 分组 / pt 页面名、s 摘要（按这个顺序排名）；结果项 = 标题（命中 <mark>）+ 章节名 + 摘要一行，点或回车跳 item.f。
  *  13. 跳转点亮（「本站这里在用」的落点）：地址是 #spot-名字 时，找 [data-spot~="名字"] 里第一个看得见的；
  *      看不见但在「更多」面板里的（≤900 的外观控件）先打开面板。内置几个不用写属性的：copy / pull / trap / theme /
- *      accent / blur / reset / search / nav / brand / skip / more（见 spotBuiltin）。瞬间滚到视口中间（不平滑，长页会跑偏），
+ *      accent / blur / reset / search / nav / brand / skip / more / pagein（正文页头，mo-page）（见 spotBuiltin）。瞬间滚到视口中间（不平滑，长页会跑偏），
  *      外壳固定 / 吸顶部件只滚到「刚好看得见」；一圈强调色光环亮两下（1.2s；减弱动效改静态描边2秒）。hashchange 也处理，
  *      同一个地址再点一次也亮。带普通 #锚点 打开时 boot.js 先关平滑滚动，这里 load 之后摘掉 data-jump。
  *  14. 按压倾斜（ix-press）：委托在 document 上，作用于 a.row、.list .row 与任何 [data-press]。
@@ -68,7 +68,7 @@
  *      拖把手跟手下移带≤2°摆动（2·sin(p·π) + dx·.04，封顶±2°），过40%松手展开、不到弹回（.5s cubic-bezier(.3,1.35,.5,1)；
  *      展开 .45s cubic-bezier(.2,.7,.2,1)）；点把手、空格 / 回车直接展开 / 收起，↓ 展开、↑ 或 Esc 收起；
  *      把手是 button + aria-expanded + aria-controls，名字「展开全部N行代码」；复制按钮永远复制全文。
- *      阈值：四页 <pre> 共44段，行数分布 1–18，超过14行的只有3段（15、17、18行，都在交互页）。不往下调：
+ *      阈值：十一页样例框外的 <pre> 共137段，行数分布 2–19，超过14行的14段（15–19行：动画7、交互3、布局3、材质1；0.4.0时量）。不往下调：
  *      13行以下收到8行只藏得住5行以内，拉一下换5行不划算；14行以上藏掉的至少和露出来的差不多多。
  *      例外（不只动 transform）：代码块在正文流里，展开必须把下面的内容往下推，所以动的是 .code-clip 的 height
  *      （拖动中每帧一次布局；松手 height 过渡）；把手那一截的摆动是 transform。减弱动效：拖动照样跟手，松手直接到位。
@@ -80,7 +80,7 @@
  *      第一次判完挂 data-hero-checked（摘掉 star.css 的开页预判），下一帧才挂 hero-live 放开切换过渡：开页不渐变。
  *  18. 切页：正文 .page 的 CSS 进场在 star.css；跨文档 View Transition 新页一侧在 boot.js（pagereveal），
  *      旧页一侧在这里（pageswap）：模糊档位不是 full、减弱动效 → 跳过；≤600 顶栏已经滚出视口就不给它起名。
- *  19. 侧栏导航装不下时（视口比 1440×900 扁，star.css 第19节先收紧了竖向节奏），把当前页那一项滚到看得见（只滚 .side-nav 自己）。
+ *  19. 侧栏导航装不下时（视口比 1440×900 扁，star.css 第19节先收紧了竖向节奏），把当前页那一项滚到看得见（只滚 .side-nav 自己）；601–900的顶栏里导航横排、在自己框里横滑，当前页那项同样横向滚进来。
  *
  * window.StarShell：
  *   buildToc() / enhanceCode(scope) / announce(text) / copy(text) → Promise / closeMore(restoreFocus)
@@ -508,7 +508,7 @@
         announce("已复制代码");
       } else {
         showBubble(btn, "已复制");
-        announce("已复制 " + text);
+        announce("已复制" + text);
       }
     }, function () {
       announce("复制失败，请手动选择");
@@ -630,7 +630,7 @@
     each(NAV.pages, function (p) { if (p.id === NAV.current) cur = p; });
     if (!cur || typeof cur.count !== "number") return;
     var n = doc.querySelectorAll(".page .entry").length;
-    if (n !== cur.count) console.warn("[star] nav.js 里「" + cur.title + "」的 count 是 " + cur.count + "，页面实际 " + n + " 条：同一轮改一处。");
+    if (n !== cur.count) console.warn("[star] nav.js 里「" + cur.title + "」的 count 是" + cur.count + "，页面实际" + n + "条：同一轮改一处。");
   }
 
   /* ---------- 9. 图标占位 ---------- */
@@ -1421,6 +1421,7 @@
       case "nav": return phone() ? firstVisible(".tabbar") : firstVisible(".side-nav");
       case "brand": return firstVisible(".side .brand");
       case "skip": return doc.querySelector(".skip");
+      case "pagein": return firstVisible("main.page > .page-head");   /* 切页进场（mo-page）：进场的是正文，页头是第一眼看到的那块 */
       case "more":
         if (!narrow()) return firstVisible(".side-foot");
         if (!panelOpen()) openMore(moreToggleVisible());
@@ -1839,17 +1840,27 @@
 
   /* ---------- 起步 ---------- */
   /* 侧栏导航只滚中间那段（视口比 1440 构图扁时装不下，见 star.css 第7节）：当前页那一项要在看得见的地方，
-     只动 .side-nav 自己的 scrollTop，不滚页面 */
+     只动 .side-nav 自己的 scrollTop，不滚页面。601–900的顶栏里导航横排（第12节），十章全上线后768一屏装不下，
+     同样只动它自己的 scrollLeft；≤600时导航在底部 tab bar，不管 */
   function revealCurrentNav() {
-    if (narrow()) return;
+    if (phone()) return;
     var nav = doc.querySelector(".side-nav");
     var cur = nav ? nav.querySelector(".nav-item[aria-current]") : null;
-    if (!cur || nav.scrollHeight <= nav.clientHeight + 1) return;
+    if (!cur) return;
     var nr = nav.getBoundingClientRect();
     var ir = cur.getBoundingClientRect();
+    if (narrow()) {
+      if (nav.scrollWidth <= nav.clientWidth + 1) return;
+      if (ir.right > nr.right - 4) nav.scrollLeft += ir.right - nr.right + 12;
+      else if (ir.left < nr.left + 4) nav.scrollLeft -= nr.left - ir.left + 12;
+      return;
+    }
+    if (nav.scrollHeight <= nav.clientHeight + 1) return;
     if (ir.bottom > nr.bottom - 4) nav.scrollTop += ir.bottom - nr.bottom + 12;
     else if (ir.top < nr.top + 4) nav.scrollTop -= nr.top - ir.top + 12;
   }
+  onMq(mqNarrow, revealCurrentNav);   /* 窗口跨过900：导航从竖排换横排（或反过来），重新滚一次 */
+  onMq(mqPhone, revealCurrentNav);
   enhanceCode(doc);
   buildChapters();
   function onReady() { buildToc(); enhanceCode(doc); checkCount(); queueHero(); revealCurrentNav(); }

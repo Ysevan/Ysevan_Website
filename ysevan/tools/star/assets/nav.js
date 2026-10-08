@@ -22,7 +22,7 @@
  * 同时暴露 window.STAR_NAV（页面清单 + 图标），总览页的章节目录、star.js 的 favicon 都从这里取，不另抄一份。
  */
 (function () {
-  var VERSION = "0.3.0";
+  var VERSION = "0.4.1";
 
   /* 图标：24×24 视窗，线条 stroke 1.9、圆头圆角（SPEC §5b）；颜色一律 currentColor。
      只有本来就是实心的形（「更多」的三个点）用填充。 */
@@ -67,17 +67,18 @@
   var PAGES = [
     { id: "index", file: "index.html", title: "总览", group: "开始", icon: "overview", tint: "#007AFF", sub: "怎么用这本合集、两种气质、屋主的审美原则", ready: true, tab: true },
     { id: "color", file: "color.html", title: "色彩", group: "做法", icon: "color", tint: "linear-gradient(135deg,#FF9500,#FF2D55 55%,#AF52DE)", sub: "玻璃风色板、强调色两档、光晕、对比度；小屋暖纸与身份色", ready: true, tab: true, count: 17 },
-    { id: "type", file: "type.html", title: "排版", group: "做法", icon: "type", tint: "#FF9500", sub: "字体栈、字阶、行宽、中英文空格、楷书巨字" },
-    { id: "layout", file: "layout.html", title: "布局与自适应", group: "做法", icon: "layout", tint: "#30B0C7", sub: "骨架、clamp、大屏等比放大、断点、dvh" },
-    { id: "material", file: "material.html", title: "材质", group: "做法", icon: "material", tint: "#8E8E93", sub: "液态玻璃写法与降级、磨砂放在哪、暖墨阴影" },
+    { id: "type", file: "type.html", title: "排版", group: "做法", icon: "type", tint: "#FF9500", sub: "字体栈、字阶、行宽、中英文空格、楷书巨字", ready: true, count: 16 },
+    { id: "layout", file: "layout.html", title: "布局与自适应", group: "做法", icon: "layout", tint: "#30B0C7", sub: "骨架、clamp、大屏等比放大、断点、dvh", ready: true, count: 17 },
+    { id: "material", file: "material.html", title: "材质", group: "做法", icon: "material", tint: "#8E8E93", sub: "液态玻璃写法与降级、磨砂放在哪、暖墨阴影", ready: true, count: 11 },
     { id: "interaction", file: "interaction.html", title: "交互", group: "做法", icon: "interaction", tint: "#AF52DE", sub: "分组列表、主题切换、自动保存、输入法、Esc、弹窗", ready: true, tab: true, count: 27 },
-    { id: "motion", file: "motion.html", title: "动画", group: "做法", icon: "motion", tint: "#00C7BE", sub: "曲线与时长、FLIP、减弱动效、手写开场" },
-    { id: "3d", file: "3d.html", title: "3D与性能", group: "做法", icon: "cube", tint: "#A2845E", sub: "叠加不替换、两段式探测、看门狗、停稳重画" },
-    { id: "rejected", file: "rejected.html", title: "否掉的方向", group: "避坑", icon: "rejected", tint: "#FF3B30", sub: "按时间线：否掉了什么、原话、为什么不是那样" },
-    { id: "method", file: "method.html", title: "做网站的方法", group: "避坑", icon: "method", tint: "#34C759", sub: "验收档位、先量后截图、防假信号、测试静音" },
+    { id: "motion", file: "motion.html", title: "动画", group: "做法", icon: "motion", tint: "#00C7BE", sub: "曲线与时长、FLIP、减弱动效、手写开场", ready: true, count: 17 },
+    { id: "3d", file: "3d.html", title: "3D与性能", group: "做法", icon: "cube", tint: "#A2845E", sub: "叠加不替换、两段式探测、看门狗、停稳重画", ready: true, count: 12 },
+    { id: "rejected", file: "rejected.html", title: "否掉的方向", group: "避坑", icon: "rejected", tint: "#FF3B30", sub: "按时间线：否掉了什么、原话、为什么不是那样", ready: true, count: 10 },
+    { id: "method", file: "method.html", title: "做网站的方法", group: "避坑", icon: "method", tint: "#34C759", sub: "验收档位、先量后截图、防假信号、测试静音", ready: true, count: 25 },
     { id: "collection", file: "collection.html", title: "收藏", group: "收藏", icon: "heart", tint: "#FF2D55", sub: "好看的skill、有意思的项目、提示词、老站特效", ready: true, tab: true }
   ];
 
+  /* 待建页（ready:false）在导航上标的字。0.4.0 起十章全部上线、没有页面用到它；留着给以后新加的章 */
   var PENDING_LABEL = "下一轮补";
   var body = document.body;
   var current = body ? body.getAttribute("data-page") : "";
