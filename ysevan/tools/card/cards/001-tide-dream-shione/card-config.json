@@ -1,0 +1,40 @@
+{
+  "mode": "holographic",
+  "title": "潮梦·汐音",
+  "subtitle": "TIDE DREAMER",
+  "technique": "月潮回响",
+  "tagline": "听见深海温柔的回声",
+  "edition": "01 / 13",
+  "collection": "蓝调幻光 · 第一辑",
+  "description": "月色落进海面，潮声在梦里回响。最初收藏的那一抹冰蓝。",
+  "parameters": {
+    "subjectScale": 1.2,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.9,
+    "particles": 0.8,
+    "glow": 0.72
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "assets": {
+    "model": "../../shared/card.glb",
+    "cover": "./cover.png",
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png"
+  },
+  "id": "001-tide-dream-shione",
+  "accent": "#8acbe8",
+  "matte": "#182b3d",
+  "originalWidth": 1080,
+  "originalHeight": 1500,
+  "previous": "../013-sakura-silver/",
+  "next": "../002-snow-letter/"
+}

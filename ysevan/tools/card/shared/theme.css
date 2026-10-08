@@ -1,0 +1,130 @@
+/*
+ * 苹果液态玻璃风 · 四个工具共用的令牌与基础组件（真源：docs/SPEC-apple-glass.md 与 docs/shua-glass.html，2026-09-23 屋主拍板，替代六套粉彩）。
+ * 主题：html[data-mode="light|dark|auto"] + html[data-accent="blue|green|indigo|orange|pink|teal"]，auto 的实际明暗由 theme.js 写成 html.m-dark。
+ * 三档：填充 / 渐变 / 图标 / 色点 / 焦点环用 SPEC 原值（--accent、--accent-2）；文字（正文链接 / chip 字）用 HIG 增强对比度值（--accent-text）；
+ * 主按钮 = 品牌图标同一个 linear-gradient(135deg, accent, accent-2) + 白字 + text-shadow，浅色深色一样。这是屋主 2026-09-23 拍板的「审美优先的可读性例外」：
+ *   白字对渐变两端（深端 / 浅端）实算：蓝 浅 4.02 / 1.9，深 3.65 / 1.72；绿 浅 2.22 / 1.55，深 2.02 / 1.55；靛 浅 5.65 / 3.52，深 5.06 / 3.52；橙 浅 2.2 / 1.41，深 2.06 / 1.41；粉 浅 3.65 / 2.02，深 3.52 / 2.02；青 浅 2.57 / 1.72，深 1.99 / 1.72。CDP 对主按钮只记录不断言，渐变不再压深。
+ * card 默认强调色是靛（别的工具默认蓝）。舞台底是屋主选的「D 星野」：深夜蓝紫 160° 渐变（中段混 18% 强调色）+ 中心 45% 强调色柔光 + 十二颗星点 + 四周暗角，深色模式底再压一档。
+ * 对比度按 SPEC §5d 两条路验收（公式法压最不利光晕角 + 像素法逐元素取底色众数，任一条不过即不过）。card 自测后在统一值上再压深（§5c 允许并要求记录）：
+ *   次级文字浅色 .76 → **.89**（.76 在裸光晕上最低只有 3.52：hero 副标题、页脚这类不在玻璃上的文字直接压 blob）；深色 .62 → **.64**（.62 实测 4.47）。
+ *   三级 --label3 只用于 chevron 与「/」分隔，**不承载文字**：页脚与滑块两端说明原本用它（实测 2.01 / 2.56），已改回 --label2。
+ *   chip 与 btn-tint 的底从半透明 --accent-soft 改 **实色 --accent-chip**（浅 = 强调色兑 10% 进白，深 = 兑 18% 进 #17181C）：半透明底会把光晕与卡光晕吃进来，实测低到 2.99。
+ *   浅色粉的文字档 #D30F45 压最亮光晕角的玻璃只有 4.34，本地压到 **#C90D41**（4.71）。
+ * --fill 一律实色（半透明 fill 会把光晕吃进来，压在上面的文字对比度不可预测）：浅色 = 底 #F4F5F9 与 ink #1C1C1E 兑 11% = #DCDDE1，深色 = 底 #0B0C10 与 ink #F2F2F7 兑 20% = #393A3E。
+ */
+:root{color-scheme:light;
+  --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",-apple-system,BlinkMacSystemFont,sans-serif;
+  --bg:#F4F5F9;--label:#1C1C1E;--label2:rgba(60,60,67,.89);--label3:rgba(60,60,67,.32);
+  --glass:rgba(255,255,255,.62);--glass-strong:rgba(255,255,255,.78);--glass-edge:rgba(255,255,255,.9);--sep:rgba(60,60,67,.12);--fill:#DCDDE1;
+  --green:#34C759;--red:#FF3B30;--orange:#FF9500;--indigo:#5856D6;--pink:#FF2D55;--teal:#30B0C7;
+  --stage-1:#0F1128;--stage-2:#1B1740;--stage-3:#0B0C1E;
+  --stage:radial-gradient(50% 45% at 50% 55%,color-mix(in srgb,var(--accent) 45%,transparent),transparent 70%),linear-gradient(160deg,var(--stage-1),color-mix(in srgb,var(--accent) 18%,var(--stage-2)) 55%,var(--stage-3));
+  --btn-a:var(--accent);--btn-b:var(--accent-2);--btn-fg:#FFFFFF;
+  --r:calc(18 * var(--u));--r-sm:calc(12 * var(--u));--shadow:0 10px 30px rgba(20,30,60,.08),inset 0 1px 0 var(--glass-edge);--shadow-sm:0 2px 8px rgba(20,30,60,.08);
+  /* 自适应（SPEC §4 大屏，2026-09-23 二改「按比例放大、构图不变」）：1440 及以下沿用原 clamp，数值不变；>1440 一切尺寸以 1440 为基准乘 vw/1440，
+     1.45 封顶（2088px 视口起不再涨）。--k 是夹住的视口宽，--u 是 1px × 缩放比（≤1440 恒为 1px）；组件里的固定像素一律写 calc(N * var(--u))，不用 CSS zoom。
+     内容宽不设上限（--page-max:none，控制室 2026-09-23 裁定「填满」）：多出的宽度只由舞台 / 信息栏按现有比例吸收，不加列、不改字号。 */
+  --k:clamp(1440px,100vw,2088px);--u:calc(var(--k) / 1440);
+  --fs-title:clamp(26px,1.4vw + 14px,34.16px);--fs-h2:clamp(18px,.5vw + 14px,21.2px);--fs-body:clamp(13px,.3vw + 11px,15.32px);--fs-small:clamp(12px,.15vw + 11px,13.16px);
+  --gap:clamp(10px,1vw,14.4px);--pad:clamp(14px,1vw + 4px,18.4px);--page-x:clamp(24px,2vw,28.8px);--page-y:clamp(20px,1.4vw,28px);--page-max:none;
+  font-family:var(--font)}
+html[data-mode="dark"],html[data-mode="auto"].m-dark{color-scheme:dark;
+  --bg:#0B0C10;--label:#F2F2F7;--label2:rgba(235,235,245,.64);--label3:rgba(235,235,245,.32);
+  --glass:rgba(40,42,52,.55);--glass-strong:rgba(44,46,58,.72);--glass-edge:rgba(255,255,255,.12);--sep:rgba(84,84,88,.5);--fill:#393A3E;
+  --green:#30D158;--red:#FF453A;--orange:#FF9F0A;--indigo:#5E5CE6;--pink:#FF375F;--teal:#40C8E0;
+  --stage-1:#0A0B1E;--stage-2:#141030;--stage-3:#070812;
+  --shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px 0 var(--glass-edge);--shadow-sm:0 2px 8px rgba(0,0,0,.3)}
+html[data-accent="blue"]{--accent-chip:#E6F2FF;--accent:#007AFF;--accent-2:#5AC8FA;--accent-soft:rgba(0,122,255,.13);--accent-text:#0040DD;--blob1:rgba(90,200,250,.55);--blob2:rgba(255,214,170,.55);--blob3:rgba(175,160,255,.45)}
+html[data-accent="green"]{--accent-chip:#EBF9EE;--accent:#34C759;--accent-2:#A8E063;--accent-soft:rgba(52,199,89,.15);--accent-text:#1F7A36;--blob1:rgba(52,199,89,.4);--blob2:rgba(255,214,170,.55);--blob3:rgba(48,176,199,.35)}
+:root,html[data-accent="indigo"]{--accent-chip:#EEEEFB;--accent:#5856D6;--accent-2:#BF5AF2;--accent-soft:rgba(88,86,214,.15);--accent-text:#3634A3;--blob1:rgba(88,86,214,.4);--blob2:rgba(255,45,85,.25);--blob3:rgba(175,160,255,.45)}
+html[data-accent="orange"]{--accent-chip:#FFF4E6;--accent:#FF9500;--accent-2:#FFD60A;--accent-soft:rgba(255,149,0,.16);--accent-text:#C93400;--blob1:rgba(255,149,0,.4);--blob2:rgba(255,214,170,.55);--blob3:rgba(255,59,48,.25)}
+html[data-accent="pink"]{--accent-chip:#FFEAEE;--accent:#FF2D55;--accent-2:#FF9AA2;--accent-soft:rgba(255,45,85,.14);--accent-text:#C90D41;--blob1:rgba(255,45,85,.35);--blob2:rgba(255,214,170,.55);--blob3:rgba(191,90,242,.3)}
+html[data-accent="teal"]{--accent-chip:#EAF7F9;--accent:#30B0C7;--accent-2:#64D2FF;--accent-soft:rgba(48,176,199,.15);--accent-text:#0071A4;--blob1:rgba(48,176,199,.45);--blob2:rgba(52,199,89,.3);--blob3:rgba(175,160,255,.45)}
+html[data-mode="dark"][data-accent="blue"],html[data-mode="auto"][data-accent="blue"].m-dark{--accent-chip:#152B45;--accent:#0A84FF;--accent-2:#64D2FF;--accent-soft:rgba(10,132,255,.2);--accent-text:#409CFF;--blob1:rgba(10,132,255,.35);--blob2:rgba(255,159,10,.22);--blob3:rgba(94,92,230,.35)}
+html[data-mode="dark"][data-accent="green"],html[data-mode="auto"][data-accent="green"].m-dark{--accent-chip:#1C3927;--accent:#30D158;--accent-2:#A8E063;--accent-soft:rgba(48,209,88,.2);--accent-text:#30DB5B;--blob1:rgba(48,209,88,.28);--blob2:rgba(255,159,10,.18);--blob3:rgba(64,200,224,.25)}
+html[data-mode="dark"][data-accent="indigo"],html[data-mode="auto"][data-accent="indigo"].m-dark{--accent-chip:#242440;--accent:#5E5CE6;--accent-2:#BF5AF2;--accent-soft:rgba(94,92,230,.22);--accent-text:#8E8BFF;--blob1:rgba(94,92,230,.35);--blob2:rgba(255,55,95,.18);--blob3:rgba(191,90,242,.25)}
+html[data-mode="dark"][data-accent="orange"],html[data-mode="auto"][data-accent="orange"].m-dark{--accent-chip:#413019;--accent:#FF9F0A;--accent-2:#FFD60A;--accent-soft:rgba(255,159,10,.2);--accent-text:#FFB340;--blob1:rgba(255,159,10,.3);--blob2:rgba(255,69,58,.18);--blob3:rgba(94,92,230,.25)}
+html[data-mode="dark"][data-accent="pink"],html[data-mode="auto"][data-accent="pink"].m-dark{--accent-chip:#411E28;--accent:#FF375F;--accent-2:#FF9AA2;--accent-soft:rgba(255,55,95,.2);--accent-text:#FF6482;--blob1:rgba(255,55,95,.3);--blob2:rgba(255,159,10,.18);--blob3:rgba(191,90,242,.25)}
+html[data-mode="dark"][data-accent="teal"],html[data-mode="auto"][data-accent="teal"].m-dark{--accent-chip:#1E383F;--accent:#40C8E0;--accent-2:#64D2FF;--accent-soft:rgba(64,200,224,.2);--accent-text:#5AC8F5;--blob1:rgba(64,200,224,.3);--blob2:rgba(48,209,88,.2);--blob3:rgba(94,92,230,.25)}
+
+@media (min-width:1441px){:root{--fs-title:calc(34.16 * var(--u));--fs-h2:calc(21.2 * var(--u));--fs-body:calc(15.32 * var(--u));--fs-small:calc(13.16 * var(--u));--gap:calc(14.4 * var(--u));--pad:calc(18.4 * var(--u));--page-x:calc(28.8 * var(--u));--page-y:calc(28 * var(--u))}}
+*{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--label);font-family:var(--font);font-size:var(--fs-body);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100svh;overflow-x:hidden}
+/* 背景光晕：三团低饱和色固定在视口，blob1 跟强调色；深色下已在变量里减弱 */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38vw 38vw at 12% 8%,var(--blob1),transparent 60%),
+  radial-gradient(34vw 34vw at 92% 18%,var(--blob2),transparent 60%),
+  radial-gradient(40vw 40vw at 70% 100%,var(--blob3),transparent 60%);filter:blur(10px)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+svg.icon,.icon svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+/* 玻璃面：只放在视口大小的表面 */
+.glass{background:var(--glass);-webkit-backdrop-filter:blur(24px) saturate(150%);backdrop-filter:blur(24px) saturate(150%);border-radius:var(--r);box-shadow:var(--shadow)}
+/* 顶栏 */
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:var(--gap);padding:calc(10 * var(--u)) var(--page-x);background:var(--glass);-webkit-backdrop-filter:blur(calc(30 * var(--u))) saturate(160%);backdrop-filter:blur(calc(30 * var(--u))) saturate(160%);border-bottom:1px solid var(--glass-edge)}
+.topbar-right{display:flex;align-items:center;gap:calc(14 * var(--u));min-width:0}
+.brand{display:flex;align-items:center;gap:calc(10 * var(--u));min-width:0}
+.brand-icon{flex:none;width:calc(34 * var(--u));height:calc(34 * var(--u));border-radius:calc(10 * var(--u));background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 calc(6 * var(--u)) calc(14 * var(--u)) var(--accent-soft);display:grid;place-items:center;color:#fff}
+.brand-icon{position:relative;overflow:hidden}
+.brand-icon svg{width:calc(30 * var(--u));height:calc(30 * var(--u));fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* 屋主自己的图标文件（shared/brand/brand-icon.svg|png）：绝对定位居中占块 84%（画稿四周已留白，四家统一），加载成功后盖掉内置 SVG */
+.brand-icon .brand-file{position:absolute;inset:0;margin:auto;width:84%;height:84%;object-fit:contain;display:none}
+.brand-icon.has-file .brand-file{display:block}
+.brand-icon.has-file svg{visibility:hidden}
+.brand-text{min-width:0}.brand-text b{display:block;font-size:calc(17 * var(--u));line-height:1.2;white-space:nowrap}.brand-text span{display:block;font-size:calc(12 * var(--u));color:var(--label2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 主题控件：分段（浅 / 深 / 自动）+ 六色点 */
+.theme-controls{display:flex;align-items:center;gap:calc(12 * var(--u))}
+.seg{display:flex;background:var(--fill);border-radius:calc(10 * var(--u));padding:2px}
+.seg button{border:0;background:transparent;padding:calc(5 * var(--u)) calc(11 * var(--u));border-radius:calc(8 * var(--u));color:var(--label);font-size:calc(13 * var(--u));cursor:pointer;white-space:nowrap}
+.seg button[aria-checked="true"]{background:var(--glass-strong);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.accents{display:flex;gap:calc(8 * var(--u));align-items:center}
+.accent-dot{position:relative;width:calc(18 * var(--u));height:calc(18 * var(--u));padding:0;border:0;border-radius:50%;background:var(--dot);cursor:pointer;transition:transform .15s}
+.accent-dot:hover{transform:scale(1.15)}
+.accent-dot[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg),0 0 0 calc(4 * var(--u)) var(--accent)}
+.accent-name{position:absolute;top:calc(100% + calc(8 * var(--u)));left:50%;transform:translateX(-50%);padding:3px calc(8 * var(--u));border-radius:calc(7 * var(--u));background:var(--label);color:var(--bg);font-size:calc(12 * var(--u));white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
+.accent-dot:hover .accent-name,.accent-dot:focus-visible .accent-name{opacity:1}
+.theme-toggle{display:none;width:calc(36 * var(--u));height:calc(36 * var(--u));padding:0;border:0;border-radius:calc(10 * var(--u));background:var(--fill);color:var(--label);cursor:pointer;place-items:center}
+.theme-toggle svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* 按钮三级 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:calc(6 * var(--u));height:calc(40 * var(--u));padding:0 calc(18 * var(--u));border:0;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--btn-a),var(--btn-b));color:var(--btn-fg);text-shadow:0 1px 2px rgba(0,0,0,.25);font-size:calc(15 * var(--u));font-weight:600;cursor:pointer;box-shadow:0 calc(8 * var(--u)) calc(18 * var(--u)) var(--accent-soft);transition:transform .15s,box-shadow .15s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(0)}
+.btn-tint{background:var(--accent-chip);color:var(--accent-text);box-shadow:none}
+.btn-glass{background:var(--glass);color:var(--label);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(calc(20 * var(--u)));backdrop-filter:blur(calc(20 * var(--u)))}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.icon-btn{width:calc(40 * var(--u));height:calc(40 * var(--u));padding:0;border:0;border-radius:50%;background:var(--glass);color:var(--label);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(calc(20 * var(--u)));backdrop-filter:blur(calc(20 * var(--u)));display:inline-grid;place-items:center;cursor:pointer;transition:transform .15s}
+.icon-btn:hover{transform:translateY(-1px);color:var(--accent-text)}.icon-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.icon-btn svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* chip 与列表 */
+.chip{display:inline-flex;align-items:center;height:calc(24 * var(--u));padding:0 calc(10 * var(--u));border-radius:999px;background:var(--accent-chip);color:var(--accent-text);font-size:calc(12.5 * var(--u));font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip-grey{background:var(--fill);color:var(--label2);font-weight:500}
+.list{background:var(--glass);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.row{display:flex;align-items:center;gap:calc(14 * var(--u));padding:calc(12 * var(--u)) var(--pad);border-top:1px solid var(--sep);min-width:0;color:inherit}
+.row:first-child{border-top:0}
+.row:hover{background:var(--glass-strong)}
+.row .t{flex:1;min-width:0}.row .t b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row .t small{display:block;color:var(--label2);font-size:var(--fs-small);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .chev{color:var(--label3);flex:none}.row .chev svg{width:calc(18 * var(--u));height:calc(18 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* 降级 */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){:root{--glass:rgba(255,255,255,.9);--glass-strong:rgba(255,255,255,.96)}html[data-mode="dark"],html[data-mode="auto"].m-dark{--glass:rgba(40,42,52,.92);--glass-strong:rgba(44,46,58,.96)}}
+@media (prefers-reduced-transparency:reduce){:root{--glass:rgba(255,255,255,.9);--glass-strong:rgba(255,255,255,.96)}html[data-mode="dark"],html[data-mode="auto"].m-dark{--glass:rgba(40,42,52,.92);--glass-strong:rgba(44,46,58,.96)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}body::before{filter:none}}
+/* 自适应：≤900 顶栏收紧；≤600 只留品牌图标 + 一个主题按钮，控件弹出 */
+@media (max-width:900px){.topbar{padding:8px var(--page-x)}.brand-text span{display:none}.seg button{padding:4px 9px;font-size:12px}.accents{gap:7px}.accent-dot{width:16px;height:16px}}
+@media (max-width:600px){
+  .brand-text{display:none}
+  .theme-toggle{display:grid}
+  .theme-controls{display:none;position:absolute;right:var(--page-x);top:calc(100% + 8px);flex-direction:column;align-items:stretch;gap:12px;padding:14px;background:var(--glass-strong);-webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);border-radius:14px;box-shadow:var(--shadow)}
+  .theme-controls[data-open]{display:flex}
+  .accents{justify-content:space-between}
+}
+
+/* 页脚：主行左右分开，下面是三行声明。声明用 --label2 而不是 --label3——
+   SPEC §5c 定的次级文字就是 --label2，--label3 过不了两法对比度验收。 */
+.footer-main{display:flex;justify-content:space-between;gap:calc(16 * var(--u));flex-wrap:wrap;min-width:0}
+/* 三句声明各自不断行，能并排就并排：宽屏上是一行，窄屏自然折成两三行。
+   硬换成三行的代价实测过——屋主台式 2040×930 上页脚要多吃 78px，中卡从 284 掉到 234。 */
+.site-legal{display:flex;flex-wrap:wrap;column-gap:calc(14 * var(--u));row-gap:calc(2 * var(--u));margin:0;color:var(--label2);font-size:calc(12 * var(--u));line-height:1.5;text-wrap:pretty}
+.site-legal a{color:var(--accent-text);text-decoration:none}
+.site-legal a:hover{text-decoration:underline}

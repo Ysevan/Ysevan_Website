@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="闪卡">
+  <g transform="rotate(7 512 512)" fill="none" stroke="#fff" stroke-width="82" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="270" y="175" width="485" height="674" rx="70"/>
+    <path d="M305 705 690 310"/>
+    <path d="M355 755 740 360"/>
+    <path d="M790 165 812 213 860 235 812 257 790 305 768 257 720 235 768 213Z" stroke-width="24"/>
+    <path d="M875 315 888 343 916 356 888 369 875 397 862 369 834 356 862 343Z" stroke-width="18"/>
+  </g>
+</svg>

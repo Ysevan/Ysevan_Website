@@ -1,0 +1,76 @@
+/* 单卡查看器 · 苹果液态玻璃风（令牌与共用组件在 theme.css；真源 ../docs/SPEC-apple-glass.md）。
+   --accent 之外，每张卡自己的美术色由 viewer.js 写进 --card-accent（只用在光晕、色点和卡本身），别拿它当壳的强调色。 */
+@import url("./theme.css");
+:root{--card-accent:#8ad8ee}
+html,body{min-width:280px}
+/* 大屏（SPEC §4）：内容最大宽 1560 后整体居中；文字栏 clamp 到 calc(480 * var(--u))，余下给舞台，舞台高跟视口高 clamp */
+.viewer-layout{max-width:var(--page-max);margin:0 auto;padding:var(--page-y) var(--page-x) 0;display:grid;grid-template-columns:minmax(0,1fr) clamp(calc(280 * var(--u)),32%,calc(480 * var(--u)));gap:clamp(calc(16 * var(--u)),4vw,calc(56 * var(--u)));align-items:center;min-width:0}
+.display{min-width:0;position:relative}
+.stage-topline{display:flex;justify-content:space-between;align-items:center;gap:calc(12 * var(--u));padding:0 calc(4 * var(--u)) calc(10 * var(--u));min-width:0}
+.stage-topline #view-label{color:var(--label2);font-size:var(--fs-small);letter-spacing:.06em;white-space:nowrap}
+#stage{position:relative;width:100%;aspect-ratio:4/5;max-height:clamp(calc(380 * var(--u)),69svh,calc(900 * var(--u)));min-height:calc(380 * var(--u));isolation:isolate;cursor:grab;touch-action:pan-y;user-select:none;border-radius:var(--r);overflow:hidden;background:var(--glass);-webkit-backdrop-filter:blur(calc(24 * var(--u))) saturate(150%);backdrop-filter:blur(calc(24 * var(--u))) saturate(150%);box-shadow:var(--shadow)}
+#stage.is-dragging{cursor:grabbing;touch-action:none}
+#stage canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:block;touch-action:none}
+.stage-halo{position:absolute;inset:19% 10% 12%;background:var(--card-accent);filter:blur(calc(90 * var(--u)));opacity:.22;z-index:0;border-radius:50%;pointer-events:none}
+.loading{position:absolute;z-index:3;left:8%;right:8%;top:48%;display:flex;align-items:center;justify-content:center;gap:calc(10 * var(--u));color:var(--label2);text-align:center;font-size:var(--fs-small);line-height:1.8}
+.loading-dot{width:calc(7 * var(--u));height:calc(7 * var(--u));border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+.loading.is-error{top:auto;bottom:calc(10 * var(--u));padding:calc(10 * var(--u)) calc(14 * var(--u));background:var(--glass-strong);border-radius:var(--r-sm);color:var(--label);box-shadow:var(--shadow-sm)}
+.fallback-image{position:absolute;z-index:1;inset:6%;width:88%;height:88%;object-fit:contain;filter:drop-shadow(0 calc(15 * var(--u)) calc(24 * var(--u)) rgba(0,0,0,.35));transform:perspective(calc(1400 * var(--u))) rotateY(var(--pry,0deg)) rotateX(var(--prx,0deg)) scale(var(--ps,1));transition:opacity .28s ease,transform .7s cubic-bezier(.34,1.56,.64,1);transition:opacity .28s ease,transform .7s linear(0,.06,.208,.4,.6,.784,.935,1.047,1.119,1.155,1.163,1.149,1.123,1.091,1.059,1.03,1.007,.99,.979,.974,.974,.976,.981,.986,.991,.996,1,1.002,1)}
+/* 3D 接管时封面淡出；减弱动效直接撤（viewer.js 的 revealCard 里判的） */
+.fallback-image.is-handing-over{opacity:0}
+/* 按压（组件 5）在 3D 之外的那张原图上：封面阶段与拿不到 WebGL 的回退。--prx / --pry / --ps 由 viewer.js 写；按下快、松手走上面那条弹簧曲线。
+   3D 就绪后按压并进 three 的 root 变换，不走这里。减弱动效时 viewer.js 不写倾斜，这里也不留过渡。 */
+.fallback-image.is-pressed{transition:opacity .28s ease,transform .14s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){.fallback-image,.fallback-image.is-pressed{transition:opacity .28s ease}}
+.story{padding:calc(6 * var(--u)) 0 calc(20 * var(--u));min-width:0}
+.story-meta{display:flex;align-items:center;flex-wrap:wrap;gap:calc(8 * var(--u));margin:0 0 calc(14 * var(--u))}
+.subtitle{color:var(--label2);font-size:var(--fs-small);letter-spacing:.08em;text-transform:uppercase;margin:0 0 calc(6 * var(--u))}
+h1{font-size:var(--fs-title);font-weight:700;letter-spacing:-.4px;line-height:1.2;margin:0 0 calc(12 * var(--u));overflow-wrap:anywhere}
+.description{color:var(--label2);font-size:var(--fs-body);line-height:1.8;max-width:calc(420 * var(--u));margin:0 0 calc(18 * var(--u));white-space:pre-line}
+.card-details{display:flex;align-items:center;flex-wrap:wrap;gap:calc(8 * var(--u));color:var(--label2);font-size:var(--fs-small);padding-bottom:calc(18 * var(--u));border-bottom:1px solid var(--sep)}
+.detail-dot{width:calc(6 * var(--u));height:calc(6 * var(--u));border-radius:50%;background:var(--card-accent)}.detail-divider{color:var(--label3);margin:0 2px}
+.actions{display:flex;flex-wrap:wrap;gap:calc(10 * var(--u));margin:calc(20 * var(--u)) 0}
+.actions .btn svg,.save-button svg{width:calc(18 * var(--u));height:calc(18 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.actions .btn svg [data-fill]{fill:currentColor;stroke:none}
+.foil-control{max-width:calc(380 * var(--u))}.foil-control label{display:flex;justify-content:space-between;font-size:var(--fs-body);color:var(--label);margin-bottom:calc(10 * var(--u))}.foil-control output{font-variant-numeric:tabular-nums;color:var(--accent-text);font-weight:600}
+input[type=range]{width:100%;height:calc(20 * var(--u));margin:0;accent-color:var(--accent);cursor:pointer;background:transparent}input[type=range]:disabled{opacity:.4;cursor:not-allowed}
+.range-captions{display:flex;justify-content:space-between;color:var(--label2);font-size:calc(12 * var(--u));margin-top:calc(4 * var(--u))}
+.depth-controls{max-width:calc(380 * var(--u));margin-top:calc(18 * var(--u));border-top:1px solid var(--sep);padding-top:calc(14 * var(--u));color:var(--label2);font-size:var(--fs-body)}
+.depth-controls summary{cursor:pointer;color:var(--label);font-weight:600;padding:calc(6 * var(--u)) 0;list-style:none;display:flex;align-items:center;gap:calc(6 * var(--u))}.depth-controls summary::-webkit-details-marker{display:none}
+.depth-controls summary svg{width:calc(16 * var(--u));height:calc(16 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}.depth-controls[open] summary svg{transform:rotate(90deg)}
+.depth-controls .foil-control{margin-top:calc(16 * var(--u))}.depth-controls p{font-size:var(--fs-small);line-height:1.7;margin:calc(12 * var(--u)) 0 0}
+.save-button{display:inline-flex;align-items:center;gap:calc(6 * var(--u));margin-top:calc(18 * var(--u));padding:calc(8 * var(--u)) 0;border:0;background:none;color:var(--label2);font-size:var(--fs-body);cursor:pointer}
+.save-button:hover:not(:disabled){color:var(--accent-text)}.save-button:disabled{opacity:.45;cursor:not-allowed}
+.save-status{font-size:var(--fs-small);line-height:1.7;color:var(--label2);min-height:calc(21 * var(--u));margin:calc(4 * var(--u)) 0 0;max-width:calc(380 * var(--u))}
+.card-navigation{display:flex;justify-content:space-between;gap:calc(10 * var(--u));max-width:calc(380 * var(--u));border-top:1px solid var(--sep);margin-top:calc(18 * var(--u));padding-top:calc(16 * var(--u))}
+.card-navigation a{display:inline-flex;align-items:center;gap:calc(4 * var(--u));color:var(--label);font-weight:600}
+.card-navigation a svg{width:calc(18 * var(--u));height:calc(18 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.card-navigation a:hover{color:var(--accent-text)}.card-navigation a[aria-disabled=true]{opacity:.3;pointer-events:none}
+.back-link{display:inline-flex;align-items:center;gap:2px;color:var(--label);font-size:var(--fs-body);white-space:nowrap}.back-link svg{width:calc(18 * var(--u));height:calc(18 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.back-link:hover{color:var(--accent-text)}
+.site-footer{max-width:var(--page-max);margin:auto;padding:0 var(--page-x) var(--page-y);display:flex;flex-direction:column;gap:calc(8 * var(--u));color:var(--label2);font-size:var(--fs-small);min-width:0}
+.no-script{padding:calc(20 * var(--u));text-align:center}.no-script a{color:var(--accent-text)}
+@keyframes pulse{50%{opacity:.2}}
+/* 同画廊：整页按 100dvh 排一列，卡台吃掉剩下的高度，再用等比值 621×u 封顶；装不下就缩卡台，不出滚动条。 */
+@media (min-width:901px) and (min-height:560px){
+  body{height:100dvh;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+  /* 列 flex 里 margin:auto 会顶掉 stretch 让子项缩成内容宽，必须显式 width:100% */
+  .viewer-layout,.site-footer{width:100%}
+  .viewer-layout{flex:1 1 auto;min-height:0;align-items:stretch}
+  .display{display:flex;flex-direction:column;min-height:0}
+  .story{display:flex;flex-direction:column;justify-content:center;min-height:0;overflow:auto}
+  /* 文字栏在这个模式下收紧竖向节奏，免得它比舞台先顶到底、逼出一条内滚动条（屋主不要滚动条） */
+  .story-meta{margin-bottom:calc(10 * var(--u))}
+  h1{margin-bottom:calc(8 * var(--u))}
+  .description{margin-bottom:calc(12 * var(--u))}
+  .card-details{padding-bottom:calc(12 * var(--u))}
+  .foil-control label{margin-bottom:calc(6 * var(--u))}
+  .actions{margin:calc(12 * var(--u)) 0}
+  .range-captions{margin-top:calc(2 * var(--u))}
+  .depth-controls{margin-top:calc(12 * var(--u));padding-top:calc(10 * var(--u))}
+  .save-button{margin-top:calc(10 * var(--u))}
+  .save-status:empty{min-height:0}
+  .card-navigation{margin-top:calc(10 * var(--u));padding-top:calc(10 * var(--u))}
+  #stage{flex:1 1 auto;height:auto;min-height:0;max-height:min(calc(621 * var(--u)),100%)}
+}
+@media (max-width:900px){.viewer-layout{grid-template-columns:1fr;max-width:640px;gap:24px}#stage{aspect-ratio:4/5;max-height:min(62svh,600px);min-height:340px}.description{max-width:none}.foil-control,.depth-controls,.card-navigation,.save-status{max-width:none}.site-footer{text-align:center}.footer-main{justify-content:center}.site-legal{align-items:center}}
+@media (max-width:600px){.back-link span{display:none}.actions .btn{flex:1 1 auto}#stage{min-height:300px}}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN" data-mode="light" data-accent="indigo">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F4F5F9">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235856D6'/%3E%3Crect x='9' y='7' width='14' height='18' rx='3' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E">
+  <meta name="robots" content="noindex, nofollow">
+  <title>雪境来信 · 蓝调幻光 · 闪卡集</title>
+  <meta name="description" content="雪中鸟居与蓝发少女分层呈现，珍珠虹彩沿着衣纹与发梢流动。">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="蓝调幻光 · 闪卡集">
+  <meta property="og:title" content="雪境来信">
+  <meta property="og:description" content="雪中鸟居与蓝发少女分层呈现，珍珠虹彩沿着衣纹与发梢流动。">
+  <meta property="og:url" content="https://old.ysevan.com/ysevan/tools/card/cards/002-snow-letter/">
+  <meta property="og:image" content="https://old.ysevan.com/ysevan/tools/card/cards/002-snow-letter/web/cover.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- 封面的地址在构建时就知道，别等 viewer.js 取回 card-config.json 才开始下载：
+       那是「HTML → viewer.js → fetch 配置 → 才设 img.src」三趟往返，4G 上实测白等 300 ms。 -->
+  <link rel="preload" as="image" href="./web/cover.webp" fetchpriority="high">
+  <script src="../../shared/theme.js"></script>
+  <link rel="stylesheet" href="../../shared/viewer.css">
+  <script type="importmap">{"imports":{"three":"../../vendor/three/build/three.module.min.js","three/addons/":"../../vendor/three/examples/jsm/"}}</script>
+</head>
+<body>
+  <header class="topbar site-header">
+    <a class="brand" href="../../" aria-label="返回闪卡集">
+      <span class="brand-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g transform="rotate(8 11.6 11.5)"><rect x="5.85" y="3.5" width="11.5" height="16" rx="2.4"/><path d="m8.2 14.6 4.6-4.6M10.4 17.2l4.6-4.6"/></g><path d="M20 2.6l.75 1.95L22.7 5.3l-1.95.75L20 8l-.75-1.95L17.3 5.3l1.95-.75z"/></svg></span>
+      <span class="brand-text"><b>蓝调幻光</b><span>A COLLECTION OF LIGHT</span></span>
+    </a>
+    <div class="topbar-right header-right"><a class="back-link" href="../../"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg><span>返回卡集</span></a></div>
+  </header>
+  <main class="viewer-layout">
+    <section class="display" aria-label="闪卡展示">
+      <div class="stage-topline"><span class="chip" id="edition">COLLECTION</span><span id="view-label">FRONT · 正面</span></div>
+      <div id="stage" tabindex="0" role="group" aria-label="交互闪卡：拖动或方向键调整角度，F 翻面，R 复位。">
+        <div class="stage-halo" aria-hidden="true"></div>
+        <img id="fallback-image" class="fallback-image" hidden alt="卡片原图">
+        <div id="loading" class="loading" role="status" aria-live="polite"><span class="loading-dot" aria-hidden="true"></span><span>正在展开这一束光…</span></div>
+      </div>
+    </section>
+    <section class="story" aria-labelledby="card-title">
+      <p class="story-meta"><span class="chip chip-grey" id="collection">蓝调幻光 · 第一辑</span></p>
+      <p class="subtitle" id="subtitle"></p>
+      <h1 id="card-title">光影中的瞬间</h1>
+      <p class="description" id="description"></p>
+      <div class="card-details"><span class="detail-dot" aria-hidden="true"></span><span id="mode-label">全息收藏卡</span><span class="detail-divider">/</span><span id="format-label">2 : 3</span></div>
+      <div class="actions">
+        <button id="auto" class="btn" type="button" aria-pressed="false" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path data-fill d="M8 5.5v13l10-6.5z"/></svg><span class="label">自动赏卡</span></button>
+        <button id="flip" class="btn btn-tint" type="button" aria-pressed="false" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6"/><path d="M18 3.5v3.5h-3.5"/><path d="M20 12a8 8 0 0 1-13.7 5.6"/><path d="M6 20.5V17h3.5"/></svg><span class="label">翻看背面</span></button>
+        <button id="reset" class="icon-btn" type="button" aria-label="恢复默认角度、光泽与景深" title="复位" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4.2h4.2"/></svg></button>
+      </div>
+      <div class="foil-control">
+        <label for="foil">虹彩光泽 <output id="foil-value" for="foil">35%</output></label>
+        <input id="foil" type="range" min="0" max="1" step="0.01" value="0.35" disabled>
+        <div class="range-captions"><span>原画</span><span>闪耀</span></div>
+      </div>
+      <details id="depth-controls" class="depth-controls">
+        <summary><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>分层与景深</summary>
+        <div class="foil-control"><label for="subject-scale">主体缩放 <output id="subject-scale-value" for="subject-scale"></output></label><input id="subject-scale" type="range" min="0.5" max="2" step="0.01" value="1.2" disabled></div>
+        <div class="foil-control"><label for="subject-depth">主体深度 <output id="subject-depth-value" for="subject-depth"></output></label><input id="subject-depth" type="range" min="0" max="1" step="0.01" value="0.38" disabled></div>
+        <div class="foil-control"><label for="background-depth">背景深度 <output id="background-depth-value" for="background-depth"></output></label><input id="background-depth" type="range" min="-1" max="0" step="0.01" value="-0.24" disabled></div>
+        <p>转动卡片，观察人物与背景的相对移动。</p>
+      </details>
+      <button class="save-button" id="save" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M5 19.5h14"/></svg><span>保存此刻 PNG</span></button>
+      <p class="save-status" id="save-status" role="status" aria-live="polite"></p>
+      <nav class="card-navigation" aria-label="切换卡片"><a id="previous" href="../../" aria-label="上一张卡片"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>上一张</a><a id="next" href="../../" aria-label="下一张卡片">下一张<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></nav>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-main"><span>轻轻转动，让光停在喜欢的角度。</span><span>蓝调幻光 / PERSONAL COLLECTION</span></div>
+    <p class="site-legal"><span>非官方同人作品，与 COVER 株式会社、Crypton Future Media 无关，非商业用途。</span><span>画作版权归作者所有，不随本站代码的开源许可一并开放。</span><span>站点代码基于 <a href="https://github.com/EverettFish/holo-card-studio" target="_blank" rel="noopener noreferrer nofollow">holo-card-studio</a>（MIT）· <a href="https://threejs.org/" target="_blank" rel="noopener noreferrer nofollow">three.js</a>（MIT）· <a href="../../LICENSE">许可全文</a></span></p>
+  </footer>
+  <noscript><p class="no-script">请启用 JavaScript 查看交互闪卡，也可<a href="../../">返回卡集查看原图</a>。</p></noscript>
+  <script type="module" src="../../shared/viewer.js"></script>
+</body>
+</html>

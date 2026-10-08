@@ -1,0 +1,40 @@
+{
+  "mode": "holographic",
+  "title": "星轨观测",
+  "subtitle": "ORBIT OBSERVER",
+  "technique": "静默天台",
+  "tagline": "在地球边缘听见夜色",
+  "edition": "07 / 13",
+  "collection": "蓝调幻光 · 第二辑",
+  "description": "观测台、地球弧光与蓝发歌姬形成宁静的空间层次，桌面小物在转动时闪出细光。",
+  "parameters": {
+    "subjectScale": 1.16,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.95,
+    "particles": 0.9,
+    "glow": 0.78
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "id": "007-space-night",
+  "accent": "#6ca8e6",
+  "matte": "#182b3d",
+  "originalWidth": 1024,
+  "originalHeight": 1536,
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png",
+    "model": "./assets/card.glb",
+    "cover": "./cover.png"
+  },
+  "previous": "../006-aqua-piano/",
+  "next": "../008-sunset-orbit/"
+}

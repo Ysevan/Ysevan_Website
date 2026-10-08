@@ -1,0 +1,40 @@
+{
+  "mode": "holographic",
+  "title": "樱下银辉",
+  "subtitle": "SAKURA SILVER",
+  "technique": "花落成诗",
+  "tagline": "在一片粉色里留下安静目光",
+  "edition": "13 / 13",
+  "collection": "蓝调幻光 · 第二辑",
+  "description": "浅粉樱花、飘落花瓣与银发少女被柔和拆层，像一页被春风翻过的诗。",
+  "parameters": {
+    "subjectScale": 1.16,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.95,
+    "particles": 0.9,
+    "glow": 0.78
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "id": "013-sakura-silver",
+  "accent": "#e7a8b9",
+  "matte": "#182b3d",
+  "originalWidth": 1024,
+  "originalHeight": 1536,
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png",
+    "model": "./assets/card.glb",
+    "cover": "./cover.png"
+  },
+  "previous": "../012-sky-balloons/",
+  "next": "../001-tide-dream-shione/"
+}

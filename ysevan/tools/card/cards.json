@@ -1,0 +1,281 @@
+[
+  {
+    "id": "001-tide-dream-shione",
+    "title": "潮梦·汐音",
+    "subtitle": "TIDE DREAMER",
+    "edition": "01 / 13",
+    "description": "月色落进海面，潮声在梦里回响。最初收藏的那一抹冰蓝。",
+    "themes": [
+      "月海",
+      "景深全息"
+    ],
+    "accent": "#8acbe8",
+    "matte": "#182b3d",
+    "cover": "./cards/001-tide-dream-shione/cover.png",
+    "url": "./cards/001-tide-dream-shione/",
+    "alt": "白发蓝瞳少女身着鲨鱼连帽衫，坐在月海浪花间的全息卡片",
+    "originalWidth": 1080,
+    "originalHeight": 1500
+  },
+  {
+    "id": "002-snow-letter",
+    "title": "雪境来信",
+    "subtitle": "A LETTER FROM SNOW",
+    "edition": "02 / 13",
+    "description": "雪中鸟居与蓝发少女分层呈现，珍珠虹彩沿着衣纹与发梢流动。",
+    "themes": [
+      "雪境",
+      "景深全息"
+    ],
+    "accent": "#c1def4",
+    "matte": "#182b3d",
+    "cover": "./cards/002-snow-letter/cover.png",
+    "url": "./cards/002-snow-letter/",
+    "alt": "雪中鸟居前，蓝色长发少女穿着白色兜帽外衣回眸微笑",
+    "originalWidth": 1080,
+    "originalHeight": 1500
+  },
+  {
+    "id": "003-neon-rhythm",
+    "title": "霓光律动",
+    "subtitle": "NEON RHYTHM",
+    "edition": "03 / 13",
+    "description": "青蓝发梢与霓虹舞台分层呈现，转动卡片，让虹彩与星光回应这一刻。",
+    "themes": [
+      "舞台",
+      "景深全息"
+    ],
+    "accent": "#c897e5",
+    "matte": "#182b3d",
+    "cover": "./cards/003-neon-rhythm/cover.png",
+    "url": "./cards/003-neon-rhythm/",
+    "alt": "戴耳麦的青蓝长发少女在深蓝与玫红灯光下向镜头比手势",
+    "originalWidth": 1080,
+    "originalHeight": 1500
+  },
+  {
+    "id": "004-shark-smile",
+    "title": "鲨鲨微笑",
+    "subtitle": "A LITTLE SHARK SMILE",
+    "edition": "04 / 13",
+    "description": "熟悉的鲨鱼帽与小小笑意，浮在冰蓝海光之前，留住一张柔软的全息瞬间。",
+    "themes": [
+      "鲨鲨",
+      "景深全息"
+    ],
+    "accent": "#63b9d9",
+    "matte": "#182b3d",
+    "cover": "./cards/004-shark-smile/cover.png",
+    "url": "./cards/004-shark-smile/",
+    "alt": "白发蓝瞳的鲨鱼帽少女正面特写，双手收在袖口里微笑",
+    "originalWidth": 1080,
+    "originalHeight": 1500
+  },
+  {
+    "id": "005-floral-duet",
+    "src": "01-floral-duet.jpg",
+    "title": "花影双歌",
+    "subtitle": "FLORAL DUET",
+    "technique": "花间回响",
+    "tagline": "两束旋律在春色里相遇",
+    "desc": "双人花影与深浅绿意分层浮现，花瓣和发梢在虹彩中轻轻交错。",
+    "themes": [
+      "花影",
+      "景深全息",
+      "景深全息"
+    ],
+    "accent": "#d88f9f",
+    "alt": "两位 anime 少女置身绿叶与花朵之间的花影全息卡片",
+    "edition": "05 / 13",
+    "cover": "./cards/005-floral-duet/cover.png",
+    "url": "./cards/005-floral-duet/",
+    "originalWidth": 1080,
+    "originalHeight": 1500,
+    "matte": "#182b3d",
+    "description": "双人花影与深浅绿意分层浮现，花瓣和发梢在虹彩中轻轻交错。"
+  },
+  {
+    "id": "006-aqua-piano",
+    "src": "02-aqua-piano.jpg",
+    "title": "水色琴弦",
+    "subtitle": "AQUA PIANO",
+    "technique": "漂浮和弦",
+    "tagline": "把一段清亮旋律留在空中",
+    "desc": "水蓝长发与漂浮琴键被拆成前后景深，像一段停在空气里的轻快和弦。",
+    "themes": [
+      "水色",
+      "景深全息",
+      "景深全息"
+    ],
+    "accent": "#81d4d0",
+    "alt": "水蓝长发少女与漂浮琴键的轻盈全息卡片",
+    "edition": "06 / 13",
+    "cover": "./cards/006-aqua-piano/cover.png",
+    "url": "./cards/006-aqua-piano/",
+    "originalWidth": 1080,
+    "originalHeight": 1500,
+    "matte": "#182b3d",
+    "description": "水蓝长发与漂浮琴键被拆成前后景深，像一段停在空气里的轻快和弦。"
+  },
+  {
+    "id": "007-space-night",
+    "src": "03-space-night.jpg",
+    "title": "星轨观测",
+    "subtitle": "ORBIT OBSERVER",
+    "technique": "静默天台",
+    "tagline": "在地球边缘听见夜色",
+    "desc": "观测台、地球弧光与蓝发歌姬形成宁静的空间层次，桌面小物在转动时闪出细光。",
+    "themes": [
+      "星轨",
+      "景深全息",
+      "景深全息"
+    ],
+    "accent": "#6ca8e6",
+    "alt": "蓝发双马尾少女在太空观测台前凝望地球的全息卡片",
+    "edition": "07 / 13",
+    "cover": "./cards/007-space-night/cover.png",
+    "url": "./cards/007-space-night/",
+    "originalWidth": 1080,
+    "originalHeight": 1500,
+    "matte": "#182b3d",
+    "description": "观测台、地球弧光与蓝发歌姬形成宁静的空间层次，桌面小物在转动时闪出细光。"
+  },
+  {
+    "id": "008-sunset-orbit",
+    "src": "04-sunset-orbit.jpg",
+    "title": "暮色回声",
+    "subtitle": "SUNSET ORBIT",
+    "technique": "绯光回旋",
+    "tagline": "把最后一束晚霞收进发梢",
+    "desc": "紫粉暮光、草地与人物轮廓错层推进，夕阳像一圈柔软的轨道环抱住画面。",
+    "themes": [
+      "暮色",
+      "景深全息",
+      "景深全息"
+    ],
+    "accent": "#e58eb6",
+    "alt": "暮色草地上的蓝发歌姬与粉紫天空全息卡片",
+    "edition": "08 / 13",
+    "cover": "./cards/008-sunset-orbit/cover.png",
+    "url": "./cards/008-sunset-orbit/",
+    "originalWidth": 1080,
+    "originalHeight": 1500,
+    "matte": "#182b3d",
+    "description": "紫粉暮光、草地与人物轮廓错层推进，夕阳像一圈柔软的轨道环抱住画面。"
+  },
+  {
+    "id": "009-starry-blue",
+    "src": "05-starry-blue.jpg",
+    "title": "星屑礼服",
+    "subtitle": "STARDUST DRESS",
+    "technique": "星光递来",
+    "tagline": "让一颗小星星落在掌心",
+    "desc": "清澈蓝色礼服与星屑点缀保持明亮留白，适合近距离观察衣纹与发丝的细微光泽。",
+    "themes": [
+      "星屑",
+      "景深全息",
+      "景深全息"
+    ],
+    "accent": "#8fb9ef",
+    "alt": "穿蓝色星光礼服的双马尾少女伸手接住星光的全息卡片",
+    "edition": "09 / 13",
+    "cover": "./cards/009-starry-blue/cover.png",
+    "url": "./cards/009-starry-blue/",
+    "originalWidth": 1080,
+    "originalHeight": 1500,
+    "matte": "#182b3d",
+    "description": "清澈蓝色礼服与星屑点缀保持明亮留白，适合近距离观察衣纹与发丝的细微光泽。"
+  },
+  {
+    "id": "010-rooftop-dusk",
+    "src": "06-rooftop-dusk.jpg",
+    "title": "天台黄昏",
+    "subtitle": "ROOFTOP DUSK",
+    "technique": "晚风来信",
+    "tagline": "把城市的晚风折成一封信",
+    "desc": "铁网、远城、晚霞和长发被分成温柔的纵深，手机屏幕保留一点私密的微光。",
+    "themes": [
+      "天台",
+      "景深全息",
+      "景深全息"
+    ],
+    "accent": "#d39ab7",
+    "alt": "夕阳天台铁网前坐着的蓝发少女全息卡片",
+    "edition": "10 / 13",
+    "cover": "./cards/010-rooftop-dusk/cover.png",
+    "url": "./cards/010-rooftop-dusk/",
+    "originalWidth": 1080,
+    "originalHeight": 1500,
+    "matte": "#182b3d",
+    "description": "铁网、远城、晚霞和长发被分成温柔的纵深，手机屏幕保留一点私密的微光。"
+  },
+  {
+    "id": "011-celestial-mage",
+    "src": "07-celestial-mage.jpg",
+    "title": "星穹魔法",
+    "subtitle": "CELESTIAL MAGE",
+    "technique": "彗光誓约",
+    "tagline": "让流星照亮下一步",
+    "desc": "白发魔法少女、晶体法杖与深蓝星穹层层叠起，蓝白裙摆在虹彩里像一朵展开的云。",
+    "themes": [
+      "星穹",
+      "景深全息",
+      "景深全息"
+    ],
+    "accent": "#8aa7ed",
+    "alt": "手持晶体法杖的白发蓝裙魔法少女与星空全息卡片",
+    "edition": "11 / 13",
+    "cover": "./cards/011-celestial-mage/cover.png",
+    "url": "./cards/011-celestial-mage/",
+    "originalWidth": 1080,
+    "originalHeight": 1500,
+    "matte": "#182b3d",
+    "description": "白发魔法少女、晶体法杖与深蓝星穹层层叠起，蓝白裙摆在虹彩里像一朵展开的云。"
+  },
+  {
+    "id": "012-sky-balloons",
+    "src": "08-sky-balloons.jpg",
+    "title": "晴空气球",
+    "subtitle": "SKY BALLOONS",
+    "technique": "晴日高歌",
+    "tagline": "把笑声放进一片晴空",
+    "desc": "清亮蓝天、光环与飘动发丝保持轻快动势，人物抬手的瞬间被一圈细碎亮光托起。",
+    "themes": [
+      "晴空",
+      "景深全息",
+      "景深全息"
+    ],
+    "accent": "#67c8f2",
+    "alt": "蓝天与气球前抬手歌唱的青蓝双马尾少女全息卡片",
+    "edition": "12 / 13",
+    "cover": "./cards/012-sky-balloons/cover.png",
+    "url": "./cards/012-sky-balloons/",
+    "originalWidth": 1080,
+    "originalHeight": 1500,
+    "matte": "#182b3d",
+    "description": "清亮蓝天、光环与飘动发丝保持轻快动势，人物抬手的瞬间被一圈细碎亮光托起。"
+  },
+  {
+    "id": "013-sakura-silver",
+    "src": "09-sakura-silver.jpg",
+    "title": "樱下银辉",
+    "subtitle": "SAKURA SILVER",
+    "technique": "花落成诗",
+    "tagline": "在一片粉色里留下安静目光",
+    "desc": "浅粉樱花、飘落花瓣与银发少女被柔和拆层，像一页被春风翻过的诗。",
+    "themes": [
+      "樱花",
+      "景深全息",
+      "景深全息"
+    ],
+    "accent": "#e7a8b9",
+    "alt": "樱花与飘落花瓣间的银发少女全息卡片",
+    "edition": "13 / 13",
+    "cover": "./cards/013-sakura-silver/cover.png",
+    "url": "./cards/013-sakura-silver/",
+    "originalWidth": 1080,
+    "originalHeight": 1500,
+    "matte": "#182b3d",
+    "description": "浅粉樱花、飘落花瓣与银发少女被柔和拆层，像一页被春风翻过的诗。"
+  }
+]

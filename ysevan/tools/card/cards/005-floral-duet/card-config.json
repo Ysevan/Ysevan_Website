@@ -1,0 +1,40 @@
+{
+  "mode": "holographic",
+  "title": "花影双歌",
+  "subtitle": "FLORAL DUET",
+  "technique": "花间回响",
+  "tagline": "两束旋律在春色里相遇",
+  "edition": "05 / 13",
+  "collection": "蓝调幻光 · 第二辑",
+  "description": "双人花影与深浅绿意分层浮现，花瓣和发梢在虹彩中轻轻交错。",
+  "parameters": {
+    "subjectScale": 1.16,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.95,
+    "particles": 0.9,
+    "glow": 0.78
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "id": "005-floral-duet",
+  "accent": "#d88f9f",
+  "matte": "#182b3d",
+  "originalWidth": 1024,
+  "originalHeight": 1536,
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png",
+    "model": "./assets/card.glb",
+    "cover": "./cover.png"
+  },
+  "previous": "../004-shark-smile/",
+  "next": "../006-aqua-piano/"
+}

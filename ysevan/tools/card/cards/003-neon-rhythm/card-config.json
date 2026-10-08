@@ -1,0 +1,40 @@
+{
+  "mode": "holographic",
+  "title": "霓光律动",
+  "subtitle": "NEON RHYTHM",
+  "technique": "星声共鸣",
+  "tagline": "让心跳追上这一束霓光",
+  "edition": "03 / 13",
+  "collection": "蓝调幻光 · 第一辑",
+  "description": "青蓝发梢与霓虹舞台分层呈现，转动卡片，让虹彩与星光回应这一刻。",
+  "parameters": {
+    "subjectScale": 1,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.9,
+    "particles": 0.8,
+    "glow": 0.72
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "id": "003-neon-rhythm",
+  "accent": "#c897e5",
+  "matte": "#182b3d",
+  "originalWidth": 1024,
+  "originalHeight": 1536,
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png",
+    "model": "./assets/card.glb",
+    "cover": "./cover.png"
+  },
+  "previous": "../002-snow-letter/",
+  "next": "../004-shark-smile/"
+}

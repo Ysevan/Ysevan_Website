@@ -1,0 +1,44 @@
+{
+  "mode": "holographic",
+  "title": "鲨鲨微笑",
+  "subtitle": "A LITTLE SHARK SMILE",
+  "technique": "深蓝拥抱",
+  "tagline": "把好心情藏进小小的微笑",
+  "edition": "04 / 13",
+  "collection": "蓝调幻光 · 第一辑",
+  "description": "熟悉的鲨鱼帽与小小笑意，浮在冰蓝海光之前，留住一张柔软的全息瞬间。",
+  "lineartOffset": [
+    -0.005859375,
+    0.020182291666666668
+  ],
+  "parameters": {
+    "subjectScale": 1.2,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.9,
+    "particles": 0.8,
+    "glow": 0.72
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "id": "004-shark-smile",
+  "accent": "#63b9d9",
+  "matte": "#182b3d",
+  "originalWidth": 1024,
+  "originalHeight": 1536,
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png",
+    "model": "./assets/card.glb",
+    "cover": "./cover.png"
+  },
+  "previous": "../003-neon-rhythm/",
+  "next": "../005-floral-duet/"
+}

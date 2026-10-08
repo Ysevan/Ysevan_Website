@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" id="favicon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#F4F5F9" />
+    <title>日程安排</title>
+    <!--
+      主题同步脚本（SPEC-apple-glass.md §3）：必须在样式表之前跑完，
+      否则首帧会按 :root 的「浅色 + 蓝」画一遍再跳到深色，闪一下色。
+      这里只读两个 localStorage 键、写 <html> 上的属性与 theme-color，
+      真正的色值在 src/styles/tokens.css；键名与判定逻辑和 src/theme/theme.ts 一致。
+      data-mode 写的是**已解析值**（auto 按 prefers-color-scheme 算），偏好写在 data-mode-pref。
+    -->
+    <script>
+      (function () {
+        try {
+          // 存储键前缀：构建时由 Vite 换成 .env / .env.old 里的值（src/storageNamespace.ts 同一个）。
+          var prefix = 'ysevan-tools-plan:'
+          var modes = ['light', 'dark', 'auto']
+          var accents = ['blue', 'green', 'indigo', 'orange', 'pink', 'teal']
+          var mode = localStorage.getItem(prefix + 'plan-mode')
+          var accent = localStorage.getItem(prefix + 'plan-accent')
+          if (modes.indexOf(mode) < 0) mode = 'light'
+          if (accents.indexOf(accent) < 0) accent = 'blue'
+          var resolved =
+            mode === 'auto'
+              ? window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+              : mode
+          var root = document.documentElement
+          root.dataset.mode = resolved
+          root.dataset.modePref = mode
+          root.dataset.accent = accent
+          var meta = document.querySelector('meta[name="theme-color"]')
+          if (meta) meta.content = resolved === 'dark' ? '#0B0C10' : '#F4F5F9'
+        } catch (error) {
+          /* localStorage 被禁就用默认的浅色 + 蓝，不影响渲染 */
+        }
+        /*
+          favicon 跟着品牌图标走（src/theme/brand.ts 的同一批路径）：
+          屋主把自画的图标放进 public/brand/ 就自动换掉，没有文件时保持现有 favicon。
+          必须核对 content-type：生产的 nginx 有 SPA fallback，缺文件时会回 index.html 而不是 404。
+        */
+        try {
+          var link = document.getElementById('favicon')
+          // 相对路径：放在子路径下也取自己的 brand/，不去取整站根目录的。
+          var candidates = ['./brand/brand-icon.svg', './brand/brand-icon.png']
+          var tryNext = function (i) {
+            if (!link || i >= candidates.length) return
+            fetch(candidates[i], { method: 'HEAD' })
+              .then(function (response) {
+                var type = (response.headers.get('content-type') || '').toLowerCase()
+                if (response.ok && type.indexOf('image/') === 0) {
+                  link.type = type.indexOf('svg') >= 0 ? 'image/svg+xml' : 'image/png'
+                  link.href = candidates[i]
+                } else {
+                  tryNext(i + 1)
+                }
+              })
+              .catch(function () {
+                tryNext(i + 1)
+              })
+          }
+          tryNext(0)
+        } catch (error) {
+          /* 拿不到 fetch 就保持现有 favicon */
+        }
+      })()
+    </script>
+    <script type="module" crossorigin src="./assets/index-BTEOnjmX.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-De3P3m-C.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

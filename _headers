@@ -1,0 +1,55 @@
+# 小屋（old.ysevan.com/ysevan/）的响应头。这份文件**放在 old 仓库的根目录**（Cloudflare Pages 的产物根）才生效，
+# 由 old 那边拷过去；版本在小屋仓库这里管（docs/static-publish.md）。只写 /ysevan/ 开头的规则，不碰 old 别的目录。
+#
+# 这里**不放任何 Content-Security-Policy**（控制室定）：CSP 只走小屋每一页自己的 <meta>，
+# 由 scripts/postexport.mjs 构建时逐页注入。meta 管不了的才写在这里：
+#   · 防嵌套：meta CSP 不认 frame-ancestors，靠 X-Frame-Options: DENY；
+#   · HSTS：只认响应头。一旦收到就对整个 old.ysevan.com 生效、不分路径，所以不带 includeSubDomains 和 preload
+#     （preload 撤不回来，往后果轻的那边错）；http 跳 https 本来就由 Cloudflare 做了；
+#   · Permissions-Policy / COOP / CORP / Origin-Agent-Cluster / X-Permitted-Cross-Domain-Policies 都只认响应头；
+#     X-DNS-Prefetch-Control 一并发，省得两处。
+# 不用写的：X-Content-Type-Options: nosniff 与 Referrer-Policy: strict-origin-when-cross-origin 是 Pages 的默认头；
+# X-Download-Options 只对 IE8 有用，不再发；Permissions-Policy 里不写 ambient-light-sensor（Chrome 报不认识的特性）。
+# Pages 默认给所有响应加 Access-Control-Allow-Origin: *，小屋用不着跨源读取，用 ! 摘掉。
+#
+# deploy:check 钉着这份文件的契约：没有 CSP 行、只有 /ysevan/ 开头的规则、HSTS 的写法、工具那一组的摘除项。
+# 限额：Pages 最多 100 条规则、每行 2000 字符。
+
+/ysevan/*
+  X-Frame-Options: DENY
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), clipboard-read=(), clipboard-write=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), usb=(), web-share=(), xr-spatial-tracking=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  Origin-Agent-Cluster: ?1
+  X-DNS-Prefetch-Control: off
+  X-Permitted-Cross-Domain-Policies: none
+  Strict-Transport-Security: max-age=63072000
+  ! Access-Control-Allow-Origin
+
+# 刷刷与 travel 住在 /ysevan/tools/ 下（old 那边管，小屋的产物里没有 tools/），会被上面那条一起命中。
+# 只摘实测挡住了工具功能的头（2026-10-08 在 wrangler pages dev 里用 old 87c4cd3 的真文件逐项实测，
+# 小屋仓库 docs/static-publish.md「工具实测」一节）：
+#   · Permissions-Policy：travel 的「出门看行程 → 查看我的位置」要定位，geolocation=() 当场把它挡掉
+#     （Chrome：Geolocation has been disabled in this document by permissions policy，应用里显示「未获得位置」）；
+#     摘掉之后正常。travel 的「记录足迹」用的是同一个定位接口。
+# 别的头都留着：COOP / CORP / X-Frame-Options / HSTS / Origin-Agent-Cluster 在场时刷刷的首屏、做题、service worker，
+# travel 的首屏、新建行程、service worker 一项不差（两个工具都不用 window.opener、不开跨源弹窗、不被嵌）。没挡住什么的头不摘。
+/ysevan/tools/*
+  ! Permissions-Policy
+
+# 文件名带内容哈希，改了内容就换文件名，可以永久缓存。public/ 下的图片没有这条：换图靠改文件名里的版本号。
+/ysevan/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ——以下由 old 这边加，小屋那份 deploy/old-root/_headers 里没有；以后用小屋的新版覆盖这份文件时，要把这一段接回来（old/说明.md「根目录 _headers」一节）——
+# 卡集（/ysevan/tools/card/，tools/card 的 npm run export-old 产物）：照 card.ysevan.com 原来的口径防收录，
+# 卡面高清图和 vendor 带不了内容哈希，给一周缓存（控制室 2026-10-08 定）。
+# Pages 一条规则只许一个 *，卡名那一级用具名占位 :card（写成 cards/*/web/* 会被 Pages 整条跳过，本机 wrangler 实测报错）。
+/ysevan/tools/card/*
+  X-Robots-Tag: noindex, nofollow
+
+/ysevan/tools/card/cards/:card/web/*
+  Cache-Control: public, max-age=604800
+
+/ysevan/tools/card/vendor/*
+  Cache-Control: public, max-age=604800

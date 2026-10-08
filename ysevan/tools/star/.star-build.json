@@ -1,0 +1,18 @@
+{
+  "name": "设计合集（star）公开静态版",
+  "mount": "/ysevan/tools/star/",
+  "sourceCommit": "23eeb72a6c7b59a8811ee417f8230e2d07e0e5d5",
+  "generatedAt": "2026-10-08T05:06:22.759Z",
+  "files": 34,
+  "totalBytes": 1095079,
+  "rewrite": {
+    "from": "../../old/",
+    "to": "../../../",
+    "count": 48,
+    "perFile": {
+      "assets/pages/interaction.css": 1,
+      "data/collection.js": 45,
+      "interaction.html": 2
+    }
+  }
+}

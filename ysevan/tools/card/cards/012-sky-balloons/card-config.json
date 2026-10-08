@@ -1,0 +1,40 @@
+{
+  "mode": "holographic",
+  "title": "晴空气球",
+  "subtitle": "SKY BALLOONS",
+  "technique": "晴日高歌",
+  "tagline": "把笑声放进一片晴空",
+  "edition": "12 / 13",
+  "collection": "蓝调幻光 · 第二辑",
+  "description": "清亮蓝天、光环与飘动发丝保持轻快动势，人物抬手的瞬间被一圈细碎亮光托起。",
+  "parameters": {
+    "subjectScale": 1.16,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.95,
+    "particles": 0.9,
+    "glow": 0.78
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "id": "012-sky-balloons",
+  "accent": "#67c8f2",
+  "matte": "#182b3d",
+  "originalWidth": 1024,
+  "originalHeight": 1536,
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png",
+    "model": "./assets/card.glb",
+    "cover": "./cover.png"
+  },
+  "previous": "../011-celestial-mage/",
+  "next": "../013-sakura-silver/"
+}

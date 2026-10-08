@@ -1,0 +1,1072 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F5F9">
+<meta name="description" content="工具类的液态玻璃色板与小屋的暖纸色板：强调色两档、光晕、对比度、身份色，色块点一下复制。">
+<title>色彩 · 设计合集</title>
+<script src="assets/boot.js"></script>
+<link rel="stylesheet" href="assets/star.css">
+<link rel="stylesheet" href="assets/pages/color.css">
+<script src="assets/star.js" defer></script>
+<script src="assets/pages/color.js" defer></script>
+</head><body data-page="color">
+<a class="skip" href="#main">跳到正文</a>
+<div id="shell-nav"></div><script src="assets/nav.js"></script>
+<main id="main" class="page">
+  <header class="page-head">
+    <h1 class="page-title">色彩</h1>
+    <p class="page-sub">工具类用苹果液态玻璃的色板，小屋用暖纸与橄榄墨。色块点一下就复制色值；写着的对比度都是按最不利的底实算的。</p>
+    <nav class="page-toc" aria-label="本页目录"></nav>
+  </header>
+
+  <!-- ============================ 工具 · 液态玻璃 ============================ -->
+  <section class="group" id="g-tools" data-scope="tools">
+    <h2 class="group-title">工具 · 液态玻璃</h2>
+    <p class="group-lede">黑红、六套中性、粉彩三条路都被屋主否过，这里只写定下来的；为什么不是那样，见「否掉的方向」（下一轮补）。</p>
+
+    <!-- 1 中性底与玻璃 -->
+    <article class="entry" id="c-glass" data-scope="tools" data-toc="中性底与玻璃">
+      <header class="entry-head">
+        <h3>中性底 + 两档玻璃；层次靠玻璃、投影、分隔线，不靠边框</h3>
+        <p class="entry-lede">底色只写在<code>html</code>上。玻璃.62给侧栏、顶栏这类视口大小的磨砂面；强玻璃.78给条目卡这类随正文长的面，不挂磨砂。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="layer-pair">
+          <figure class="layer-demo" data-mode="light">
+            <div class="ld-stage" aria-hidden="true">
+              <div class="ld-side"><b>玻璃.62</b><small>侧栏 · 顶栏 · tab bar</small><small>磨砂</small></div>
+              <div class="ld-card"><b>强玻璃.78</b><small>条目卡 · 阅读栏</small><hr><small>分隔线.12</small></div>
+            </div>
+            <figcaption>浅色</figcaption>
+            <div class="sw-row">
+              <button type="button" class="sw" data-copy="#F4F5F9" aria-label="复制 #F4F5F9" style="--c:#F4F5F9"><i></i><span>底</span><code>#F4F5F9</code></button>
+              <button type="button" class="sw sw-alpha" data-copy="rgba(255,255,255,.62)" aria-label="复制 rgba(255,255,255,.62)" style="--c:rgba(255,255,255,.62)"><i></i><span>玻璃</span><code>.62</code></button>
+              <button type="button" class="sw sw-alpha" data-copy="rgba(255,255,255,.78)" aria-label="复制 rgba(255,255,255,.78)" style="--c:rgba(255,255,255,.78)"><i></i><span>强玻璃</span><code>.78</code></button>
+              <button type="button" class="sw sw-alpha" data-copy="rgba(60,60,67,.12)" aria-label="复制 rgba(60,60,67,.12)" style="--c:rgba(60,60,67,.12)"><i></i><span>分隔线</span><code>.12</code></button>
+            </div>
+          </figure>
+          <figure class="layer-demo" data-mode="dark">
+            <div class="ld-stage" aria-hidden="true">
+              <div class="ld-side"><b>玻璃.55</b><small>侧栏 · 顶栏 · tab bar</small><small>磨砂</small></div>
+              <div class="ld-card"><b>强玻璃.72</b><small>条目卡 · 阅读栏</small><hr><small>分隔线.5</small></div>
+            </div>
+            <figcaption>深色</figcaption>
+            <div class="sw-row">
+              <button type="button" class="sw" data-copy="#0B0C10" aria-label="复制 #0B0C10" style="--c:#0B0C10"><i></i><span>底</span><code>#0B0C10</code></button>
+              <button type="button" class="sw sw-alpha" data-copy="rgba(40,42,52,.55)" aria-label="复制 rgba(40,42,52,.55)" style="--c:rgba(40,42,52,.55)"><i></i><span>玻璃</span><code>.55</code></button>
+              <button type="button" class="sw sw-alpha" data-copy="rgba(44,46,58,.72)" aria-label="复制 rgba(44,46,58,.72)" style="--c:rgba(44,46,58,.72)"><i></i><span>强玻璃</span><code>.72</code></button>
+              <button type="button" class="sw sw-alpha" data-copy="rgba(84,84,88,.5)" aria-label="复制 rgba(84,84,88,.5)" style="--c:rgba(84,84,88,.5)"><i></i><span>分隔线</span><code>.5</code></button>
+            </div>
+          </figure>
+        </div>
+        <div class="use" data-ug-box>
+          <p class="use-cap"><b>对照</b>换成「靠边框分层」看看：刷刷改版前的面板是1px描边加白底（示意），层次全靠线，光晕、玻璃和投影都没了。</p>
+          <div class="seg" role="radiogroup" aria-label="层次靠什么">
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-ug="glass">现行：玻璃与投影</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1" data-ug="border">反例：靠边框</button>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+<pre><code>html { background: #F4F5F9; }            /* 深 #0B0C10；body 保持透明 */
+--glass:        rgba(255,255,255,.62);  /* 深 rgba(40,42,52,.55) */
+--glass-strong: rgba(255,255,255,.78);  /* 深 rgba(44,46,58,.72) */
+--glass-edge:   rgba(255,255,255,.9);   /* 顶边亮线；深 rgba(255,255,255,.12) */
+--sep:          rgba(60,60,67,.12);     /* 深 rgba(84,84,88,.5) */
+--shadow: 0 10px 30px rgba(20,30,60,.08), inset 0 1px 0 var(--glass-edge);
+                                        /* 深 0 10px 30px rgba(0,0,0,.35) */</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>.62磨砂：侧栏、顶栏、tab bar、弹层——视口大小的面。.78不磨砂：条目卡、阅读栏、右栏——随正文长的面。</p></section>
+        <section class="fact"><h4>为什么</h4><p>屋主要「参考苹果的UI和配色」。分层只靠玻璃、投影和分隔线，不用边框。长面不挂磨砂：长到近两万像素会超显卡纹理上限、整层丢弃，每次滚动还要重新光栅化；屋主台式机没显卡，磨砂正是那台机器的瓶颈。</p></section>
+        <section class="fact trap"><h4>坑</h4><p><code>body</code>也写了不透明背景时，它画在<code>z-index:-1</code>的<code>body::before</code>之上，三团光晕整个被盖掉——而离线算的对比度照样「成立」。底色只写<code>html</code>，<code>body</code>透明。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:12</code>「结构」、<code>:15</code>「颜色（苹果系统色）」；<code>tools/gang/design-proposal.md:908</code>「磨砂只放在视口大小的表面上」；<code>tools/shua/design-proposal.md:350</code>「落到刷刷时自己拿的决定」；反例照<code>tools/shua/design-proposal.md:28</code>「做得好、不要动的地方」（面板统一1px描边 + 白底 + 小圆角）</p>
+      </div>
+    </article>
+
+    <!-- 2 文字三级 -->
+    <article class="entry" id="c-text" data-scope="tools" data-toc="文字三级">
+      <header class="entry-head">
+        <h3>文字分三级：次级.76承载文字，三级.32只作装饰</h3>
+        <p class="entry-lede">正文#1C1C1E；次级字统一<code>rgba(60,60,67,.76)</code>，深色<code>rgba(235,235,245,.62)</code>；三级.32只给chevron与分隔符，不承载文字。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="text-pair">
+          <div class="text-demo" data-mode="light" style="--worst:#EFEFFB">
+            <p class="td-cap">浅 · 底＝强玻璃叠靛光晕最浓角#EFEFFB</p>
+            <p class="td-row"><span class="td-1">正文<i>#1C1C1E</i></span><b>14.92</b></p>
+            <p class="td-row"><span class="td-2">次级<i>rgba(60,60,67,.76)</i></span><b>4.91</b></p>
+            <p class="td-row td-3row"><span class="td-3">三级<i>.32</i></span><span class="td-deco" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="m9.8 6.2 5.8 5.8-5.8 5.8"/></svg></span><b>1.77</b><em>只作装饰</em></p>
+          </div>
+          <div class="text-demo" data-mode="dark" style="--worst:#273440">
+            <p class="td-cap">深 · 底＝强玻璃叠青光晕最浓角#273440</p>
+            <p class="td-row"><span class="td-1">正文<i>#F2F2F7</i></span><b>11.40</b></p>
+            <p class="td-row"><span class="td-2">次级<i>rgba(235,235,245,.62)</i></span><b>5.17</b></p>
+            <p class="td-row td-3row"><span class="td-3">三级<i>.32</i></span><span class="td-deco" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="m9.8 6.2 5.8 5.8-5.8 5.8"/></svg></span><b>2.48</b><em>只作装饰</em></p>
+          </div>
+        </div>
+        <div class="use">
+          <p class="use-cap"><b>用起来</b>同一张分组列表卡：标题用正文色，副标题和计数用次级，chevron用三级。最后一行是反例——三级色拿来写字，最不利角浅色只有1.77、深色2.48。</p>
+          <div class="use-pair">
+            <div class="use-panel ut-panel" data-mode="light">
+              <p class="use-tag">浅色</p>
+              <ul class="list">
+                <li><div class="row"><span class="ico" style="background:#007AFF" data-icon="doc"></span><span class="t"><b>综合业务练习</b><small>上次做到第12题 · 3分钟前</small></span><span class="badge">120题</span><span class="chev" data-icon="chevron"></span></div></li>
+                <li><div class="row"><span class="ico" style="background:#34C759" data-icon="check"></span><span class="t"><b>结算业务基础</b><small>已做完 · 昨天</small></span><span class="badge">86题</span><span class="chev" data-icon="chevron"></span></div></li>
+                <li><div class="row ut-wrong"><span class="ico" style="background:#FF9500" data-icon="alert"></span><span class="t"><b>票据业务进阶</b><small>还没开始 · 这行用了三级色</small></span><span class="use-bad">反例</span><span class="chev" data-icon="chevron"></span></div></li>
+              </ul>
+            </div>
+            <div class="use-panel ut-panel" data-mode="dark">
+              <p class="use-tag">深色</p>
+              <ul class="list">
+                <li><div class="row"><span class="ico" style="background:#0A84FF" data-icon="doc"></span><span class="t"><b>综合业务练习</b><small>上次做到第12题 · 3分钟前</small></span><span class="badge">120题</span><span class="chev" data-icon="chevron"></span></div></li>
+                <li><div class="row"><span class="ico" style="background:#30D158" data-icon="check"></span><span class="t"><b>结算业务基础</b><small>已做完 · 昨天</small></span><span class="badge">86题</span><span class="chev" data-icon="chevron"></span></div></li>
+                <li><div class="row ut-wrong"><span class="ico" style="background:#FF9F0A" data-icon="alert"></span><span class="t"><b>票据业务进阶</b><small>还没开始 · 这行用了三级色</small></span><span class="use-bad">反例</span><span class="chev" data-icon="chevron"></span></div></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+<pre><code>--label:  #1C1C1E;              /* 深 #F2F2F7 */
+--label2: rgba(60,60,67,.76);   /* 深 rgba(235,235,245,.62)；次级，承载文字 */
+--label3: rgba(60,60,67,.32);   /* 深 rgba(235,235,245,.32)；只给 chevron、分隔符 */</code></pre>
+        </section>
+        <section class="fact"><h4>为什么是.76</h4><p>样张原值.62叠最亮光晕角只有3.42；改.73只压过了蓝光晕，绿、橙、粉、青、靛的光晕更深，只有4.28–4.49；.76让六色都过（本站实测条目卡最低4.91）。一个值，不按强调色分表。</p></section>
+        <section class="fact"><h4>各家本地压深</h4><p>统一值只是起点：plan内容区的字直接压光晕、没有玻璃底，本地压到.85；card的hero副标题、页脚也在裸光晕上，压到.89、深色.64。这两处都有记录，是SPEC允许的本地偏离。本站把所有文字都放在玻璃卡上，分组说明这类压裸光晕的字只用正文色，所以.76够用。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>次级字.76直接压在光晕中心（不隔玻璃）只有3.52。字要么上玻璃，要么换正文色，别指望统一值免检。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:82</code>「降级与可访问性」、<code>:94</code>「次级字统一值与各项目自测义务」、<code>:137</code>「各家有记录的偏离」</p>
+      </div>
+    </article>
+
+    <!-- 3 六强调色 -->
+    <article class="entry" id="c-accent" data-scope="tools" data-toc="六强调色">
+      <header class="entry-head">
+        <h3>六个苹果强调色：填充档与文字档分开</h3>
+        <p class="entry-lede">填充、渐变、图标、色点、焦点环用系统色原值；一当文字用，就换HIG「增强对比度」那组。原值当字不达标：#007AFF压白只有4.02，#34C759只有2.2。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="acc-grid">
+          <div class="acc" data-accent="blue">
+            <p class="acc-name">蓝<small>默认</small></p>
+            <div class="acc-fills">
+              <button type="button" class="sw sw-sm" data-copy="#007AFF" aria-label="复制 #007AFF" style="--c:#007AFF"><i></i><code>#007AFF</code></button>
+              <button type="button" class="sw sw-sm" data-copy="#0A84FF" aria-label="复制 #0A84FF" style="--c:#0A84FF"><i></i><code>#0A84FF</code></button>
+            </div>
+            <button type="button" class="acc-grad" data-copy="linear-gradient(135deg,#007AFF,#5AC8FA)" aria-label="复制 linear-gradient(135deg,#007AFF,#5AC8FA)" style="--g1:#007AFF;--g2:#5AC8FA"><span>→ #5AC8FA</span></button>
+            <div class="acc-texts">
+              <button type="button" class="acc-text" data-copy="#0040DD" aria-label="复制 #0040DD" style="--ub:#EAF7FE;--uf:#0040DD"><span>文字<i>#0040DD</i></span><b>6.94</b></button>
+              <button type="button" class="acc-text is-dark" data-copy="#409CFF" aria-label="复制 #409CFF" style="--ub:#233046;--uf:#409CFF"><span>文字<i>#409CFF</i></span><b>4.68</b></button>
+            </div>
+          </div>
+          <div class="acc" data-accent="green">
+            <p class="acc-name">绿</p>
+            <div class="acc-fills">
+              <button type="button" class="sw sw-sm" data-copy="#34C759" aria-label="复制 #34C759" style="--c:#34C759"><i></i><code>#34C759</code></button>
+              <button type="button" class="sw sw-sm" data-copy="#30D158" aria-label="复制 #30D158" style="--c:#30D158"><i></i><code>#30D158</code></button>
+            </div>
+            <button type="button" class="acc-grad" data-copy="linear-gradient(135deg,#34C759,#A8E063)" aria-label="复制 linear-gradient(135deg,#34C759,#A8E063)" style="--g1:#34C759;--g2:#A8E063"><span>→ #A8E063</span></button>
+            <div class="acc-texts">
+              <button type="button" class="acc-text" data-copy="#1F7A36" aria-label="复制 #1F7A36" style="--ub:#ECF9F0;--uf:#1F7A36"><span>文字<i>#1F7A36</i></span><b>4.96</b></button>
+              <button type="button" class="acc-text is-dark" data-copy="#30DB5B" aria-label="复制 #30DB5B" style="--ub:#263434;--uf:#30DB5B"><span>文字<i>#30DB5B</i></span><b>7.04</b></button>
+            </div>
+          </div>
+          <div class="acc" data-accent="indigo">
+            <p class="acc-name">靛</p>
+            <div class="acc-fills">
+              <button type="button" class="sw sw-sm" data-copy="#5856D6" aria-label="复制 #5856D6" style="--c:#5856D6"><i></i><code>#5856D6</code></button>
+              <button type="button" class="sw sw-sm" data-copy="#5E5CE6" aria-label="复制 #5E5CE6" style="--c:#5E5CE6"><i></i><code>#5E5CE6</code></button>
+            </div>
+            <button type="button" class="acc-grad" data-copy="linear-gradient(135deg,#5856D6,#BF5AF2)" aria-label="复制 linear-gradient(135deg,#5856D6,#BF5AF2)" style="--g1:#5856D6;--g2:#BF5AF2"><span>→ #BF5AF2</span></button>
+            <div class="acc-texts">
+              <button type="button" class="acc-text" data-copy="#3634A3" aria-label="复制 #3634A3" style="--ub:#EFEFFB;--uf:#3634A3"><span>文字<i>#3634A3</i></span><b>8.44</b></button>
+              <button type="button" class="acc-text is-dark" data-copy="#8E8BFF" aria-label="复制 #8E8BFF" style="--ub:#2B2C43;--uf:#8E8BFF"><span>文字<i>#8E8BFF</i></span><b>4.70</b></button>
+            </div>
+          </div>
+          <div class="acc" data-accent="orange">
+            <p class="acc-name">橙</p>
+            <div class="acc-fills">
+              <button type="button" class="sw sw-sm" data-copy="#FF9500" aria-label="复制 #FF9500" style="--c:#FF9500"><i></i><code>#FF9500</code></button>
+              <button type="button" class="sw sw-sm" data-copy="#FF9F0A" aria-label="复制 #FF9F0A" style="--c:#FF9F0A"><i></i><code>#FF9F0A</code></button>
+            </div>
+            <button type="button" class="acc-grad" data-copy="linear-gradient(135deg,#FF9500,#FFD60A)" aria-label="复制 linear-gradient(135deg,#FF9500,#FFD60A)" style="--g1:#FF9500;--g2:#FFD60A"><span>→ #FFD60A</span></button>
+            <div class="acc-texts">
+              <button type="button" class="acc-text" data-copy="#C93400" aria-label="复制 #C93400" style="--ub:#FDF3F3;--uf:#C93400"><span>文字<i>#C93400</i></span><b>4.84</b></button>
+              <button type="button" class="acc-text is-dark" data-copy="#FFB340" aria-label="复制 #FFB340" style="--ub:#37312E;--uf:#FFB340"><span>文字<i>#FFB340</i></span><b>7.18</b></button>
+            </div>
+          </div>
+          <div class="acc" data-accent="pink">
+            <p class="acc-name">粉</p>
+            <div class="acc-fills">
+              <button type="button" class="sw sw-sm" data-copy="#FF2D55" aria-label="复制 #FF2D55" style="--c:#FF2D55"><i></i><code>#FF2D55</code></button>
+              <button type="button" class="sw sw-sm" data-copy="#FF375F" aria-label="复制 #FF375F" style="--c:#FF375F"><i></i><code>#FF375F</code></button>
+            </div>
+            <button type="button" class="acc-grad" data-copy="linear-gradient(135deg,#FF2D55,#FF9AA2)" aria-label="复制 linear-gradient(135deg,#FF2D55,#FF9AA2)" style="--g1:#FF2D55;--g2:#FF9AA2"><span>→ #FF9AA2</span></button>
+            <div class="acc-texts">
+              <button type="button" class="acc-text" data-copy="#D30F45" aria-label="复制 #D30F45" style="--ub:#FDEDF1;--uf:#D30F45"><span>文字<i>#D30F45</i></span><b>4.75</b></button>
+              <button type="button" class="acc-text is-dark" data-copy="#FF6482" aria-label="复制 #FF6482" style="--ub:#2F2A3E;--uf:#FF6482"><span>文字<i>#FF6482</i></span><b>4.86</b></button>
+            </div>
+          </div>
+          <div class="acc" data-accent="teal">
+            <p class="acc-name">青</p>
+            <div class="acc-fills">
+              <button type="button" class="sw sw-sm" data-copy="#30B0C7" aria-label="复制 #30B0C7" style="--c:#30B0C7"><i></i><code>#30B0C7</code></button>
+              <button type="button" class="sw sw-sm" data-copy="#40C8E0" aria-label="复制 #40C8E0" style="--c:#40C8E0"><i></i><code>#40C8E0</code></button>
+            </div>
+            <button type="button" class="acc-grad" data-copy="linear-gradient(135deg,#30B0C7,#64D2FF)" aria-label="复制 linear-gradient(135deg,#30B0C7,#64D2FF)" style="--g1:#30B0C7;--g2:#64D2FF"><span>→ #64D2FF</span></button>
+            <div class="acc-texts">
+              <button type="button" class="acc-text" data-copy="#0071A4" aria-label="复制 #0071A4" style="--ub:#E9F6F9;--uf:#0071A4"><span>文字<i>#0071A4</i></span><b>4.88</b></button>
+              <button type="button" class="acc-text is-dark" data-copy="#5AC8F5" aria-label="复制 #5AC8F5" style="--ub:#273440;--uf:#5AC8F5"><span>文字<i>#5AC8F5</i></span><b>6.65</b></button>
+            </div>
+          </div>
+        </div>
+        <p class="spec-note">每格：填充 浅 / 深 · 渐变（浅端）· 文字档 浅 / 深。文字档那两块的底是「强玻璃叠这个强调色自己的光晕最浓角」的合成色，数字是那一角的对比度（公式法）。</p>
+        <div class="use" data-ua>
+          <p class="use-cap"><b>用起来</b>主按钮、次按钮、选中标签、链接、进度条、焦点环，浅深并排。换个颜色看看（默认跟着全站强调色）；按Tab走进来，焦点环是填充档原色、2px、外扩2px。点「做一题」进度条往前走。</p>
+          <div class="ua-pick" role="radiogroup" aria-label="样例用的强调色">
+            <button type="button" role="radio" class="ua-dot" data-ua-accent="blue" aria-checked="true" tabindex="0"><i aria-hidden="true"></i>蓝</button>
+            <button type="button" role="radio" class="ua-dot" data-ua-accent="green" aria-checked="false" tabindex="-1"><i aria-hidden="true"></i>绿</button>
+            <button type="button" role="radio" class="ua-dot" data-ua-accent="indigo" aria-checked="false" tabindex="-1"><i aria-hidden="true"></i>靛</button>
+            <button type="button" role="radio" class="ua-dot" data-ua-accent="orange" aria-checked="false" tabindex="-1"><i aria-hidden="true"></i>橙</button>
+            <button type="button" role="radio" class="ua-dot" data-ua-accent="pink" aria-checked="false" tabindex="-1"><i aria-hidden="true"></i>粉</button>
+            <button type="button" role="radio" class="ua-dot" data-ua-accent="teal" aria-checked="false" tabindex="-1"><i aria-hidden="true"></i>青</button>
+          </div>
+          <div class="use-pair">
+            <div class="use-panel ua-panel" data-mode="light" data-accent="blue" data-ua-panel>
+              <p class="use-tag">浅色</p>
+              <div class="ua-card">
+                <div class="ua-head"><b>专项练习</b><small>选好题型就能开始</small></div>
+                <div class="ua-chips" role="group" aria-label="题型（浅色样例）">
+                  <button type="button" class="ua-chip" aria-pressed="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.6 4.4 4.4L19 7.4"/></svg>单选</button>
+                  <button type="button" class="ua-chip" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.6 4.4 4.4L19 7.4"/></svg>多选</button>
+                  <button type="button" class="ua-chip" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.6 4.4 4.4L19 7.4"/></svg>判断</button>
+                </div>
+                <div class="ua-prog">
+                  <div class="ua-prog-top"><span>已完成</span><b data-ua-num>8/20题</b></div>
+                  <div class="ua-track" role="progressbar" aria-label="已完成（浅色样例）" aria-valuemin="0" aria-valuemax="20" aria-valuenow="8"><i data-ua-bar style="transform:scaleX(.4)"></i></div>
+                </div>
+                <p class="ua-text">链接一律用文字档：<a href="#c-contrast">对比度怎么算</a>。</p>
+                <div class="ua-acts">
+                  <button type="button" class="btn" data-ua-next>做一题</button>
+                  <button type="button" class="btn btn-tint" data-ua-reset>重来</button>
+                  <span class="ua-ring" aria-hidden="true">焦点环长这样</span>
+                </div>
+              </div>
+            </div>
+            <div class="use-panel ua-panel" data-mode="dark" data-accent="blue" data-ua-panel>
+              <p class="use-tag">深色</p>
+              <div class="ua-card">
+                <div class="ua-head"><b>专项练习</b><small>选好题型就能开始</small></div>
+                <div class="ua-chips" role="group" aria-label="题型（深色样例）">
+                  <button type="button" class="ua-chip" aria-pressed="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.6 4.4 4.4L19 7.4"/></svg>单选</button>
+                  <button type="button" class="ua-chip" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.6 4.4 4.4L19 7.4"/></svg>多选</button>
+                  <button type="button" class="ua-chip" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.6 4.4 4.4L19 7.4"/></svg>判断</button>
+                </div>
+                <div class="ua-prog">
+                  <div class="ua-prog-top"><span>已完成</span><b data-ua-num>8/20题</b></div>
+                  <div class="ua-track" role="progressbar" aria-label="已完成（深色样例）" aria-valuemin="0" aria-valuemax="20" aria-valuenow="8"><i data-ua-bar style="transform:scaleX(.4)"></i></div>
+                </div>
+                <p class="ua-text">链接一律用文字档：<a href="#c-contrast">对比度怎么算</a>。</p>
+                <div class="ua-acts">
+                  <button type="button" class="btn" data-ua-next>做一题</button>
+                  <button type="button" class="btn btn-tint" data-ua-reset>重来</button>
+                  <span class="ua-ring" aria-hidden="true">焦点环长这样</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>文字档</h4>
+<pre><code>/* 浅色：HIG 增强对比度 */  蓝 #0040DD  绿 #1F7A36  靛 #3634A3  橙 #C93400  粉 #D30F45  青 #0071A4  红 #D70015
+/* 深色：HIG 深色增强对比度 */ 蓝 #409CFF  绿 #30DB5B  靛 #8E8BFF  橙 #FFB340  粉 #FF6482  青 #5AC8F5  红 #FF6961</code></pre>
+          <p>绿用#1F7A36，不用HIG的#248A3D（压白只有4.40）；深色靛从HIG的#7D7AFF提亮到#8E8BFF（对#0B0C10是6.8）。</p>
+        </section>
+        <section class="fact"><h4>渐变浅端</h4><p>浅色accent-2：蓝#5AC8FA、绿#A8E063、靛#BF5AF2、橙#FFD60A、粉#FF9AA2、青#64D2FF。深色样张只重写了蓝（#64D2FF），其余沿用浅色那组，本站与岗岗、card一样照这个写。</p></section>
+        <section class="fact"><h4>现状</h4><p>深色accent-2四家是三种写法：刷刷、plan各自配了一套，互相也对不上。统一与否等控制室定，正在对齐。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:17</code>「颜色（苹果系统色）」、<code>:37</code>「自适应」文字档、<code>:83</code>「降级与可访问性」、<code>:161</code>「各家有记录的偏离」</p>
+      </div>
+    </article>
+
+    <!-- 4 主按钮 -->
+    <article class="entry" id="c-button" data-scope="tools" data-toc="主按钮">
+      <header class="entry-head">
+        <h3>主按钮 = 品牌图标同一条亮渐变 + 白字，浅深都一样</h3>
+        <p class="entry-lede"><code>linear-gradient(135deg,var(--accent),var(--accent-2))</code>加白字和一层<code>text-shadow</code>。白字对浅端的比值不够，这是屋主拍板的审美例外：如实记录、不断言。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="btn-rows">
+          <div class="btn-row" data-mode="light">
+            <p class="row-cap">浅色</p>
+            <div class="btn-set">
+              <figure data-accent="blue"><button type="button" class="btn" data-copy="linear-gradient(135deg,#007AFF,#5AC8FA)" aria-label="复制 linear-gradient(135deg,#007AFF,#5AC8FA)">蓝 · 开始</button><figcaption>4.02 / 1.90</figcaption></figure>
+              <figure data-accent="green"><button type="button" class="btn" data-copy="linear-gradient(135deg,#34C759,#A8E063)" aria-label="复制 linear-gradient(135deg,#34C759,#A8E063)">绿 · 开始</button><figcaption>2.22 / 1.55</figcaption></figure>
+              <figure data-accent="indigo"><button type="button" class="btn" data-copy="linear-gradient(135deg,#5856D6,#BF5AF2)" aria-label="复制 linear-gradient(135deg,#5856D6,#BF5AF2)">靛 · 开始</button><figcaption>5.65 / 3.52</figcaption></figure>
+              <figure data-accent="orange"><button type="button" class="btn" data-copy="linear-gradient(135deg,#FF9500,#FFD60A)" aria-label="复制 linear-gradient(135deg,#FF9500,#FFD60A)">橙 · 开始</button><figcaption>2.20 / 1.41</figcaption></figure>
+              <figure data-accent="pink"><button type="button" class="btn" data-copy="linear-gradient(135deg,#FF2D55,#FF9AA2)" aria-label="复制 linear-gradient(135deg,#FF2D55,#FF9AA2)">粉 · 开始</button><figcaption>3.65 / 2.02</figcaption></figure>
+              <figure data-accent="teal"><button type="button" class="btn" data-copy="linear-gradient(135deg,#30B0C7,#64D2FF)" aria-label="复制 linear-gradient(135deg,#30B0C7,#64D2FF)">青 · 开始</button><figcaption>2.57 / 1.72</figcaption></figure>
+            </div>
+          </div>
+          <div class="btn-row" data-mode="dark">
+            <p class="row-cap">深色</p>
+            <div class="btn-set">
+              <figure data-accent="blue"><button type="button" class="btn" data-copy="linear-gradient(135deg,#0A84FF,#64D2FF)" aria-label="复制 linear-gradient(135deg,#0A84FF,#64D2FF)">蓝 · 开始</button><figcaption>3.65 / 1.72</figcaption></figure>
+              <figure data-accent="green"><button type="button" class="btn" data-copy="linear-gradient(135deg,#30D158,#A8E063)" aria-label="复制 linear-gradient(135deg,#30D158,#A8E063)">绿 · 开始</button><figcaption>2.02 / 1.55</figcaption></figure>
+              <figure data-accent="indigo"><button type="button" class="btn" data-copy="linear-gradient(135deg,#5E5CE6,#BF5AF2)" aria-label="复制 linear-gradient(135deg,#5E5CE6,#BF5AF2)">靛 · 开始</button><figcaption>5.06 / 3.52</figcaption></figure>
+              <figure data-accent="orange"><button type="button" class="btn" data-copy="linear-gradient(135deg,#FF9F0A,#FFD60A)" aria-label="复制 linear-gradient(135deg,#FF9F0A,#FFD60A)">橙 · 开始</button><figcaption>2.06 / 1.41</figcaption></figure>
+              <figure data-accent="pink"><button type="button" class="btn" data-copy="linear-gradient(135deg,#FF375F,#FF9AA2)" aria-label="复制 linear-gradient(135deg,#FF375F,#FF9AA2)">粉 · 开始</button><figcaption>3.52 / 2.02</figcaption></figure>
+              <figure data-accent="teal"><button type="button" class="btn" data-copy="linear-gradient(135deg,#40C8E0,#64D2FF)" aria-label="复制 linear-gradient(135deg,#40C8E0,#64D2FF)">青 · 开始</button><figcaption>1.99 / 1.72</figcaption></figure>
+            </div>
+          </div>
+        </div>
+        <p class="spec-note">按钮下的数字：白字对渐变深端 / 浅端的实际比值。审美例外，记录不断言——不是「大字3:1」：按钮字14–15px，够不上WCAG大字（18.66px粗体或24px）。按钮点一下复制它的渐变。</p>
+        <div class="use">
+          <p class="use-cap"><b>用起来</b>三级按钮放在一起：主按钮亮渐变白字、次按钮实色软底加文字档、第三级强玻璃底加正文色，浅深并排，跟着全站强调色走。点一下复制类名。</p>
+          <div class="btn-tiers">
+            <div class="use-panel" data-mode="light">
+              <p class="use-tag">浅色</p>
+              <button type="button" class="btn" data-copy=".btn" aria-label="开始练习（复制类名 .btn）">开始练习</button>
+              <button type="button" class="btn btn-tint" data-copy=".btn-tint" aria-label="稍后（复制类名 .btn-tint）">稍后</button>
+              <button type="button" class="btn btn-glass" data-copy=".btn-glass" aria-label="更多设置（复制类名 .btn-glass）">更多设置</button>
+            </div>
+            <div class="use-panel" data-mode="dark">
+              <p class="use-tag">深色</p>
+              <button type="button" class="btn" data-copy=".btn" aria-label="开始练习（复制类名 .btn）">开始练习</button>
+              <button type="button" class="btn btn-tint" data-copy=".btn-tint" aria-label="稍后（复制类名 .btn-tint）">稍后</button>
+              <button type="button" class="btn btn-glass" data-copy=".btn-glass" aria-label="更多设置（复制类名 .btn-glass）">更多设置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>.btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); /* 与品牌图标同一条 */
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.25);   /* 唯一的补救：不压深渐变、不加描边 */
+  font-weight: 600;
+  box-shadow: 0 8px 18px var(--accent-shadow);
+}
+.btn-tint  { background: var(--accent-tint); color: var(--accent-text); }  /* 次按钮：实色软底 + 文字档 */</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>曾经为了4.5把渐变压深，屋主看了说要和左上角一样浅。审美例外只开这一处：别的承载信息的文字——正文、链接、chip、次按钮——一律≥4.5，压深的「文字档」只用在它们身上。</p></section>
+        <blockquote class="said"><p>「所有颜色的按钮色可以和页面左上角的颜色一样浅一点」</p><footer>屋主 · 2026-09-23</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>别用「大字3:1」口径粉饰；对比度脚本把主按钮单列成「记录不断言」，其余照断言。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:81</code>「降级与可访问性」、<code>:105</code>「对比度验收方法」；比值与<code>tools/card/collection/shared/theme.css:5</code>文件头注释逐个对得上</p>
+      </div>
+    </article>
+
+    <!-- 5 语义色 -->
+    <article class="entry" id="c-semantic" data-scope="tools" data-toc="语义色">
+      <header class="entry-head">
+        <h3>语义色固定、不随强调色；风险必须带文字</h3>
+        <p class="entry-lede">红＝冲突、逾期、答错；橙＝今天截止；绿＝完成、答对。填充用系统色，字用文字档压在同色相的实色软底上，旁边一定有字，不只靠颜色。日期标签另有一档黄，只给两天内到期，见下一条。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="sem-pair">
+          <div class="sem-demo" data-mode="light">
+            <span class="sem sem-red"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.6v5"/><path d="M12 16.3v.01"/></svg>冲突 · 逾期2天</span>
+            <span class="sem sem-orange"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 9.5V13l2.5 1.5"/><path d="M9.5 3.5h5"/></svg>今天截止</span>
+            <span class="sem sem-green"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="m8.5 12.2 2.3 2.3 4.7-4.8"/></svg>已完成</span>
+          </div>
+          <div class="sem-demo" data-mode="dark">
+            <span class="sem sem-red"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.6v5"/><path d="M12 16.3v.01"/></svg>冲突 · 逾期2天</span>
+            <span class="sem sem-orange"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 9.5V13l2.5 1.5"/><path d="M9.5 3.5h5"/></svg>今天截止</span>
+            <span class="sem sem-green"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="m8.5 12.2 2.3 2.3 4.7-4.8"/></svg>已完成</span>
+          </div>
+        </div>
+        <div class="sw-row sw-row-wide">
+          <button type="button" class="sw" data-copy="#FF3B30" aria-label="复制 #FF3B30" style="--c:#FF3B30"><i></i><span>红</span><code>#FF3B30</code></button>
+          <button type="button" class="sw" data-copy="#D70015" aria-label="复制 #D70015" style="--c:#D70015"><i></i><span>红字</span><code>#D70015</code></button>
+          <button type="button" class="sw" data-copy="#FF9500" aria-label="复制 #FF9500" style="--c:#FF9500"><i></i><span>橙</span><code>#FF9500</code></button>
+          <button type="button" class="sw" data-copy="#C93400" aria-label="复制 #C93400" style="--c:#C93400"><i></i><span>橙字</span><code>#C93400</code></button>
+          <button type="button" class="sw" data-copy="#34C759" aria-label="复制 #34C759" style="--c:#34C759"><i></i><span>绿</span><code>#34C759</code></button>
+          <button type="button" class="sw" data-copy="#1F7A36" aria-label="复制 #1F7A36" style="--c:#1F7A36"><i></i><span>绿字</span><code>#1F7A36</code></button>
+        </div>
+        <div class="use us-stage" data-us>
+          <svg class="sr-only" aria-hidden="true" focusable="false"><filter id="us-deutan" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.367322 0.860646 -0.227968 0 0  0.280085 0.672501 0.047413 0 0  -0.011820 0.042940 0.968881 0 0  0 0 0 1 0"/></filter></svg>
+          <p class="use-cap"><b>用起来</b>提示条、带字的风险标签，下面是只靠颜色的反例，浅深并排。点「红绿色弱模拟」：带字的那组照样读得出，只有色点的那组红绿就分不清了。</p>
+          <button type="button" class="use-toggle" aria-pressed="false" data-us-sim><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.6 12s3.4-6.2 9.4-6.2 9.4 6.2 9.4 6.2-3.4 6.2-9.4 6.2S2.6 12 2.6 12z"/><circle cx="12" cy="12" r="2.8"/></svg>红绿色弱模拟</button>
+          <div class="use-pair">
+            <div class="use-panel" data-mode="light">
+              <p class="use-tag">浅色</p>
+              <div class="us-card">
+                <p class="us-bar us-ok"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="m8.5 12.2 2.3 2.3 4.7-4.8"/></svg><span><b>已保存</b>改动写进了本机</span></p>
+                <p class="us-bar us-warn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 9.5V13l2.5 1.5"/><path d="M9.5 3.5h5"/></svg><span><b>今天截止</b>还有2项没交</span></p>
+                <p class="us-bar us-err"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.6v5"/><path d="M12 16.3v.01"/></svg><span><b>冲突</b>两件事都排在周三上午</span></p>
+                <p class="us-sub">风险标签带字</p>
+                <ul class="us-rows">
+                  <li><span>交物业费</span><span class="sem sem-red"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.6v5"/><path d="M12 16.3v.01"/></svg>逾期2天</span></li>
+                  <li><span>周报</span><span class="sem sem-orange"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 9.5V13l2.5 1.5"/><path d="M9.5 3.5h5"/></svg>今天截止</span></li>
+                  <li><span>材料收集</span><span class="sem sem-green"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="m8.5 12.2 2.3 2.3 4.7-4.8"/></svg>已完成</span></li>
+                </ul>
+                <p class="us-sub"><span class="use-bad">反例</span>只靠颜色</p>
+                <ul class="us-rows">
+                  <li><span>交物业费</span><i class="us-dot" style="background:var(--red)" aria-hidden="true"></i></li>
+                  <li><span>周报</span><i class="us-dot" style="background:var(--orange)" aria-hidden="true"></i></li>
+                  <li><span>材料收集</span><i class="us-dot" style="background:var(--green)" aria-hidden="true"></i></li>
+                </ul>
+              </div>
+            </div>
+            <div class="use-panel" data-mode="dark">
+              <p class="use-tag">深色</p>
+              <div class="us-card">
+                <p class="us-bar us-ok"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="m8.5 12.2 2.3 2.3 4.7-4.8"/></svg><span><b>已保存</b>改动写进了本机</span></p>
+                <p class="us-bar us-warn"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 9.5V13l2.5 1.5"/><path d="M9.5 3.5h5"/></svg><span><b>今天截止</b>还有2项没交</span></p>
+                <p class="us-bar us-err"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.6v5"/><path d="M12 16.3v.01"/></svg><span><b>冲突</b>两件事都排在周三上午</span></p>
+                <p class="us-sub">风险标签带字</p>
+                <ul class="us-rows">
+                  <li><span>交物业费</span><span class="sem sem-red"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.6v5"/><path d="M12 16.3v.01"/></svg>逾期2天</span></li>
+                  <li><span>周报</span><span class="sem sem-orange"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 9.5V13l2.5 1.5"/><path d="M9.5 3.5h5"/></svg>今天截止</span></li>
+                  <li><span>材料收集</span><span class="sem sem-green"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="m8.5 12.2 2.3 2.3 4.7-4.8"/></svg>已完成</span></li>
+                </ul>
+                <p class="us-sub"><span class="use-bad">反例</span>只靠颜色</p>
+                <ul class="us-rows">
+                  <li><span>交物业费</span><i class="us-dot" style="background:var(--red)" aria-hidden="true"></i></li>
+                  <li><span>周报</span><i class="us-dot" style="background:var(--orange)" aria-hidden="true"></i></li>
+                  <li><span>材料收集</span><i class="us-dot" style="background:var(--green)" aria-hidden="true"></i></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <p class="spec-note">模拟用的是Machado等2009年发表的绿色盲（deuteranopia）颜色矩阵，SVG <code>feColorMatrix</code>在线性RGB里算，只是示意，不等于每个人看到的样子。</p>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+<pre><code>        填充（浅 / 深）      文字档（浅 / 深）     实色软底（浅 / 深）
+红      #FF3B30 / #FF453A   #D70015 / #FF6961   #FFE9E8 / #412021
+橙      #FF9500 / #FF9F0A   #C93400 / #FFB340   #FFF3E3 / #413019
+绿      #34C759 / #30D158   #1F7A36 / #30DB5B   #E9F9ED / #1C3927</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>plan的风险色：红＝冲突逾期、橙＝今天截止、黄＝两天内到期（2026-10-08加，只给日期标签，见下一条<a href="#c-urgency">「黄色只给两天内到期」</a>）、绿＝完成、灰＝未开始和离截止三天以上；风险色覆盖阶段色，用户不能自定义。刷刷答对绿、答错红。</p></section>
+        <section class="fact"><h4>为什么</h4><p>语义不能跟着强调色变，换了强调色「红」还得是红。色弱的人分不清红绿，所以风险提示必须有文字说明，不能只靠颜色。</p></section>
+        <section class="fact"><h4>本站本地</h4><p>深色红字HIG原值#FF6961压强玻璃叠青光晕最浓角只有4.49，本站提亮到#FF6E66（4.63）；其余五个文字档压最不利角都≥4.62。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:18</code>「颜色（苹果系统色）」、<code>:37</code>文字档；<code>tools/plan/docs/BUSINESS_LOGIC.md:970</code>「风险与颜色逻辑」</p>
+      </div>
+    </article>
+
+    <!-- 5b 黄色只给两天内到期（SPEC §2a，2026-10-08） -->
+    <article class="entry" id="c-urgency" data-scope="tools" data-toc="黄色两天内到期">
+      <header class="entry-head">
+        <h3>黄色只给两天内到期：日期标签按离截止几天分四档，远的一律灰</h3>
+        <p class="entry-lede">逾期红、今天截止橙、明天后天黄、其余灰；已完成和已归档的一律灰。强调色不再拿来标日期，只留给能点的东西和进度条；一行里只有日期标签带颜色，「重要」「待重排」这些标签都是灰的。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-10-08定</li><li>四家通用</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="sw-row">
+          <button type="button" class="sw" data-copy="#FFCC00" aria-label="复制 #FFCC00" style="--c:#FFCC00"><i></i><span>黄（只当填充）</span><code>#FFCC00</code></button>
+          <button type="button" class="sw" data-copy="#7A5200" aria-label="复制 #7A5200" style="--c:#7A5200"><i></i><span>黄字</span><code>#7A5200</code></button>
+          <button type="button" class="sw" data-copy="#FDF3CF" aria-label="复制 #FDF3CF" style="--c:#FDF3CF"><i></i><span>黄软底</span><code>#FDF3CF</code></button>
+          <button type="button" class="sw" data-copy="#FFD60A" aria-label="复制 #FFD60A" style="--c:#FFD60A"><i></i><span>深色黄、黄字</span><code>#FFD60A</code></button>
+          <button type="button" class="sw" data-copy="#3A3214" aria-label="复制 #3A3214" style="--c:#3A3214"><i></i><span>深色黄软底</span><code>#3A3214</code></button>
+        </div>
+        <div class="use urg" data-urg>
+          <p class="use-cap"><b>用起来</b>一组带截止日的假任务（2026年10月）。拖「今天是」滑块（或聚焦后按←→），日期标签按离截止还有几天换档：逾期红、今天截止橙、明天后天黄、其余灰；已完成的一律灰。文案照plan今日页的口径。浅深并排。</p>
+          <div class="urg-top">
+            <label class="urg-field"><span>今天是</span><input type="range" min="1" max="20" step="1" value="8" data-urg-day aria-valuetext="10月8日 周四"><output data-urg-out>10月8日 周四</output></label>
+            <button type="button" class="use-toggle" aria-pressed="false" data-urg-before>改版前：日期一律强调色（示意）</button>
+          </div>
+          <p class="urg-sum" data-urg-sum></p>
+          <div class="use-pair">
+            <div class="use-panel" data-mode="light">
+              <p class="use-tag">浅色</p>
+              <div class="us-card urg-card"><ul class="urg-rows" data-urg-list></ul></div>
+            </div>
+            <div class="use-panel" data-mode="dark">
+              <p class="use-tag">深色</p>
+              <div class="us-card urg-card"><ul class="urg-rows" data-urg-list></ul></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值 / 代码</h4>
+<pre><code>urgencyTone(days)            // days = 截止日 − 今天，按日历天
+  days &lt; 0    overdue  红   逾期N天
+  days === 0  today    橙   今天截止
+  days ≤ 2    soon     黄   明天截止 / 还有2天
+  其余        normal   灰   还有N天（--fill 底 + 次级字）
+已完成 / 已归档        一律 normal，只给灰色的绝对日期（10月5日）
+
+黄（2026-10-08 加，只给 soon）
+  填充    #FFCC00 / #FFD60A   只当填充，不当字：压白 1.51、压页面底 1.39
+  文字档  #7A5200 / #FFD60A   压自己的软底 6.23 / 9.04
+  软底    #FDF3CF / #3A3214   实色
+token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow-text);</code></pre>
+        </section>
+        <section class="fact"><h4>用在哪</h4><p>plan今日、日程、全部任务三页的任务行日期标签，和详情里的截止日期胶囊，同一个<code>urgencyTone</code>。全部任务页近两天之外写绝对日期（周四／9月30日），颜色照样按这四档。SPEC写明四家通用：其余三家以后有日期标签照这一套。和上一条<a href="#c-semantic">「语义色」</a>的交叉：橙从「即将截止」收窄成「今天截止」，明天、后天归黄。</p></section>
+        <section class="fact"><h4>为什么</h4><p>改版前不急的日期（「明天」「还有12天」「10月20日」）也用强调色软底＋强调色字，和「逾期」一样大、一样粗、一样有颜色，远的和急的一样响。分四档以后，只有真急的带颜色，越急越暖；强调色只留给能点的东西，日期不再冒充按钮。</p></section>
+        <blockquote class="said"><p>一眼不知道哪里是重点</p><footer>屋主，2026-10-08，对照SuperTodo（SPEC §2a记录）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>系统黄当字压白只有1.51、压页面底1.39：浅色的字必须压到<code>#7A5200</code>，深色那档的字才能直接用系统黄。plan写完对比度测试后先把<code>--yellow-text</code>改回<code>#FFCC00</code>跑一次，当场红，判据才算接上了。已完成、已归档的任务要单独判：不判的话做完的事也挂着「逾期」，plan 10-08修过一次。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:19</code>「颜色（苹果系统色）」、<code>:22</code>「2a. 紧急程度标签」；<code>tools/plan/app/src/domain/dateLabel.ts:30</code>「urgencyTone」、<code>:102</code>「isSettledTask」；<code>tools/plan/app/src/styles/tokens.css:188</code>「--yellow-text」、<code>:381</code>「--soon-50」；<code>tools/plan/app/src/styles/tokens.contrast.test.ts:75</code>；<code>tools/plan/docs/BUSINESS_LOGIC.md:993</code>「黄色：两天内到期」、<code>:1831</code>「紧急程度只用一组色」</p>
+      </div>
+    </article>
+
+    <!-- 6 承载文字的浅底实色 -->
+    <article class="entry" id="c-tint" data-scope="tools" data-toc="浅底必须实色">
+      <header class="entry-head">
+        <h3>承载文字的浅底一律实色；token按用途起名</h3>
+        <p class="entry-lede">次按钮、选中项、标签、计数胶囊这类「上面压字」的软底不透明；半透明只留给投影、光晕、描边。<code>--accent-tint</code>实色软底、<code>--accent-shadow</code>投影，各管各的。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="tint-demo" data-accent="pink" data-mode="light">
+          <div class="tint-spot tint-faint">
+            <p class="spot-cap">光晕最淡处</p>
+            <span class="chip-semi">半透明 · 4.06</span>
+            <span class="chip-solid">实色 · 4.59</span>
+          </div>
+          <div class="tint-spot tint-dense">
+            <p class="spot-cap">光晕最浓处</p>
+            <span class="chip-semi">半透明 · 2.67</span>
+            <span class="chip-solid">实色 · 4.59</span>
+          </div>
+        </div>
+        <p class="spec-note">同一个粉色chip：半透明底<code>rgba(255,45,85,.14)</code>会把底下的光晕吃进来，挪到光晕中心就从4.06掉到2.67；实色底<code>#FFE8EC</code>在哪都是4.59。</p>
+        <div class="use" data-uti>
+          <p class="use-cap"><b>拖一拖</b>把光晕从最淡拖到最浓，看同一组标签、次按钮、计数胶囊：半透明底的字一路往下掉，实色底的字一直是4.59。粉色、浅色是六色里最不利的一组。</p>
+          <div class="uti-box" data-accent="pink" data-mode="light">
+          <label class="uti-field"><span>光晕浓度</span><input type="range" min="0" max="100" step="1" value="100" data-uti-range><output data-uti-out>100%</output></label>
+          <div class="uti-stage">
+            <i class="uti-halo" data-uti-halo aria-hidden="true"></i>
+            <div class="uti-row is-semi"><span class="uti-k">半透明底</span><span class="uti-chip">已选 · 单选</span><span class="uti-btn">稍后</span><span class="uti-count">12</span><b class="uti-ratio is-fail" data-uti-semi>2.67</b></div>
+            <div class="uti-row is-solid"><span class="uti-k">实色底</span><span class="uti-chip">已选 · 单选</span><span class="uti-btn">稍后</span><span class="uti-count">12</span><b class="uti-ratio is-pass" data-uti-solid>4.59</b></div>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+<pre><code>--fill: #E6E6E6;          /* 浅 = 白与正文色 #1C1C1E 兑 11%；深 #393A3E = 深底与正文色兑 20% */
+--accent-tint: #E3F0FF;   /* 实色软底：浅 = 填充色兑 11% 进白；深 = 兑 18% 进 #17181C（#152B45） */
+--accent-shadow: rgba(0,122,255,.13);  /* 投影：必须半透明，不压字 */
+/* plan 再拆一支 --accent-stroke（描边，半透明，按图形 ≥3 判） */</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>半透明软底和压在上面的字是同一个色相，底吃进光晕后对比度随位置漂：岗岗实测同色相文字只有3.9–4.4，plan是「同一个chip挪个位置就从4.4掉到3.3」。实色把这一格从「随光晕变」变成确定值，文字档能原封不动用统一值。</p></section>
+        <section class="fact"><h4>命名教训</h4><p>旧的<code>--accent-soft</code>同时当软底、投影、描边，<code>--on-accent</code>同时当主按钮白字和实底上的字——名字说的是长相，所以谁都拿去用。token的名字必须说明用途，不是说明颜色。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:96</code>「次级字统一值与各项目自测义务」、<code>:119</code>「plan本地第三轮」、<code>:134</code>「命名教训」；<code>tools/gang/design-proposal.md:832</code>「例外与理由」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:584</code>「对比度第三轮」</p>
+      </div>
+    </article>
+
+    <!-- 7 背景光晕 -->
+    <article class="entry" id="c-halo" data-scope="tools" data-toc="背景光晕">
+      <header class="entry-head">
+        <h3>背景是三团光晕：一团跟强调色、一团暖、一团冷</h3>
+        <p class="entry-lede">固定在视口的<code>body::before</code>画三团<code>radial-gradient</code>，透明度.2–.55，<code>blur(10px)</code>把边糊软；深色下减弱。点下面的开关，一团一团看。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="halo-demo">
+          <div class="halo-win" aria-hidden="true">
+            <i class="hb hb1"></i><i class="hb hb2"></i><i class="hb hb3"></i>
+            <div class="halo-card"><b>玻璃卡</b><small>光晕在它后面</small></div>
+          </div>
+          <div class="halo-ctrl" role="group" aria-label="光晕开关">
+            <button type="button" class="halo-toggle" data-blob="1" aria-pressed="true"><i style="background:var(--blob1)"></i>blob1 · 左上 · 跟强调色</button>
+            <button type="button" class="halo-toggle" data-blob="2" aria-pressed="true"><i style="background:var(--blob2)"></i>blob2 · 右上 · 暖</button>
+            <button type="button" class="halo-toggle" data-blob="3" aria-pressed="true"><i style="background:var(--blob3)"></i>blob3 · 底边 · 冷</button>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(38vw 38vw at 12% 8%,   var(--blob1), transparent 60%),
+    radial-gradient(34vw 34vw at 92% 18%,  var(--blob2), transparent 60%),
+    radial-gradient(40vw 40vw at 70% 100%, var(--blob3), transparent 60%);
+  filter: blur(10px);
+}
+/* 蓝（默认）浅：rgba(90,200,250,.55)  rgba(255,214,170,.55)  rgba(175,160,255,.45)
+             深：rgba(10,132,255,.35)  rgba(255,159,10,.22)   rgba(94,92,230,.35) */</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>光晕是这套视觉的主要特征，不为了字色去减淡它——字不够就上玻璃或压深字，别动光晕。用固定伪元素而不是<code>background-attachment:fixed</code>：iOS Safari不支持固定附着，背景会被拉成整页高、越往下越跑偏。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>光晕的vw尺寸与blur半径不乘大屏缩放系数；<code>html</code>与<code>body</code>只能有一个写底色（见「中性底」那条）。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:20</code>「颜色（苹果系统色）」；<code>tools/plan/docs/design/shua-glass.html:31</code><code>body::before</code>；<code>tools/gang/styles.css:606</code>「刻意不用background-attachment:fixed」</p>
+      </div>
+    </article>
+
+    <!-- 8 深色与主题属性 -->
+    <article class="entry" id="c-theme" data-scope="tools" data-toc="主题属性与免闪">
+      <header class="entry-head">
+        <h3>深色靠两个属性切换；头部同步脚本在样式表前设好，免闪色</h3>
+        <p class="entry-lede"><code>html[data-mode]</code>写已解析的light/dark，偏好（含auto）另存<code>data-mode-pref</code>；强调色<code>data-accent</code>。localStorage两个键<code>&lt;项目&gt;-mode</code>、<code>&lt;项目&gt;-accent</code>，默认light + blue。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="theme-live">
+          <dl class="live-state">
+            <div><dt>data-mode-pref</dt><dd data-live="pref">—</dd></div>
+            <div><dt>data-mode</dt><dd data-live="mode">—</dd></div>
+            <div><dt>data-accent</dt><dd data-live="accent">—</dd></div>
+            <div><dt>theme-color</dt><dd data-live="meta">—</dd></div>
+          </dl>
+          <div class="local-flip" data-mode="light" data-flip>
+            <p><b>任何元素都能局部切</b>给这块加<code>data-mode="dark"</code>，令牌在它身上重算一遍。</p>
+            <button type="button" class="btn-tint btn" data-flip-btn aria-pressed="false">切到深色</button>
+          </div>
+        </div>
+        <p class="spec-note">左边读的是本页<code>&lt;html&gt;</code>上的实时值：去侧栏底部（手机在「更多」里）换外观或强调色，这里跟着变。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>&lt;head&gt;
+  &lt;meta name="theme-color" content="#F4F5F9"&gt;   &lt;!-- 深色 #0B0C10，脚本跟着改 --&gt;
+  &lt;script src="assets/boot.js"&gt;&lt;/script&gt;         &lt;!-- 同步，排在样式表之前 --&gt;
+  &lt;link rel="stylesheet" href="assets/star.css"&gt;
+
+// boot.js 要点：读 star-mode / star-accent（try/catch，非法值回落 light + blue），
+// auto 按 prefers-color-scheme 解析后写进 data-mode，并监听系统翻转。
+root.setAttribute("data-mode-pref", pref);
+root.setAttribute("data-mode", pref === "auto" ? (mq.matches ? "dark" : "light") : pref);
+root.setAttribute("data-accent", accent);</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>属性在样式表下载前就在<code>&lt;html&gt;</code>上，首帧拿到正确的令牌：深色下不先白一下，切过强调色刷新也不闪别的色。<code>data-mode</code>写已解析值，CSS只要一份深色块，不必为auto再抄一遍（plan的写法）。<code>file://</code>下读localStorage可能直接抛错，读写一律try/catch。</p></section>
+        <section class="fact"><h4>本站写法</h4><p>令牌一行一对浅深值：<code>--bg: var(--lt,#F4F5F9) var(--dk,#0B0C10)</code>，挂在<code>:root,[data-mode],[data-accent]</code>上，所以样例里任何元素加属性都能局部切——这页的深色样例全是这么做的。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:29</code>「主题与切换」；<code>tools/plan/app/src/styles/tokens.css:11</code>文件头「两个维度」；<code>tools/gang/index.html:15</code>外观预置脚本注释</p>
+      </div>
+    </article>
+
+    <!-- 9 对比度 -->
+    <article class="entry" id="c-contrast" data-scope="tools" data-toc="对比度两法">
+      <header class="entry-head">
+        <h3>对比度按最不利的那一角算，公式法与像素法两法验收</h3>
+        <p class="entry-lede">底色取「玻璃rgba叠在光晕最浓（深色最亮）那一角」的合成色，不取屏幕平均、不取玻璃名义值；半透明字先按alpha压到底上再算。正文与次级≥4.5，图形≥3，高对比≥7。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="calc" data-calc>
+          <div class="calc-in">
+            <label class="calc-field"><span>字色</span><input type="color" value="#3c3c43" data-calc-fg aria-label="字色取色"><input type="text" value="#3C3C43" data-calc-fg-hex spellcheck="false" autocomplete="off" aria-label="字色十六进制"></label>
+            <label class="calc-field"><span>字的不透明度</span><input type="range" min="0.2" max="1" step="0.01" value="0.76" data-calc-alpha aria-label="字的不透明度"><output data-calc-alpha-out>.76</output></label>
+            <label class="calc-field"><span>底色</span><input type="color" value="#efeffb" data-calc-bg aria-label="底色取色"><input type="text" value="#EFEFFB" data-calc-bg-hex spellcheck="false" autocomplete="off" aria-label="底色十六进制"></label>
+          </div>
+          <div class="calc-out">
+            <div class="calc-swatch" data-calc-preview><p class="calc-sample">次级字样例<span>Aa 123</span></p><small data-calc-mix>合成后：#67676F</small></div>
+            <p class="calc-ratio"><b data-calc-ratio>4.91</b><span>: 1</span></p>
+            <ul class="calc-verdict">
+              <li data-calc-v="4.5">正文 ≥4.5</li>
+              <li data-calc-v="3">图形 ≥3</li>
+              <li data-calc-v="7">高对比 ≥7</li>
+            </ul>
+            <p class="sr-only" aria-live="polite" data-calc-live></p>
+          </div>
+          <div class="calc-presets" role="group" aria-label="常用组合">
+            <button type="button" class="pill" data-preset="#3C3C43,0.76,#EFEFFB">次级.76 × 靛光晕最浓角强玻璃</button>
+            <button type="button" class="pill" data-preset="#3C3C43,0.76,#B6B5EB">次级.76 × 裸光晕（不隔玻璃）</button>
+            <button type="button" class="pill" data-preset="#D30F45,1,#FDEDF1">粉文字档 × 粉光晕最浓角</button>
+            <button type="button" class="pill" data-preset="#FFFFFF,1,#5AC8FA">主按钮白字 × 蓝渐变浅端</button>
+            <button type="button" class="pill" data-preset="#EBEBF5,0.62,#273440">深色次级 × 青光晕最浓角</button>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>公式</h4>
+<pre><code>const L=h=>{const [r,g,b]=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(c=>c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4));return .2126*r+.7152*g+.0722*b};
+const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.05)).toFixed(2)};</code></pre>
+        </section>
+        <section class="fact"><h4>两法</h4><ol><li>公式法压最不利角：对每个文字色，底取玻璃叠光晕最浓那一角的合成色，套上面的L/C。</li><li>像素法交叉验证：真实页面逐元素截图，取底色像素众数（含磨砂与光晕的最终合成），浅深 × 六强调色 × 全部承载文字的元素。</li></ol><p>两条路各抓得到对方漏的：岗岗公式法抓到粉色光晕下顶栏环节名4.35，像素法抓到深色弹层底太亮、三个强调色选中项4.17–4.25。任一条不过就算不过。</p></section>
+        <section class="fact"><h4>本站实测</h4><p>条目卡（强玻璃.78叠光晕最浓角），浅深 × 六强调色：次级字最低4.91（浅靛）/5.17（深青）；强调色文字档最低4.75（浅粉）/4.68（深蓝）。侧栏磨砂.62叠饱和度提升后的光晕：粉文字档只有4.26，所以侧栏、顶栏、tab bar里的强调色字一律压在强玻璃选中底上（≥4.70）。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>读<code>getComputedStyle().backgroundColor</code>只拿到rgba字面量，算不出真实底色；统一值只是起点，各项目必须在自己最不利的光晕角下实测，不够就本地压深并记录。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:100</code>「对比度验收方法」、<code>:98</code>「各项目自测义务」；<code>tools/gang/design-proposal.md:771</code>「computed值不可信」</p>
+      </div>
+    </article>
+
+    <!-- 10 星野舞台底 -->
+    <article class="entry" id="c-stage" data-scope="tools" data-toc="星野舞台底">
+      <header class="entry-head">
+        <h3>舞台底用随强调色走的深色调，不用纯黑：星野</h3>
+        <p class="entry-lede">卡集选卡台的底是屋主从六选里挑的「D星野」：深夜蓝紫160°渐变，中段混18%强调色，中心一团45%强调色柔光，十二颗CSS星点慢慢闪，四周压暗角。浅色模式也用，深色再压一档。</p>
+        <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="stage-demo">
+          <div class="stage" data-accent="indigo" data-stage aria-hidden="true">
+            <div class="stage-card"></div>
+          </div>
+          <div class="stage-ctrl" role="group" aria-label="舞台底的强调色">
+            <button type="button" class="stage-dot" data-stage-accent="blue" aria-pressed="false" aria-label="蓝"></button>
+            <button type="button" class="stage-dot" data-stage-accent="green" aria-pressed="false" aria-label="绿"></button>
+            <button type="button" class="stage-dot" data-stage-accent="indigo" aria-pressed="true" aria-label="靛"></button>
+            <button type="button" class="stage-dot" data-stage-accent="orange" aria-pressed="false" aria-label="橙"></button>
+            <button type="button" class="stage-dot" data-stage-accent="pink" aria-pressed="false" aria-label="粉"></button>
+            <button type="button" class="stage-dot" data-stage-accent="teal" aria-pressed="false" aria-label="青"></button>
+          </div>
+        </div>
+        <p class="spec-note">点色点换这块舞台的强调色（card默认靛）；系统开了「减弱动态效果」时星点静止。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>--stage-1: #0F1128; --stage-2: #1B1740; --stage-3: #0B0C1E;   /* 深色 #0A0B1E #141030 #070812 */
+--stage: radial-gradient(50% 45% at 50% 55%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 70%),
+         linear-gradient(160deg, var(--stage-1), color-mix(in srgb, var(--accent) 18%, var(--stage-2)) 55%, var(--stage-3));
+.stage::before { /* 十二颗星：radial-gradient(1.2px 1.2px at 12% 18%, #fff 60%, transparent) × 12 */
+  opacity: .85; animation: twinkle 9s ease-in-out infinite; }
+.stage::after  { background: radial-gradient(90% 90% at 50% 50%, transparent 60%, rgba(0,0,0,.5)); }  /* 暗角 */
+@keyframes twinkle { 0%, 100% { opacity: .85 } 50% { opacity: .55 } }
+@media (prefers-reduced-motion: reduce) { .stage::before { animation: none } }</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>舞台底要随强调色的深色调，不要纯黑（屋主裁定）。六选（极光雾、聚光舞台、网格渐变加颗粒、星野、玻璃台面、光环）里挑了星野；球形选卡撤掉之后星野底留了下来。</p></section>
+        <p class="source">出处：<code>tools/card/collection/shared/theme.css:20</code><code>--stage</code>；<code>tools/card/collection/gallery.css:17</code><code>.globe-stage::before</code>星点、<code>:40</code>减弱动效；<code>tools/card/CLAUDE.md:228</code>「画廊的几条硬约束」</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================ 小屋 · 暖纸 ============================ -->
+  <section class="group" id="g-xiaowu" data-scope="xiaowu">
+    <h2 class="group-title">小屋 · 暖纸</h2>
+    <p class="group-lede">色板来自小米SU7车漆色系：低饱和、暖底，橄榄绿主色、雅灰加珍珠白底、熔岩橙点缀、海湾蓝冷调呼吸。饱和色严格限量、限位置。</p>
+
+    <!-- 11 暖纸中性系统 -->
+    <article class="entry" id="x-paper" data-scope="xiaowu" data-toc="暖纸色板">
+      <header class="entry-head">
+        <h3>暖纸中性系统：每个颜色都有固定角色和使用限制</h3>
+        <p class="entry-lede">纸底、墨、橄榄、熔岩橙各司其职；白天与夜里是同一套角色的两份值。对比度都是按WCAG实测，不达标的只压明度、不动色相。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-22核定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="pal-pair">
+          <div class="pal xw" data-mode="light">
+            <p class="pal-cap">白天 · 纸底#F8F6F1</p>
+            <ul class="pal-list">
+              <li><button type="button" class="sw sw-sm" data-copy="#F8F6F1" aria-label="复制 #F8F6F1" style="--c:#F8F6F1"><i></i></button><div><b>纸底</b><code>#F8F6F1</code><small>页面底；上叠暖雾冷雾两层</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#FDFCF9" aria-label="复制 #FDFCF9" style="--c:#FDFCF9"><i></i></button><div><b>卡面</b><code>#FDFCF9</code><small>只给浮起面，不铺大面积</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#2E2D28" aria-label="复制 #2E2D28" style="--c:#2E2D28"><i></i></button><div><b>墨</b><code>#2E2D28</code><small>标题、工具名 · 12.77</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#3E3C35" aria-label="复制 #3E3C35" style="--c:#3E3C35"><i></i></button><div><b>正文墨</b><code>#3E3C35</code><small>正文、说明 · 10.22</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#6C6A61" aria-label="复制 #6C6A61" style="--c:#6C6A61"><i></i></button><div><b>次级字</b><code>#6C6A61</code><small>次级说明、导航默认 · 5.02</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#6B685B" aria-label="复制 #6B685B" style="--c:#6B685B"><i></i></button><div><b>辅助小字</b><code>#6B685B</code><small>11–12.5px小字 · 5.18（原#97948A只有2.81）</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#5E6144" aria-label="复制 #5E6144" style="--c:#5E6144"><i></i></button><div><b>橄榄</b><code>#5E6144</code><small>主按钮底、焦点环 · 5.95</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#4A4D35" aria-label="复制 #4A4D35" style="--c:#4A4D35"><i></i></button><div><b>深橄榄</b><code>#4A4D35</code><small>链接、规格数字、巨字「小屋」 · 8.09</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#E1E0CE" aria-label="复制 #E1E0CE" style="--c:#E1E0CE"><i></i></button><div><b>橄榄浅</b><code>#E1E0CE</code><small>药丸标签底；hover面也用它，不能是橙</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#D5D4C1" aria-label="复制 #D5D4C1" style="--c:#D5D4C1"><i></i></button><div><b>色块</b><code>#D5D4C1</code><small>只有两处：门厅色块、随笔头像</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#EDEAE3" aria-label="复制 #EDEAE3" style="--c:#EDEAE3"><i></i></button><div><b>雅灰</b><code>#EDEAE3</code><small>只给地毯、写作框</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#E4E0D6" aria-label="复制 #E4E0D6" style="--c:#E4E0D6"><i></i></button><div><b>线</b><code>#E4E0D6</code><small>顶栏描边、卡片边框</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#AA4E1D" aria-label="复制 #AA4E1D" style="--c:#AA4E1D"><i></i></button><div><b>熔岩橙</b><code>#AA4E1D</code><small>只给随笔日期；不做按钮、强调、标签 · 5.09</small></div></li>
+            </ul>
+          </div>
+          <div class="pal xw" data-mode="dark">
+            <p class="pal-cap">夜里 · 纸底#15171B（冷夜暖灯）</p>
+            <ul class="pal-list">
+              <li><button type="button" class="sw sw-sm" data-copy="#15171B" aria-label="复制 #15171B" style="--c:#15171B"><i></i></button><div><b>纸底</b><code>#15171B</code><small>夜空炭，225色相</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#1E1F25" aria-label="复制 #1E1F25" style="--c:#1E1F25"><i></i></button><div><b>卡面</b><code>#1E1F25</code><small>夜卡纸</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#E7E3DA" aria-label="复制 #E7E3DA" style="--c:#E7E3DA"><i></i></button><div><b>墨</b><code>#E7E3DA</code><small>暖奶油，灯照着的字 · 14.01</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#DDD9D0" aria-label="复制 #DDD9D0" style="--c:#DDD9D0"><i></i></button><div><b>正文墨</b><code>#DDD9D0</code><small>正文、说明 · 12.74</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#B1ABA0" aria-label="复制 #B1ABA0" style="--c:#B1ABA0"><i></i></button><div><b>次级字</b><code>#B1ABA0</code><small>次级说明 · 7.86</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#9F9A8E" aria-label="复制 #9F9A8E" style="--c:#9F9A8E"><i></i></button><div><b>辅助小字</b><code>#9F9A8E</code><small>小字 · 6.40（夜卡纸5.86）</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#CDBF98" aria-label="复制 #CDBF98" style="--c:#CDBF98"><i></i></button><div><b>黄铜灯色</b><code>#CDBF98</code><small>橄榄的夜里：主按钮、焦点环 · 9.83</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#E0D7BD" aria-label="复制 #E0D7BD" style="--c:#E0D7BD"><i></i></button><div><b>灯下大字</b><code>#E0D7BD</code><small>深橄榄的夜里 · 12.50</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#2E3138" aria-label="复制 #2E3138" style="--c:#2E3138"><i></i></button><div><b>橄榄浅</b><code>#2E3138</code><small>药丸标签底</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#2A2E37" aria-label="复制 #2A2E37" style="--c:#2A2E37"><i></i></button><div><b>色块</b><code>#2A2E37</code><small>青黛，和画里的夜空同族</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#25272D" aria-label="复制 #25272D" style="--c:#25272D"><i></i></button><div><b>雅灰</b><code>#25272D</code><small>地毯、写作框</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#353840" aria-label="复制 #353840" style="--c:#353840"><i></i></button><div><b>线</b><code>#353840</code><small>描边、边框</small></div></li>
+              <li><button type="button" class="sw sw-sm" data-copy="#EB8947" aria-label="复制 #EB8947" style="--c:#EB8947"><i></i></button><div><b>炉火橙</b><code>#EB8947</code><small>熔岩橙提亮一档，仍只给日期 · 7.01</small></div></li>
+            </ul>
+          </div>
+        </div>
+        <p class="spec-note">色值末尾的数字是对各自纸底的对比度。夜里那组按<code>globals.css</code>里的HSL实算（同文件的十六进制注释是近似值）。</p>
+        <div class="use">
+          <p class="use-cap"><b>用起来</b>顶栏当前项、随笔日记卡、药丸标签、主按钮「放进屋里」，白天夜里并排。熔岩橙只出现在日期上；点顶栏换当前项，点主按钮复制它的底色，Tab进来看橄榄焦点环。</p>
+          <div class="use-pair">
+            <div class="up-room xw" data-mode="light">
+              <p class="up-cap">白天</p>
+              <div class="up-nav" role="group" aria-label="示意顶栏（白天）">
+                <button type="button" class="up-link" data-up-nav="hall">小屋</button>
+                <button type="button" class="up-link" data-up-nav="tools">工具</button>
+                <button type="button" class="up-link" data-up-nav="notes" aria-current="page">随笔</button>
+              </div>
+              <article class="up-entry">
+                <div class="up-top">
+                  <div class="up-who"><span class="up-ava xw-kai" aria-hidden="true">屋</span><span class="up-name">Ysevan</span></div>
+                  <div class="up-date"><span class="up-day">9月27日 · 星期日</span><span class="up-year">2026</span></div>
+                </div>
+                <p class="up-text">把颜色和交互收进一本合集，以后开新站先翻它。</p>
+                <div class="up-meta"><span class="up-env"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.4 18.4h9.4a3.9 3.9 0 0 0 .5-7.8 5.4 5.4 0 0 0-10.4 1.3 3.3 3.3 0 0 0 .5 6.5z"/></svg>多云 · 在家</span><time>21:40</time></div>
+              </article>
+              <div class="up-acts">
+                <span class="up-pill">离线可用</span>
+                <button type="button" class="up-go" data-copy="#5E6144" aria-label="放进屋里（复制按钮底色 #5E6144）">放进屋里</button>
+              </div>
+            </div>
+            <div class="up-room xw" data-mode="dark">
+              <p class="up-cap">夜里</p>
+              <div class="up-nav" role="group" aria-label="示意顶栏（夜里）">
+                <button type="button" class="up-link" data-up-nav="hall">小屋</button>
+                <button type="button" class="up-link" data-up-nav="tools">工具</button>
+                <button type="button" class="up-link" data-up-nav="notes" aria-current="page">随笔</button>
+              </div>
+              <article class="up-entry">
+                <div class="up-top">
+                  <div class="up-who"><span class="up-ava xw-kai" aria-hidden="true">屋</span><span class="up-name">Ysevan</span></div>
+                  <div class="up-date"><span class="up-day">9月27日 · 星期日</span><span class="up-year">2026</span></div>
+                </div>
+                <p class="up-text">把颜色和交互收进一本合集，以后开新站先翻它。</p>
+                <div class="up-meta"><span class="up-env"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.4 18.4h9.4a3.9 3.9 0 0 0 .5-7.8 5.4 5.4 0 0 0-10.4 1.3 3.3 3.3 0 0 0 .5 6.5z"/></svg>多云 · 在家</span><time>21:40</time></div>
+              </article>
+              <div class="up-acts">
+                <span class="up-pill">离线可用</span>
+                <button type="button" class="up-go" data-copy="#CDBF98" aria-label="放进屋里（复制按钮底色 #CDBF98）">放进屋里</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>写法</h4>
+<pre><code>:root {                       /* token 写裸 H S% L%（shadcn 惯例） */
+  --background: 42.9 33.3% 95.9%;   /* #F8F6F1 */
+  --xw-lava: 21 71% 39%;            /* #AA4E1D */
+}
+.dark { --background: 225 12% 9.5%; /* #15171B */ }
+.x { color: hsl(var(--xw-lava)); }  /* CSS Module 里手写必须包 hsl()，否则整条声明无声失效 */</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>「名片为主」的暖屋：低饱和暖底读起来安静，饱和色一多就不是这间屋子了，所以每个饱和色只许出现在写明的位置。对比度不达标的五处（辅助小字、熔岩橙压地毯、输入框边框、hover面语义、缺正文墨槽位）都按实测只压明度修掉。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>凡是把<code>--xw-*</code>抄成页内副本的地方，白天夜里都要各抄一份，否则只有白天是对的——随笔卡底行小字入夜后曾掉到2.94。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md:103</code>「shadcn标准槽位」、<code>:124</code>「小屋扩展槽位」、<code>:217</code>「对比度实测与必须的微调」；<code>Ysevan_web/app/globals.css:15</code><code>:root</code>、<code>:64</code><code>.dark</code>；「用起来」那块照<code>Ysevan_web/docs/xiaowu-ui-spec.md:1598</code>「站名与导航」当前项、<code>:3163</code>「日记流」、<code>:3090</code>composer的「放进屋里」、<code>:114</code>药丸标签、<code>:249</code>焦点环外扩4px</p>
+      </div>
+    </article>
+
+    <!-- 12 暖墨阴影与发丝线 -->
+    <article class="entry" id="x-shadow" data-scope="xiaowu" data-toc="暖墨阴影与发丝线">
+      <header class="entry-head">
+        <h3>阴影用暖墨，不用纯黑；门厅卡片三根发丝线各司其职</h3>
+        <p class="entry-lede">阴影色一律<code>rgba(74,77,53,…)</code>，只有贴地、浮起两档，挂在墙上的画再沉一倍。发丝线1px不随卡片缩放。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-22定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="shadow-demo xw" data-mode="light">
+          <figure class="sh-card sh-warm"><b>暖墨</b><code>rgba(74,77,53,.22)</code><figcaption>挂画投影</figcaption></figure>
+          <figure class="sh-card sh-black"><b>纯黑</b><code>rgba(0,0,0,.22)</code><figcaption>压在暖纸上发灰</figcaption></figure>
+          <figure class="sh-card sh-lift"><b>浮起</b><code>0 8px 20px -10px .11</code><figcaption>工具卡、弹层</figcaption></figure>
+          <figure class="sh-card sh-rest"><b>贴地</b><code>0 1px 2px .05</code><figcaption>常态卡片</figcaption></figure>
+        </div>
+        <div class="hair-demo xw" data-mode="light">
+          <div class="hall-card" aria-hidden="true">
+            <div class="hall-blob"><span class="xw-kai">小屋</span></div>
+            <div class="hall-plate"><div class="hall-paper"></div></div>
+          </div>
+          <ol class="hair-legend">
+            <li><b>卡片外框</b><code>1px solid rgba(74,77,53,.17)</code>把整张卡片从纸底上立起来</li>
+            <li><b>接缝</b><code>border-left: 1px solid rgba(74,77,53,.14)</code>内部分界比外框浅一档</li>
+            <li><b>画纸边</b><code>box-shadow: 0 0 0 1px rgba(74,77,53,.09)</code>画纸白和卡纸白太近，不描就糊</li>
+          </ol>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+<pre><code>--shadow-rest: 0 1px 2px rgba(74,77,53,.05);          /* 贴地：常态卡片、列表项 */
+--shadow-lift: 0 8px 20px -10px rgba(74,77,53,.11);   /* 浮起：抬起来的卡片、弹层 */
+.hall__card   { box-shadow: 0 16px 34px -14px rgba(74,77,53,.22); } /* 挂画：比工具卡深一倍 */</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>纯黑阴影压在暖纸底上会发灰。两档之外不要第三档，hover也不换档。工具卡摆在地毯上，门厅卡片挂在墙上，所以挂画投影更沉；色块与画纸各自不加投影，否则接缝处叠出一道脏影。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>装饰性边框对比度只有1.24，不作3:1要求——但不要因此把线做得更淡。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md:4590</code>「圆角、阴影、焦点环」、<code>:550</code>「三根线，各司其职」、<code>:558</code>「挂画投影在卡片上」、<code>:254</code>「装饰性不达标，可接受」</p>
+      </div>
+    </article>
+
+    <!-- 13 冷夜暖灯 -->
+    <article class="entry" id="x-night" data-scope="xiaowu" data-toc="冷夜暖灯">
+      <header class="entry-head">
+        <h3>夜里是同一间屋子：冷夜暖灯，不是反相</h3>
+        <p class="entry-lede">底沉进画里夜空的青蓝炭（色相220–225），字、黄铜灯色、炉火橙全是暖的（42–45）。暖色要靠冷底才显得暖，全屋刷暖只会腻。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-01定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="night-demo">
+          <div class="hue-strip" aria-hidden="true">
+            <div class="hue-side hue-cool">
+              <span style="--c:#15171B">#15171B</span><span style="--c:#1E1F25">#1E1F25</span><span style="--c:#2A2E37">#2A2E37</span>
+              <p>冷 · 225°</p>
+            </div>
+            <div class="hue-side hue-warm">
+              <span style="--c:#E7E3DA">#E7E3DA</span><span style="--c:#CDBF98">#CDBF98</span><span style="--c:#EB8947">#EB8947</span>
+              <p>暖 · 42–45°</p>
+            </div>
+          </div>
+          <div class="night-room xw" data-mode="dark" aria-hidden="true">
+            <span class="nr-date">9月27日 · 夜里</span>
+            <b class="nr-title xw-kai">小屋</b>
+            <p class="nr-text">灯是暖的，窗外是冷的。</p>
+            <span class="nr-btn">开灯</span>
+          </div>
+        </div>
+        <div class="use un-stage" data-un>
+          <p class="use-cap"><b>用起来</b>同一组小屋元素：门厅色块与巨字、随笔小卡、主按钮，白天和夜里并排。夜里底是冷的、字和灯是暖的，右上角一团极淡的灯晕（白天是暖雾）。关掉雾与灯晕，看它出了多少力。</p>
+          <button type="button" class="use-toggle" aria-pressed="true" data-un-haze><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18.4h6M10 21h4"/><path d="M12 3.4a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16.6h5.2v-.4c0-.8.4-1.5 1-2A6 6 0 0 0 12 3.4z"/></svg>雾与灯晕：开</button>
+          <div class="use-pair">
+            <div class="un-room xw" data-mode="light" aria-label="白天：纸底#F8F6F1，字是暖墨" role="img">
+              <i class="un-haze" aria-hidden="true"></i>
+              <div class="un-blob" aria-hidden="true"><span class="un-whose">Ysevan的</span><b class="un-big xw-kai">小屋</b><span class="un-foot">门没锁，随便逛</span></div>
+              <div class="un-note" aria-hidden="true"><span class="un-day">9月27日 · 星期日</span><p>灯是暖的，窗外是冷的。</p><span class="un-go">放进屋里</span></div>
+              <p class="un-hue" aria-hidden="true">白天 · 纸底色相43° · 墨色相50°</p>
+            </div>
+            <div class="un-room xw" data-mode="dark" aria-label="夜里：纸底#15171B冷夜空炭，字是暖奶油，右上一团暖灯晕" role="img">
+              <i class="un-haze" aria-hidden="true"></i>
+              <div class="un-blob" aria-hidden="true"><span class="un-whose">Ysevan的</span><b class="un-big xw-kai">小屋</b><span class="un-foot">门没锁，随便逛</span></div>
+              <div class="un-note" aria-hidden="true"><span class="un-day">9月27日 · 星期日</span><p>灯是暖的，窗外是冷的。</p><span class="un-go">放进屋里</span></div>
+              <p class="un-hue" aria-hidden="true">夜里 · 底色相225°（冷） · 字与灯色相42–45°（暖）</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+<pre><code>.dark {
+  --background: 225 12% 9.5%;   /* #15171B 夜空炭 */
+  --foreground: 42 22% 88%;     /* 暖奶油 */
+  --primary:    44 34% 70%;     /* 黄铜灯色 */
+  --xw-olive-block: 222 14% 19%;/* #2A2E37 青黛——和画里的夜空同族 */
+  --xw-lava:    24 80% 60%;     /* 炉火橙 */
+}
+html.dark { color-scheme: dark; }  /* 滚动条、表单控件跟着入夜 */</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>夜不是把亮色反相，是「这间屋子晚上长什么样」。夜橄榄（深绿一暗就泥）和琥珀棕（全屋刷暖发腻）两版都被否，第三版把底换成冷的，暖字才显得出暖。切换用顶栏的「墙壁开关」，整页交叉淡化。</p></section>
+        <section class="fact"><h4>现状</h4><p>规格原则「两个时辰，一间屋子」和<code>globals.css</code>的文件头、<code>.dark</code>注释都已改成冷夜暖灯（225的冷底、40–45的暖字），文档与代码对得上（2026-10-08核）。此前它们写的「色相家族不变，纸压成松烟暖炭」是第一、二版的旧说法。</p></section>
+        <p class="source">出处：<code>Ysevan_web/app/globals.css:10</code>文件头「冷夜暖灯」、<code>:64</code><code>.dark</code>；<code>Ysevan_web/docs/xiaowu-ui-spec.md:56</code>「两个时辰，一间屋子」</p>
+      </div>
+    </article>
+
+    <!-- 14 夜里的画 -->
+    <article class="entry" id="x-art" data-scope="xiaowu" data-toc="夜里的画">
+      <header class="entry-head">
+        <h3>夜里画与装饰只暗一档，不往蓝里偏</h3>
+        <p class="entry-lede">静态绿植夜里整体收一档：<code>filter: brightness(.78) saturate(.85)</code>，四处同一条，不逐叶改色。别用<code>hue-rotate</code>推冷。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-21定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="art-row">
+          <figure class="art xw" data-mode="light">
+            <svg class="leafy" viewBox="0 0 160 110" aria-hidden="true"><g fill="none"><path d="M18 96C52 80 86 58 132 18" stroke="#6F855C" stroke-width="2.2" stroke-linecap="round"/><path d="M58 74c-6-14 0-28 14-34 4 14-2 28-14 34z" fill="#7E9367" fill-opacity=".85"/><path d="M60 76c-6-12-2-24 10-30" stroke="#4F5B3E" stroke-opacity=".17" stroke-width="3"/><path d="M86 56c10-12 26-14 38-6-10 12-26 14-38 6z" fill="#A9BC96" fill-opacity=".9"/><path d="M89 60c10-10 24-12 34-6" stroke="#6E8A93" stroke-opacity=".3" stroke-width="2.4"/><path d="M40 86c-14-2-24-12-26-26 14 2 24 12 26 26z" fill="#A9BC96" fill-opacity=".85"/><path d="M104 36c-2-14 6-26 20-30 2 14-6 26-20 30z" fill="#7E9367" fill-opacity=".8"/><circle cx="118" cy="62" r="5" fill="#B4232C" fill-opacity=".85"/><circle cx="127" cy="66" r="4" fill="#B4232C" fill-opacity=".75"/></g></svg>
+            <figcaption>白天</figcaption>
+          </figure>
+          <figure class="art art-night xw" data-mode="dark">
+            <svg class="leafy" viewBox="0 0 160 110" aria-hidden="true"><g fill="none"><path d="M18 96C52 80 86 58 132 18" stroke="#6F855C" stroke-width="2.2" stroke-linecap="round"/><path d="M58 74c-6-14 0-28 14-34 4 14-2 28-14 34z" fill="#7E9367" fill-opacity=".85"/><path d="M60 76c-6-12-2-24 10-30" stroke="#4F5B3E" stroke-opacity=".17" stroke-width="3"/><path d="M86 56c10-12 26-14 38-6-10 12-26 14-38 6z" fill="#A9BC96" fill-opacity=".9"/><path d="M89 60c10-10 24-12 34-6" stroke="#6E8A93" stroke-opacity=".3" stroke-width="2.4"/><path d="M40 86c-14-2-24-12-26-26 14 2 24 12 26 26z" fill="#A9BC96" fill-opacity=".85"/><path d="M104 36c-2-14 6-26 20-30 2 14-6 26-20 30z" fill="#7E9367" fill-opacity=".8"/><circle cx="118" cy="62" r="5" fill="#B4232C" fill-opacity=".85"/><circle cx="127" cy="66" r="4" fill="#B4232C" fill-opacity=".75"/></g></svg>
+            <figcaption>夜里 · brightness(.78) saturate(.85)</figcaption>
+          </figure>
+          <figure class="art art-wrong xw" data-mode="dark">
+            <svg class="leafy" viewBox="0 0 160 110" aria-hidden="true"><g fill="none"><path d="M18 96C52 80 86 58 132 18" stroke="#6F855C" stroke-width="2.2" stroke-linecap="round"/><path d="M58 74c-6-14 0-28 14-34 4 14-2 28-14 34z" fill="#7E9367" fill-opacity=".85"/><path d="M60 76c-6-12-2-24 10-30" stroke="#4F5B3E" stroke-opacity=".17" stroke-width="3"/><path d="M86 56c10-12 26-14 38-6-10 12-26 14-38 6z" fill="#A9BC96" fill-opacity=".9"/><path d="M89 60c10-10 24-12 34-6" stroke="#6E8A93" stroke-opacity=".3" stroke-width="2.4"/><path d="M40 86c-14-2-24-12-26-26 14 2 24 12 26 26z" fill="#A9BC96" fill-opacity=".85"/><path d="M104 36c-2-14 6-26 20-30 2 14-6 26-20 30z" fill="#7E9367" fill-opacity=".8"/><circle cx="118" cy="62" r="5" fill="#B4232C" fill-opacity=".85"/><circle cx="127" cy="66" r="4" fill="#B4232C" fill-opacity=".75"/></g></svg>
+            <figcaption>错误：hue-rotate推冷，叶子发蓝、红果变色</figcaption>
+          </figure>
+        </div>
+        <p class="spec-note">同一小枝示意（叶色取小屋装饰色）。中间是定下的做法，右边是被否的方向。</p>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>代码</h4>
+<pre><code>:global(.dark) .deco { filter: brightness(0.78) saturate(0.85); }   /* 四处绿植同一条 */
+.poster { filter: brightness(0.66) saturate(0.8); }                 /* 工具页静态海报：更暗一档，同样不偏冷 */</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p><code>brightness</code>等比缩三个通道、色相不动，<code>saturate</code>只收一点彩度：暗一档、仍然是绿的、墨线留着。<code>hue-rotate</code>会把红勾和丝带一起转成青色。漂浮叶子第一版整体偏冷，屋主说叶子几乎看不见、晴天娃娃变成蓝灰，被否。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md:3899</code>「夜里（2026-09-21补齐）」、<code>:2492</code>「静态版」；<code>Ysevan_web/app/hall.module.css:381</code><code>.deco</code>夜里</p>
+      </div>
+    </article>
+
+    <!-- 15 身份色 -->
+    <article class="entry" id="x-brand" data-scope="xiaowu" data-toc="工具身份色">
+      <header class="entry-head">
+        <h3>工具身份色只落在小面积：序号、图标块、「打开」、焦点环</h3>
+        <p class="entry-lede">工具架上每个工具各有一支身份色（现在六支：2026-09-27加了travel的林绿，2026-09-28加了设计合集的梅紫、暂定），写成组件内常量，不进全局色板。夜里色值一个不改，改的是下面那张纸。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-22定</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="shelf-pair">
+          <div class="shelf xw" data-mode="light">
+            <p class="shelf-cap">白天</p>
+            <div class="tools">
+              <div class="tool" style="--tb:#2563EB;--tbs:rgba(37,99,235,.11)"><span class="t-no">01</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.6"/><path d="M4 9.6h16M8.6 3.6v3M15.4 3.6v3"/><path d="m9 14.6 2 2 4-4.2"/></svg></span><b>日程安排</b><button type="button" class="t-open" data-copy="#2563EB" aria-label="复制 #2563EB">打开</button><code>#2563EB · 4.79</code></div>
+              <div class="tool" style="--tb:#B4232C;--tbs:rgba(180,35,44,.10)"><span class="t-no">02</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3.6" width="13" height="15.6" rx="3" opacity=".55"/><rect x="4" y="6.6" width="13" height="13.8" rx="3"/><path d="m7.6 13.6 2.3 2.3 4.4-4.6"/></svg></span><b>刷刷</b><button type="button" class="t-open" data-copy="#B4232C" aria-label="复制 #B4232C">打开</button><code>#B4232C · 6.04</code></div>
+              <div class="tool" style="--tb:#8F1D2C;--tbs:rgba(143,29,44,.18)"><span class="t-no">03</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v12.5"/><path d="M12 7C10.4 5.6 8.4 4.9 6 4.9H3.6v12.6H6c2.4 0 4.4.7 6 2"/><path d="M12 7c1.6-1.4 3.6-2.1 6-2.1h2.4v12.6H18c-2.4 0-4.4.7-6 2"/></svg></span><b>岗岗</b><button type="button" class="t-open is-focus" data-copy="#8F1D2C" aria-label="复制 #8F1D2C">打开</button><code>#8F1D2C · 8.17</code></div>
+              <div class="tool" style="--tb:#10666E;--tbs:rgba(16,102,110,.12)"><span class="t-no">04</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.6" width="12" height="16.8" rx="2.4"/><path d="M12 8.4c.3 1.7 1.1 2.5 2.8 2.8-1.7.3-2.5 1.1-2.8 2.8-.3-1.7-1.1-2.5-2.8-2.8 1.7-.3 2.5-1.1 2.8-2.8z"/></svg></span><b>card</b><button type="button" class="t-open" data-copy="#10666E" aria-label="复制 #10666E">打开</button><code>#10666E · 6.18</code></div>
+              <div class="tool" style="--tb:#296B38;--tbs:rgba(41,107,56,.12)"><span class="t-no">05</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 6.6 9 4.6l6 2 5.2-2v12.8l-5.2 2-6-2-5.2 2z"/><path d="M9 4.6v12.8M15 6.6v12.8"/></svg></span><b>travel</b><button type="button" class="t-open" data-copy="#296B38" aria-label="复制 #296B38">打开</button><code>#296B38 · 5.97</code></div>
+              <div class="tool" style="--tb:#702682;--tbs:rgba(112,38,130,.11)"><span class="t-no">06</span><span class="t-icon"><span data-icon="brand"></span></span><b>设计合集</b><button type="button" class="t-open" data-copy="#702682" aria-label="复制 #702682">打开</button><code>#702682 · 8.50 · 暂定</code></div>
+            </div>
+          </div>
+          <div class="shelf xw" data-mode="dark">
+            <p class="shelf-cap">夜里 · 图标块与「打开」垫回白天那张纸</p>
+            <div class="tools">
+              <div class="tool" style="--tb:#2563EB;--tbs:rgba(37,99,235,.11)"><span class="t-no">01</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.6"/><path d="M4 9.6h16M8.6 3.6v3M15.4 3.6v3"/><path d="m9 14.6 2 2 4-4.2"/></svg></span><b>日程安排</b><button type="button" class="t-open" data-copy="#2563EB" aria-label="复制 #2563EB">打开</button><code>页底3.47 → 纸4.79</code></div>
+              <div class="tool" style="--tb:#B4232C;--tbs:rgba(180,35,44,.10)"><span class="t-no">02</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3.6" width="13" height="15.6" rx="3" opacity=".55"/><rect x="4" y="6.6" width="13" height="13.8" rx="3"/><path d="m7.6 13.6 2.3 2.3 4.4-4.6"/></svg></span><b>刷刷</b><button type="button" class="t-open" data-copy="#B4232C" aria-label="复制 #B4232C">打开</button><code>2.75 → 6.04</code></div>
+              <div class="tool" style="--tb:#8F1D2C;--tbs:rgba(143,29,44,.18)"><span class="t-no">03</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v12.5"/><path d="M12 7C10.4 5.6 8.4 4.9 6 4.9H3.6v12.6H6c2.4 0 4.4.7 6 2"/><path d="M12 7c1.6-1.4 3.6-2.1 6-2.1h2.4v12.6H18c-2.4 0-4.4.7-6 2"/></svg></span><b>岗岗</b><button type="button" class="t-open" data-copy="#8F1D2C" aria-label="复制 #8F1D2C">打开</button><code>2.03 → 8.17</code></div>
+              <div class="tool" style="--tb:#10666E;--tbs:rgba(16,102,110,.12)"><span class="t-no">04</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.6" width="12" height="16.8" rx="2.4"/><path d="M12 8.4c.3 1.7 1.1 2.5 2.8 2.8-1.7.3-2.5 1.1-2.8 2.8-.3-1.7-1.1-2.5-2.8-2.8 1.7-.3 2.5-1.1 2.8-2.8z"/></svg></span><b>card</b><button type="button" class="t-open" data-copy="#10666E" aria-label="复制 #10666E">打开</button><code>2.69 → 6.18</code></div>
+              <div class="tool" style="--tb:#296B38;--tbs:rgba(41,107,56,.12)"><span class="t-no">05</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 6.6 9 4.6l6 2 5.2-2v12.8l-5.2 2-6-2-5.2 2z"/><path d="M9 4.6v12.8M15 6.6v12.8"/></svg></span><b>travel</b><button type="button" class="t-open" data-copy="#296B38" aria-label="复制 #296B38">打开</button><code>2.78 → 5.97</code></div>
+              <div class="tool" style="--tb:#702682;--tbs:rgba(112,38,130,.11)"><span class="t-no">06</span><span class="t-icon"><span data-icon="brand"></span></span><b>设计合集</b><button type="button" class="t-open" data-copy="#702682" aria-label="复制 #702682">打开</button><code>1.96 → 8.50</code></div>
+            </div>
+          </div>
+        </div>
+        <p class="spec-note">白天岗岗那张的「打开」上画着焦点环的样子（2px身份色、外扩3px）。夜里序号不垫纸、换成夜里的次级墨（7.86）。「打开」点一下复制身份色。</p>
+        <div class="use">
+          <p class="use-cap"><b>对照</b>同一张刷刷卡：左边身份色只落在序号、图标块、「打开」、焦点环；右边是反例（示意）——身份色铺到边框、底色、标题、正文上，暖屋一下就花了。</p>
+          <div class="ub-pair">
+            <div class="ub-room xw" data-mode="light">
+              <p class="ub-head"><span class="use-bad use-good">现行</span>小面积</p>
+              <div class="tool" style="--tb:#B4232C;--tbs:rgba(180,35,44,.10)"><span class="t-no">02</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3.6" width="13" height="15.6" rx="3" opacity=".55"/><rect x="4" y="6.6" width="13" height="13.8" rx="3"/><path d="m7.6 13.6 2.3 2.3 4.4-4.6"/></svg></span><b>刷刷</b><p>离线刷题，错题自动收进错题本。</p><button type="button" class="t-open" data-copy="#B4232C" aria-label="复制 #B4232C">打开</button></div>
+            </div>
+            <div class="ub-room ub-wrong xw" data-mode="light">
+              <p class="ub-head"><span class="use-bad">反例</span>铺大面积（示意）</p>
+              <div class="tool" style="--tb:#B4232C;--tbs:rgba(180,35,44,.10)"><span class="t-no">02</span><span class="t-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3.6" width="13" height="15.6" rx="3" opacity=".55"/><rect x="4" y="6.6" width="13" height="13.8" rx="3"/><path d="m7.6 13.6 2.3 2.3 4.4-4.6"/></svg></span><b>刷刷</b><p>离线刷题，错题自动收进错题本。</p><button type="button" class="t-open" data-copy="#B4232C" aria-label="复制 #B4232C">打开</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>数值</h4>
+<pre><code>01 日程安排  --brand: #2563EB  --brandsoft: rgba(37,99,235,.11)   纸底 4.79
+02 刷刷      --brand: #B4232C  --brandsoft: rgba(180,35,44,.10)   纸底 6.04
+03 岗岗      --brand: #8F1D2C  --brandsoft: rgba(143,29,44,.18)   纸底 8.17（工具架变体；岗岗站内 #A62031）
+04 card      --brand: #10666E  --brandsoft: rgba(16,102,110,.12)  纸底 6.18（汐青）
+05 travel    --brand: #296B38  --brandsoft: rgba(41,107,56,.12)   纸底 5.97（林绿）
+06 设计合集  --brand: #702682  --brandsoft: rgba(112,38,130,.11)  纸底 8.50（梅紫，暂定）
+:global(.dark) .icon, :global(.dark) .open { background: hsl(42.9 33.3% 95.9%); }  /* --tool-paper：白天那张纸 */</code></pre>
+        </section>
+        <section class="fact"><h4>为什么</h4><p>家族感靠中性系统统一，身份靠品牌色区分；身份色一旦铺大面积，暖屋就花了。不得用于卡片边框、底色、标题、正文、状态条、hover面、分隔线。夜里页底上身份色只有1.96–3.47，换纸之后回到白天的数——观感像暗屋里几块点着灯的小牌子。</p></section>
+        <section class="fact"><h4>新增一支</h4><ol><li>和已有几支色相拉开（221°、355°、350°之外，汐青取185°）；</li><li>和这个工具自己的作品色系读得到一起（card十三张卡里冷色占多数）；</li><li>够深，能当纸上的字（card卡面的#8ACBE8压暖纸只有1.65，只能当装饰）。</li></ol></section>
+        <section class="fact trap"><h4>坑</h4><p>夜里「打开」的hover那层淡品牌色要叠在纸上：<code>.open:hover</code>写的是<code>background</code>简写，夜里会把整张纸换掉、当场掉回2.75，要另写一条只改<code>background-image</code>。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md:152</code>「工具身份色」、<code>:196</code>「小面积原则」、<code>:200</code>「夜里的纸片规则」、<code>:202</code>四处落点；<code>Ysevan_web/app/projects/tools.module.css:208</code>「夜里的身份色：换纸，不换色」</p>
+      </div>
+    </article>
+
+    <!-- 16 装饰色 -->
+    <article class="entry" id="x-deco" data-scope="xiaowu" data-toc="装饰色留字面量">
+      <header class="entry-head">
+        <h3>装饰色留字面量，不进色板</h3>
+        <p class="entry-lede">绿植与门厅卡片的十来个颜色都是<code>aria-hidden</code>的纯装饰，只把浅叶、中叶两支提成变量，其余写在SVG里。</p>
+        <ul class="entry-tags"><li class="scope">小屋</li></ul>
+      </header>
+      <div class="specimen">
+        <div class="deco-strip xw" data-mode="light">
+          <button type="button" class="sw sw-sm" data-copy="#A9BC96" aria-label="复制 #A9BC96" style="--c:#A9BC96"><i></i><span>浅叶</span><code>#A9BC96</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#7E9367" aria-label="复制 #7E9367" style="--c:#7E9367"><i></i><span>中叶</span><code>#7E9367</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#9BAE86" aria-label="复制 #9BAE86" style="--c:#9BAE86"><i></i><span>后层枝</span><code>#9BAE86</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#6F855C" aria-label="复制 #6F855C" style="--c:#6F855C"><i></i><span>前层枝</span><code>#6F855C</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#8FA47A" aria-label="复制 #8FA47A" style="--c:#8FA47A"><i></i><span>小枝叶</span><code>#8FA47A</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#4F5B3E" aria-label="复制 #4F5B3E" style="--c:#4F5B3E"><i></i><span>二道水.17</span><code>#4F5B3E</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#6E8A93" aria-label="复制 #6E8A93" style="--c:#6E8A93"><i></i><span>冷调叶影</span><code>#6E8A93</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#C9C6B4" aria-label="复制 #C9C6B4" style="--c:#C9C6B4"><i></i><span>盆口</span><code>#C9C6B4</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#D3D0BF" aria-label="复制 #D3D0BF" style="--c:#D3D0BF"><i></i><span>盆身</span><code>#D3D0BF</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#B2AF9B" aria-label="复制 #B2AF9B" style="--c:#B2AF9B"><i></i><span>盆描边</span><code>#B2AF9B</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#BFBCA9" aria-label="复制 #BFBCA9" style="--c:#BFBCA9"><i></i><span>盆腰线</span><code>#BFBCA9</code></button>
+          <button type="button" class="sw sw-sm" data-copy="#FFFDFA" aria-label="复制 #FFFDFA" style="--c:#FFFDFA"><i></i><span>卡纸白</span><code>#FFFDFA</code></button>
+        </div>
+        <div class="use ud-stage" data-ud>
+          <p class="use-cap"><b>用起来</b>照小屋盆栽的四层叠法画的一小株（示意，不是原图）：水洗底、后层浅叶加冷调叶影、前层中叶加二道水、雅灰陶盆。鼠标停在上面的色块上（或Tab到它），用到这个色的部件留下、其余淡出；夜里整株只暗一档。</p>
+          <div class="ud-pair">
+            <figure class="ud-fig xw" data-mode="light"><svg viewBox="0 0 160 170" role="img" aria-label="水彩盆栽示意（白天）"><defs><radialGradient id="xdWashD" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#7E9367" stop-opacity=".16"/><stop offset="1" stop-color="#7E9367" stop-opacity="0"/></radialGradient><path id="xdLeafD" d="M0 0C11-7 30-6.6 45.5-.6C30 6.2 11 7 0 0Z"/></defs><rect class="ud-card" data-xc="#FFFDFA" x="4" y="4" width="152" height="162" rx="12"/><ellipse data-xc="#7E9367" cx="80" cy="72" rx="62" ry="64" fill="url(#xdWashD)"/><g opacity=".6"><path data-xc="#9BAE86" d="M76 116C70 92 58 72 40 52M84 116C92 90 104 70 124 50" stroke="#9BAE86" stroke-width="1.5" stroke-linecap="round" fill="none"/><g data-xc="#A9BC96" fill="#A9BC96"><use href="#xdLeafD" transform="translate(66,98) rotate(-160) scale(0.5)"/><use href="#xdLeafD" transform="translate(58,84) rotate(-120) scale(0.5)"/><use href="#xdLeafD" transform="translate(50,70) rotate(-170) scale(0.45)"/><use href="#xdLeafD" transform="translate(42,56) rotate(-130) scale(0.5)"/><use href="#xdLeafD" transform="translate(92,96) rotate(-20) scale(0.5)"/><use href="#xdLeafD" transform="translate(100,82) rotate(-60) scale(0.5)"/><use href="#xdLeafD" transform="translate(110,68) rotate(-10) scale(0.45)"/><use href="#xdLeafD" transform="translate(120,54) rotate(-50) scale(0.5)"/></g><g data-xc="#6E8A93" fill="#6E8A93" opacity=".42" transform="translate(-7,5)"><use href="#xdLeafD" transform="translate(66,98) rotate(-160) scale(0.5)"/><use href="#xdLeafD" transform="translate(58,84) rotate(-120) scale(0.5)"/><use href="#xdLeafD" transform="translate(50,70) rotate(-170) scale(0.45)"/><use href="#xdLeafD" transform="translate(42,56) rotate(-130) scale(0.5)"/><use href="#xdLeafD" transform="translate(92,96) rotate(-20) scale(0.5)"/><use href="#xdLeafD" transform="translate(100,82) rotate(-60) scale(0.5)"/><use href="#xdLeafD" transform="translate(110,68) rotate(-10) scale(0.45)"/><use href="#xdLeafD" transform="translate(120,54) rotate(-50) scale(0.5)"/></g></g><path data-xc="#6F855C" d="M80 116C80 88 78 60 82 26M80 100C70 86 62 80 50 76" stroke="#6F855C" stroke-width="1.7" stroke-linecap="round" fill="none" opacity=".8"/><g data-xc="#7E9367" fill="#7E9367" opacity=".72"><use href="#xdLeafD" transform="translate(80,96) rotate(-30) scale(0.55)"/><use href="#xdLeafD" transform="translate(80,84) rotate(-150) scale(0.55)"/><use href="#xdLeafD" transform="translate(80,70) rotate(-25) scale(0.55)"/><use href="#xdLeafD" transform="translate(81,56) rotate(-155) scale(0.5)"/><use href="#xdLeafD" transform="translate(81,42) rotate(-35) scale(0.5)"/><use href="#xdLeafD" transform="translate(82,30) rotate(-95) scale(0.5)"/><use href="#xdLeafD" transform="translate(62,84) rotate(-120) scale(0.45)"/><use href="#xdLeafD" transform="translate(52,78) rotate(-175) scale(0.45)"/></g><g data-xc="#4F5B3E" fill="#4F5B3E" opacity=".17" transform="translate(2.5,3.5)"><use href="#xdLeafD" transform="translate(80,96) rotate(-30) scale(0.55)"/><use href="#xdLeafD" transform="translate(80,84) rotate(-150) scale(0.55)"/><use href="#xdLeafD" transform="translate(80,70) rotate(-25) scale(0.55)"/><use href="#xdLeafD" transform="translate(81,56) rotate(-155) scale(0.5)"/><use href="#xdLeafD" transform="translate(81,42) rotate(-35) scale(0.5)"/><use href="#xdLeafD" transform="translate(82,30) rotate(-95) scale(0.5)"/><use href="#xdLeafD" transform="translate(62,84) rotate(-120) scale(0.45)"/><use href="#xdLeafD" transform="translate(52,78) rotate(-175) scale(0.45)"/></g><g data-xc="#8FA47A" fill="#8FA47A"><use href="#xdLeafD" transform="translate(70,116) rotate(-150) scale(0.3)"/><use href="#xdLeafD" transform="translate(90,116) rotate(-30) scale(0.3)"/><use href="#xdLeafD" transform="translate(86,108) rotate(-60) scale(0.28)"/></g><path data-xc="#D3D0BF" d="M54 126h52l-6 32a4 4 0 0 1-4 3H64a4 4 0 0 1-4-3z" fill="#D3D0BF"/><rect data-xc="#C9C6B4" x="50" y="116" width="60" height="10" rx="3" fill="#C9C6B4"/><g data-xc="#B2AF9B" fill="none" stroke="#B2AF9B" stroke-width="1.1"><rect x="50" y="116" width="60" height="10" rx="3"/><path d="M54 126h52l-6 32a4 4 0 0 1-4 3H64a4 4 0 0 1-4-3z"/></g><path data-xc="#BFBCA9" d="M57.5 140q22.5 4 45 0" fill="none" stroke="#BFBCA9" stroke-width="1"/></svg><figcaption>白天 · 卡纸白#FFFDFA上</figcaption></figure>
+            <figure class="ud-fig xw" data-mode="dark"><svg viewBox="0 0 160 170" role="img" aria-label="水彩盆栽示意（夜里）"><defs><radialGradient id="xdWashN" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#7E9367" stop-opacity=".16"/><stop offset="1" stop-color="#7E9367" stop-opacity="0"/></radialGradient><path id="xdLeafN" d="M0 0C11-7 30-6.6 45.5-.6C30 6.2 11 7 0 0Z"/></defs><rect class="ud-card" data-xc="#FFFDFA" x="4" y="4" width="152" height="162" rx="12"/><ellipse data-xc="#7E9367" cx="80" cy="72" rx="62" ry="64" fill="url(#xdWashN)"/><g opacity=".6"><path data-xc="#9BAE86" d="M76 116C70 92 58 72 40 52M84 116C92 90 104 70 124 50" stroke="#9BAE86" stroke-width="1.5" stroke-linecap="round" fill="none"/><g data-xc="#A9BC96" fill="#A9BC96"><use href="#xdLeafN" transform="translate(66,98) rotate(-160) scale(0.5)"/><use href="#xdLeafN" transform="translate(58,84) rotate(-120) scale(0.5)"/><use href="#xdLeafN" transform="translate(50,70) rotate(-170) scale(0.45)"/><use href="#xdLeafN" transform="translate(42,56) rotate(-130) scale(0.5)"/><use href="#xdLeafN" transform="translate(92,96) rotate(-20) scale(0.5)"/><use href="#xdLeafN" transform="translate(100,82) rotate(-60) scale(0.5)"/><use href="#xdLeafN" transform="translate(110,68) rotate(-10) scale(0.45)"/><use href="#xdLeafN" transform="translate(120,54) rotate(-50) scale(0.5)"/></g><g data-xc="#6E8A93" fill="#6E8A93" opacity=".42" transform="translate(-7,5)"><use href="#xdLeafN" transform="translate(66,98) rotate(-160) scale(0.5)"/><use href="#xdLeafN" transform="translate(58,84) rotate(-120) scale(0.5)"/><use href="#xdLeafN" transform="translate(50,70) rotate(-170) scale(0.45)"/><use href="#xdLeafN" transform="translate(42,56) rotate(-130) scale(0.5)"/><use href="#xdLeafN" transform="translate(92,96) rotate(-20) scale(0.5)"/><use href="#xdLeafN" transform="translate(100,82) rotate(-60) scale(0.5)"/><use href="#xdLeafN" transform="translate(110,68) rotate(-10) scale(0.45)"/><use href="#xdLeafN" transform="translate(120,54) rotate(-50) scale(0.5)"/></g></g><path data-xc="#6F855C" d="M80 116C80 88 78 60 82 26M80 100C70 86 62 80 50 76" stroke="#6F855C" stroke-width="1.7" stroke-linecap="round" fill="none" opacity=".8"/><g data-xc="#7E9367" fill="#7E9367" opacity=".72"><use href="#xdLeafN" transform="translate(80,96) rotate(-30) scale(0.55)"/><use href="#xdLeafN" transform="translate(80,84) rotate(-150) scale(0.55)"/><use href="#xdLeafN" transform="translate(80,70) rotate(-25) scale(0.55)"/><use href="#xdLeafN" transform="translate(81,56) rotate(-155) scale(0.5)"/><use href="#xdLeafN" transform="translate(81,42) rotate(-35) scale(0.5)"/><use href="#xdLeafN" transform="translate(82,30) rotate(-95) scale(0.5)"/><use href="#xdLeafN" transform="translate(62,84) rotate(-120) scale(0.45)"/><use href="#xdLeafN" transform="translate(52,78) rotate(-175) scale(0.45)"/></g><g data-xc="#4F5B3E" fill="#4F5B3E" opacity=".17" transform="translate(2.5,3.5)"><use href="#xdLeafN" transform="translate(80,96) rotate(-30) scale(0.55)"/><use href="#xdLeafN" transform="translate(80,84) rotate(-150) scale(0.55)"/><use href="#xdLeafN" transform="translate(80,70) rotate(-25) scale(0.55)"/><use href="#xdLeafN" transform="translate(81,56) rotate(-155) scale(0.5)"/><use href="#xdLeafN" transform="translate(81,42) rotate(-35) scale(0.5)"/><use href="#xdLeafN" transform="translate(82,30) rotate(-95) scale(0.5)"/><use href="#xdLeafN" transform="translate(62,84) rotate(-120) scale(0.45)"/><use href="#xdLeafN" transform="translate(52,78) rotate(-175) scale(0.45)"/></g><g data-xc="#8FA47A" fill="#8FA47A"><use href="#xdLeafN" transform="translate(70,116) rotate(-150) scale(0.3)"/><use href="#xdLeafN" transform="translate(90,116) rotate(-30) scale(0.3)"/><use href="#xdLeafN" transform="translate(86,108) rotate(-60) scale(0.28)"/></g><path data-xc="#D3D0BF" d="M54 126h52l-6 32a4 4 0 0 1-4 3H64a4 4 0 0 1-4-3z" fill="#D3D0BF"/><rect data-xc="#C9C6B4" x="50" y="116" width="60" height="10" rx="3" fill="#C9C6B4"/><g data-xc="#B2AF9B" fill="none" stroke="#B2AF9B" stroke-width="1.1"><rect x="50" y="116" width="60" height="10" rx="3"/><path d="M54 126h52l-6 32a4 4 0 0 1-4 3H64a4 4 0 0 1-4-3z"/></g><path data-xc="#BFBCA9" d="M57.5 140q22.5 4 45 0" fill="none" stroke="#BFBCA9" stroke-width="1"/></svg><figcaption>夜里 · brightness(.78) saturate(.85)</figcaption></figure>
+          </div>
+          <p class="sr-only" aria-live="polite" data-ud-live></p>
+        </div>
+      </div>
+      <div class="entry-body">
+        <section class="fact"><h4>为什么</h4><p>装饰SVG是自洽的图形单元，十来个只出现一次的色值全提成全局token只会污染色板。同理，定义了却没用上的<code>--board #B8B69E</code>不落地——不上线未使用的token。海湾蓝在全站只剩一个去处：绿植里半透明的冷调叶影。</p></section>
+        <section class="fact"><h4>对比度</h4><p>这些都是纯装饰，不适用3:1/4.5:1；浅叶压纸底只有1.88，就是「很淡」的设计意图。</p></section>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md:258</code>「装饰与插画专用色」、<code>:277</code>「落地方式」、<code>:148</code>「不需要落地的」；盆栽示意照<code>:3832</code>「SVG内部结构」的四层叠法</p>
+      </div>
+    </article>
+  </section>
+</main></body></html>

@@ -1,0 +1,734 @@
+/* ==========================================================================
+ * star.css —— 设计合集：令牌 + 外壳 + 条目组件 + .xw 小屋暖纸作用域
+ *
+ * 规格正本：tools/plan/docs/design/SPEC-apple-glass.md（苹果液态玻璃风，四家统一）。
+ * 这份文件只放「每一页都要用」的东西；某一页自己的样例样式放 assets/pages/<页>.css，别往这里塞。
+ *
+ * ── 页面骨架契约（每页照抄；外壳 CSS / JS 认这些类名）────────────────────────
+ *   <!doctype html><html lang="zh-CN"><head>
+ *   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+ *   <meta name="theme-color" content="#F4F5F9">
+ *   <title>色彩 · 设计合集</title>
+ *   <script src="assets/boot.js"></script>                   同步、样式表之前：写 data-mode / data-accent，免闪色
+ *   <link rel="stylesheet" href="assets/star.css">
+ *   <link rel="stylesheet" href="assets/pages/color.css">    页专属样式（可选）
+ *   <script src="assets/star.js" defer></script>
+ *   <script src="assets/pages/color.js" defer></script>      页专属脚本（可选）
+ *   </head><body data-page="color">                           data-page = nav.js 里 PAGES 的 id
+ *   <a class="skip" href="#main">跳到正文</a>
+ *   <div id="shell-nav"></div><script src="assets/nav.js"></script>
+ *   <main id="main" class="page">
+ *     <header class="page-head"><h1 class="page-title">色彩</h1><p class="page-sub">一句副标题</p>
+ *       <nav class="page-toc" aria-label="本页目录"></nav></header>        star.js 按 .group-title 与 .entry h3 自动生成
+ *     <section class="group" id="g-tools" data-scope="tools"><h2 class="group-title">工具 · 液态玻璃</h2> …条目… </section>
+ *   </main></body></html>
+ *   · 不写内联脚本、不写内联事件处理器；内联 style="" 可以。
+ *   · .group 的 data-scope 可选（tools / xiaowu / common），只影响标题前那根色条。
+ *
+ * ── 条目组件（docs/目录与版式.md「条目版式」）──────────────────────────────
+ *   <article class="entry" id="color-accent-six" data-scope="tools" data-toc="六强调色">   data-toc：目录胶囊上的短名（可选）
+ *     <header class="entry-head">
+ *       <h3>标题写结论</h3>
+ *       <p class="entry-lede">一句话说清怎么做。</p>
+ *       <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>   data-scope：tools 工具 / xiaowu 小屋 / common 通用
+ *     </header>
+ *     <div class="specimen">现场演示（每条都要有，能点、能拖、能切换；见 docs/目录与版式.md）</div>
+ *     <div class="entry-body">
+ *       <section class="fact"><h4>数值 / 代码</h4><pre><code>…</code></pre></section>     pre 由 star.js 自动加「复制」
+ *       <section class="fact"><h4>用在哪</h4><p>…</p></section>
+ *       <section class="fact"><h4>为什么</h4><p>…</p></section>
+ *       <blockquote class="said"><p>屋主原话</p><footer>2026-09-23 屋主</footer></blockquote>
+ *       <section class="fact trap"><h4>坑</h4><p>…</p></section>
+ *       <p class="source">出处：<code>文件:行号</code>「小节名」</p>
+ *     </div>
+ *   </article>
+ *
+ * ── 通用小件 ────────────────────────────────────────────────────────────
+ *   .i                     线条图标（nav.js 的 STAR_NAV.icon(name) 生成，20px、stroke 1.9）
+ *   .btn / .btn-tint / .btn-glass   主按钮（品牌图标同一条亮渐变 + 白字）/ 次按钮（实色软底 + 文字档）/ 第三级
+ *   .pill / .pill-accent   中性胶囊 / 强调色胶囊（底都是实色）
+ *   .list > li > .row      iOS 设置式分组列表：.ico（32px 彩色方块，底色写 style="background:…"）+ .t（b + small）+ .badge + .chev
+ *   button[data-copy="#007AFF"] aria-label="复制 #007AFF"    点一下复制，star.js 负责剪贴板、气泡与读屏播报
+ *   .sr-only               只给读屏
+ *   <span class="brand-icon" data-icon="brand" data-icon-class="brand-svg"></span>
+ *                          页面里放一枚跟外壳一样的品牌方块（会跟着 brand/ 里的文件换）；自己画示意图的
+ *                          .brand-icon 不写 data-icon="brand"，star.js 就不去换它
+ *
+ * ── 外壳保留的属性（页面和样例别用）──────────────────────────────────────
+ *   data-mode-set / data-accent-set / data-theme-controls
+ *                          外壳主题控件专用：star.js 只认 nav.js 画的两处（侧栏底部、「更多」面板），
+ *                          页面里写了也不会生效，还会被误以为是全站开关。样例要演示切主题，用页面自己的属性
+ *                          （交互页用 data-ix-accent），只改样例容器上的 data-mode / data-accent（令牌在任何元素上都会重算）。
+ *   data-more-toggle / data-more-close   「更多」面板的开关按钮
+ *
+ * ── 样例框与减弱动效的约定 ─────────────────────────────────────────────
+ *   .specimen.is-overflow-visible
+ *                          .specimen 默认 overflow-x:auto（宽样例在框里横滑，不撑破页面）；但 overflow-x 一旦不是
+ *                          visible，纵向也会被裁——联想浮层、确认框这类伸出框外的东西会被切掉。这种样例加这个类
+ *                          改回 overflow:visible；前提是样例本身在窄屏上不会比框宽（自己在 417 档量过）。
+ *   data-rm="fade"         prefers-reduced-motion: reduce 下，外壳用 !important 关掉全部 transition / animation；
+ *                          元素加这个属性时只保留 opacity 过渡（时长取 --rm-fade，默认 .2s），其余照关——
+ *                          「原地淡入淡出」用这个。别在页面里拿更高特异性 + !important 放回过渡。
+ *                          要原地淡、不要位移缩放的，页面在同一个媒体查询里把 transform 钉住即可（普通特异性就够）。
+ *
+ * ── 令牌写法：一行写一对「浅值 / 深值」────────────────────────────────────
+ *   --bg: var(--lt, #F4F5F9) var(--dk, #0B0C10);
+ *   浅色时 --lt 是 initial（失效 → 取后面的浅值）、--dk 是空（整段吐空）；深色反过来。
+ *   这组声明挂在 :root, [data-mode], [data-accent] 上，所以**任何元素**加 data-mode="dark" 或 data-accent="pink"
+ *   都会在那个元素上重算一遍：样例里可以局部切深色、切强调色并排展示；只写 data-accent 时明暗继承外面。
+ *   html 上的是全站值（boot.js 写的是已解析的 light / dark）；没有 JS 时 html 上没有 data-mode，
+ *   由 prefers-color-scheme 接住深色。
+ *   token 名字说用途、不说颜色（SPEC-apple-glass.md「命名教训」）：--accent-tint 实色软底、--accent-shadow 投影 …
+ *
+ * ── 尺寸：以 1440 为基准等比放大，1.45 封顶（SPEC §4b）────────────────────
+ *   --scale = clamp(1, tan(atan2(100vw, 1440px)), 1.45)；--u = 1px × --scale。
+ *   每个尺寸令牌 = 「1440 处的值 × --scale」，1440 及以下 --scale 恒为 1，一个数都不变。
+ *   不乘 scale 的：媒体查询断点、1px 线、blur 半径、光晕 vw 尺寸、焦点环 2px。不用 CSS zoom。
+ * ========================================================================== */
+
+/* ---------- 1. 明暗开关 ---------- */
+:root { --lt: initial; --dk: ; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode]) { --lt: ; --dk: initial; }
+}
+[data-mode="light"] { --lt: initial; --dk: ; }
+[data-mode="dark"] { --lt: ; --dk: initial; }
+
+/* ---------- 2. 尺度 ---------- */
+:root {
+  --scale-max: 1.45;
+  --scale: clamp(1, tan(atan2(100vw, 1440px)), var(--scale-max));
+  --u: calc(1px * var(--scale));
+
+  --fs-title: calc(clamp(26px, 1.4vw + 14px, 34.16px) * var(--scale));
+  --fs-h2: calc(clamp(19px, .3vw + 17.68px, 22px) * var(--scale));
+  --fs-h3: calc(clamp(17px, .25vw + 16.4px, 20px) * var(--scale));
+  --fs-lead: calc(clamp(14px, .2vw + 13.12px, 16px) * var(--scale));
+  --fs-body: calc(clamp(14px, .15vw + 12.84px, 15px) * var(--scale));
+  --fs-small: calc(13px * var(--scale));
+  --fs-xs: calc(12px * var(--scale));
+  --gap: calc(clamp(10px, 1vw, 14.4px) * var(--scale));
+  --pad: calc(clamp(18px, .95vw + 14.32px, 28px) * var(--scale));
+  --side-w: calc(clamp(200px, 17vw, 244.8px) * var(--scale));
+  --page-x: calc(clamp(16px, 3vw, 43.2px) * var(--scale));
+  --measure: calc(680px * var(--scale));
+  --label-w: calc(88px * var(--scale));
+  --r-xs: calc(8px * var(--scale));
+  --r-sm: calc(12px * var(--scale));
+  --r-md: calc(16px * var(--scale));
+  --r-lg: calc(22px * var(--scale));
+  --topbar-h: 56px;
+  --tabbar-h: 60px;
+
+  --font: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: ui-monospace, "SF Mono", Consolas, "Courier New", monospace;
+  --font-kai: "Kaiti SC", "STKaiti", "KaiTi", serif;
+
+  /* 跟随文字色的图标：mask-image 取形状、background:currentColor 上色（换主题、换强调色自动跟上） */
+  --ic-doc: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7.4 3.6h6.2L18 8v10.9a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 18.9V5.1a1.5 1.5 0 0 1 1.4-1.5z'/%3E%3Cpath d='M13.4 3.6v4.6H18'/%3E%3Cpath d='M9 12.6h6M9 16h4'/%3E%3C/svg%3E");
+  --ic-alert: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4.8 20.6 19.2H3.4z'/%3E%3Cpath d='M12 10.2v4.2'/%3E%3Cpath d='M12 16.9v.01'/%3E%3C/svg%3E");
+}
+/* 不支持三角函数的内核：探针必须写 scale:（接受无单位数），写 width: 会恒真、把上面的公式整个盖掉。 */
+@supports not (scale: tan(atan2(1px, 1px))) {
+  :root { --scale: 1; }
+  @media (min-width: 1600px) { :root { --scale: 1.11; } }
+  @media (min-width: 1800px) { :root { --scale: 1.25; } }
+  @media (min-width: 2000px) { :root { --scale: 1.39; } }
+  @media (min-width: 2200px) { :root { --scale: 1.45; } }
+}
+
+/* ---------- 3. 六个强调色的原始值（浅 / 深两支，下面第 4 节按明暗取一支）----------
+   a 填充 / a2 渐变浅端 / at 文字档（HIG 增强对比度）/ ati 实色软底 / ash 投影 / b1–b3 三团光晕。
+   深色 a2：样张 shua-glass.html 深色只重写了蓝（#64D2FF），其余沿用浅色那组——与岗岗、card 一致（SPEC「各家有记录的偏离」）。
+   实色软底：浅 = 填充色兑 11% 进白（岗岗算法），深 = 填充色兑 18% 进 #17181C（card 算法）；文字档压上去实算 ≥4.59。 */
+:root, [data-accent="blue"] {
+  --a-l: #007AFF; --a-d: #0A84FF; --a2-l: #5AC8FA; --a2-d: #64D2FF; --at-l: #0040DD; --at-d: #409CFF;
+  --ati-l: #E3F0FF; --ati-d: #152B45; --ash-l: rgba(0,122,255,.13); --ash-d: rgba(10,132,255,.2);
+  --b1-l: rgba(90,200,250,.55); --b2-l: rgba(255,214,170,.55); --b3-l: rgba(175,160,255,.45);
+  --b1-d: rgba(10,132,255,.35); --b2-d: rgba(255,159,10,.22); --b3-d: rgba(94,92,230,.35);
+}
+[data-accent="green"] {
+  --a-l: #34C759; --a-d: #30D158; --a2-l: #A8E063; --a2-d: #A8E063; --at-l: #1F7A36; --at-d: #30DB5B;
+  --ati-l: #E9F9ED; --ati-d: #1C3927; --ash-l: rgba(52,199,89,.15); --ash-d: rgba(48,209,88,.2);
+  --b1-l: rgba(52,199,89,.4); --b2-l: rgba(255,214,170,.55); --b3-l: rgba(48,176,199,.35);
+  --b1-d: rgba(48,209,88,.28); --b2-d: rgba(255,159,10,.18); --b3-d: rgba(64,200,224,.25);
+}
+[data-accent="indigo"] {
+  --a-l: #5856D6; --a-d: #5E5CE6; --a2-l: #BF5AF2; --a2-d: #BF5AF2; --at-l: #3634A3; --at-d: #8E8BFF;
+  --ati-l: #EDECFA; --ati-d: #242440; --ash-l: rgba(88,86,214,.15); --ash-d: rgba(94,92,230,.22);
+  --b1-l: rgba(88,86,214,.4); --b2-l: rgba(255,45,85,.25); --b3-l: rgba(175,160,255,.45);
+  --b1-d: rgba(94,92,230,.35); --b2-d: rgba(255,55,95,.18); --b3-d: rgba(191,90,242,.25);
+}
+[data-accent="orange"] {
+  --a-l: #FF9500; --a-d: #FF9F0A; --a2-l: #FFD60A; --a2-d: #FFD60A; --at-l: #C93400; --at-d: #FFB340;
+  --ati-l: #FFF3E3; --ati-d: #413019; --ash-l: rgba(255,149,0,.16); --ash-d: rgba(255,159,10,.2);
+  --b1-l: rgba(255,149,0,.4); --b2-l: rgba(255,214,170,.55); --b3-l: rgba(255,59,48,.25);
+  --b1-d: rgba(255,159,10,.3); --b2-d: rgba(255,69,58,.18); --b3-d: rgba(94,92,230,.25);
+}
+[data-accent="pink"] {
+  --a-l: #FF2D55; --a-d: #FF375F; --a2-l: #FF9AA2; --a2-d: #FF9AA2; --at-l: #D30F45; --at-d: #FF6482;
+  --ati-l: #FFE8EC; --ati-d: #411E28; --ash-l: rgba(255,45,85,.14); --ash-d: rgba(255,55,95,.2);
+  --b1-l: rgba(255,45,85,.35); --b2-l: rgba(255,214,170,.55); --b3-l: rgba(191,90,242,.3);
+  --b1-d: rgba(255,55,95,.3); --b2-d: rgba(255,159,10,.18); --b3-d: rgba(191,90,242,.25);
+}
+[data-accent="teal"] {
+  --a-l: #30B0C7; --a-d: #40C8E0; --a2-l: #64D2FF; --a2-d: #64D2FF; --at-l: #0071A4; --at-d: #5AC8F5;
+  --ati-l: #E8F6F9; --ati-d: #1E383F; --ash-l: rgba(48,176,199,.15); --ash-d: rgba(64,200,224,.2);
+  --b1-l: rgba(48,176,199,.45); --b2-l: rgba(52,199,89,.3); --b3-l: rgba(175,160,255,.45);
+  --b1-d: rgba(64,200,224,.3); --b2-d: rgba(48,209,88,.2); --b3-d: rgba(94,92,230,.25);
+}
+
+/* ---------- 4. 颜色令牌（每行一对浅 / 深）---------- */
+:root, [data-mode], [data-accent] {
+  color-scheme: var(--lt, light) var(--dk, dark);
+  /* 底与玻璃（SPEC §2）：底色只写在 html 上，body 透明，否则盖住 body::before 的光晕 */
+  --bg: var(--lt, #F4F5F9) var(--dk, #0B0C10);
+  --glass: var(--lt, rgba(255,255,255,.62)) var(--dk, rgba(40,42,52,.55));
+  --glass-strong: var(--lt, rgba(255,255,255,.78)) var(--dk, rgba(44,46,58,.72));
+  --glass-panel: var(--lt, rgba(255,255,255,.88)) var(--dk, rgba(36,38,48,.9));
+  --glass-edge: var(--lt, rgba(255,255,255,.9)) var(--dk, rgba(255,255,255,.12));
+  --sep: var(--lt, rgba(60,60,67,.12)) var(--dk, rgba(84,84,88,.5));
+  /* 文字三级（SPEC §5c）：次级 .76 / .62 承载文字；三级 .32 只给 chevron 与装饰 */
+  --label: var(--lt, #1C1C1E) var(--dk, #F2F2F7);
+  --label2: var(--lt, rgba(60,60,67,.76)) var(--dk, rgba(235,235,245,.62));
+  --label3: var(--lt, rgba(60,60,67,.32)) var(--dk, rgba(235,235,245,.32));
+  /* 承载文字的底一律实色：--fill 浅 = 白兑正文色 11%，深 = 深底兑正文色 20%（SPEC §5c） */
+  --fill: var(--lt, #E6E6E6) var(--dk, #393A3E);
+  --well: var(--lt, #F7F8FA) var(--dk, #16171C);
+  --code-bg: var(--lt, #F3F4F8) var(--dk, #15161B);
+  --raised: var(--lt, #FFFFFF) var(--dk, #2C2D35);
+  --seg-on: var(--lt, #FFFFFF) var(--dk, #5B5C63);
+  --hover: var(--lt, rgba(255,255,255,.55)) var(--dk, rgba(255,255,255,.07));
+  --scrim: var(--lt, rgba(20,24,36,.18)) var(--dk, rgba(0,0,0,.5));
+  --shadow: var(--lt, 0 10px 30px rgba(20,30,60,.08)) var(--dk, 0 10px 30px rgba(0,0,0,.35)), inset 0 1px 0 var(--glass-edge);
+  --shadow-sm: var(--lt, 0 1px 3px rgba(20,30,60,.12)) var(--dk, 0 1px 3px rgba(0,0,0,.4));
+  --shadow-pop: var(--lt, 0 24px 60px rgba(20,30,60,.18)) var(--dk, 0 24px 60px rgba(0,0,0,.55)), inset 0 1px 0 var(--glass-edge);
+  /* 语义色固定、不随强调色：填充 / 文字档 / 实色软底。深色红字 HIG #FF6961 压强玻璃最不利角（青光晕）只有 4.49，本地提亮到 #FF6E66（4.63） */
+  --red: var(--lt, #FF3B30) var(--dk, #FF453A);
+  --red-text: var(--lt, #D70015) var(--dk, #FF6E66);
+  --red-tint: var(--lt, #FFE9E8) var(--dk, #412021);
+  --green: var(--lt, #34C759) var(--dk, #30D158);
+  --green-text: var(--lt, #1F7A36) var(--dk, #30DB5B);
+  --green-tint: var(--lt, #E9F9ED) var(--dk, #1C3927);
+  --orange: var(--lt, #FF9500) var(--dk, #FF9F0A);
+  --orange-text: var(--lt, #C93400) var(--dk, #FFB340);
+  --orange-tint: var(--lt, #FFF3E3) var(--dk, #413019);
+  /* 范围标签：工具 = 固定蓝（不随强调色，是分类不是主题）、小屋 = 橄榄 */
+  --scope-tools-tint: var(--lt, #E3F0FF) var(--dk, #152B45);
+  --scope-tools-text: var(--lt, #0040DD) var(--dk, #409CFF);
+  --scope-xw-tint: var(--lt, #E1E0CE) var(--dk, #3A3C34);
+  --scope-xw-text: var(--lt, #4A4D35) var(--dk, #E0D7BD);
+  /* 强调色：按明暗取第 3 节里的一支 */
+  --accent: var(--lt, var(--a-l)) var(--dk, var(--a-d));
+  --accent-2: var(--lt, var(--a2-l)) var(--dk, var(--a2-d));
+  --accent-text: var(--lt, var(--at-l)) var(--dk, var(--at-d));
+  --accent-tint: var(--lt, var(--ati-l)) var(--dk, var(--ati-d));
+  --accent-shadow: var(--lt, var(--ash-l)) var(--dk, var(--ash-d));
+  --on-accent-gradient: #FFFFFF;
+  --blob1: var(--lt, var(--b1-l)) var(--dk, var(--b1-d));
+  --blob2: var(--lt, var(--b2-l)) var(--dk, var(--b2-d));
+  --blob3: var(--lt, var(--b3-l)) var(--dk, var(--b3-d));
+}
+[data-mode] { color: var(--label); }
+
+/* ---------- 5. 降级：做不出磨砂 / 用户要求减少透明度 → 玻璃提到近乎不透明 ----------
+   探针必须把 -webkit- 前缀一起测（iOS Safari 18 以前只认前缀），外层那对括号不能省。 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root, [data-mode], [data-accent] {
+    --glass: var(--lt, rgba(255,255,255,.9)) var(--dk, rgba(40,42,52,.92));
+    --glass-strong: var(--lt, rgba(255,255,255,.96)) var(--dk, rgba(44,46,58,.96));
+    --glass-panel: var(--lt, rgba(255,255,255,.97)) var(--dk, rgba(36,38,48,.97));
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root, [data-mode], [data-accent] {
+    --glass: var(--lt, rgba(255,255,255,.9)) var(--dk, rgba(40,42,52,.92));
+    --glass-strong: var(--lt, rgba(255,255,255,.96)) var(--dk, rgba(44,46,58,.96));
+    --glass-panel: var(--lt, rgba(255,255,255,.97)) var(--dk, rgba(36,38,48,.97));
+  }
+}
+
+/* ---------- 6. 基础 ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  min-height: 100svh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: var(--side-w) minmax(0, 1fr);
+  align-items: start;
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+/* 光晕：三团固定在视口。用 body::before{position:fixed}，不用 background-attachment:fixed（iOS 不支持）。 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38vw 38vw at 12% 8%, var(--blob1), transparent 60%),
+    radial-gradient(34vw 34vw at 92% 18%, var(--blob2), transparent 60%),
+    radial-gradient(40vw 40vw at 70% 100%, var(--blob3), transparent 60%);
+  filter: blur(10px);
+}
+a { color: var(--accent-text); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
+code, pre, kbd { font-family: var(--mono); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip {
+  position: fixed; z-index: 60; left: 12px; top: 12px;
+  padding: 10px 16px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--on-accent-gradient); text-shadow: 0 1px 2px rgba(0,0,0,.25);
+  font-weight: 700; text-decoration: none;
+  transform: translateY(calc(-100% - 24px));
+}
+.skip:focus { transform: none; }
+.i {
+  width: calc(20 * var(--u)); height: calc(20 * var(--u)); flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ---------- 7. 外壳：侧栏（>900）/ 顶栏（≤900）---------- */
+.side {
+  position: sticky; top: 0; z-index: 20;
+  height: 100svh; height: 100dvh;
+  display: flex; flex-direction: column; gap: 2px;
+  padding: calc(18 * var(--u)) calc(12 * var(--u)) calc(14 * var(--u));
+  padding-left: max(calc(12 * var(--u)), env(safe-area-inset-left));
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(30px) saturate(160%);
+  backdrop-filter: blur(30px) saturate(160%);
+  border-right: 1px solid var(--glass-edge);
+  overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+}
+.brand {
+  display: flex; align-items: center; gap: calc(10 * var(--u));
+  padding: calc(2 * var(--u)) calc(10 * var(--u)) calc(14 * var(--u));
+  color: var(--label); text-decoration: none; border-radius: var(--r-sm);
+}
+.brand-icon {
+  position: relative; flex: none; display: grid; place-items: center; overflow: hidden;
+  width: calc(34 * var(--u)); height: calc(34 * var(--u)); border-radius: calc(10 * var(--u));
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 calc(6 * var(--u)) calc(14 * var(--u)) var(--accent-shadow);
+}
+.brand-svg {
+  width: calc(24 * var(--u)); height: calc(24 * var(--u));
+  fill: none; stroke: #FFFFFF; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
+}
+/* 屋主自己的图标（brand/brand-icon.svg|png）：star.js 探测到才挂 .has-file，绝对定位居中占方块 84% */
+.brand-file { position: absolute; inset: 0; margin: auto; width: 84%; height: 84%; object-fit: contain; }
+.brand-icon.has-file .brand-svg { visibility: hidden; }
+.brand-text { min-width: 0; }
+.brand-text b { display: block; font-size: calc(17 * var(--u)); line-height: 1.25; white-space: nowrap; }
+.brand-text span { display: block; font-size: var(--fs-xs); color: var(--label2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 导航区单独滚、品牌与外观控件钉在上下两头：视口比 1440 构图扁的时候（屋主台式 2040×1019、带工具栏 2040×930），
+   等比放大后的侧栏装不下，余量从结构里来——只让中间的导航滚，外观控件永远看得见。 */
+.side-nav {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+  margin: 0 calc(-6 * var(--u)); padding: 0 calc(6 * var(--u)) calc(8 * var(--u));
+}
+.side-group { margin: calc(12 * var(--u)) calc(10 * var(--u)) calc(4 * var(--u)); font-size: calc(11 * var(--u)); font-weight: 600; letter-spacing: .04em; color: var(--label2); }
+.side-sec:first-child .side-group { margin-top: calc(2 * var(--u)); }
+.side-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.nav-item {
+  display: flex; align-items: center; gap: calc(10 * var(--u));
+  height: calc(34 * var(--u)); padding: 0 calc(10 * var(--u)); border-radius: calc(10 * var(--u));
+  color: var(--label); font-size: var(--fs-body); text-decoration: none; white-space: nowrap;
+  transition: background-color .15s ease;
+}
+.nav-ic { display: grid; place-items: center; color: var(--label2); }
+.nav-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
+.nav-item[aria-current="page"] { background: var(--glass-strong); color: var(--accent-text); font-weight: 600; box-shadow: var(--shadow-sm); }
+.nav-item[aria-current="page"] .nav-ic { color: var(--accent-text); }
+.nav-item[aria-disabled="true"] { color: var(--label2); cursor: default; }
+.nav-item[aria-disabled="true"] .nav-ic { color: var(--label3); }
+.nav-tag {
+  margin-left: auto; flex: none; padding: 0 calc(7 * var(--u)); border-radius: 999px;
+  background: var(--fill); color: var(--label2); font-size: calc(11 * var(--u)); line-height: 1.7; font-weight: 400;
+}
+.top-more { display: none; }
+.side-foot { flex: none; padding: calc(12 * var(--u)) calc(8 * var(--u)) 0; border-top: 1px solid var(--sep); }
+.side-ver { margin: calc(10 * var(--u)) 0 0; font-size: var(--fs-xs); color: var(--label2); }
+
+/* 外观控件：分段（radiogroup）+ 六个色点（每个点显示它自己的颜色，不引用当前 --accent） */
+.theme { display: grid; gap: calc(10 * var(--u)); }
+.theme-row { display: grid; gap: calc(6 * var(--u)); }
+/* 「外观」「强调色」两个字只给读屏（分段的字与色点本身已经说明白了），省下侧栏两行高度 */
+.theme-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.seg { display: flex; padding: 2px; border-radius: calc(10 * var(--u)); background: var(--fill); }
+.seg button {
+  flex: 1; min-width: 0; border: 0; background: transparent; cursor: pointer;
+  padding: calc(5 * var(--u)) 0; border-radius: calc(8 * var(--u));
+  color: var(--label); font-size: var(--fs-small); white-space: nowrap;
+}
+.seg button[aria-checked="true"] { background: var(--seg-on); font-weight: 600; box-shadow: var(--shadow-sm); }
+.dots { display: flex; flex-wrap: wrap; gap: calc(11 * var(--u)); padding: 4px 3px; }
+.dot {
+  position: relative; flex: none; width: calc(20 * var(--u)); height: calc(20 * var(--u));
+  padding: 0; border: 0; border-radius: 50%; cursor: pointer; background: var(--dot);
+  transition: transform .15s ease;
+}
+.dot:hover { transform: scale(1.12); }
+.dot:focus-visible { outline-offset: 4px; }
+.dot[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+.dot[data-accent-set="blue"] { --dot: linear-gradient(135deg, var(--lt, #007AFF) var(--dk, #0A84FF), var(--lt, #5AC8FA) var(--dk, #64D2FF)); }
+.dot[data-accent-set="green"] { --dot: linear-gradient(135deg, var(--lt, #34C759) var(--dk, #30D158), #A8E063); }
+.dot[data-accent-set="indigo"] { --dot: linear-gradient(135deg, var(--lt, #5856D6) var(--dk, #5E5CE6), #BF5AF2); }
+.dot[data-accent-set="orange"] { --dot: linear-gradient(135deg, var(--lt, #FF9500) var(--dk, #FF9F0A), #FFD60A); }
+.dot[data-accent-set="pink"] { --dot: linear-gradient(135deg, var(--lt, #FF2D55) var(--dk, #FF375F), #FF9AA2); }
+.dot[data-accent-set="teal"] { --dot: linear-gradient(135deg, var(--lt, #30B0C7) var(--dk, #40C8E0), #64D2FF); }
+/* 色名气泡：压在别的东西上面，所以用实色（正文色底 + 页面底色字） */
+.dot-name {
+  position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%);
+  padding: 2px 8px; border-radius: 7px; background: var(--label); color: var(--bg);
+  font-size: 12px; line-height: 1.5; white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity .15s ease;
+}
+.dot:hover .dot-name, .dot:focus-visible .dot-name { opacity: 1; }
+
+/* ---------- 底部 tab bar（≤600 才显示）---------- */
+.tabbar { display: none; }
+.tab {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-width: 0; padding: 6px 0 5px; border: 0; border-radius: 14px; background: none; cursor: pointer;
+  color: var(--label2); font-size: 11px; line-height: 1.2; text-decoration: none;
+}
+.tab .i { width: 23px; height: 23px; }
+.tab[aria-current="page"], .tab[aria-expanded="true"] { color: var(--accent-text); background: var(--glass-strong); font-weight: 600; }
+
+/* ---------- 「更多」面板（≤900 才有入口）：浮在正文上，玻璃提到 .88 让字的底可预测 ---------- */
+.more-scrim { position: fixed; inset: 0; z-index: 40; background: var(--scrim); }
+.more-panel {
+  position: fixed; z-index: 41;
+  top: calc(var(--topbar-h) + 8px); right: max(12px, env(safe-area-inset-right));
+  width: min(360px, calc(100vw - 24px));
+  max-height: calc(100dvh - var(--topbar-h) - 24px); overflow-y: auto; overscroll-behavior: contain;
+  padding: 14px 14px 12px; border-radius: 22px;
+  background: var(--glass-panel);
+  -webkit-backdrop-filter: blur(30px) saturate(160%);
+  backdrop-filter: blur(30px) saturate(160%);
+  box-shadow: var(--shadow-pop);
+  animation: sheet-in .22s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes sheet-in { from { opacity: 0; transform: translateY(-6px) scale(.98); } to { opacity: 1; transform: none; } }
+.more-head { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 6px; }
+.more-title { margin: 0; font-size: 17px; font-weight: 700; }
+.more-close {
+  width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%;
+  background: var(--fill); color: var(--label2); cursor: pointer;
+}
+.more-close .i { width: 18px; height: 18px; }
+.more-sub { margin: 12px 6px 6px; font-size: 12px; font-weight: 600; color: var(--label2); }
+.more-list { list-style: none; margin: 0; padding: 0; border-radius: 16px; overflow: hidden; background: var(--raised); }
+.more-list > li + li > .row::before { content: ""; position: absolute; top: 0; right: 0; left: 60px; border-top: 1px solid var(--sep); }
+.more-list .row { min-height: 54px; padding: 8px 12px; gap: 12px; }
+.more-list .row .ico { width: 30px; height: 30px; border-radius: 8px; }
+.more-list .row .ico .i { width: 17px; height: 17px; }
+.more-list .t small { font-size: 12px; }
+.more-panel .theme { padding: 12px; border-radius: 16px; background: var(--raised); }
+.more-panel .seg { background: var(--fill); }
+.more-ver { margin: 10px 6px 0; font-size: 12px; color: var(--label2); }
+
+/* ---------- 8. 页面、目录、分组 ---------- */
+.page {
+  min-width: 0;
+  padding: calc(26 * var(--u)) var(--page-x) calc(72 * var(--u));
+  padding-right: max(var(--page-x), env(safe-area-inset-right));
+}
+.page-head { padding: var(--pad); border-radius: var(--r-lg); background: var(--glass-strong); box-shadow: var(--shadow); }
+.page-title { margin: 0; font-size: var(--fs-title); line-height: 1.2; font-weight: 700; letter-spacing: -.4px; }
+.page-sub { margin: calc(8 * var(--u)) 0 0; max-width: var(--measure); color: var(--label2); font-size: var(--fs-lead); line-height: 1.7; }
+.page-toc:empty { display: none; }
+.page-toc { display: grid; gap: calc(10 * var(--u)); margin-top: calc(20 * var(--u)); padding-top: calc(16 * var(--u)); border-top: 1px solid var(--sep); }
+.toc-group { display: grid; grid-template-columns: calc(112 * var(--u)) minmax(0, 1fr); gap: calc(6 * var(--u)) calc(12 * var(--u)); align-items: start; }
+.toc-label { padding-top: calc(4 * var(--u)); font-size: var(--fs-xs); font-weight: 600; line-height: 1.5; color: var(--label2); }
+.toc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: calc(6 * var(--u)) calc(8 * var(--u)); min-width: 0; }
+.toc-list li { max-width: 100%; }
+.toc-pill {
+  display: inline-block; max-width: 100%; height: calc(28 * var(--u)); padding: 0 calc(12 * var(--u));
+  border-radius: 999px; background: var(--fill); color: var(--label);
+  font-size: var(--fs-small); line-height: calc(28 * var(--u)); text-decoration: none;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: background-color .15s ease, color .15s ease;
+}
+.toc-pill:hover { background: var(--accent-tint); color: var(--accent-text); }
+
+.group { margin-top: calc(40 * var(--u)); scroll-margin-top: calc(16 * var(--u)); }
+.group-title { display: flex; align-items: center; gap: calc(10 * var(--u)); margin: 0 0 calc(14 * var(--u)); font-size: var(--fs-h2); line-height: 1.3; font-weight: 700; color: var(--label); }
+.group-title::before { content: ""; flex: none; width: calc(6 * var(--u)); height: calc(22 * var(--u)); border-radius: 3px; background: linear-gradient(180deg, var(--accent), var(--accent-2)); }
+.group[data-scope="xiaowu"] .group-title::before { background: linear-gradient(180deg, #5E6144, #8B8C6D); }
+.group[data-scope="common"] .group-title::before { background: linear-gradient(180deg, #8E8E93, #C7C7CC); }
+/* 分组下的说明直接压在光晕上：只用正文色（次级色压光晕中心实测只有 3.5，见色彩页「对比度」条目） */
+.group-lede { margin: calc(-4 * var(--u)) 0 calc(16 * var(--u)); max-width: var(--measure); color: var(--label); }
+
+/* ---------- 9. 条目组件 ---------- */
+.entry {
+  position: relative; min-width: 0;
+  margin: 0 0 calc(18 * var(--u)); padding: var(--pad);
+  border-radius: var(--r-lg); background: var(--glass-strong); box-shadow: var(--shadow);
+  scroll-margin-top: calc(16 * var(--u));
+  --scope-tint: var(--scope-tools-tint); --scope-text: var(--scope-tools-text);
+}
+/* 条目卡不挂 backdrop-filter：卡又长又多，屋主台式机没显卡，磨砂是那台机器的瓶颈。 */
+.entry[data-scope="xiaowu"] { --scope-tint: var(--scope-xw-tint); --scope-text: var(--scope-xw-text); }
+.entry[data-scope="common"] { --scope-tint: var(--fill); --scope-text: var(--label2); }
+.entry-head h3 { margin: 0; font-size: var(--fs-h3); line-height: 1.4; font-weight: 700; letter-spacing: -.2px; }
+.entry-lede { margin: calc(6 * var(--u)) 0 0; max-width: var(--measure); color: var(--label2); line-height: 1.7; }
+.entry-tags { list-style: none; display: flex; flex-wrap: wrap; gap: calc(6 * var(--u)); margin: calc(12 * var(--u)) 0 0; padding: 0; }
+.entry-tags li {
+  display: inline-flex; align-items: center; height: calc(22 * var(--u)); padding: 0 calc(9 * var(--u));
+  border-radius: 999px; background: var(--fill); color: var(--label2); font-size: var(--fs-xs); line-height: 1; white-space: nowrap;
+}
+.entry-tags .scope { font-weight: 600; background: var(--scope-tint); color: var(--scope-text); }
+.specimen {
+  min-width: 0; margin-top: calc(18 * var(--u)); padding: calc(18 * var(--u));
+  border: 1px solid var(--sep); border-radius: var(--r-md); background: var(--well);
+  overflow-x: auto;
+}
+/* overflow-x 不是 visible 时纵向也会被裁：浮层要伸出框外的样例加这个类（见文件头「样例框与减弱动效的约定」） */
+.specimen.is-overflow-visible { overflow: visible; }
+.entry-body { display: grid; gap: calc(14 * var(--u)); min-width: 0; margin-top: calc(20 * var(--u)); }
+.fact { position: relative; min-width: 0; padding-left: calc(var(--label-w) + 18 * var(--u)); }
+.fact > h4 {
+  position: absolute; left: 0; top: 0; width: var(--label-w); margin: 0;
+  padding-top: calc(2 * var(--u)); font-size: var(--fs-small); line-height: 1.6; font-weight: 600; color: var(--label2);
+}
+.fact > * + * { margin-top: calc(8 * var(--u)); }
+.fact p, .fact ul, .fact ol { margin: 0; max-width: var(--measure); line-height: 1.75; }
+.fact > * + p, .fact > * + ul, .fact > * + ol, .fact > * + .codebox, .fact > * + pre, .fact > * + table { margin-top: calc(8 * var(--u)); }
+.fact ul, .fact ol { padding-left: 1.25em; }
+.fact li + li { margin-top: calc(3 * var(--u)); }
+/* 行内代码：实色底（--fill）上压正文色 */
+.page :not(pre) > code { padding: .08em .38em; border-radius: 5px; background: var(--fill); color: var(--label); font-size: .9em; overflow-wrap: anywhere; }
+.page pre code { padding: 0; border-radius: 0; background: none; font-size: 1em; overflow-wrap: normal; }
+.fact.trap { padding: calc(12 * var(--u)) calc(16 * var(--u)) calc(12 * var(--u)) calc(16 * var(--u) + var(--label-w) + 18 * var(--u)); border-radius: var(--r-sm); background: var(--orange-tint); }
+.fact.trap > h4 { left: calc(16 * var(--u)); top: calc(12 * var(--u)); display: flex; align-items: center; gap: calc(5 * var(--u)); color: var(--orange-text); }
+.fact.trap > h4::before {
+  content: ""; flex: none; width: calc(16 * var(--u)); height: calc(16 * var(--u)); background: currentColor;
+  -webkit-mask: var(--ic-alert) center / contain no-repeat; mask: var(--ic-alert) center / contain no-repeat;
+}
+.said { position: relative; margin: 0; padding: calc(2 * var(--u)) 0 calc(2 * var(--u)) calc(18 * var(--u)); max-width: calc(var(--measure) + 18 * var(--u)); color: var(--label); }
+.said::before { content: ""; position: absolute; left: 0; top: 3px; bottom: 3px; width: 3px; border-radius: 2px; background: linear-gradient(180deg, var(--accent), var(--accent-2)); }
+.said p { margin: 0; font-size: var(--fs-lead); line-height: 1.75; }
+.said p + p { margin-top: calc(4 * var(--u)); }
+.said footer { margin-top: calc(6 * var(--u)); font-size: var(--fs-xs); color: var(--label2); }
+.source {
+  position: relative; margin: 0; padding-left: calc(20 * var(--u));
+  font-size: var(--fs-xs); line-height: 1.7; color: var(--label2); overflow-wrap: anywhere;
+}
+.source::before {
+  content: ""; position: absolute; left: 0; top: .28em; width: calc(14 * var(--u)); height: calc(14 * var(--u)); background: currentColor;
+  -webkit-mask: var(--ic-doc) center / contain no-repeat; mask: var(--ic-doc) center / contain no-repeat;
+}
+.page .source code, .page .said footer code { padding: 0; background: none; color: inherit; font-size: 1em; }
+.entry-body > .said, .entry-body > .source { margin-left: calc(var(--label-w) + 18 * var(--u)); }
+
+/* 代码块：star.js 把 pre 包进 .codebox 并加「复制」按钮；横向溢出只在块内滚 */
+.codebox { position: relative; min-width: 0; }
+.entry pre, .codebox pre {
+  margin: 0; padding: calc(14 * var(--u)) calc(16 * var(--u)); overflow-x: auto;
+  border: 1px solid var(--sep); border-radius: var(--r-sm); background: var(--code-bg); color: var(--label);
+  font-size: calc(13 * var(--u)); line-height: 1.65; tab-size: 2; white-space: pre;
+}
+.copy-btn {
+  position: absolute; top: calc(7 * var(--u)); right: calc(7 * var(--u));
+  display: inline-flex; align-items: center; gap: calc(4 * var(--u));
+  height: calc(26 * var(--u)); padding: 0 calc(9 * var(--u)); border: 0; border-radius: calc(7 * var(--u));
+  background: var(--raised); color: var(--label2); box-shadow: var(--shadow-sm);
+  font-size: var(--fs-xs); cursor: pointer;
+}
+.copy-btn .i { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
+.copy-btn:hover { color: var(--label); }
+.copy-btn.is-done { color: var(--green-text); }
+
+/* ---------- 10. 通用小件 ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: calc(6 * var(--u));
+  height: calc(38 * var(--u)); padding: 0 calc(16 * var(--u)); border: 0; border-radius: calc(12 * var(--u));
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--on-accent-gradient); text-shadow: 0 1px 2px rgba(0,0,0,.25);
+  font-size: var(--fs-body); font-weight: 600; white-space: nowrap; text-decoration: none; cursor: pointer;
+  box-shadow: 0 calc(8 * var(--u)) calc(18 * var(--u)) var(--accent-shadow);
+  transition: transform .15s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: scale(.98); }
+.btn .i { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
+.btn-tint { background: var(--accent-tint); color: var(--accent-text); text-shadow: none; box-shadow: none; }
+.btn-glass { background: var(--glass-strong); color: var(--label); text-shadow: none; box-shadow: var(--shadow); }
+.pill, .pill-accent {
+  display: inline-flex; align-items: center; height: calc(24 * var(--u)); padding: 0 calc(10 * var(--u));
+  border-radius: 999px; font-size: calc(12.5 * var(--u)); white-space: nowrap;
+}
+.pill { background: var(--fill); color: var(--label2); }
+/* 行内的范围标签（正文里提到「工具 / 小屋 / 通用」时用） */
+.scope-chip {
+  display: inline-flex; align-items: center; height: calc(20 * var(--u)); padding: 0 calc(8 * var(--u)); margin: 0 calc(2 * var(--u));
+  border-radius: 999px; font-size: var(--fs-xs); font-weight: 600; line-height: 1; vertical-align: 1px; white-space: nowrap;
+}
+.scope-tools { background: var(--scope-tools-tint); color: var(--scope-tools-text); }
+.scope-xw { background: var(--scope-xw-tint); color: var(--scope-xw-text); }
+.scope-common { background: var(--fill); color: var(--label2); }
+.pill-accent { background: var(--accent-tint); color: var(--accent-text); font-weight: 600; }
+
+/* iOS 设置式分组列表：32px 彩色方块 + 标题 / 副标题 + 计数胶囊 + chevron（SPEC §1、§5b） */
+.list { list-style: none; margin: 0; padding: 0; border-radius: var(--r-lg); background: var(--glass-strong); box-shadow: var(--shadow); overflow: hidden; }
+.list > li + li > .row::before { content: ""; position: absolute; top: 0; right: 0; left: calc(62 * var(--u)); border-top: 1px solid var(--sep); }
+.row {
+  position: relative; display: flex; align-items: center; gap: calc(14 * var(--u)); min-width: 0;
+  min-height: calc(62 * var(--u)); padding: calc(11 * var(--u)) calc(16 * var(--u));
+  color: var(--label); text-decoration: none;
+}
+a.row:hover { background: var(--hover); }
+.row .ico {
+  position: relative; flex: none; display: grid; place-items: center;
+  width: calc(32 * var(--u)); height: calc(32 * var(--u)); border-radius: calc(9 * var(--u));
+  color: #FFFFFF; box-shadow: 0 2px 5px rgba(0,0,0,.12);
+}
+/* 高光与顶边亮线画在伪元素上：方块底色写在内联 style 的 background 简写里，会把 background-image 一起覆盖掉 */
+.row .ico::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0)); box-shadow: inset 0 1px 0 rgba(255,255,255,.45); }
+.row .ico .i { position: relative; z-index: 1; width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
+.row .t { flex: 1; min-width: 0; }
+.row .t b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .t small { display: block; margin-top: 1px; color: var(--label2); font-size: var(--fs-small); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .badge { flex: none; padding: calc(2 * var(--u)) calc(9 * var(--u)); border-radius: 999px; background: var(--fill); color: var(--label2); font-size: calc(12.5 * var(--u)); white-space: nowrap; }
+.row .chev { flex: none; display: grid; color: var(--label3); }
+.row .chev .i { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
+.row[aria-disabled="true"] { cursor: default; }
+.row[aria-disabled="true"] .t b { color: var(--label2); }
+.row[aria-disabled="true"] .ico { opacity: .5; }
+.row[aria-current="page"] .t b { color: var(--accent-text); }
+
+/* 点一下复制：button[data-copy]；气泡压在按钮上，实色 */
+[data-copy] { position: relative; cursor: pointer; }
+.copy-tip {
+  position: absolute; left: 50%; top: 50%; z-index: 2; transform: translate(-50%, -50%);
+  padding: 2px 8px; border-radius: 7px; background: var(--label); color: var(--bg);
+  font-size: 12px; line-height: 1.5; font-weight: 600; white-space: nowrap; pointer-events: none;
+  animation: tip-out 1.3s ease forwards;
+}
+@keyframes tip-out { 0% { opacity: 0; } 12% { opacity: 1; } 78% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ---------- 11. .xw 小屋暖纸作用域（Ysevan_web/app/globals.css 的色值；夜里 .xw[data-mode="dark"]）----------
+   色值按 globals.css 里的 HSL 实算（夜里那组的十六进制注释是近似值，差 1–8 个色阶，以 HSL 为准）。
+   令牌声明挂在 .xw 与 .xw 里任何带 data-mode 的元素上，局部切白天 / 夜里都会重算；
+   夜里是「冷夜暖灯」：底沉进 225 色相的青蓝炭，字与灯全是暖的（42–45）。 */
+.xw, .xw [data-mode] {
+  --xw-paper: var(--lt, #F8F6F1) var(--dk, #15171B);
+  --xw-card: var(--lt, #FDFCF9) var(--dk, #1E1F25);
+  --xw-ink: var(--lt, #2E2D28) var(--dk, #E7E3DA);
+  --xw-ink-body: var(--lt, #3E3C35) var(--dk, #DDD9D0);
+  --xw-ink-2: var(--lt, #6C6A61) var(--dk, #B1ABA0);
+  --xw-ink-3: var(--lt, #6B685B) var(--dk, #9F9A8E);
+  --xw-olive: var(--lt, #5E6144) var(--dk, #CDBF98);
+  --xw-on-olive: var(--lt, #F6F4EE) var(--dk, #16181D);
+  --xw-olive-tint: var(--lt, #E1E0CE) var(--dk, #2E3138);
+  --xw-olive-deep: var(--lt, #4A4D35) var(--dk, #E0D7BD);
+  --xw-olive-mid: var(--lt, #52553C) var(--dk, #C3BAA2);
+  --xw-olive-2: var(--lt, #8B8C6D) var(--dk, #A9A189);
+  --xw-block: var(--lt, #D5D4C1) var(--dk, #2A2E37);
+  --xw-muted: var(--lt, #EDEAE3) var(--dk, #25272D);
+  --xw-line: var(--lt, #E4E0D6) var(--dk, #353840);
+  --xw-lava: var(--lt, #AA4E1D) var(--dk, #EB8947);
+  --xw-haze-warm: var(--lt, #F2EDE2) var(--dk, #262017);
+  --xw-haze-cool: var(--lt, #E9EEEC) var(--dk, #1A1D23);
+  --xw-shadow-rest: 0 1px 2px rgba(74,77,53,.05);
+  --xw-shadow-lift: 0 8px 20px -10px rgba(74,77,53,.11);
+}
+.xw {
+  color: var(--xw-ink-body);
+  background:
+    radial-gradient(120% 80% at 88% -14%, var(--xw-haze-warm) 0%, transparent 62%),
+    radial-gradient(90% 70% at 2% 106%, var(--xw-haze-cool) 0%, transparent 58%),
+    var(--xw-paper);
+}
+.xw-kai { font-family: var(--font-kai); font-weight: 400; }
+
+/* ---------- 12. 断点 ---------- */
+@media (max-width: 900px) {
+  body { grid-template-columns: minmax(0, 1fr); }
+  .side {
+    height: auto; min-height: var(--topbar-h);
+    flex-direction: row; align-items: center; gap: 8px;
+    padding: 8px max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left));
+    overflow: visible; border-right: 0; border-bottom: 1px solid var(--glass-edge);
+  }
+  .brand { flex: none; padding: 0 6px 0 0; }
+  .brand-text span { display: none; }
+  .side-nav { flex: 1; min-width: 0; display: flex; gap: 4px; margin: 0; padding: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .side-nav::-webkit-scrollbar { display: none; }
+  .side-sec { display: flex; }
+  .side-sec:not(:has(li:not(.is-pending))) { display: none; }
+  .side-group { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }
+  .side-list { display: flex; gap: 4px; }
+  .side-list .is-pending { display: none; }
+  .nav-item { height: 34px; padding: 0 10px; font-size: 14px; }
+  .nav-item .i { width: 18px; height: 18px; }
+  .side-foot { display: none; }
+  .top-more {
+    display: inline-flex; align-items: center; gap: 6px; flex: none; height: 34px; padding: 0 12px;
+    border: 0; border-radius: 10px; background: var(--fill); color: var(--label); font-size: 14px; cursor: pointer;
+  }
+  .top-more .i { width: 18px; height: 18px; }
+  .top-more[aria-expanded="true"] { background: var(--accent-tint); color: var(--accent-text); }
+  .entry, .group { scroll-margin-top: calc(var(--topbar-h) + 12px); }
+  html { scroll-padding-top: calc(var(--topbar-h) + 8px); }
+}
+@media (min-width: 901px) {
+  .more-panel, .more-scrim { display: none !important; }
+}
+@media (max-width: 600px) {
+  .side { position: relative; }
+  .side-nav, .top-more { display: none; }
+  html { scroll-padding-top: 8px; }
+  .entry, .group { scroll-margin-top: 12px; }
+  .tabbar {
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    padding: 6px max(8px, env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    backdrop-filter: blur(30px) saturate(160%);
+    border-top: 1px solid var(--glass-edge);
+    box-shadow: 0 -1px 0 var(--sep);
+  }
+  .more-panel {
+    top: auto; left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right)); width: auto;
+    bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 10px);
+    max-height: calc(100dvh - var(--tabbar-h) - env(safe-area-inset-bottom) - 40px);
+  }
+  .page { padding: 16px max(16px, env(safe-area-inset-right)) calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 32px) max(16px, env(safe-area-inset-left)); }
+  .toc-group { grid-template-columns: minmax(0, 1fr); }
+  .toc-label { padding-top: 0; }
+  .fact, .fact.trap { padding-left: 0; }
+  .fact.trap { padding-left: 14px; padding-right: 14px; }
+  .fact > h4 { position: static; width: auto; padding: 0 0 4px; }
+  .fact > h4 + * { margin-top: 0; }
+  .fact.trap > h4 { padding-bottom: 6px; }
+  .entry-body > .said, .entry-body > .source { margin-left: 0; }
+  .group { margin-top: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  /* 约定：data-rm="fade" 的元素只留 opacity 过渡（原地淡入淡出），其余照关。见文件头「样例框与减弱动效的约定」 */
+  [data-rm="fade"] { transition: opacity var(--rm-fade, .2s) ease !important; }
+}

@@ -1,0 +1,40 @@
+{
+  "mode": "holographic",
+  "title": "暮色回声",
+  "subtitle": "SUNSET ORBIT",
+  "technique": "绯光回旋",
+  "tagline": "把最后一束晚霞收进发梢",
+  "edition": "08 / 13",
+  "collection": "蓝调幻光 · 第二辑",
+  "description": "紫粉暮光、草地与人物轮廓错层推进，夕阳像一圈柔软的轨道环抱住画面。",
+  "parameters": {
+    "subjectScale": 1.16,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.95,
+    "particles": 0.9,
+    "glow": 0.78
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "id": "008-sunset-orbit",
+  "accent": "#e58eb6",
+  "matte": "#182b3d",
+  "originalWidth": 1024,
+  "originalHeight": 1536,
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png",
+    "model": "./assets/card.glb",
+    "cover": "./cover.png"
+  },
+  "previous": "../007-space-night/",
+  "next": "../009-starry-blue/"
+}

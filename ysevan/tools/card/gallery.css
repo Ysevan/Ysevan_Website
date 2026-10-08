@@ -1,0 +1,70 @@
+/* 画廊首页 · 苹果液态玻璃风（令牌与共用组件在 shared/theme.css；真源 docs/SPEC-apple-glass.md）。
+   选卡台的深色舞台保留——牌在深色里才闪——嵌在玻璃卡里，三档模式与六强调色都共用。卡片本身的 accent / matte 是每张卡的美术，不动。 */
+@import url("./shared/theme.css");
+/* 上下留白相等：顶栏→标题 与 页脚→页面底 都是 --page-y（屋主 2026-09-23「上下不对称看着不舒服」） */
+main{max-width:var(--page-max);margin:auto;padding:var(--page-y) var(--page-x) 0;min-width:0}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:calc(12 * var(--u));flex-wrap:wrap;margin-bottom:var(--gap)}
+h1{margin:0;font-size:var(--fs-title);letter-spacing:-.4px;font-weight:700;line-height:1.2}
+.hero .sub{color:var(--label2);margin:calc(6 * var(--u)) 0 0;font-size:var(--fs-body)}
+.hero .count{display:flex;align-items:center;gap:calc(8 * var(--u));color:var(--label2);font-size:var(--fs-small);font-variant-numeric:tabular-nums}
+/* 选卡台（Cover Flow）：玻璃卡里嵌 D 星野舞台，舞台在左、当前卡信息在右（信息栏 clamp 到 calc(480 * var(--u))，余下全给舞台）；窄一点上下叠 */
+.globe{display:grid;grid-template-columns:minmax(0,1fr) clamp(calc(280 * var(--u)),28%,calc(480 * var(--u)));gap:var(--pad);align-items:center;padding:var(--pad);margin-bottom:var(--page-y)}
+.globe-display{min-width:0}
+/* 舞台高跟视口高 clamp，上限随 --u 同比放大（卡随舞台高变大；几何由 gallery.js 按舞台实际尺寸算） */
+.globe-stage{position:relative;width:100%;aspect-ratio:1.7;max-height:clamp(300px,60svh,calc(720 * var(--u)));min-height:calc(300 * var(--u));border-radius:calc(14 * var(--u));background:var(--stage);overflow:hidden;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(0,0,0,.25)}
+.globe-stage.is-dragging{cursor:grabbing;touch-action:none}
+/* D 星野：星点在卡底下极慢闪，暗角压在最上面 */
+.globe-stage::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(1.2px 1.2px at 12% 18%,#fff 60%,transparent),radial-gradient(1px 1px at 33% 72%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 58% 12%,#fff 60%,transparent),radial-gradient(1px 1px at 76% 40%,#fff 60%,transparent),radial-gradient(1.4px 1.4px at 88% 78%,#fff 60%,transparent),radial-gradient(1px 1px at 22% 48%,#fff 60%,transparent),radial-gradient(1px 1px at 45% 88%,#fff 60%,transparent),radial-gradient(1.3px 1.3px at 68% 64%,#fff 60%,transparent),radial-gradient(1px 1px at 8% 90%,#fff 60%,transparent),radial-gradient(1px 1px at 93% 20%,#fff 60%,transparent),radial-gradient(1px 1px at 40% 30%,#fff 60%,transparent),radial-gradient(1px 1px at 82% 55%,#fff 60%,transparent);opacity:.85;animation:twinkle 9s ease-in-out infinite}
+.globe-stage::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(90% 90% at 50% 50%,transparent 60%,rgba(0,0,0,.5))}
+@keyframes twinkle{0%,100%{opacity:.85}50%{opacity:.55}}
+/* 卡片：中间一张端正最近，两侧 rotateY ±60° 后退、越远越暗；几何变量由 gallery.js 按舞台尺寸写 */
+.flow{position:absolute;inset:0;z-index:1;perspective:var(--perspective,900px);perspective-origin:50% 50%}
+.flow-card{position:absolute;left:50%;top:50%;width:var(--side-w,120px);aspect-ratio:2/3;border-radius:10px;background:var(--matte,#182b3d);overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);transform-style:preserve-3d;backface-visibility:hidden;transform:translate(-50%,-50%) translateX(var(--x,0px)) translateZ(var(--side-z,-160px)) rotateY(var(--ry,0deg));filter:brightness(var(--b,1));transition:transform .38s cubic-bezier(.32,.72,0,1),width .38s cubic-bezier(.32,.72,0,1),filter .38s cubic-bezier(.32,.72,0,1);-webkit-tap-highlight-color:transparent;cursor:pointer;will-change:transform}
+.flow-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.flow-card.is-center{width:var(--center-w,180px);transform:translate(-50%,-50%) translateZ(var(--center-z,60px)) rotateY(var(--pry,0deg)) rotateX(var(--prx,0deg)) scale(var(--ps,1));cursor:pointer;box-shadow:0 22px 48px rgba(0,0,0,.55),0 0 40px color-mix(in srgb,var(--accent) 22%,transparent),inset 0 1px 0 rgba(255,255,255,.2)}
+.flow-card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* 全息扫光：只在中间那张跟指针 */
+.flow-shine{position:absolute;inset:0;background:linear-gradient(115deg,transparent 10%,#66c5ff12 30%,#f8d9fc48 42%,#faf7c936 47%,#9ae9fd12 55%,transparent 70%);background-size:220% 220%;background-position:var(--mx,50%) var(--my,50%);mix-blend-mode:screen;opacity:0;pointer-events:none;transition:opacity .2s}
+.flow-card.is-center.is-lit .flow-shine{opacity:.85}
+/* 按压（屋主给的组件 5「按压倾斜卡片」）：只在正中那张。按下朝触点倾斜 ≤7°、缩到 .96，一团全息光从散开（scale 1.8）聚拢到触点；
+   松手按弹簧曲线复原（阻尼比 .5，过冲 16%，linear() 不认的浏览器退回 cubic-bezier 过冲）。倾斜并进中间卡原来那条 transform，不另起一层；
+   --prx / --pry / --ps / --px / --py 由 gallery.js 写。光团的位置用 left/top 一次写定、不做动画，动的只有 transform 和 opacity。 */
+.flow-card.is-pressed{transition:transform .14s cubic-bezier(.2,.8,.2,1),width .38s cubic-bezier(.32,.72,0,1),filter .38s cubic-bezier(.32,.72,0,1)}
+.flow-card.is-springing{transition:transform .7s cubic-bezier(.34,1.56,.64,1),width .38s cubic-bezier(.32,.72,0,1),filter .38s cubic-bezier(.32,.72,0,1);transition:transform .7s linear(0,.06,.208,.4,.6,.784,.935,1.047,1.119,1.155,1.163,1.149,1.123,1.091,1.059,1.03,1.007,.99,.979,.974,.974,.976,.981,.986,.991,.996,1,1.002,1),width .38s cubic-bezier(.32,.72,0,1),filter .38s cubic-bezier(.32,.72,0,1)}
+.flow-press{position:absolute;left:var(--px,50%);top:var(--py,50%);width:90%;aspect-ratio:1;border-radius:50%;pointer-events:none;mix-blend-mode:screen;opacity:0;background:radial-gradient(closest-side,rgba(255,255,255,.72),#f8d9fcaa 26%,#9ae9fd66 52%,#66c5ff1f 76%,transparent);transform:translate(-50%,-50%) scale(1.8);transition:opacity .45s ease,transform .7s cubic-bezier(.32,.72,0,1)}
+.flow-card.is-pressed .flow-press{opacity:.9;transform:translate(-50%,-50%) scale(1);transition:opacity .14s ease-out,transform .22s cubic-bezier(.2,.8,.2,1)}
+/* 倒影：真反射（WebKit / Blink）+ 底部一道品牌色淡光承接。倒影只占卡高的 10%（≈ .08H），必须在中间卡 .095H 的下边距内淡完，不许把卡往上推 */
+@supports (-webkit-box-reflect:below 0){.flow-card{-webkit-box-reflect:below 0 linear-gradient(transparent 90%,rgba(0,0,0,.28))}}
+.flow-refl{position:absolute;left:0;right:0;bottom:0;height:16%;z-index:2;pointer-events:none;background:linear-gradient(transparent,color-mix(in srgb,var(--accent) 25%,transparent))}
+/* 减弱动效：切卡直接切；按压不倾斜不缩放（gallery.js 不写 --prx/--pry/--ps），光团不聚拢、原地淡入淡出 */
+@media (prefers-reduced-motion:reduce){.globe-stage::before{animation:none}.flow-card,.flow-card.is-pressed,.flow-card.is-springing{transition:none}.flow-press,.flow-card.is-pressed .flow-press{transform:translate(-50%,-50%) scale(1);transition:opacity .2s ease}}
+.globe-info{min-width:0;padding:calc(6 * var(--u)) calc(8 * var(--u)) calc(6 * var(--u)) 0}
+.globe-meta{display:flex;align-items:center;flex-wrap:wrap;gap:calc(8 * var(--u));margin:0 0 calc(12 * var(--u))}
+.globe-title{font-size:var(--fs-title);font-weight:700;letter-spacing:-.4px;line-height:1.2;margin:0 0 calc(6 * var(--u));overflow-wrap:anywhere}
+.globe-subtitle{color:var(--label2);font-size:var(--fs-small);letter-spacing:.06em;margin:0 0 calc(10 * var(--u));text-transform:uppercase}
+.globe-description{color:var(--label2);font-size:var(--fs-body);line-height:1.7;max-width:calc(460 * var(--u));margin:0 0 calc(22 * var(--u))}
+.globe-actions{display:flex;align-items:center;gap:calc(10 * var(--u));flex-wrap:wrap}
+/* 回退网格：列表行（缩略图 + 标题/副标题 + 编号 chip + chevron） */
+.card-grid{margin-bottom:var(--gap)}
+.row.card{gap:calc(14 * var(--u))}
+.row .thumb{flex:none;width:calc(44 * var(--u));height:calc(62 * var(--u));border-radius:calc(8 * var(--u));background:var(--matte,#182b3d);overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 2px calc(5 * var(--u)) rgba(0,0,0,.18)}
+.row .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.row .line{flex:none;width:calc(6 * var(--u));height:calc(6 * var(--u));border-radius:50%;background:var(--accent-art,var(--label3))}
+.status{padding:var(--pad);color:var(--label2)}
+footer{max-width:var(--page-max);margin:auto;padding:0 var(--page-x) var(--page-y);display:flex;flex-direction:column;gap:calc(8 * var(--u));color:var(--label2);font-size:var(--fs-small);min-width:0}
+/* 首屏装进一屏：页面按 100dvh 排成一列，舞台吃掉「视口高减去其余所有东西」剩下的，再用等比值 540×u 封顶。
+   余量来自结构而不是调参——之前写死 69svh 在屋主 2040×1019 上只剩 4px 余量，加上浏览器工具栏必然溢出（屋主 2026-09-23 实机所见）。
+   ≥601px 且视口够高时才进这个模式；窄屏与极矮窗口仍走普通文档流，可以滚。 */
+@media (min-width:601px) and (min-height:560px){
+  body{height:100dvh;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+  /* 列 flex 里 margin:auto 会顶掉 stretch 让子项缩成内容宽，必须显式 width:100% */
+  main,footer{width:100%}
+  main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+  .showcase{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+  .globe{flex:1 1 auto;min-height:0;align-items:stretch}
+  .globe-display{display:flex;align-items:center;min-height:0}
+  .globe-info{display:flex;flex-direction:column;justify-content:center}
+  .globe-stage{height:100%;min-height:0;max-height:min(calc(540 * var(--u)),100%)}
+}
+@media (max-width:1000px){.globe{grid-template-columns:1fr}.globe-stage{aspect-ratio:1.6;max-height:min(50svh,460px);min-height:260px}.globe-info{padding:0 4px 4px}.globe-description{max-width:none}}
+@media (max-width:600px){.globe{padding:12px}.row .thumb{width:38px;height:54px}footer{text-align:center}.footer-main{justify-content:center}.site-legal{align-items:center}}

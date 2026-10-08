@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ysevan的小屋">
+  <title>Ysevan的小屋</title>
+  <desc>珍珠白纸底上的橄榄绿屋形线稿，与顶栏站名左侧的图标同源。</desc>
+  <!--
+    manifest 把这一个文件同时声明为 purpose="any" 与 purpose="maskable"，所以底色必须满幅铺满
+    （不能像旧图标那样切圆角留出透明四角，否则 Android 套自家蒙版时会露出缺口）。
+    屋形的可视外框（含描边宽度）落在 x [64, 448]、y [65.28, 446.72]，四周安全边距 12.5%–12.75%，
+    满足 maskable ≥10% 的要求。
+  -->
+  <rect width="512" height="512" fill="#F8F6F1"/>
+  <!--
+    屋形 path 与 components/site-header.tsx 顶栏站名图标逐字同源（18×18 线稿）。
+    transform 把那套 18 单位坐标放到 512 画布中央：scale 25.6 = 512 / 20，
+    translate 让描边外框在水平和垂直方向都居中。描边宽度写 1.8 而不是顶栏的 1.5，
+    是给 16px favicon 的光学补偿——形状不变，只是小尺寸下更立得住。
+  -->
+  <g transform="translate(25.6 21.76) scale(25.6)"
+     fill="none"
+     stroke="#5E6144"
+     stroke-width="1.8"
+     stroke-linecap="round"
+     stroke-linejoin="round">
+    <path d="M2.4 8.1 9 2.6l6.6 5.5"/>
+    <path d="M4.1 9.4v5.6c0 .4.3.7.7.7h8.4c.4 0 .7-.3.7-.7V9.4"/>
+  </g>
+</svg>

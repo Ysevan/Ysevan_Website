@@ -1,0 +1,470 @@
+/* ==========================================================================
+ * sheets.css —— 交互页「弹窗 · 屋主收集」六个活样例（interaction.html 在 interaction.css 之后引入）
+ *
+ * 类名一律 sh- 开头，不改外壳的类。外壳约定照 star.css 文件头：
+ *   · 每个样例是一块手机比例的舞台 .sh-stage（360×640，乘 --u；窄屏按容器宽缩）。弹窗在舞台里 absolute 定位，
+ *     不用 fixed、不压到合集页面上；舞台自己 overflow:hidden 裁住从屏幕外进来的面板。
+ *   · 舞台里的尺寸一律写成「360 宽舞台上的值 × --k」，--k = 舞台宽 / 360（容器查询单位 cqw）。
+ *     1440 宽时舞台正好 360，--k = 1px，原文的 -22px、1200px 透视等数值逐位不变；舞台变宽变窄时整块等比缩放。
+ *   · 动画只动 transform / opacity。两处例外照原文做：第1条背景 backdrop-filter 半径过渡、第2条 stroke-dashoffset。
+ *   · backdrop-filter 只有第1条背景那一层：-webkit- 在前、标准在后成对写；做不出磨砂或用户要求减少透明度时
+ *     改成压暗 + 面板近乎不透明（与「降级做法」开关同一套样式）。
+ *   · 减弱动效：外壳用 !important 关掉全部过渡，所以填充、圆环、刻度、照片缩放这些自然直接到终点；
+ *     开关面板、遮罩、翻面两面挂 data-rm="fade"，只留原地淡入淡出。数字滚动、翻面换面由 sheets.js 判断减弱动效。
+ *   · 颜色用外壳令牌；第1条面板底 rgba(255,255,255,.42) 照原文，深色值是本页配的（同透明度、取外壳深色玻璃的底色）。
+ * ========================================================================== */
+
+/* ---------- 样例框里的排布：舞台 + 右侧（窄屏下方）控件与说明 ---------- */
+.sh-demo { display: flex; flex-wrap: wrap; align-items: flex-start; gap: calc(18 * var(--u)) calc(22 * var(--u)); }
+.sh-side { flex: 1 1 calc(220 * var(--u)); min-width: 0; display: grid; gap: calc(12 * var(--u)); }
+.sh-controls { display: flex; flex-wrap: wrap; align-items: center; gap: calc(10 * var(--u)); }
+.sh-hint { margin: 0; max-width: var(--measure); color: var(--label2); font-size: var(--fs-small); line-height: 1.7; }
+.sh-hint b { color: var(--label); font-weight: 600; }
+
+/* 「降级做法」开关：role=switch 的真按钮 */
+.sh-switch {
+  display: inline-flex; align-items: center; gap: calc(8 * var(--u));
+  height: calc(38 * var(--u)); padding: 0 calc(12 * var(--u)) 0 calc(6 * var(--u)); border: 0; border-radius: calc(12 * var(--u));
+  background: var(--fill); color: var(--label); font: inherit; font-size: var(--fs-body); cursor: pointer;
+}
+.sh-switch-track {
+  position: relative; flex: none; width: calc(40 * var(--u)); height: calc(24 * var(--u)); border-radius: 999px;
+  background: var(--label3); transition: background-color .2s ease;
+}
+.sh-switch-track::after {
+  content: ""; position: absolute; top: calc(2 * var(--u)); left: calc(2 * var(--u));
+  width: calc(20 * var(--u)); height: calc(20 * var(--u)); border-radius: 50%; background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s cubic-bezier(.2, .7, .2, 1);
+}
+.sh-switch[aria-checked="true"] .sh-switch-track { background: var(--accent); }
+.sh-switch[aria-checked="true"] .sh-switch-track::after { transform: translateX(calc(16 * var(--u))); }
+
+/* ---------- 舞台 ---------- */
+.sh-stage {
+  --k: calc(100cqw / 360);
+  --sh-ease: cubic-bezier(.2, .7, .2, 1);       /* 原文第1、2条的曲线；第3、4、6条没写曲线，沿用同一条 */
+  --sh-ease-in: cubic-bezier(.4, 0, 1, 1);      /* 关闭：统一 .3 秒收回，不倒放 */
+  --sh-flip-ease: cubic-bezier(.3, .7, .2, 1);  /* 原文第5条 */
+  --sh-spring: cubic-bezier(.3, 1.35, .5, 1);   /* 第6条弹回 / 弹入：轻微过冲 */
+  /* 第1条：面板底照原文 .42 白；深色同透明度、取外壳深色玻璃的底色（本页配的）。降级时面板提到近乎不透明 */
+  --sh-frost: var(--lt, rgba(255,255,255,.42)) var(--dk, rgba(40,42,52,.42));
+  --sh-frost-solid: var(--lt, rgba(255,255,255,.96)) var(--dk, rgba(44,46,58,.96));
+  --sh-dim: var(--lt, rgba(20,24,36,.28)) var(--dk, rgba(0,0,0,.5));
+  position: relative; flex: none;
+  width: min(100%, calc(360 * var(--u)));
+  aspect-ratio: 360 / 640;
+  container-type: inline-size;
+  overflow: hidden; isolation: isolate;
+  border-radius: calc(30 * var(--u));
+  background: var(--bg); color: var(--label);
+  /* 描边画成外圈阴影、不占盒子：内容宽正好 360 × --u，1440 时 --k 恰好 1px */
+  box-shadow: 0 0 0 1px var(--sep), var(--shadow-sm);
+  -webkit-tap-highlight-color: transparent;
+}
+/* 不认容器查询单位的旧内核：不随容器缩，按 --u 画（舞台本身仍按 min(100%, 360) 收窄，内容可能被裁） */
+@supports not (width: 1cqw) { .sh-stage { --k: var(--u); } }
+.sh-screen { position: absolute; inset: 0; font-size: calc(14 * var(--k)); line-height: 1.5; }
+.sh-screen :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* 「假背景页」：一张示例App首页，给背景层一点颜色和结构 */
+.sh-page { position: absolute; inset: 0; z-index: 0; display: flex; flex-direction: column; gap: calc(14 * var(--k)); padding: calc(22 * var(--k)) calc(20 * var(--k)) calc(24 * var(--k)); }
+.sh-page-bar { display: flex; align-items: center; justify-content: space-between; color: var(--label2); font-size: calc(12 * var(--k)); }
+.sh-page-title { margin: 0; font-size: calc(24 * var(--k)); font-weight: 700; letter-spacing: -.3px; line-height: 1.2; color: var(--label); }
+.sh-page-hero {
+  position: relative; overflow: hidden; display: grid; align-content: end; gap: calc(2 * var(--k));
+  min-height: calc(132 * var(--k)); padding: calc(16 * var(--k)); border-radius: calc(20 * var(--k));
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #FFFFFF; text-shadow: 0 1px 2px rgba(0,0,0,.25);
+}
+.sh-page-hero::before, .sh-page-hero::after { content: ""; position: absolute; border-radius: 50%; }
+.sh-page-hero::before { width: calc(120 * var(--k)); height: calc(120 * var(--k)); right: calc(-24 * var(--k)); top: calc(-34 * var(--k)); background: rgba(255,255,255,.28); }
+.sh-page-hero::after { width: calc(64 * var(--k)); height: calc(64 * var(--k)); right: calc(70 * var(--k)); top: calc(40 * var(--k)); background: var(--orange); opacity: .85; }
+.sh-page-hero span { position: relative; z-index: 1; font-size: calc(12 * var(--k)); opacity: .92; }
+.sh-page-hero b { position: relative; z-index: 1; font-size: calc(28 * var(--k)); line-height: 1.15; font-weight: 700; }
+.sh-page-list { list-style: none; margin: 0; padding: calc(4 * var(--k)) calc(14 * var(--k)); border-radius: calc(18 * var(--k)); background: var(--raised); box-shadow: var(--shadow-sm); }
+.sh-page-list li { display: flex; align-items: center; gap: calc(10 * var(--k)); min-height: calc(44 * var(--k)); }
+.sh-page-list li + li { border-top: 1px solid var(--sep); }
+.sh-page-list i { flex: none; width: calc(26 * var(--k)); height: calc(26 * var(--k)); border-radius: calc(8 * var(--k)); background: var(--green); }
+.sh-page-list li:nth-child(2) i { background: var(--orange); }
+.sh-page-list li:nth-child(3) i { background: var(--accent); }
+.sh-page-list span { flex: 1; min-width: 0; }
+.sh-page-list b { color: var(--label2); font-weight: 600; font-variant-numeric: tabular-nums; }
+.sh-page .sh-open { margin-top: auto; }
+
+/* 舞台里的按钮按 --k 缩放（外观沿用外壳 .btn / .btn-tint / .btn-glass） */
+.sh-screen .btn { height: calc(42 * var(--k)); padding: 0 calc(18 * var(--k)); border-radius: calc(13 * var(--k)); font-size: calc(15 * var(--k)); gap: calc(6 * var(--k)); }
+.sh-screen .btn-wide { width: 100%; }
+.sh-x {
+  display: inline-grid; place-items: center; flex: none;
+  width: calc(32 * var(--k)); height: calc(32 * var(--k)); padding: 0; border: 0; border-radius: 50%;
+  background: var(--fill); color: var(--label2); cursor: pointer;
+}
+.sh-x svg { width: calc(16 * var(--k)); height: calc(16 * var(--k)); }
+.sh-title { margin: 0; font-size: calc(19 * var(--k)); line-height: 1.3; font-weight: 700; letter-spacing: -.2px; }
+.sh-sub { margin: calc(2 * var(--k)) 0 0; color: var(--label2); font-size: calc(13 * var(--k)); }
+.sh-head { display: flex; align-items: flex-start; justify-content: space-between; gap: calc(12 * var(--k)); }
+.sh-grabber { display: block; width: calc(36 * var(--k)); height: calc(5 * var(--k)); margin: calc(-8 * var(--k)) auto calc(10 * var(--k)); border-radius: 999px; background: var(--label3); }
+
+/* ---------- 通用：遮罩 + 底部面板（第2、3条） ---------- */
+.sh-scrim {
+  position: absolute; inset: 0; z-index: 1; background: #000000;
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s var(--sh-ease-in), visibility 0s linear .3s;
+}
+.sh-stage.is-open .sh-scrim { opacity: .4; visibility: visible; transition: opacity .5s var(--sh-ease), visibility 0s; }
+.sh-bottom {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  padding: calc(20 * var(--k)) calc(20 * var(--k)) calc(22 * var(--k));
+  border-radius: calc(26 * var(--k)) calc(26 * var(--k)) 0 0;
+  background: var(--raised); box-shadow: var(--shadow-pop);
+  transform: translateY(105%); opacity: 0; visibility: hidden;
+  transition: transform .3s var(--sh-ease-in), opacity .1s linear .2s, visibility 0s linear .3s;
+}
+.sh-stage.is-open .sh-bottom {
+  transform: translateY(0); opacity: 1; visibility: visible;
+  transition: transform .5s var(--sh-ease), opacity .12s linear, visibility 0s;
+}
+/* 重放：先瞬间回到关着的样子再打开（只关过渡，不放回任何过渡） */
+.sh-stage.is-instant, .sh-stage.is-instant * { transition: none !important; }
+
+/* ================================================================ 1 毛玻璃浮层 */
+.sh-frost-bg {
+  position: absolute; inset: 0; z-index: 1;
+  visibility: hidden;
+  -webkit-backdrop-filter: blur(0px);
+  backdrop-filter: blur(0px);
+  transition: -webkit-backdrop-filter .3s var(--sh-ease-in), backdrop-filter .3s var(--sh-ease-in), opacity .3s var(--sh-ease-in), visibility 0s linear .3s;
+}
+.sh-frosted.is-open .sh-frost-bg {
+  visibility: visible;
+  -webkit-backdrop-filter: blur(26px);
+  backdrop-filter: blur(26px);
+  transition: -webkit-backdrop-filter 1s var(--sh-ease), backdrop-filter 1s var(--sh-ease), opacity 1s var(--sh-ease), visibility 0s;
+}
+.sh-frost-panel {
+  position: absolute; left: calc(18 * var(--k)); right: calc(18 * var(--k)); top: 50%; z-index: 2;
+  margin-top: calc(-186 * var(--k));
+  padding: calc(20 * var(--k)) calc(18 * var(--k)) calc(18 * var(--k));
+  border-radius: calc(26 * var(--k));
+  background: var(--sh-frost);
+  box-shadow: 0 calc(20 * var(--k)) calc(50 * var(--k)) rgba(20,30,60,.18), inset 0 1px 0 var(--glass-edge);
+  opacity: 0; visibility: hidden; transform: scale(.94);
+  transition: transform .3s var(--sh-ease-in), opacity .3s var(--sh-ease-in), visibility 0s linear .3s;
+}
+.sh-frosted.is-open .sh-frost-panel {
+  opacity: 1; visibility: visible; transform: scale(1);
+  transition: transform .6s var(--sh-ease), opacity .3s var(--sh-ease), visibility 0s;
+}
+.sh-months { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(12 * var(--k)) calc(10 * var(--k)); margin: calc(16 * var(--k)) 0; padding: 0; }
+.sh-month { display: grid; justify-items: center; gap: calc(5 * var(--k)); }
+.sh-month-track {
+  position: relative; display: block; width: 100%; height: calc(64 * var(--k)); overflow: hidden;
+  border-radius: calc(12 * var(--k)); background: var(--fill);
+}
+.sh-month-fill {
+  position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(180deg, var(--accent-2), var(--accent));
+  transform: scaleY(0); transform-origin: 50% 100%;
+  transition: transform .3s var(--sh-ease-in);
+}
+/* 每格错开4帧（60Hz：66.7ms）；单格 266.7ms = 1000 − 11×66.7，最后一格正好在1秒收完 */
+.sh-frosted.is-open .sh-month-fill {
+  transform: scaleY(var(--r));
+  transition: transform 266.7ms var(--sh-ease) calc(var(--i) * 66.7ms);
+}
+.sh-month-name { font-size: calc(12 * var(--k)); color: var(--label2); font-variant-numeric: tabular-nums; }
+.sh-frost-sum { display: flex; justify-content: space-between; align-items: baseline; margin: 0; font-size: calc(13 * var(--k)); color: var(--label2); }
+.sh-frost-sum b { font-size: calc(22 * var(--k)); color: var(--label); font-variant-numeric: tabular-nums; }
+
+/* 变体（data-variant 写在舞台上）。blur = 原样；dim = 降级做法（开关打开时）；
+   fixed、none 只给性能实测用：fixed = 模糊固定26px、只过渡这一层的 opacity；none = 基线，同一面板动画、背景什么都不加 */
+.sh-frosted[data-variant="fixed"] .sh-frost-bg {
+  -webkit-backdrop-filter: blur(26px);
+  backdrop-filter: blur(26px);
+  opacity: 0;
+  transition: opacity .3s var(--sh-ease-in), visibility 0s linear .3s;
+}
+.sh-frosted[data-variant="fixed"].is-open .sh-frost-bg { opacity: 1; transition: opacity 1s var(--sh-ease), visibility 0s; }
+.sh-frosted[data-variant="none"] .sh-frost-bg,
+.sh-frosted[data-variant="none"].is-open .sh-frost-bg {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.sh-frosted[data-variant="dim"] .sh-frost-bg {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--sh-dim); opacity: 0;
+  transition: opacity .3s var(--sh-ease-in), visibility 0s linear .3s;
+}
+.sh-frosted[data-variant="dim"].is-open .sh-frost-bg {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  opacity: 1; transition: opacity 1s var(--sh-ease), visibility 0s;
+}
+.sh-frosted[data-variant="dim"] .sh-frost-panel { background: var(--sh-frost-solid); }
+
+/* 做不出磨砂 / 用户要求减少透明度：走降级做法那一套（压暗 + 面板近乎不透明）。探针带前缀，外层括号不能省 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .sh-frosted[data-variant] .sh-frost-bg { background: var(--sh-dim); opacity: 0; transition: opacity .3s var(--sh-ease-in), visibility 0s linear .3s; }
+  .sh-frosted[data-variant].is-open .sh-frost-bg { opacity: 1; transition: opacity 1s var(--sh-ease), visibility 0s; }
+  .sh-frosted[data-variant] .sh-frost-panel { background: var(--sh-frost-solid); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .sh-frosted[data-variant] .sh-frost-bg,
+  .sh-frosted[data-variant].is-open .sh-frost-bg {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--sh-dim);
+  }
+  .sh-frosted[data-variant] .sh-frost-bg { opacity: 0; transition: opacity .3s var(--sh-ease-in), visibility 0s linear .3s; }
+  .sh-frosted[data-variant].is-open .sh-frost-bg { opacity: 1; transition: opacity 1s var(--sh-ease), visibility 0s; }
+  .sh-frosted[data-variant] .sh-frost-panel { background: var(--sh-frost-solid); }
+}
+
+/* ================================================================ 2 圆环计数 */
+.sh-ring-wrap { position: relative; width: calc(172 * var(--k)); height: calc(172 * var(--k)); margin: calc(14 * var(--k)) auto calc(10 * var(--k)); }
+.sh-ring-svg { display: block; width: 100%; height: 100%; transform: rotate(-90deg); }
+.sh-ring-track { fill: none; stroke: var(--fill); stroke-width: 12; }
+.sh-ring-arc {
+  fill: none; stroke: var(--accent); stroke-width: 12; stroke-linecap: round;
+  stroke-dasharray: 100 100; stroke-dashoffset: 100;
+  transition: stroke-dashoffset .3s var(--sh-ease-in);
+}
+/* 面板 .5 秒落定后再画：delay .5s；同一条曲线 1.2 秒画到剩余比例（剩 26/40 = .65 → offset 35） */
+.sh-ring.is-open .sh-ring-arc { stroke-dashoffset: var(--off); transition: stroke-dashoffset 1.2s var(--sh-ease) .5s; }
+.sh-ring-center { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; }
+.sh-ring-num { font-size: calc(46 * var(--k)); line-height: 1; font-weight: 700; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.sh-ring-unit { margin-top: calc(4 * var(--k)); color: var(--label2); font-size: calc(13 * var(--k)); }
+.sh-meta { display: flex; justify-content: center; gap: calc(14 * var(--k)); margin: 0 0 calc(16 * var(--k)); color: var(--label2); font-size: calc(13 * var(--k)); font-variant-numeric: tabular-nums; }
+
+/* ================================================================ 3 刻度尺进度 */
+.sh-ruler { display: flex; align-items: flex-end; justify-content: space-between; height: calc(40 * var(--k)); margin: calc(18 * var(--k)) 0 calc(6 * var(--k)); }
+.sh-tick { position: relative; flex: none; width: calc(2.2 * var(--k)); height: calc(26 * var(--k)); border-radius: 1px; }
+.sh-tick.is-month { height: calc(36 * var(--k)); }
+.sh-tick-base, .sh-tick-now { position: absolute; inset: 0; border-radius: inherit; }
+.sh-tick-base { background: var(--label); opacity: .16; transition: opacity .2s var(--sh-ease-in); }
+.sh-tick-now { background: var(--accent); opacity: 0; transition: opacity .2s var(--sh-ease-in); }
+/* 面板 .5 秒滑到位后开走：每根错开1帧（60Hz：16.7ms），走到今天那根换成强调色停住，后面的不动 */
+.sh-ruler-sheet.is-open .sh-tick.is-past .sh-tick-base { opacity: .78; transition: opacity .24s var(--sh-ease) calc(.5s + var(--i) * 16.7ms); }
+.sh-ruler-sheet.is-open .sh-tick.is-today .sh-tick-base { opacity: 0; transition: opacity .24s var(--sh-ease) calc(.5s + var(--i) * 16.7ms); }
+.sh-ruler-sheet.is-open .sh-tick.is-today .sh-tick-now { opacity: 1; transition: opacity .24s var(--sh-ease) calc(.5s + var(--i) * 16.7ms); }
+.sh-tick-flag {
+  position: absolute; left: 50%; bottom: calc(100% + 4 * var(--k)); transform: translateX(-50%);
+  padding: 0 calc(6 * var(--k)); border-radius: 999px; background: var(--accent-tint); color: var(--accent-text);
+  font-size: calc(11 * var(--k)); line-height: 1.6; white-space: nowrap; opacity: 0; transition: opacity .2s var(--sh-ease-in);
+}
+.sh-ruler-sheet.is-open .sh-tick-flag { opacity: 1; transition: opacity .3s var(--sh-ease) calc(.5s + var(--i) * 16.7ms + .1s); }
+.sh-ruler-axis { display: flex; justify-content: space-between; color: var(--label2); font-size: calc(11 * var(--k)); font-variant-numeric: tabular-nums; }
+.sh-ruler-stat { display: flex; justify-content: space-between; margin: calc(12 * var(--k)) 0 0; font-size: calc(13 * var(--k)); color: var(--label2); }
+.sh-ruler-stat b { color: var(--label); font-variant-numeric: tabular-nums; }
+
+/* 遮住的编号：每个字一个 inline-block 槽位，先占好最终宽度和行高；展开只换 opacity / transform */
+.sh-code-card { display: flex; align-items: center; gap: calc(10 * var(--k)); margin: calc(16 * var(--k)) 0; padding: calc(12 * var(--k)) calc(14 * var(--k)); border-radius: calc(16 * var(--k)); background: var(--well); }
+.sh-code-text { flex: 1; min-width: 0; display: grid; gap: calc(2 * var(--k)); }
+.sh-code-label { color: var(--label2); font-size: calc(12 * var(--k)); }
+.sh-code { display: block; white-space: nowrap; font-family: var(--mono); font-size: calc(19 * var(--k)); line-height: 1.5; font-variant-numeric: tabular-nums; }
+.sh-ch { position: relative; display: inline-block; width: .62em; height: 1.5em; vertical-align: top; overflow: hidden; }
+.sh-ch.is-gap { width: .4em; }
+.sh-ch-mask, .sh-ch-real { position: absolute; inset: 0; text-align: center; line-height: 1.5em; }
+.sh-ch-mask { color: var(--label2); transition: opacity .12s linear, transform .12s var(--sh-ease-in); }
+.sh-ch-real { opacity: 0; transform: translateY(.45em); transition: opacity .12s linear, transform .12s var(--sh-ease-in); }
+/* 逐字：每字错开 50ms（3帧，本页定的；原文没给数），每字 .2 秒 */
+.sh-code.is-revealed .sh-ch-mask { opacity: 0; transform: translateY(-.45em); transition: opacity .2s var(--sh-ease) calc(var(--j) * 50ms), transform .2s var(--sh-ease) calc(var(--j) * 50ms); }
+.sh-code.is-revealed .sh-ch-real { opacity: 1; transform: translateY(0); transition: opacity .2s var(--sh-ease) calc(var(--j) * 50ms), transform .2s var(--sh-ease) calc(var(--j) * 50ms); }
+.sh-code-card .btn { flex: none; height: calc(34 * var(--k)); padding: 0 calc(14 * var(--k)); font-size: calc(14 * var(--k)); }
+
+/* ================================================================ 4 照片抽屉 */
+.sh-photo-sheet {
+  position: absolute; left: 0; right: 0; top: calc(40 * var(--k)); bottom: 0; z-index: 2;
+  display: flex; flex-direction: column; overflow: hidden;
+  border-radius: calc(26 * var(--k)) calc(26 * var(--k)) 0 0;
+  background: var(--raised); box-shadow: var(--shadow-pop);
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s var(--sh-ease-in), visibility 0s linear .3s;
+}
+.sh-photo-pane.is-open .sh-photo-sheet { opacity: 1; visibility: visible; transition: opacity .25s var(--sh-ease), visibility 0s; }
+.sh-photo {
+  position: relative; flex: none; height: 50%; overflow: hidden;
+  /* 图加载不到时就是这道渐变 */
+  background: linear-gradient(170deg, #6F8FB4 0%, #34506B 48%, #1C2A31 100%);
+}
+/* 图按原比例铺满（宽 150%、高随比例），只取上部的天空和山；从 1.08 缩回 1 */
+.sh-photo-img {
+  position: absolute; inset: 0;
+  background-repeat: no-repeat; background-size: 150% auto; background-position: 50% 0%;
+  transform: scale(1.08); transform-origin: 50% 40%;
+  transition: transform .3s var(--sh-ease-in);
+}
+.sh-photo-pane.is-open .sh-photo-img { transform: scale(1); transition: transform .8s var(--sh-ease); }
+.sh-photo-shade {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% 30%, rgba(0,0,0,0) 45%, rgba(0,0,0,.42) 100%),
+    linear-gradient(0deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.2) 42%, rgba(0,0,0,0) 62%);
+}
+.sh-photo-text {
+  position: absolute; left: calc(20 * var(--k)); right: calc(20 * var(--k));
+  bottom: calc(22 * var(--k) + 14 * var(--k));   /* 抽屉压住的 22 那一截不放字 */
+  color: #FFFFFF; text-shadow: 0 1px 3px rgba(0,0,0,.35);
+}
+.sh-photo-kicker { margin: 0; font-size: calc(13 * var(--k)); opacity: .9; }
+.sh-photo-title { margin: calc(2 * var(--k)) 0 0; font-size: calc(30 * var(--k)); line-height: 1.15; font-weight: 700; letter-spacing: -.5px; }
+.sh-photo .sh-x { position: absolute; top: calc(14 * var(--k)); right: calc(14 * var(--k)); background: rgba(0,0,0,.38); color: #FFFFFF; }
+.sh-drawer {
+  position: relative; z-index: 1; flex: 1; min-height: 0;
+  margin-top: calc(-22 * var(--k));
+  display: flex; flex-direction: column; gap: calc(12 * var(--k));
+  padding: calc(20 * var(--k)) calc(20 * var(--k)) calc(22 * var(--k));
+  border-radius: calc(22 * var(--k)) calc(22 * var(--k)) 0 0;
+  background: var(--raised); box-shadow: 0 calc(-6 * var(--k)) calc(18 * var(--k)) rgba(0,0,0,.12);
+  transform: translateY(100%);
+  transition: transform .3s var(--sh-ease-in);
+}
+.sh-photo-pane.is-open .sh-drawer { transform: translateY(0); transition: transform .55s var(--sh-ease) .12s; }
+.sh-drawer-head { display: flex; justify-content: space-between; align-items: baseline; margin: 0; }
+.sh-drawer-head span { color: var(--label2); font-size: calc(13 * var(--k)); }
+.sh-drawer-head b { font-size: calc(22 * var(--k)); font-variant-numeric: tabular-nums; }
+.sh-progress { position: relative; height: calc(8 * var(--k)); overflow: hidden; border-radius: 999px; background: var(--fill); }
+.sh-progress-fill {
+  position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .3s var(--sh-ease-in);
+}
+/* 抽屉 .12 秒起步、.55 秒到位；进度条随后（.6 秒起）.8 秒涨到剩余比例 */
+.sh-photo-pane.is-open .sh-progress-fill { transform: scaleX(var(--p)); transition: transform .8s var(--sh-ease) .6s; }
+.sh-rows { list-style: none; margin: 0; padding: 0; }
+.sh-rows li { display: flex; justify-content: space-between; gap: calc(12 * var(--k)); min-height: calc(36 * var(--k)); align-items: center; font-size: calc(14 * var(--k)); }
+.sh-rows li + li { border-top: 1px solid var(--sep); }
+.sh-rows span { color: var(--label2); }
+.sh-rows b { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+.sh-drawer .btn { margin-top: auto; }
+
+/* ================================================================ 5 原地翻面 */
+.sh-pop {
+  position: absolute; left: calc(18 * var(--k)); right: calc(18 * var(--k)); top: 50%; z-index: 2;
+  margin-top: calc(-170 * var(--k));
+  padding: calc(18 * var(--k)); border-radius: calc(26 * var(--k));
+  background: var(--raised); box-shadow: var(--shadow-pop);
+  opacity: 0; visibility: hidden; transform: scale(.96);
+  transition: transform .3s var(--sh-ease-in), opacity .3s var(--sh-ease-in), visibility 0s linear .3s;
+}
+.sh-stage.is-open .sh-pop { opacity: 1; visibility: visible; transform: scale(1); transition: transform .45s var(--sh-ease), opacity .25s var(--sh-ease), visibility 0s; }
+.sh-flip-scene { position: relative; margin: calc(14 * var(--k)) 0; perspective: calc(1200 * var(--k)); }
+.sh-flip-card {
+  position: relative; height: calc(190 * var(--k));
+  transform-style: preserve-3d; transform: rotateY(0deg);
+  transition: transform .8s var(--sh-flip-ease);
+}
+.sh-flip-scene.is-flipped .sh-flip-card { transform: rotateY(180deg); }
+.sh-face {
+  position: absolute; inset: 0; overflow: hidden;
+  display: flex; flex-direction: column; padding: calc(16 * var(--k)) calc(18 * var(--k));
+  border-radius: calc(18 * var(--k));
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+}
+.sh-face-front {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #FFFFFF; text-shadow: 0 1px 2px rgba(0,0,0,.25);
+  box-shadow: 0 calc(12 * var(--k)) calc(26 * var(--k)) var(--accent-shadow);
+}
+.sh-face-front::after { content: ""; position: absolute; right: calc(-30 * var(--k)); bottom: calc(-40 * var(--k)); width: calc(150 * var(--k)); height: calc(150 * var(--k)); border-radius: 50%; background: rgba(255,255,255,.18); }
+.sh-face-back { transform: rotateY(180deg); background: var(--well); border: 1px solid var(--sep); }
+.sh-card-kicker { margin: 0; font-size: calc(12 * var(--k)); opacity: .9; }
+.sh-card-name { margin: calc(2 * var(--k)) 0 0; font-size: calc(22 * var(--k)); font-weight: 700; line-height: 1.25; }
+.sh-card-foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; font-size: calc(13 * var(--k)); }
+.sh-card-foot b { font-size: calc(18 * var(--k)); font-variant-numeric: tabular-nums; }
+.sh-card-code { margin: calc(2 * var(--k)) 0 calc(8 * var(--k)); font-family: var(--mono); font-size: calc(20 * var(--k)); font-weight: 600; letter-spacing: .5px; font-variant-numeric: tabular-nums; }
+/* 示意条码：等宽重复的竖条，纯装饰，不编码任何内容 */
+.sh-barcode { height: calc(34 * var(--k)); border-radius: calc(4 * var(--k)); background: repeating-linear-gradient(90deg, var(--label) 0 2px, transparent 2px 4px, var(--label) 4px 5px, transparent 5px 8px, var(--label) 8px 11px, transparent 11px 13px); opacity: .85; }
+.sh-card-rows { display: grid; grid-template-columns: auto 1fr; gap: calc(2 * var(--k)) calc(12 * var(--k)); margin: calc(10 * var(--k)) 0 0; font-size: calc(12.5 * var(--k)); }
+.sh-card-rows dt { color: var(--label2); }
+.sh-card-rows dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+/* 翻面按钮是一枚真 <button>，盖在整张卡上；卡里的字不包进按钮 */
+.sh-flip-btn { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; padding: 0; border: 0; border-radius: calc(18 * var(--k)); background: transparent; cursor: pointer; }
+.sh-pop-foot { display: flex; align-items: center; justify-content: space-between; gap: calc(10 * var(--k)); }
+.sh-pop-foot p { margin: 0; color: var(--label2); font-size: calc(13 * var(--k)); }
+
+/* ================================================================ 6 下拉展开 */
+.sh-pull-sheet {
+  --sh-pull-d: calc(124 * var(--k));   /* 能拉开的距离 = 下半张的高 = 完整信息区的高 */
+  position: absolute; left: calc(18 * var(--k)); right: calc(18 * var(--k)); top: calc(84 * var(--k)); z-index: 2;
+  opacity: 0; visibility: hidden; transform: translateY(calc(560 * var(--k)));
+  transition: transform .3s var(--sh-ease-in), opacity .1s linear .2s, visibility 0s linear .3s;
+}
+.sh-stage.is-open .sh-pull-sheet { opacity: 1; visibility: visible; transform: translateY(0); transition: transform .6s var(--sh-spring), opacity .12s linear, visibility 0s; }
+.sh-pull-upper {
+  position: relative; z-index: 1;
+  padding: calc(18 * var(--k)) calc(18 * var(--k)) calc(16 * var(--k));
+  border-radius: calc(22 * var(--k)) calc(22 * var(--k)) calc(6 * var(--k)) calc(6 * var(--k));
+  background: var(--raised); box-shadow: 0 calc(10 * var(--k)) calc(30 * var(--k)) rgba(20,30,60,.16);
+}
+.sh-pull-upper::after { content: ""; position: absolute; left: calc(14 * var(--k)); right: calc(14 * var(--k)); bottom: 0; border-bottom: 2px dashed var(--sep); }
+.sh-pull-big { margin: calc(12 * var(--k)) 0 0; font-size: calc(28 * var(--k)); line-height: 1.15; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sh-pull-meta { margin: calc(4 * var(--k)) 0 0; color: var(--label2); font-size: calc(13 * var(--k)); }
+.sh-pull-upper .btn { margin-top: calc(12 * var(--k)); height: calc(34 * var(--k)); padding: 0 calc(14 * var(--k)); font-size: calc(14 * var(--k)); }
+.sh-pull-body { position: relative; height: var(--sh-pull-d); }
+.sh-pull-info {
+  position: absolute; left: calc(8 * var(--k)); right: calc(8 * var(--k)); top: 0; height: var(--sh-pull-d);
+  padding: calc(12 * var(--k)) calc(14 * var(--k));
+  border-radius: calc(6 * var(--k)); background: var(--well);
+}
+.sh-pull-info .sh-rows li { min-height: calc(25 * var(--k)); font-size: calc(13 * var(--k)); }
+.sh-pull-info .sh-rows li + li { border-top: 0; }
+.sh-pull-lower {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 2; height: var(--sh-pull-d);
+  display: flex; flex-direction: column;
+  padding: calc(14 * var(--k)) calc(18 * var(--k)) 0;
+  border-radius: calc(6 * var(--k)) calc(6 * var(--k)) calc(22 * var(--k)) calc(22 * var(--k));
+  background: var(--raised); box-shadow: 0 calc(10 * var(--k)) calc(30 * var(--k)) rgba(20,30,60,.16);
+  transform: translateY(0) rotate(0deg); transform-origin: 50% 0;
+  transition: transform .5s var(--sh-spring);
+}
+.sh-pull-lower::before { content: ""; position: absolute; left: calc(14 * var(--k)); right: calc(14 * var(--k)); top: 0; border-top: 2px dashed var(--sep); }
+.sh-pull-sheet.is-expanded .sh-pull-lower { transform: translateY(var(--sh-pull-d)) rotate(0deg); transition: transform .45s var(--sh-ease); }
+.sh-pull-lower.is-dragging { transition: none; }
+.sh-pull-seat { display: flex; justify-content: space-between; align-items: baseline; font-size: calc(13 * var(--k)); color: var(--label2); }
+.sh-pull-seat b { color: var(--label); font-size: calc(17 * var(--k)); font-variant-numeric: tabular-nums; }
+.sh-pull-handle {
+  display: grid; justify-items: center; align-content: center; gap: calc(6 * var(--k));
+  margin: auto calc(-18 * var(--k)) 0; padding: calc(10 * var(--k)) 0 calc(12 * var(--k));
+  border: 0; border-radius: 0 0 calc(22 * var(--k)) calc(22 * var(--k)); background: transparent;
+  color: var(--label2); font: inherit; font-size: calc(12 * var(--k)); cursor: grab;
+  touch-action: none; -webkit-user-select: none; user-select: none;
+}
+.sh-pull-handle:active { cursor: grabbing; }
+.sh-pull-handle i { display: block; width: calc(40 * var(--k)); height: calc(5 * var(--k)); border-radius: 999px; background: var(--label3); }
+.sh-pull-handle:focus-visible { outline-offset: -4px; }
+
+/* ---------- 减弱动效：外壳已关掉全部过渡（填充、圆环、刻度、缩放直接到终点）；这里只补「原地淡入淡出」需要的初值 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  /* 第1条：背景直接是 26px，只淡入（data-rm="fade" 留下 opacity 过渡） */
+  .sh-frosted[data-variant] .sh-frost-bg { opacity: 0; }
+  .sh-frosted[data-variant].is-open .sh-frost-bg { opacity: 1; }
+  /* 面板不放大、不滑：钉在终点位置，只淡入淡出 */
+  .sh-frost-panel, .sh-frosted.is-open .sh-frost-panel,
+  .sh-pop, .sh-stage.is-open .sh-pop { transform: none; }
+  .sh-bottom, .sh-stage.is-open .sh-bottom { transform: none; }
+  .sh-pull-sheet, .sh-stage.is-open .sh-pull-sheet { transform: none; }
+  .sh-drawer, .sh-photo-pane.is-open .sh-drawer { transform: none; }
+  .sh-photo-img { transform: none; }
+  /* 第5条：不转，两面原地淡入淡出 */
+  .sh-flip-card, .sh-flip-scene.is-flipped .sh-flip-card { transform: none; }
+  .sh-face-back { transform: none; opacity: 0; }
+  .sh-face-front { opacity: 1; }
+  .sh-flip-scene.is-flipped .sh-face-back { opacity: 1; }
+  .sh-flip-scene.is-flipped .sh-face-front { opacity: 0; }
+}
+
+/* ---------- 实测表 ---------- */
+.sh-table-wrap { min-width: 0; overflow-x: auto; }
+.sh-table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
+.sh-table th, .sh-table td { padding: calc(6 * var(--u)) calc(10 * var(--u)); border-bottom: 1px solid var(--sep); text-align: right; white-space: nowrap; }
+.sh-table th:first-child, .sh-table td:first-child { text-align: left; white-space: normal; }
+.sh-table thead th { color: var(--label2); font-weight: 600; }
+.sh-table tbody th { font-weight: 600; }
+.sh-table .is-bad { color: var(--red-text); font-weight: 600; }
+
+/* 「用在哪」里已下发的落点（2026-10-08）：一枚绿胶囊 */
+.sh-landed {
+  display: inline-flex; align-items: center; height: calc(20 * var(--u)); padding: 0 calc(8 * var(--u)); border-radius: 999px;
+  background: var(--green-tint); color: var(--green-text); font-size: var(--fs-xs); font-weight: 600; line-height: 1; white-space: nowrap; vertical-align: 1px;
+}

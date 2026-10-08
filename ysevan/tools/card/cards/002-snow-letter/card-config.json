@@ -1,0 +1,40 @@
+{
+  "mode": "holographic",
+  "title": "雪境来信",
+  "subtitle": "A LETTER FROM SNOW",
+  "technique": "雪落之约",
+  "tagline": "风雪里藏着温柔的问候",
+  "edition": "02 / 13",
+  "collection": "蓝调幻光 · 第一辑",
+  "description": "雪中鸟居与蓝发少女分层呈现，珍珠虹彩沿着衣纹与发梢流动。",
+  "parameters": {
+    "subjectScale": 1.2,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.9,
+    "particles": 0.8,
+    "glow": 0.72
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "id": "002-snow-letter",
+  "accent": "#c1def4",
+  "matte": "#182b3d",
+  "originalWidth": 1024,
+  "originalHeight": 1536,
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png",
+    "model": "./assets/card.glb",
+    "cover": "./cover.png"
+  },
+  "previous": "../001-tide-dream-shione/",
+  "next": "../003-neon-rhythm/"
+}

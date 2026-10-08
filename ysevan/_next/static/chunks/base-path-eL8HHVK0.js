@@ -1,0 +1,1 @@
+function e(e){if(!e.startsWith(`/`)||e.startsWith(`//`))throw Error(`withBasePath expects a site-root path that starts with a single "/", got ${JSON.stringify(e)}`);return`/ysevan${e}`}export{e as t};

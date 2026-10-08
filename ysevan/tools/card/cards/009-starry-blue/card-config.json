@@ -1,0 +1,40 @@
+{
+  "mode": "holographic",
+  "title": "星屑礼服",
+  "subtitle": "STARDUST DRESS",
+  "technique": "星光递来",
+  "tagline": "让一颗小星星落在掌心",
+  "edition": "09 / 13",
+  "collection": "蓝调幻光 · 第二辑",
+  "description": "清澈蓝色礼服与星屑点缀保持明亮留白，适合近距离观察衣纹与发丝的细微光泽。",
+  "parameters": {
+    "subjectScale": 1.16,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.95,
+    "particles": 0.9,
+    "glow": 0.78
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "id": "009-starry-blue",
+  "accent": "#8fb9ef",
+  "matte": "#182b3d",
+  "originalWidth": 1024,
+  "originalHeight": 1536,
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png",
+    "model": "./assets/card.glb",
+    "cover": "./cover.png"
+  },
+  "previous": "../008-sunset-orbit/",
+  "next": "../010-rooftop-dusk/"
+}

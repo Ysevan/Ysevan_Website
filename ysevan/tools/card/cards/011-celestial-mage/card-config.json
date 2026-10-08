@@ -1,0 +1,40 @@
+{
+  "mode": "holographic",
+  "title": "星穹魔法",
+  "subtitle": "CELESTIAL MAGE",
+  "technique": "彗光誓约",
+  "tagline": "让流星照亮下一步",
+  "edition": "11 / 13",
+  "collection": "蓝调幻光 · 第二辑",
+  "description": "白发魔法少女、晶体法杖与深蓝星穹层层叠起，蓝白裙摆在虹彩里像一朵展开的云。",
+  "parameters": {
+    "subjectScale": 1.16,
+    "subjectDepth": 0.38,
+    "backgroundDepth": -0.24,
+    "foil": 0.95,
+    "particles": 0.9,
+    "glow": 0.78
+  },
+  "safeArea": {
+    "scale": 1.08,
+    "offset": [
+      -0.04,
+      -0.055
+    ]
+  },
+  "id": "011-celestial-mage",
+  "accent": "#8aa7ed",
+  "matte": "#182b3d",
+  "originalWidth": 1024,
+  "originalHeight": 1536,
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.png",
+    "lineart": "./assets/lineart.png",
+    "text": "./assets/text.png",
+    "model": "./assets/card.glb",
+    "cover": "./cover.png"
+  },
+  "previous": "../010-rooftop-dusk/",
+  "next": "../012-sky-balloons/"
+}
