@@ -6,7 +6,7 @@ main{max-width:var(--page-max);margin:auto;padding:var(--page-y) var(--page-x) 0
 .hero{display:flex;align-items:flex-end;justify-content:space-between;gap:calc(12 * var(--u));flex-wrap:wrap;margin-bottom:var(--gap)}
 h1{margin:0;font-size:var(--fs-title);letter-spacing:-.4px;font-weight:700;line-height:1.2}
 .hero .sub{color:var(--label2);margin:calc(6 * var(--u)) 0 0;font-size:var(--fs-body)}
-.hero .count{display:flex;align-items:center;gap:calc(8 * var(--u));color:var(--label2);font-size:var(--fs-small);font-variant-numeric:tabular-nums}
+.hero .count{display:flex;align-items:center;gap:calc(8 * var(--u));color:var(--label2);font-size:var(--fs-small);font-family:var(--font-num);font-variant-numeric:tabular-nums}
 /* 选卡台（Cover Flow）：玻璃卡里嵌 D 星野舞台，舞台在左、当前卡信息在右（信息栏 clamp 到 calc(480 * var(--u))，余下全给舞台）；窄一点上下叠 */
 .globe{display:grid;grid-template-columns:minmax(0,1fr) clamp(calc(280 * var(--u)),28%,calc(480 * var(--u)));gap:var(--pad);align-items:center;padding:var(--pad);margin-bottom:var(--page-y)}
 .globe-display{min-width:0}

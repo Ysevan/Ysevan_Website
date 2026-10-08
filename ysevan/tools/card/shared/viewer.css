@@ -32,7 +32,7 @@ h1{font-size:var(--fs-title);font-weight:700;letter-spacing:-.4px;line-height:1.
 .actions{display:flex;flex-wrap:wrap;gap:calc(10 * var(--u));margin:calc(20 * var(--u)) 0}
 .actions .btn svg,.save-button svg{width:calc(18 * var(--u));height:calc(18 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .actions .btn svg [data-fill]{fill:currentColor;stroke:none}
-.foil-control{max-width:calc(380 * var(--u))}.foil-control label{display:flex;justify-content:space-between;font-size:var(--fs-body);color:var(--label);margin-bottom:calc(10 * var(--u))}.foil-control output{font-variant-numeric:tabular-nums;color:var(--accent-text);font-weight:600}
+.foil-control{max-width:calc(380 * var(--u))}.foil-control label{display:flex;justify-content:space-between;font-size:var(--fs-body);color:var(--label);margin-bottom:calc(10 * var(--u))}.foil-control output{font-family:var(--font-num);font-variant-numeric:tabular-nums;color:var(--accent-text);font-weight:600}
 input[type=range]{width:100%;height:calc(20 * var(--u));margin:0;accent-color:var(--accent);cursor:pointer;background:transparent}input[type=range]:disabled{opacity:.4;cursor:not-allowed}
 .range-captions{display:flex;justify-content:space-between;color:var(--label2);font-size:calc(12 * var(--u));margin-top:calc(4 * var(--u))}
 .depth-controls{max-width:calc(380 * var(--u));margin-top:calc(18 * var(--u));border-top:1px solid var(--sep);padding-top:calc(14 * var(--u));color:var(--label2);font-size:var(--fs-body)}

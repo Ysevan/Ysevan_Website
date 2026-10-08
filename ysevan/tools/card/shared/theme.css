@@ -14,6 +14,9 @@
  */
 :root{color-scheme:light;
   --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",-apple-system,BlinkMacSystemFont,sans-serif;
+  /* 数字字体（SPEC §3a，取值照抄）：苹方在 Chrome 里不认 tabular-nums，写了也照样跳（12.5px 下「1111」20.5、「0000」30.0）。
+     凡写 font-variant-numeric:tabular-nums 的规则，同一块必须加 font-family:var(--font-num)；元素里的中文仍落到后面的中文字族。 */
+  --font-num:BlinkMacSystemFont,-apple-system,"Segoe UI",system-ui,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
   --bg:#F4F5F9;--label:#1C1C1E;--label2:rgba(60,60,67,.89);--label3:rgba(60,60,67,.32);
   --glass:rgba(255,255,255,.62);--glass-strong:rgba(255,255,255,.78);--glass-edge:rgba(255,255,255,.9);--sep:rgba(60,60,67,.12);--fill:#DCDDE1;
   --green:#34C759;--red:#FF3B30;--orange:#FF9500;--indigo:#5856D6;--pink:#FF2D55;--teal:#30B0C7;
@@ -98,8 +101,9 @@ svg.icon,.icon svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:non
 .icon-btn:hover{transform:translateY(-1px);color:var(--accent-text)}.icon-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .icon-btn svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 /* chip 与列表 */
-.chip{display:inline-flex;align-items:center;height:calc(24 * var(--u));padding:0 calc(10 * var(--u));border-radius:999px;background:var(--accent-chip);color:var(--accent-text);font-size:calc(12.5 * var(--u));font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-.chip-grey{background:var(--fill);color:var(--label2);font-weight:500}
+.chip{display:inline-flex;align-items:center;height:calc(24 * var(--u));padding:0 calc(10 * var(--u));border-radius:999px;background:var(--accent-chip);color:var(--accent-text);font-size:calc(12.5 * var(--u));font-weight:600;font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* 灰 chip 只放中文标签（辑名、主题），没有数字：退回正文字体、不要 tabular-nums，否则「·」跟着换成系统字体变窄、标签发挤 */
+.chip-grey{background:var(--fill);color:var(--label2);font-weight:500;font-family:var(--font);font-variant-numeric:normal}
 .list{background:var(--glass);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
 .row{display:flex;align-items:center;gap:calc(14 * var(--u));padding:calc(12 * var(--u)) var(--pad);border-top:1px solid var(--sep);min-width:0;color:inherit}
 .row:first-child{border-top:0}
