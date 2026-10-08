@@ -186,28 +186,65 @@ function revealCard() {
 }
 
 /*
- * 拿不到 WebGL2 的机器（没显卡、浏览器又关了软件渲染）先探一下再说。不探也会落到原图，
- * 但 three 会先往控制台打两条 error 再抛错，而且白下了 three。参数照抄下面的渲染器，免得探的和真要的不是一回事。
+ * 拿 WebGL2 分两段（照岗岗 2026-09-23 的四家样板，desk-book.js 的 acquireContext），在下载 three 之前做：
+ *   1. 严参数（failIfMajorPerformanceCaveat: true，其余与原来交给 three 的一字不差）：有显卡的机器在这里拿到，画面与改前逐像素相同。
+ *   2. 被拒（没显卡的 Windows 走 WARP、没开 3D 加速的虚拟机），或给了但渲染器名是软件渲染（显式指定 SwiftShader 的 Chrome
+ *      严参数照给），就放宽这一条、关掉抗锯齿重取一块，走省力档。只关抗锯齿（软件渲染下多重采样纯吃 CPU），像素比、贴图、着色器、
+ *      几何都不动——画不许为性能牺牲。实测 SwiftShader、2040×1019@1.25：每帧 38–48 → 17–21 ms；再把像素比压到 1 只多省 4–5 ms，
+ *      画面却明显发糊（1x 的画布被拉到 1.25x 显示），所以不压。
+ *   3. 两段都拿不到（Chrome 122 起默认不给 SwiftShader 的 WebGL）：安静回原图，不下载 three、控制台不报错。
+ * 拿到的上下文连同画布一起交给 three（不让它再要一块）。每一段都用新画布：同一块画布 getContext 失败后能不能换参数重试，各浏览器说法不一。
  */
-function hasWebGL2() {
+const SOFTWARE_RENDERER = /swiftshader|llvmpipe|lavapipe|softpipe|software|basic render/i;
+const STRICT_CONTEXT = { alpha:true, depth:true, stencil:false, antialias:true, premultipliedAlpha:true, preserveDrawingBuffer:true, powerPreference:'low-power', failIfMajorPerformanceCaveat:true };
+const SOFT_CONTEXT = { ...STRICT_CONTEXT, antialias:false, failIfMajorPerformanceCaveat:false };
+function tryContext(attributes) {
   try {
-    const gl = document.createElement('canvas').getContext('webgl2', { antialias:true, alpha:true, preserveDrawingBuffer:true, powerPreference:'low-power' });
-    gl?.getExtension('WEBGL_lose_context')?.loseContext();
-    return Boolean(gl);
-  } catch { return false; }
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl2', attributes);
+    return gl ? { canvas, gl, attributes } : null;
+  } catch { return null; }
 }
+function rendererName(gl) {
+  try {
+    let name = String(gl.getParameter(gl.RENDERER) || '');
+    if (/^webkit webgl$/i.test(name)) {
+      const info = gl.getExtension('WEBGL_debug_renderer_info');
+      if (info) name = String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL) || name);
+    }
+    return name;
+  } catch { return ''; }
+}
+const loseContext = gl => { try { gl?.getExtension('WEBGL_lose_context')?.loseContext(); } catch { /* 已经没了也无妨 */ } };
+/** 返回 { canvas, gl, attributes, tier: 'full' | 'soft', stage, renderer }；两段都拿不到返回 null。 */
+function acquireContext() {
+  const strict = tryContext(STRICT_CONTEXT);
+  if (strict) {
+    const name = rendererName(strict.gl);
+    if (!SOFTWARE_RENDERER.test(name)) return { ...strict, tier:'full', stage:'strict', renderer:name };
+    const soft = tryContext(SOFT_CONTEXT);
+    if (!soft) return { ...strict, tier:'soft', stage:'strict', renderer:name };  // 换不到就将就用手里这块，档位照样按软件渲染算
+    loseContext(strict.gl);
+    return { ...soft, tier:'soft', stage:'loose', renderer:rendererName(soft.gl) || name };
+  }
+  const soft = tryContext(SOFT_CONTEXT);
+  return soft ? { ...soft, tier:'soft', stage:'loose', renderer:rendererName(soft.gl) } : null;
+}
+let graphics = null;
 
 async function init() {
   const response = await fetch('./card-config.json');
   if (!response.ok) throw new Error('无法读取卡片配置');
   config = await response.json(); metadata();
   await coverFirst();
-  if (!hasWebGL2()) throw new Error('这台设备拿不到 WebGL2');
+  graphics = acquireContext();
+  if (!graphics) throw Object.assign(new Error('这台设备拿不到 WebGL2'), { quiet:true });
   const modules = await Promise.all([import('three'), import('three/addons/loaders/GLTFLoader.js')]);
   THREE = modules[0]; const { GLTFLoader } = modules[1];
   scene = new THREE.Scene();
   camera = new THREE.OrthographicCamera(-5,5,5.65,-5.65,.1,100); camera.position.set(0,0,20);
-  renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true, preserveDrawingBuffer:true, powerPreference:'low-power' });
+  graphics.canvas.style.display = 'block';  // three 自己建画布时会加这一句，交给它的画布要自己补
+  renderer = new THREE.WebGLRenderer({ ...graphics.attributes, canvas:graphics.canvas, context:graphics.gl });
   renderer.setClearColor(0x08111e,0); renderer.setPixelRatio(Math.min(devicePixelRatio || 1,2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.domElement.setAttribute('aria-hidden','true'); stage.prepend(renderer.domElement);
@@ -275,7 +312,7 @@ async function init() {
   state.ready=true; $('loading').hidden=true; revealCard();
   for(const id of ['auto','flip','reset','foil','save',...depthControls.map(([id])=>id)])$(id).disabled=false;
   releaseImage();
-  window.__holo = {ready:true,config,renderer,scene,camera,root,uniforms,state,reset,flip,resize,modelSource:config.assets.model,artFit:[fitX,fitY],pressState};
+  window.__holo = {ready:true,config,renderer,scene,camera,root,uniforms,state,reset,flip,resize,modelSource:config.assets.model,artFit:[fitX,fitY],pressState,graphics:{tier:graphics.tier,stage:graphics.stage,renderer:graphics.renderer}};
   schedule();
 }
 
@@ -447,7 +484,7 @@ function showFallback(error){
 
   for(const id of ['auto','flip','reset','foil','save',...depthControls.map(([id])=>id)])$(id).disabled=true;
   window.__holo={ready:false,fallback:hasImage,error:String(error?.message||error),config};
-  console.warn('Card viewer fallback:',error);
+  if(!error?.quiet)console.warn('Card viewer fallback:',error);  // 拿不到 WebGL 是预料之中的分支，安静回原图
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frameId);frameId=0;previousTime=0;}else if(state.ready)schedule();});
 window.addEventListener('pagehide',event=>{
