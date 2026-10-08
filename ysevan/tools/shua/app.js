@@ -1,5 +1,5 @@
 /**
- * 刷刷 v3.14.1
+ * 刷刷 v3.14.2
  * Author: Ysevan
  * 仅限内部学习使用，请勿公开发布题库或源码。
  */
@@ -7,7 +7,7 @@
   "use strict";
 
   const projectInfo = window.PROJECT_INFO || {
-    version: "3.14.1",
+    version: "3.14.2",
     releaseDate: "2026-09-22",
     author: "Ysevan",
     classification: "仅限内部学习使用",
@@ -997,7 +997,7 @@
         </div>
         <div class="goal-panel">
           <div class="goal-ring" style="--progress:${percent * 3.6}deg"><div><strong${today.answered >= 1000 ? ' class="goal-count-long"' : ""}>${today.answered}</strong><span>今日已答</span></div></div>
-          <div class="goal-copy"><span class="goal-copy-today">今日已答 ${today.answered} · </span>每日目标${goal}题 · 完成${percent}%</div>
+          <div class="goal-copy"><span class="goal-copy-today">今日已答${today.answered} · </span>每日目标${goal}题 · 完成${percent}%</div>
         </div>
         ${metric("circle-check-big", "累计做题", stats.attempts, `覆盖${stats.answered}道`)}
         ${metric("target", "累计正确率", `${stats.accuracy}%`, stats.attempts ? "按全部作答统计" : "完成练习后生成")}
@@ -2296,7 +2296,7 @@
     const group = (kind, label) => {
       const members = items.map((item, index) => ({ item, index })).filter(({ item }) => item.kind === kind);
       if (!members.length) return "";
-      return `<div class="search-suggest-group" role="group" aria-label="${label}"><div class="search-suggest-label" aria-hidden="true">${label}</div>${members.map(({ item, index }) => `<div class="search-suggest-option" role="option" id="question-search-option-${index}" data-index="${index}" aria-selected="false"${item.kind === "bank" ? ` title="${escapeHtml(item.label)}"` : ""}><span class="search-suggest-text">${highlightMatch(item.label, token)}</span><span class="search-suggest-count">${item.count} 题</span></div>`).join("")}</div>`;
+      return `<div class="search-suggest-group" role="group" aria-label="${label}"><div class="search-suggest-label" aria-hidden="true">${label}</div>${members.map(({ item, index }) => `<div class="search-suggest-option" role="option" id="question-search-option-${index}" data-index="${index}" aria-selected="false"${item.kind === "bank" ? ` title="${escapeHtml(item.label)}"` : ""}><span class="search-suggest-text">${highlightMatch(item.label, token)}</span><span class="search-suggest-count">${item.count}题</span></div>`).join("")}</div>`;
     };
     list.innerHTML = group("bank", "题库") + group("keyword", "常用术语");
     list.hidden = false;
@@ -3210,7 +3210,7 @@
     const chips = (rows) => {
       const shown = rows.length > 3 ? rows.slice(0, 3) : rows;
       const rest = rows.slice(shown.length);
-      const more = rest.length ? `<span class="bank-chip is-more"><span>另 ${rest.length} 个题库 · ${rest.reduce((sum, row) => sum + row.answered, 0)} 题</span></span>` : "";
+      const more = rest.length ? `<span class="bank-chip is-more"><span>另${rest.length}个题库 · ${rest.reduce((sum, row) => sum + row.answered, 0)}题</span></span>` : "";
       return `<div class="bank-chips">${shown.map(chip).join("")}${more}</div>`;
     };
     const cellHead = (day) => `<span class="cell-day${day.today ? " is-today" : ""}">${day.label}<span class="cell-date">${day.date}</span></span>`;
@@ -3219,8 +3219,8 @@
       : `<div class="panel week-cell" data-date="${day.key}"><div class="cell-head">${cellHead(day)}${day.answered ? `<span class="cell-total">${day.answered}<small>题</small></span>` : ""}</div>${day.answered ? chips(day.rows) : ""}</div>`;
     const diff = week.answered - week.lastWeek;
     const notes = [
-      week.answered ? `${week.activeDays} 天有练习 · 正确率 ${week.accuracy}%` : current ? "本周还没有练习" : "这一周没有练习",
-      week.lastWeek ? (diff > 0 ? `比上周多 ${diff} 题` : diff < 0 ? `比上周少 ${-diff} 题` : "和上周一样") : "",
+      week.answered ? `${week.activeDays}天有练习 · 正确率${week.accuracy}%` : current ? "本周还没有练习" : "这一周没有练习",
+      week.lastWeek ? (diff > 0 ? `比上周多${diff}题` : diff < 0 ? `比上周少${-diff}题` : "和上周一样") : "",
     ].filter(Boolean);
     return `
       <section class="week-view" aria-label="按周回看">

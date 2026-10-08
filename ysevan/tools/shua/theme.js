@@ -1,5 +1,5 @@
 /*
- * 刷刷 v3.14.1 — 外观预置脚本（浅/深/自动 + 六个强调色）| Author: Ysevan | 仅限内部学习使用
+ * 刷刷 v3.14.2 — 外观预置脚本（浅/深/自动 + 六个强调色）| Author: Ysevan | 仅限内部学习使用
  *
  * 这个文件必须是外部脚本、必须同步加载、必须排在样式表 <link> 之前：
  * - 外部：本站的 CSP 是 script-src 'self'（serve.mjs / serve.ps1 / docker/nginx.conf 三处一致），

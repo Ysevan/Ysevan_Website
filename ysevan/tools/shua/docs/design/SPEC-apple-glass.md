@@ -20,7 +20,7 @@
 背景光晕：`body::before` 固定定位，三团 radial-gradient（blob1 跟强调色、blob2 暖色、blob3 冷色，透明度 .2–.55，blur 10px），深色下减弱。
 
 ### 2a. 紧急程度标签（2026-10-08，plan 层级改版时定，四家通用）
-屋主对照 SuperTodo 说「一眼不知道哪里是重点」，plan 诊断出的头号原因是：不急的日期（「明天」「还有 12 天」「10月20日」）用的是强调色软底 + 强调色字，和「逾期」一样大、一样粗、一样有颜色，远的和急的一样响。定下来：
+屋主对照 SuperTodo 说「一眼不知道哪里是重点」，plan 诊断出的头号原因是：不急的日期（「明天」「还有12天」「10月20日」）用的是强调色软底 + 强调色字，和「逾期」一样大、一样粗、一样有颜色，远的和急的一样响。定下来：
 - 日期标签只按「离截止还有几天」上色，四档：**逾期 = 红**、**今天截止 = 橙**、**两天内（明天、后天）= 黄**、**其余 = 灰**（`--fill` 底 + 次级字）。已完成 / 已归档的事一律灰。
 - **强调色不拿来标日期**，只留给「能点的东西」和进度条。
 - 一行里只有日期标签带颜色，其余标签（时间段、待重排、重要……）一律灰——一行里不出现第二套彩色语义。
@@ -30,6 +30,32 @@
 - `html[data-mode="light|dark|auto"]`（auto 跟 prefers-color-scheme）+ `html[data-accent="blue|green|indigo|orange|pink|teal"]`，默认 light + blue。
 - localStorage 两个键：`<项目>-mode`、`<项目>-accent`；头部同步脚本在样式表前设好，免闪色；theme-color 跟底色（浅 #F4F5F9 / 深 #0B0C10）。
 - 侧栏底部控件：分段控件（role=radiogroup）+ 六个色点（button + aria-pressed + aria-label 中文名，hover/焦点显示标签）。旧的六套粉彩键值一律回落默认。
+
+### 3a. 数字字体 `--font-num`（2026-10-08，star 写排版章时查出，plan 先落地，四家通用）
+- **规则**：凡是写了 `font-variant-numeric: tabular-nums` 的元素（大数字、件数胶囊、计数、日期 / 时间 chip、百分比），**同一条规则里必须指定 `font-family: var(--font-num)`**。
+  真正要等宽字形的（时间轴刻度、钟点、快捷键）用各家自己的等宽字族（plan 叫 `--font-mono`），不受这条影响。
+- **取值**：`--font-num: BlinkMacSystemFont, -apple-system, "Segoe UI", system-ui, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;`
+  前四个按「谁会先取到」排：Mac 上的 Chrome 认 `BlinkMacSystemFont`；Safari / iOS 认 `-apple-system`；Windows 取到 `"Segoe UI"`；安卓、Linux 走 `system-ui`。
+  元素里的中文仍落到后面同一串中文字族上，和正文一致。
+- **为什么**：家族字体栈中文字族打头（§5e 盘点），而**苹方在 Chrome 里不认 `tabular-nums` / `"tnum"`**，写了也照样跳：40px 600 下「1111」宽 65.6、「0000」宽 96.0；
+  Chrome 还**不认** `-apple-system` 和 `"SF Pro Text"`（按名字取不到，退回苹方，宽度与苹方一模一样）。`BlinkMacSystemFont` 与 `system-ui` 打头时「1111」「0000」「8888」都是 102.7。
+  所以栈里不放 `"SF Pro Text"`（实测没用）。
+- **量法**：在目标浏览器里造一个 span，套上元素的 font-family / size / weight 和 `tabular-nums`，依次放「1111」「0000」「8888」量宽度，三者差 ≤0.5px 才算等宽。
+  plan 的两支脚本：`~/.ysevan-verify/plan/tnum/stacks.mjs`（候选栈逐个量）、`~/.ysevan-verify/plan/tnum/page.mjs`（页面上每类写了 tabular-nums 的元素逐个量，有一类会跳就退出码 1）。
+  plan 另有源码护栏 `app/src/styles/fontNum.test.ts`：写了 tabular-nums 而同一块没指定 `--font-num` / `--font-mono` 就红。
+- **Windows 还没实测**（本机只有 Mac）。按字体本身，Segoe UI 的数字默认就是等宽的；第一次在屋主的 Windows 上打开时用上面的量法核一次再把这句删掉。
+  核的办法：共享盘工作区根目录的「数字等宽诊断.html」，屋主在 Windows 台式机上双击打开，页上直接写「等宽 / 会跳」，自带 proportional-nums 阳性对照。
+- **等宽字族**（2026-10-08 控制室实测补）：Mac 上的 Chrome **按名字取不到** `ui-monospace` 和 `"SF Mono"`，Mac 上也**没有** Consolas。
+  栈里在 `monospace` 前面写了 `"Courier New"`，就会真的落到 Courier New（打字机衬线字形），而不是想要的苹果等宽字。
+  **规则**：等宽栈要么在 `"SF Mono"` 后面写上 `Menlo`，要么干脆不写 `"Courier New"`、直接落到 `monospace`（Chrome 在 Mac 上默认就是 Menlo）。
+  plan 的 `--font-mono`（`"SF Mono", ui-monospace, "Roboto Mono", monospace`）属于后一种，没事。
+  证据：`~/.ysevan-verify/control/mono-probe.mjs`，用 CDP 的 `CSS.getPlatformFontsForNode` 看实际画字的字体，明写 `Menlo`、明写 `"Courier New"` 两个阳性对照都报对了才算数。
+- **界面文案：数字与中文之间不加空格**（家族设计契约，屋主 2026-08-26 裁定、2026-09-27 确认；2026-10-08 写进本规格）。
+  写「逾期3天」「共15项」「约5.8小时」「收到2026-09-20」，不写「逾期 3 天」。「 · 」这类分隔符两边的空格照留；「标签 + 名字」（如无障碍名「删除附件 报表.pdf」）不归这条管。
+  CSS 撑出来的空隙（flex 的 gap、margin）在标签和数字之间也算空格，一样不要。
+  **判据**：扫源码里**界面上会显示出来的文字**——字符串、模板串、JSX 文本——测试文件和注释除外；「汉字 空格 数字」「数字 空格 汉字」、插值紧挨汉字隔空格、标签和数字之间只隔空格，一律判红。
+  **不归这条管的源**（控制室 2026-10-08 定）：照搬的原文（题库、员工手册条文、小屋的文章与随笔正文、出处里引用的原话）和 docs 里的样张（作废样张保留原样）。豁免在判据里逐个文件列名，不用通配。
+  plan 的实现：`app/src/numberSpacing.test.ts`（用 rolldown 自带的 oxc 解析器走语法树；TypeScript 7 没有 JS 接口）。各家照同一口径各写一份。
 
 ## 4. 自适应（屋主明确要求）
 - 字号、间距、侧栏宽全部 `clamp()` 随视口插值（样张 `:root` 里那组 --fs-*/--gap/--pad/--side-w）。
@@ -153,6 +179,7 @@
 | card | `--fill` | 白兑 ink 11% / 深底兑 20% | 浅 `#DCDDE1`（**底 `#F4F5F9`** 兑 ink 11%，不是白）；深 `#393A3E`（与共用一致） | 值的算法写在 `theme.css`「底 #F4F5F9 与 ink 兑 11%」；**为什么用底不用白，未找到出处** |
 | 刷刷 | 字体栈 | 中文字体在前（本规格没写字体，四家共用的是小屋规格附录 A.1 `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", …`） | **系统 UI 在前**：`-apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", …` | 刷刷 `CHANGELOG.md`「字体栈改成中文在前（家族契约 A.1）」一条：试改后 Mac / iPhone 上做题页「↑ ↓ ← →」改由苹方出字、间距不匀，按「明显变难看就停下来报」撤回；控制室 2026-09-28 裁定不改（另见中点「·」变宽，屋主要好看）。Windows 上前几个字体都取不到、一律微软雅黑，只影响苹果设备 |
 | 刷刷 | 深色 `--accent-2` | 同 plan 那行 | 蓝 `#64D2FF` 绿 `#B4EC70` 靛 `#C97BFF` 橙 `#FFD426` 粉 `#FFA0A8` 青 `#70D7F7` | **未找到出处**（`design-proposal.md` 只列了值与白字比值）；推测同样是按 §5 ①②「按同样亮度配」自配 |
+| 刷刷 | 黄色 | 只用于两天内到期（§2a） | 题库分类色里有一个库用 `#FFCC00` | 那是题库标识色；刷刷没有截止日期，不会和到期混淆。控制室 10-08 定 |
 
 与共用值一致、不算偏离的（盘点时核过）：plan、岗岗、card 的字体栈（中文字体在前）；刷刷的次级字 .76 / .62、`--fill` `#E6E6E6` / `#393A3E`、`--shadow`、11px 分组小标题、默认蓝；
 岗岗的次级字、默认蓝；card 的 `--shadow`；岗岗与 card 的深色 `--accent-2`（等于样张在深色下实际生效的值：蓝 `#64D2FF`，其余五色沿用浅色那组

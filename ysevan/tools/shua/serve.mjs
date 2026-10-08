@@ -1,4 +1,4 @@
-// 刷刷 v3.14.1 — macOS / Node.js 本地静态服务
+// 刷刷 v3.14.2 — macOS / Node.js 本地静态服务
 // 只暴露运行刷刷所需的白名单文件，不提供目录浏览。
 
 import { spawn } from "node:child_process";

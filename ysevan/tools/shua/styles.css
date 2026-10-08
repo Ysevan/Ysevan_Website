@@ -98,7 +98,7 @@
      整套做法是「等比放大、构图不变」：字号、间距、圆角、图标、控件高度、侧栏宽一起乘 --u，
      等比公式与 card / plan 一致：--u = clamp(1440px, 100vw, 2088px) / 1440，1440 及以下恰为 1px，
      2040（屋主 Windows 实际视口，DPR 1.25）为 1.4167px，2088 起封顶 1.45px。曾用过的「1440→2560 线性爬坡到 1.45」
-     只在两个端点和等比重合，2040 处小 14%，就是屋主说「和 Mac 差距大」的来源。
+     只在两个端点和等比重合，2040 处比等比小约 12.4%（1.241 对 1.417），就是屋主说「和 Mac 差距大」的来源。
      不乘 --u 的：媒体查询断点、1px 分隔线与亮线、backdrop-filter 的 blur、光晕的 vw 尺寸。 */
   --u: calc(clamp(1440px, 100vw, 2088px) / 1440);
   /* 这组 clamp 只管 1440 及以下：随视口插值，下端封底，窄屏与 3.11.0 完全一致。
@@ -115,6 +115,10 @@
   --topbar-h: calc(56 * var(--u));
   --safe-top: env(safe-area-inset-top, calc(0 * var(--u)));
   --mobile-nav-h: calc(calc(62 * var(--u)) + env(safe-area-inset-bottom, calc(0 * var(--u))));
+  /* 数字字体（SPEC §3a，plan 769b07a 落地、四家通用）：写了 tabular-nums 的规则同一块都要用它。苹方在 Chrome 里不认 tabular-nums，
+     这一串前四个按「谁先取到」排：Mac 的 Chrome 认 BlinkMacSystemFont、Safari / iOS 认 -apple-system、Windows 取到 Segoe UI、安卓走 system-ui；
+     中文仍落到后面同一串中文字族上。照 §3a 原样取值，不跟上面刷刷自己的字体栈（那是 §5e 记的偏离）。 */
+  --font-num: BlinkMacSystemFont, -apple-system, "Segoe UI", system-ui, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
 }
 
@@ -390,7 +394,7 @@ html[data-mode="dark"] .accent-option[data-accent="teal"] { --dot: var(--c-teal-
 .mode-text { flex: 1 1 auto; min-width: 0; }
 .mode-text strong { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mode-text span { display: block; margin-top: calc(1 * var(--u)); color: var(--label2); font-size: calc(12.5 * var(--u)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mode-badge { flex: 0 0 auto; padding: calc(2 * var(--u)) calc(9 * var(--u)); border-radius: calc(999 * var(--u)); background: var(--fill); color: var(--label2); font-size: calc(12.5 * var(--u)); font-variant-numeric: tabular-nums; }
+.mode-badge { flex: 0 0 auto; padding: calc(2 * var(--u)) calc(9 * var(--u)); border-radius: calc(999 * var(--u)); background: var(--fill); color: var(--label2); font-size: calc(12.5 * var(--u)); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .mode-chev { flex: 0 0 auto; color: var(--label3); }
 .mode-chev svg { width: calc(18 * var(--u)); height: calc(18 * var(--u)); stroke: currentColor; }
 .mode-grid { display: block; }
@@ -436,7 +440,7 @@ html[data-mode="dark"] .accent-option[data-accent="teal"] { --dot: var(--c-teal-
 .resume-item:hover { background: var(--fill); }
 .resume-item:focus-visible { outline-offset: -2px; }
 .resume-item strong { flex: 1 1 auto; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.resume-item span { flex: 0 0 auto; color: var(--label2); font-size: calc(12 * var(--u)); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.resume-item span { flex: 0 0 auto; color: var(--label2); font-size: calc(12 * var(--u)); font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .metric { padding: var(--pad); min-width: 0; }
 .metric-head { display: flex; align-items: center; justify-content: space-between; gap: calc(8 * var(--u)); color: var(--label2); font-size: calc(13 * var(--u)); }
 .metric-head svg { width: calc(17 * var(--u)); height: calc(17 * var(--u)); flex: 0 0 auto; stroke: currentColor; }
@@ -499,7 +503,7 @@ textarea { padding: calc(12 * var(--u)); line-height: 1.6; resize: vertical; }
 .quiz-top { display: grid; grid-template-columns: auto minmax(calc(120 * var(--u)), 1fr) auto; align-items: center; gap: calc(16 * var(--u)); margin-bottom: calc(20 * var(--u)); }
 .quiz-progress { height: calc(8 * var(--u)); border-radius: var(--r-xs); background: var(--fill); overflow: hidden; }
 .quiz-progress span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
-.quiz-count, .quiz-timer { color: var(--label2); font-size: calc(13 * var(--u)); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.quiz-count, .quiz-timer { color: var(--label2); font-size: calc(13 * var(--u)); font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .quiz-timer { text-align: center; margin-top: calc(12 * var(--u)); }
 .question-surface { min-height: calc(520 * var(--u)); padding: var(--pad) calc(var(--pad) + calc(6 * var(--u))); display: flex; flex-direction: column; overflow: hidden; touch-action: pan-y; }
 .swipe-stage { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; contain: paint; border-radius: var(--r-lg); }
@@ -645,7 +649,7 @@ textarea { padding: calc(12 * var(--u)); line-height: 1.6; resize: vertical; }
 .search-suggest-option.is-active { background: var(--accent-tint); color: var(--accent-text); }
 .search-suggest-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .search-suggest-text mark { background: none; color: inherit; font-weight: 700; }
-.search-suggest-count { flex: 0 0 auto; color: var(--label2); font-size: calc(12 * var(--u)); font-variant-numeric: tabular-nums; }
+.search-suggest-count { flex: 0 0 auto; color: var(--label2); font-size: calc(12 * var(--u)); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .search-suggest-option.is-active .search-suggest-count { color: var(--accent-text); }
 .search-result-count { color: var(--label2); font-size: calc(13 * var(--u)); }
 .question-search-results { margin-top: calc(18 * var(--u)); display: grid; gap: calc(12 * var(--u)); }
@@ -743,9 +747,10 @@ textarea { padding: calc(12 * var(--u)); line-height: 1.6; resize: vertical; }
 .seg:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* 按周回看：汇总一格 + 周一到周日七格，共 8 格；手机 2×4、≥901 用 4×2，正好填满。
-   日期格里每个题库一块色块（色值见 app.js BANK_CHIP_COLORS），一天最多 4 行，所以格子高度有上限。 */
+   日期格里每个题库一块色块（色值见 app.js BANK_CHIP_COLORS），一天最多 4 行，所以格子高度有上限。
+   「51题」「30题」数字和单位之间不留空隙（SPEC §3a：CSS 撑出来的空隙也算空格）；「周一 21」星期和日号之间的 gap 保留，两个各自完整的词组（控制室 10-08 定）。 */
 .week-head { display: flex; align-items: center; justify-content: space-between; gap: calc(10 * var(--u)); margin-bottom: var(--gap); }
-.week-head .week-range { font-weight: 600; font-size: calc(15 * var(--u)); letter-spacing: .01em; font-variant-numeric: tabular-nums; }
+.week-head .week-range { font-weight: 600; font-size: calc(15 * var(--u)); letter-spacing: .01em; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .week-step { width: calc(34 * var(--u)); height: calc(34 * var(--u)); padding: 0; border-radius: 50%; border: 1px solid var(--glass-edge); background: var(--glass); display: grid; place-items: center; color: var(--label); cursor: pointer; }
 .week-step[disabled] { opacity: .35; cursor: default; }
 .week-step svg { width: calc(17 * var(--u)); height: calc(17 * var(--u)); stroke: currentColor; }
@@ -754,15 +759,15 @@ textarea { padding: calc(12 * var(--u)); line-height: 1.6; resize: vertical; }
 .week-cell.is-empty { opacity: .55; }
 .cell-head { display: flex; align-items: center; justify-content: space-between; gap: calc(6 * var(--u)); }
 .cell-day { display: flex; align-items: center; gap: calc(6 * var(--u)); font-size: calc(13 * var(--u)); color: var(--label2); }
-.cell-date { font-size: calc(13 * var(--u)); color: var(--label3); font-variant-numeric: tabular-nums; }
+.cell-date { font-size: calc(13 * var(--u)); color: var(--label3); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .cell-day.is-today { color: var(--accent-text); font-weight: 600; }
 .cell-day.is-today .cell-date { width: calc(22 * var(--u)); height: calc(22 * var(--u)); border-radius: 50%; background: linear-gradient(135deg, var(--btn-from), var(--btn-to)); color: #fff; display: grid; place-items: center; font-weight: 600; }
-.cell-total { font-size: calc(13 * var(--u)); font-weight: 600; font-variant-numeric: tabular-nums; }
-.cell-total small { color: var(--label3); font-weight: 400; margin-left: calc(3 * var(--u)); }
+.cell-total { font-size: calc(13 * var(--u)); font-weight: 600; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.cell-total small { color: var(--label3); font-weight: 400; }
 .bank-chips { display: flex; flex-direction: column; gap: calc(5 * var(--u)); min-height: 0; }
 .bank-chip { color: var(--chip-l); background: color-mix(in srgb, var(--chip-base) 14%, transparent); display: flex; align-items: center; justify-content: space-between; gap: calc(8 * var(--u)); padding: calc(6 * var(--u)) calc(9 * var(--u)); border-radius: var(--r-xs); font-size: calc(12 * var(--u)); font-weight: 600; line-height: 1.2; }
 .bank-chip > span { min-width: 0; overflow-wrap: anywhere; }
-.bank-chip b { font-weight: 600; font-variant-numeric: tabular-nums; opacity: .85; }
+.bank-chip b { font-weight: 600; font-family: var(--font-num); font-variant-numeric: tabular-nums; opacity: .85; }
 .bank-chip.is-more { color: var(--label); background: var(--fill); font-weight: 400; }
 html[data-mode="dark"] .bank-chip:not(.is-more) { color: var(--chip-d); background: color-mix(in srgb, var(--chip-base) 20%, transparent); }
 @media (prefers-color-scheme: dark) {
@@ -771,8 +776,8 @@ html[data-mode="dark"] .bank-chip:not(.is-more) { color: var(--chip-d); backgrou
 .week-sum { position: relative; overflow: hidden; }
 .week-sum::after { content: ""; position: absolute; right: calc(-40 * var(--u)); top: calc(-50 * var(--u)); width: calc(190 * var(--u)); height: calc(190 * var(--u)); border-radius: 50%; background: radial-gradient(circle, var(--accent-soft), transparent 70%); pointer-events: none; }
 .week-sum .sum-label { font-size: calc(13 * var(--u)); color: var(--label2); }
-.week-sum .sum-main { display: flex; align-items: baseline; gap: calc(4 * var(--u)); margin: calc(4 * var(--u)) 0 calc(6 * var(--u)); }
-.week-sum .sum-main strong { font-size: calc(34 * var(--u)); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.week-sum .sum-main { display: flex; align-items: baseline; margin: calc(4 * var(--u)) 0 calc(6 * var(--u)); }
+.week-sum .sum-main strong { font-size: calc(34 * var(--u)); font-weight: 700; line-height: 1; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .week-sum .sum-main span { font-size: calc(15 * var(--u)); color: var(--label2); }
 .week-sum .sum-note { margin: 0; color: var(--label2); font-size: calc(12 * var(--u)); line-height: 1.55; }
 @media (min-width: 901px) {
@@ -885,7 +890,7 @@ html[data-mode="dark"] .bank-chip:not(.is-more) { color: var(--chip-d); backgrou
 .update-notice { position: fixed; left: 50%; bottom: calc(28 * var(--u)); z-index: 101; transform: translateX(-50%); display: flex; align-items: center; gap: calc(10 * var(--u)); max-width: calc(100% - calc(28 * var(--u))); padding: calc(10 * var(--u)) calc(10 * var(--u)) calc(10 * var(--u)) calc(16 * var(--u)); border-radius: var(--r-sm); color: var(--label); background: var(--glass-strong); box-shadow: var(--shadow-lifted); -webkit-backdrop-filter: blur(24px) saturate(160%); backdrop-filter: blur(24px) saturate(160%); font-size: calc(13 * var(--u)); }
 .update-notice[hidden] { display: none; }
 .update-notice .button { min-height: calc(32 * var(--u)); padding: calc(6 * var(--u)) calc(12 * var(--u)); font-size: calc(13 * var(--u)); }
-.metric strong, .goal-ring strong, .sidebar-goal-line strong, .bar-row strong, .summary-metrics strong, .summary-score strong, .quiz-count { font-variant-numeric: tabular-nums; }
+.metric strong, .goal-ring strong, .sidebar-goal-line strong, .bar-row strong, .summary-metrics strong, .summary-score strong, .quiz-count { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 
 /* ── 更多面板：600–900 从顶栏下拉，≤600 从底部导航上方弹出，两处同一个节点 ── */
 .mobile-more-sheet { display: none; }
