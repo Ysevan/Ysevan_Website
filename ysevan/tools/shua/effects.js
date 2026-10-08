@@ -7,7 +7,7 @@
   // 3.11.2 起加载的是经典脚本 bundle（IIFE，全局名 __shuaFx3d），不是 ES module：
   // 浏览器对 file:// 禁用 ES module，屋主在手机上只能直接双击 index.html，import() 在那里必然失败。
   // 经典脚本用 <script src> 注入，http 与 file:// 走同一条路。CSP 是 script-src 'self'，同源脚本放行。
-  const BUNDLE_URL = "./effects-3d.bundle.js?v=3.13.2";
+  const BUNDLE_URL = "./effects-3d.bundle.js?v=3.14.0";
   const GLOBAL_NAME = "__shuaFx3d";
   const PREFERENCE_KEY = "shua-fx-3d";
   const TIER_KEY = "shua-fx-tier";

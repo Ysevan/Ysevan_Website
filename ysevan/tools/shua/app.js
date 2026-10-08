@@ -1,5 +1,5 @@
 /**
- * 刷刷 v3.13.2
+ * 刷刷 v3.14.0
  * Author: Ysevan
  * 仅限内部学习使用，请勿公开发布题库或源码。
  */
@@ -7,7 +7,7 @@
   "use strict";
 
   const projectInfo = window.PROJECT_INFO || {
-    version: "3.13.2",
+    version: "3.14.0",
     releaseDate: "2026-09-22",
     author: "Ysevan",
     classification: "仅限内部学习使用",
@@ -2086,16 +2086,40 @@
     if (!lastSummary) return navigate("home");
     const score = lastSummary.maxScore ? lastSummary.score : (lastSummary.total ? Math.round(lastSummary.correct / lastSummary.total * 100) : 0);
     const scoreLabel = lastSummary.maxScore ? `得分 / ${lastSummary.maxScore}` : "正确率";
+    const ratio = Math.min(1, Math.max(0, lastSummary.maxScore ? (lastSummary.score || 0) / lastSummary.maxScore : (lastSummary.total ? lastSummary.correct / lastSummary.total : 0)));
+    const ringOffset = Math.round((1 - ratio) * 10000) / 100;
     view.innerHTML = `<section class="panel summary">
       <span class="tag type">${escapeHtml(lastSummary.title)}</span><h1>本次练习完成</h1>
       <div class="fx-slot fx-slot-summary" data-fx-slot="summary" aria-hidden="true"></div>
-      <div class="summary-score"><div><strong>${score}</strong><span>${scoreLabel}</span></div></div>
+      <div class="summary-score" data-score="${score}"><svg class="summary-ring" viewBox="0 0 154 154" aria-hidden="true" focusable="false"><circle class="summary-ring-track" cx="77" cy="77" r="71"></circle>${ratio > 0 ? `<circle class="summary-ring-value" cx="77" cy="77" r="71" pathLength="100" stroke-dashoffset="${ringOffset}" data-offset="${ringOffset}"></circle>` : ""}</svg><div><strong><span class="summary-score-roll" aria-hidden="true">${score}</span><span class="sr-only">${score}</span></strong><span>${scoreLabel}</span></div></div>
       <div class="summary-metrics"><div><strong>${lastSummary.total}</strong><span>答题数</span></div><div><strong>${lastSummary.correct}</strong><span>答对</span></div><div><strong>${formatSeconds(lastSummary.duration)}</strong><span>用时</span></div></div>
       <div class="summary-actions"><button class="button secondary" data-nav="home"><i data-lucide="house"></i>返回首页</button>${lastSummary.wrongIds.length ? '<button class="button primary" data-action="retrySummary"><i data-lucide="rotate-ccw"></i>重练本次错题</button>' : ""}</div>
       ${lastSummary.wrongQuestions?.length ? `<section class="summary-wrong-review"><div class="section-title"><h2>错题回顾</h2><span>${lastSummary.wrongQuestions.length}道</span></div><p>已展示本次作答、正确答案和题目解析；未作答的题也会列在这里。</p>${lastSummary.wrongQuestions.map((item, index) => renderSummaryWrongQuestion(item, index)).join("")}</section>` : ""}
     </section>`;
     icons();
+    animateSummaryScore(view.querySelector(".summary-score"));
     fx("page", "summary", { total: lastSummary.total, correct: lastSummary.correct, title: lastSummary.title });
+  }
+
+  // 结算页分数圈的入场：圆环沿 stroke-dashoffset 从空画到「得分 / 满分」，中心数字同步从 0 滚到得分（3.14.0，借设计合集「圆环计数弹出」的圆环那一半）。
+  // 终态已经写在 HTML 里（环的 dashoffset、数字、给读屏的隐藏文字），这里只是从 0 播到终态；减弱动态效果、不支持 WAAPI 时什么都不做。
+  // 滚动的那个数字是 aria-hidden：#view 是 aria-live 区域，逐帧改字会被读屏一遍遍念。
+  // 数字的进度读动画自己的 getComputedTiming().progress（已经套过 easing），和环走同一条曲线、同一个时钟。
+  function animateSummaryScore(scoreEl) {
+    const ring = scoreEl?.querySelector(".summary-ring-value");
+    const roll = scoreEl?.querySelector(".summary-score-roll");
+    if (!ring || !roll || prefersReducedMotion() || typeof ring.animate !== "function") return;
+    const target = Number(scoreEl.dataset.score) || 0;
+    const animation = ring.animate([{ strokeDashoffset: 100 }, { strokeDashoffset: Number(ring.dataset.offset) || 0 }], { duration: 1200, easing: "cubic-bezier(.2, .7, .2, 1)" });
+    roll.textContent = "0";
+    const tick = () => {
+      if (!roll.isConnected) { animation.cancel(); return; }
+      const progress = animation.effect?.getComputedTiming().progress;
+      if (progress == null || animation.playState === "finished") { roll.textContent = String(target); return; }
+      roll.textContent = String(Math.round(target * progress));
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   }
 
   function renderSummaryWrongQuestion(item, index) {

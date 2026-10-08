@@ -242,6 +242,8 @@ button, input, select, textarea { font: inherit; letter-spacing: 0; color: var(-
 button { cursor: pointer; }
 h1, h2, h3 { letter-spacing: calc(-.2 * var(--u)); }
 .file-picker { position: fixed; width: calc(1 * var(--u)); height: calc(1 * var(--u)); opacity: 0; pointer-events: none; clip-path: inset(50%); }
+/* 只给读屏软件的文字（看不见、不占位）。 */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .file-picker-button { cursor: pointer; }
 button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, summary:focus-visible, label:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .muted { color: var(--label2); }
@@ -826,9 +828,21 @@ html[data-mode="dark"] .bank-chip:not(.is-more) { color: var(--chip-d); backgrou
 
 /* ── 结算 ─────────────────────────────────────────────────────────────────── */
 .summary { max-width: calc(680 * var(--u)); margin: calc(30 * var(--u)) auto; text-align: center; }
-.summary-score { width: calc(154 * var(--u)); height: calc(154 * var(--u)); margin: calc(20 * var(--u)) auto; border-radius: 50%; border: 12px solid var(--accent-tint); display: grid; place-items: center; }
+/* 结算页是长面板：错题多时一条条排下来（模拟考 60 道错题，四档实测 6.9–9 屏高），照「长面板不加 backdrop-filter」的规矩
+   用 --glass-strong 当底、不模糊；里面的错题卡压在近乎不透明的底上，各自的模糊看不出来、只剩开销，一并去掉。
+   2040@1.25 软件渲染滚动实测：原样帧间隔中位 66.7ms，只去面板 33.3ms，连错题卡一起去 16.7ms（3.14.0）。 */
+.panel.summary { background: var(--glass-strong); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.summary .summary-wrong-item { -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* 分数圈：灰轨道上用强调色按「得分 / 满分」画一段弧，12 点钟起顺时针。pathLength=100，dashoffset = 100 − 百分比。
+   描边宽 12 是 viewBox 单位，跟着圈一起按 --u 放大。入场动画在 app.js 的 animateSummaryScore()。 */
+.summary-score { position: relative; width: calc(154 * var(--u)); height: calc(154 * var(--u)); margin: calc(20 * var(--u)) auto; display: grid; place-items: center; }
+.summary-ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.summary-ring circle { fill: none; stroke-width: 12; }
+.summary-ring-track { stroke: var(--accent-tint); }
+.summary-ring-value { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 100; }
+.summary-score > div { position: relative; }
 .summary-score strong { font-size: calc(42 * var(--u)); color: var(--accent-text); }
-.summary-score span { display: block; color: var(--label2); font-size: calc(12 * var(--u)); }
+.summary-score > div > span { display: block; color: var(--label2); font-size: calc(12 * var(--u)); }
 .summary-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(10 * var(--u)); margin: calc(25 * var(--u)) 0; }
 .summary-metrics div { padding: calc(14 * var(--u)); background: var(--accent-tint); border-radius: var(--r-sm); }
 .summary-metrics strong { display: block; font-size: calc(20 * var(--u)); }
