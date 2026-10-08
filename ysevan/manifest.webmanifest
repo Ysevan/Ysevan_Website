@@ -2,7 +2,7 @@
   "id": "/ysevan/",
   "name": "Ysevan的小屋",
   "short_name": "小屋",
-  "description": "门没锁，随便逛。屋里摆着几件自己做的工具，和一些随手写的随笔。",
+  "description": "Ysevan的个人小站，放着几件自己做的小工具，还有平时写的随笔。",
   "start_url": "/ysevan/",
   "scope": "/ysevan/",
   "display": "standalone",

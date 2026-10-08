@@ -1,0 +1,1 @@
+import{r as e}from"./framework-D3uuXjLH.js";var t=`/ysevan/_next/static/media/MaShanZheng-xiaowu.Dem0R-v7.woff2`,n=e();function r(){return(0,n.jsx)(`link`,{rel:`preload`,href:t,as:`font`,type:`font/woff2`,crossOrigin:`anonymous`})}export{r as KaiFontPreload};

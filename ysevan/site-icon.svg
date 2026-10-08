@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ysevan的小屋">
   <title>Ysevan的小屋</title>
-  <desc>珍珠白纸底上的橄榄绿屋形线稿，与顶栏站名左侧的图标同源。</desc>
+  <desc>浅色底上一个橄榄绿线条的小房子图标。</desc>
   <!--
     manifest 把这一个文件同时声明为 purpose="any" 与 purpose="maskable"，所以底色必须满幅铺满
     （不能像旧图标那样切圆角留出透明四角，否则 Android 套自家蒙版时会露出缺口）。

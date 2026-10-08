@@ -12,8 +12,10 @@
 # X-Download-Options 只对 IE8 有用，不再发；Permissions-Policy 里不写 ambient-light-sensor（Chrome 报不认识的特性）。
 # Pages 默认给所有响应加 Access-Control-Allow-Origin: *，小屋用不着跨源读取，用 ! 摘掉。
 #
-# deploy:check 钉着这份文件的契约：没有 CSP 行、只有 /ysevan/ 开头的规则、HSTS 的写法、工具那一组的摘除项。
-# 限额：Pages 最多 100 条规则、每行 2000 字符。
+# deploy:check 钉着这份文件的契约：没有 CSP 行、只有 /ysevan/ 开头的规则、每条规则的路径里最多一个 *、HSTS 的写法、
+# 工具那一组的摘除项、卡集那三条（只许加 X-Robots-Tag / Cache-Control，不许摘或改任何安全头）。
+# 限额：Pages 最多 100 条规则、每行 2000 字符；一条规则的路径里有两个 * 时 Pages 会一声不吭跳过整条（本机 wrangler pages dev 报 invalid header rule）。
+# 这份文件**整份覆盖** old 仓库根目录的 _headers（2026-10-08 起，见文件末尾卡集那一段）。
 
 /ysevan/*
   X-Frame-Options: DENY
@@ -41,7 +43,10 @@
 /ysevan/_next/static/*
   Cache-Control: public, max-age=31536000, immutable
 
-# ——以下由 old 这边加，小屋那份 deploy/old-root/_headers 里没有；以后用小屋的新版覆盖这份文件时，要把这一段接回来（old/说明.md「根目录 _headers」一节）——
+# 卡集（/ysevan/tools/card/）的三条规则：出处是 old 5c65e47 根目录 _headers 末尾那一段，由 old 那边加的，下面原样并进来
+# （控制室 2026-10-08 定：这份文件以后整份覆盖 old 根的 _headers，不再要 old 那边「接回来」；卡集规则以后要改，
+# 由 old 或卡集窗口告诉小屋，改小屋这份）。它们只加 X-Robots-Tag 与 Cache-Control，不摘、不改上面任何一个安全头（deploy:check 钉着）。
+# 以下三段注释与规则照 old 5c65e47 原文：
 # 卡集（/ysevan/tools/card/，tools/card 的 npm run export-old 产物）：照 card.ysevan.com 原来的口径防收录，
 # 卡面高清图和 vendor 带不了内容哈希，给一周缓存（控制室 2026-10-08 定）。
 # Pages 一条规则只许一个 *，卡名那一级用具名占位 :card（写成 cards/*/web/* 会被 Pages 整条跳过，本机 wrangler 实测报错）。
