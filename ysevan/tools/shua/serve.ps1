@@ -1,5 +1,5 @@
-﻿# 刷刷 v3.14.0
-# Release: v3.14.0
+﻿# 刷刷 v3.14.1
+# Release: v3.14.1
 # Author: Ysevan
 # 仅限内部学习使用，请勿公开发布题库或源码。
 param(
