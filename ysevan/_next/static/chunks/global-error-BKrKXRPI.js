@@ -1,4 +1,4 @@
-import{r as e}from"./rolldown-runtime-hePW80VL.js";import{i as t,r as n}from"./framework-D3uuXjLH.js";import{t as r}from"./link-Dd3ySV-l.js";var i=e(t(),1),a=n(),o=`@media (prefers-color-scheme: dark) {
+import{r as e}from"./rolldown-runtime-hePW80VL.js";import{i as t,r as n}from"./framework-D3uuXjLH.js";import{t as r}from"./link-Dt7Z5gk-.js";var i=e(t(),1),a=n(),o=`@media (prefers-color-scheme: dark) {
   .xw-ge-page { background: #15171B !important; color: #E7E1D0 !important; }
   .xw-ge-card { background: rgba(29, 32, 37, 0.96) !important; border-color: #353941 !important; box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45) !important; }
   .xw-ge-bar { background: #CCBC8F !important; }
