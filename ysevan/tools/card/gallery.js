@@ -135,7 +135,7 @@ function buildGrid(list) {
   }
   grid.replaceChildren(fragment);
   const count = document.querySelector('#collection-count');
-  if (count) count.textContent = `${list.length} 枚收藏`;
+  if (count) count.textContent = `${list.length}枚收藏`;
 }
 
 function showGrid() {
