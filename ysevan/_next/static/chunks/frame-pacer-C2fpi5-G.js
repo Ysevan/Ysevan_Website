@@ -1,0 +1,1 @@
+var e=1e3/30;function t(){let t=0;return{ready(n){return t&&n<t-4?!1:(t=t&&n-t<33.333333333333336?t+e:n+e,!0)},reset(){t=0}}}export{t};
