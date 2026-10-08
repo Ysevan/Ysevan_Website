@@ -115,7 +115,7 @@ varying vec3 vNormal;
 varying vec3 vView;
 #endif
 
-/* 4×4 Bayer 有序抖动的阈值，0 到 15/16：由 2×2 的那一张递推。 */
+/* 4×4 Bayer 有序抖动的阈值，0到15/16：由2×2的那一张递推。 */
 float bayer2(vec2 a) {
   a = floor(a);
   return fract(a.x / 2.0 + a.y * a.y * 0.75);
@@ -181,8 +181,8 @@ float ink(vec2 p, float px) {
 
 void main() {
   /*
-   * ⑦ 屏幕门淡入淡出。阈值用 4×4 Bayer：按屏幕像素取、不随物件移动；一半透明时正好是棋盘格，
-   * 在 1 倍像素比的屏上也读作均匀的一层灰，不像噪声阈值那样拉出斜纹。uFadeFlip 把阈值倒过来（见文件头 ⑦）。
+   * ⑦ 屏幕门淡入淡出。阈值用4×4 Bayer：按屏幕像素取、不随物件移动；一半透明时正好是棋盘格，
+   * 在1倍像素比的屏上也读作均匀的一层灰，不像噪声阈值那样拉出斜纹。uFadeFlip 把阈值倒过来（见文件头 ⑦）。
    * 放在最前面，丢掉的片元后面的活一样都不用干。
    */
   if (uFade < 1.0) {
@@ -213,7 +213,7 @@ void main() {
 
   /*
    * 贴图在分支外采样：mipmap 要靠相邻像素的导数，放进按像素走的分支里是未定义行为。
-   * 贴图不翻转上传（ImageBitmap 不认 UNPACK_FLIP_Y），第 0 行是图的顶边，所以这里翻 v。
+   * 贴图不翻转上传（ImageBitmap 不认 UNPACK_FLIP_Y），第0行是图的顶边，所以这里翻 v。
    */
   vec2 m = (suv - uMapRect.xy) / (uMapRect.zw - uMapRect.xy);
   vec3 mapColor = texture2D(uMap, vec2(m.x, 1.0 - m.y)).rgb;
@@ -222,7 +222,7 @@ void main() {
   /*
    * 背面也有画（手册那三张翻页纸的反面）。翻过去之后书缝还在原处、看到的左右是反的，
    * 所以 u 取镜像——和下面背面淡墨横线同一个式子。只有声明了 BACKMAP 的材质编这一段，
-   * 台历那条路径的着色器源码一个字不差（多一个 inBack = 0.0 的常量，行为逐像素相同）。
+   * 台历那条路径的着色器源码一个字不差（多一个 inBack = 0.0的常量，行为逐像素相同）。
    */
   vec2 mb = (vec2(1.0 - suv.x, suv.y) - uMapBackRect.xy) / (uMapBackRect.zw - uMapBackRect.xy);
   vec3 backColor = texture2D(uMapBack, vec2(mb.x, 1.0 - mb.y)).rgb;
@@ -241,7 +241,7 @@ void main() {
      * 淡墨横线只画在**没被画盖住**的纸上（1 - inMap）：贴了画的那一面不再往画上画线，
      * 画没到（或下不来）时线照旧——不用在换图的那一刻去改哪个开关，少一处会忘的状态。
      * 台历不受影响：它的页眉横线与「今天」那个圆点都在 uMapRect 之外（界面图只占页面中段），
-     * 那里 inMap 恒为 0。
+     * 那里 inMap 恒为0。
      */
     col = mix(col, uInk, lines(suv, fw) * 0.16 * (1.0 - inMap));
   } else if (face < -0.5) {
@@ -317,7 +317,7 @@ void main() {
   }
 
   /*
-   * ⑥ 入夜：压暗偏冷。这里是线性空间，乘子要比门厅那幅画（在 sRGB 上乘 0.56/0.60/0.72）小一截
+   * ⑥ 入夜：压暗偏冷。这里是线性空间，乘子要比门厅那幅画（在 sRGB 上乘0.56/0.60/0.72）小一截
    * 才是同样的暗度。界面图压得轻一点，免得夜里台历上的字糊成一片。
    */
   vec3 dusk = mix(vec3(0.3, 0.33, 0.45), vec3(0.45, 0.48, 0.62), screenArt);

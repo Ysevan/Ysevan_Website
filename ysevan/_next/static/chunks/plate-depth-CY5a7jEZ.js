@@ -43,7 +43,7 @@ void main() {
   /* 夜里纸纹光减半：屋里的灯才是主角 */
   vec3 lit = day * (1.0 + (grain + relief) * tiltMag * (1.0 - uNight * 0.5));
 
-  /* 入夜：压暗偏冷 + 门窗里的暖光 + 8 秒极缓呼吸 */
+  /* 入夜：压暗偏冷 + 门窗里的暖光 + 8秒极缓呼吸 */
   float glow = texture2D(uAux, vUv).g;
   float breath = 1.0 + 0.05 * sin(uTime * 0.785);
   vec3 dusk = lit * vec3(0.56, 0.60, 0.72);

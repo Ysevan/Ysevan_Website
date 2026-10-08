@@ -36,7 +36,7 @@ void main() {
   vec2 uv = vUv;
   vec3 day = texture2D(uMap, uv).rgb;
 
-  /* 纸纹与起伏的光：同 plate-depth（画自己的亮度梯度 + 深度梯度），这里光的方向固定，强度从 0 慢慢给到 */
+  /* 纸纹与起伏的光：同 plate-depth（画自己的亮度梯度 + 深度梯度），这里光的方向固定，强度从0慢慢给到 */
   float gx = lum(texture2D(uMap, uv + vec2(uTexel.x, 0.0)).rgb) - lum(texture2D(uMap, uv - vec2(uTexel.x, 0.0)).rgb);
   float gy = lum(texture2D(uMap, uv + vec2(0.0, uTexel.y)).rgb) - lum(texture2D(uMap, uv - vec2(0.0, uTexel.y)).rgb);
   float dx = texture2D(uDepth, uv + vec2(uDepthTexel.x, 0.0)).r - texture2D(uDepth, uv - vec2(uDepthTexel.x, 0.0)).r;
@@ -45,7 +45,7 @@ void main() {
   float relief = (dx * uLightDir.x + dy * uLightDir.y) * 1.1;
   vec3 lit = day * (1.0 + (grain + relief) * uLight * (1.0 - uNight * 0.5));
 
-  /* 入夜：plate-depth 的配方原样——压暗偏冷，G 通道的灯发暖光，8 秒一次极缓的呼吸 */
+  /* 入夜：plate-depth 的配方原样——压暗偏冷，G 通道的灯发暖光，8秒一次极缓的呼吸 */
   float glow = texture2D(uDepth, uv).g * uGlow;
   float breath = 1.0 + 0.05 * sin(uTime * 0.785);
   vec3 dusk = lit * vec3(0.56, 0.60, 0.72);
@@ -81,8 +81,8 @@ varying vec2 vNdc;
 void main() {
   float r = length((vNdc - uCenter) * uAspect);
   /*
-   * 洇到多远：按「从洇开的那一点到画面最远的那个角」折算，uGrow = 1 时正好盖满，早一点都不满。
-   * 写死一个常数（原来是 4.8，按中心可能偏到 ±0.9 的最坏情形定）的话，中心在正中时半途就盖满了，
+   * 洇到多远：按「从洇开的那一点到画面最远的那个角」折算，uGrow = 1时正好盖满，早一点都不满。
+   * 写死一个常数（原来是4.8，按中心可能偏到±0.9的最坏情形定）的话，中心在正中时半途就盖满了，
    * 后半段白白盯着一屏纸（2026-09-20）。
    */
   float far = length((abs(uCenter) + 1.0) * uAspect) * 1.01;

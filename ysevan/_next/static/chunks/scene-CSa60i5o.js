@@ -92,7 +92,7 @@ void main() {
   vec3 col;
   if (kind < 0.5) {
     /*
-     * 水彩洗色：颜料在纸上是平的，只在干掉的边上积出细细一道深线（3 个像素上下）；
+     * 水彩洗色：颜料在纸上是平的，只在干掉的边上积出细细一道深线（3个像素上下）；
      * 里面叠两层大小不一的晕染，深浅斑驳。背面是透过纸背的颜料，淡一半。
      */
     float dried = 1.0 - smoothstep(0.0, 3.0 * uDpr, inPx);
@@ -133,7 +133,7 @@ void main() {
   /*
    * ⑥ 入夜：只压暗、不变色（灰度系数，三个通道乘同一个数）。照片压得轻一点，免得夜里糊成一片；
    * 补位色块压得最深：夜里整只球几十块浅色会亮成一片，随笔卡应当是灯下那几张
-   * （静态版的色块夜里也是压到 0.42 的透明度）。
+   * （静态版的色块夜里也是压到0.42的透明度）。
    */
   float dusk = mix(0.34, 0.5, isPhoto) * (kind < 0.5 ? 0.3 : 1.0);
   col = mix(col, col * dusk, uNight);
@@ -142,7 +142,7 @@ void main() {
   float far = smoothstep(0.2, -0.85, vFacing);
   col = mix(col, mix(uBg, col * 0.4, uNight), far * 0.5);
 
-  /* 键盘焦点环：离边 2–4 个像素那一圈，颜色取页面的 --ring，不跟着入夜压暗 */
+  /* 键盘焦点环：离边2–4个像素那一圈，颜色取页面的 --ring，不跟着入夜压暗 */
   if (abs(vCard.x - uFocus) < 0.5 && kind > 0.5) {
     float ring = 1.0 - smoothstep(1.0 * uDpr, 1.8 * uDpr, abs(inPx - 3.2 * uDpr));
     col = mix(col, uRing, ring * uFocusAmount);
