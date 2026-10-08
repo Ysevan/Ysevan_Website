@@ -1283,6 +1283,7 @@
     var anims = [];
     var ghost = null;
     var finish = null;
+    var gen = 0;   /* 每次清场换一代：取消动画会让它的 finished 走 reject，上一代的收尾照样会跑，不作废就会把已收起的灯箱改回 open */
     var B = null;
 
     function instant() { return instantBtn.getAttribute("aria-pressed") === "true"; }
@@ -1330,7 +1331,9 @@
       reader.appendChild(g);
       return g;
     }
+    function current(fn) { var g = gen; return function () { if (g === gen) fn(); }; }
     function cleanup() {
+      gen += 1;
       anims.forEach(function (a) { try { a.cancel(); } catch (e) { /* 已经结束 */ } });
       anims = [];
       if (ghost && ghost.parentNode) ghost.parentNode.removeChild(ghost);
@@ -1368,7 +1371,7 @@
       var clip = rel(thumb), img = rel($(".ixlb-shot", thumb));
       if (!clip.w || !clip.h || !sameRatio(img, B)) {
         anims = [fade(scrim, 0, 1, OPEN_MS), fade(box, 0, 1, OPEN_MS)];
-        finish = settle(anims[1], OPEN_MS + 120, function () { cleanup(); state = "open"; });
+        finish = settle(anims[1], OPEN_MS + 120, current(function () { cleanup(); state = "open"; }));
         r1.textContent = "灯箱：比例对不上，只淡入。";
         return;
       }
@@ -1377,7 +1380,7 @@
       var f = frames(clip, img, B, B, OPEN_FRAMES);
       var opts = { duration: OPEN_MS, easing: "linear", fill: "forwards" };
       anims = [ghost.animate(f.outer, opts), ghost.firstChild.animate(f.inner, opts), fade(scrim, 0, 1, OPEN_MS), fade(cap, 0, 1, OPEN_MS), fade(closeBtn, 0, 1, OPEN_MS)];
-      finish = settle(anims[0], OPEN_MS + 120, function () { cleanup(); state = "open"; });
+      finish = settle(anims[0], OPEN_MS + 120, current(function () { cleanup(); state = "open"; }));
       r1.textContent = "灯箱：从缩略图原位放大（" + OPEN_MS + "ms，" + OPEN_FRAMES + "帧，每帧的裁切在脚本里算好）。";
     }
     function fullyVisible(el) {
@@ -1401,7 +1404,7 @@
       state = "closing";
       if (!opener || !fullyVisible(opener)) {
         anims = [fade(box, 1, 0, CLOSE_MS), fade(scrim, 1, 0, CLOSE_MS)];
-        finish = settle(anims[0], CLOSE_MS + 120, hideNow);
+        finish = settle(anims[0], CLOSE_MS + 120, current(hideNow));
         r1.textContent = "灯箱：缩略图看不全，只淡出（" + CLOSE_MS + "ms），焦点回到缩略图。";
         return;
       }
@@ -1411,7 +1414,7 @@
       var f = frames(B, B, clip, img, CLOSE_FRAMES);
       var opts = { duration: CLOSE_MS, easing: "linear", fill: "forwards" };
       anims = [ghost.animate(f.outer, opts), ghost.firstChild.animate(f.inner, opts), fade(scrim, 1, 0, CLOSE_MS), fade(cap, 1, 0, CLOSE_MS), fade(closeBtn, 1, 0, CLOSE_MS)];
-      finish = settle(anims[0], CLOSE_MS + 120, hideNow);
+      finish = settle(anims[0], CLOSE_MS + 120, current(hideNow));
       r1.textContent = "灯箱：缩回原位（" + CLOSE_MS + "ms，" + CLOSE_FRAMES + "帧），焦点回到缩略图。";
     }
     page.addEventListener("click", function (e) {

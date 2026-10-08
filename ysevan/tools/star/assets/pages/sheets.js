@@ -419,7 +419,10 @@
       var d = drag;
       drag = null;
       if (!d.moved) return;   /* 没拖动：交给 click */
+      /* 拖过的那一下要吞掉随后的 click：鼠标松开紧跟着就是 click（同一个任务里）。触摸拖动后根本没有 click，
+         旗标留着会把下一次键盘回车 / 空格的 click 吃掉——所以下一拍就放掉，且键盘的 click（detail 0）从不吞 */
       swallowClick = true;
+      setTimeout(function () { swallowClick = false; }, 0);
       lower.classList.remove("is-dragging");
       lower.style.transform = "";
       var next = cancelled ? d.from : (d.from ? d.p > 1 - THRESHOLD : d.p > THRESHOLD);
@@ -427,8 +430,8 @@
     }
     handle.addEventListener("pointerup", function (e) { endDrag(e, false); });
     handle.addEventListener("pointercancel", function (e) { endDrag(e, true); });
-    handle.addEventListener("click", function () {
-      if (swallowClick) { swallowClick = false; return; }
+    handle.addEventListener("click", function (e) {
+      if (swallowClick && e.detail > 0) { swallowClick = false; return; }
       setExpanded(!expanded, expanded ? "spring" : "expand");
     });
     handle.addEventListener("keydown", function (e) {

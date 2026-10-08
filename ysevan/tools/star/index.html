@@ -5,15 +5,43 @@
 <title>总览 · 设计合集</title>
 <script src="assets/boot.js"></script>
 <link rel="stylesheet" href="assets/star.css">
+<link rel="stylesheet" href="assets/kit.css">
 <link rel="stylesheet" href="assets/pages/index.css">
 <script src="assets/star.js" defer></script>
+<script src="assets/kit.js" defer></script>
+<script src="data/search-index.js" defer></script>
+<script src="data/updates.js" defer></script>
 <script src="assets/pages/index.js" defer></script>
-</head><body data-page="index">
+</head><body data-page="index" data-hero-top>
 <a class="skip" href="#main">跳到正文</a>
 <div id="shell-nav"></div><script src="assets/nav.js"></script>
 <main id="main" class="page">
+  <div class="hero" data-hero data-spot="globe hero-nav">
+    <div class="hero-text">
+      <h1 class="hero-title">设计合集</h1>
+      <p class="hero-sub">四个工具和一间小屋定下来的审美与做法。色彩、交互两章的<span data-globe-n>44</span>条都在这颗星上，点一颗跳到那一条。</p>
+      <div class="hero-acts">
+        <a class="btn" href="color.html" data-spot="cta" data-random><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.6 7.4h2.9c1.9 0 3 .9 4 2.5l2.9 4.4c1 1.5 2.1 2.3 4 2.3h2.9"/><path d="M3.6 16.6h2.9c1.3 0 2.2-.4 3-1.2"/><path d="M14.5 8.6c.8-.8 1.7-1.2 3-1.2h2.9"/><path d="m18 4.9 2.4 2.5L18 9.9"/><path d="m18 14.1 2.4 2.5-2.4 2.5"/></svg>随便翻一条</a>
+        <button type="button" class="hero-btn" data-spot="ring" data-open-progress aria-haspopup="dialog"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.4" opacity=".4"/><path d="M12 3.6a8.4 8.4 0 1 1-8.1 10.6"/></svg>本书进度</button>
+        <button type="button" class="hero-btn" data-spot="ruler" data-open-updates aria-haspopup="dialog"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.6 18.4h16.8"/><path d="M5.4 18.4v-4.2M8.4 18.4v-2.6M11.4 18.4v-4.2M14.4 18.4v-2.6"/><path d="M17.6 18.4V7.6"/><circle cx="17.6" cy="5.6" r="1.4"/></svg>更新记录</button>
+      </div>
+    </div>
+    <div class="globe" data-globe aria-hidden="true">
+      <div class="globe-ball" data-rm="fade"></div>
+      <p class="globe-cap" data-rm="fade"></p>
+    </div>
+  </div>
+
+  <ul class="list resume" data-resume data-spot="resume">
+    <li><a class="row" href="color.html" data-resume-link>
+      <span class="ico" data-resume-ico style="background:linear-gradient(135deg,#FF9500,#FF2D55 55%,#AF52DE)"><span data-icon="color"></span></span>
+      <span class="t"><b data-resume-title>从色彩开始</b><small data-resume-sub>还没有看过的记录，点了从色彩第一条开始</small></span>
+      <span class="badge" data-resume-when hidden></span>
+      <span class="chev"><span data-icon="chevron"></span></span>
+    </a></li>
+  </ul>
+
   <header class="page-head">
-    <h1 class="page-title">设计合集</h1>
     <p class="page-sub">四个工具（刷刷、岗岗、日程安排、卡集）和一间小屋定下来的颜色、交互、动画、排版，收在一处。开新网站先翻这里，照着做，不用再把审美讲一遍。</p>
     <blockquote class="said head-said">
       <p>「我曾经告诉了你我的颜色搭配，我的一些交互想法，你可以把这些整理一下吗，然后放在小屋的工具架里面，就是一个合集，包括色彩，交互，动画，排版这些的，以后我再开发新的网站的时候可以参考这些网站的一些思路和方法。」</p>
@@ -25,22 +53,22 @@
   <section class="group" id="g-use" data-scope="common">
     <h2 class="group-title">怎么用</h2>
     <ol class="steps">
-      <li class="step">
+      <li class="step" id="use-1" data-press>
         <span class="step-no" aria-hidden="true">1</span>
         <h3>先定气质</h3>
         <p>工具类（刷题、手册、日程、卡集这种）走液态玻璃；个人站走小屋暖纸。两种别混用。</p>
       </li>
-      <li class="step">
+      <li class="step" id="use-2" data-press>
         <span class="step-no" aria-hidden="true">2</span>
         <h3>只看那一种 + 通用</h3>
         <p>每条都打了范围标签：<span class="scope-chip scope-tools">工具</span><span class="scope-chip scope-xw">小屋</span><span class="scope-chip scope-common">通用</span>，另一种气质的条目直接跳过。</p>
       </li>
-      <li class="step">
+      <li class="step" id="use-3" data-press>
         <span class="step-no" aria-hidden="true">3</span>
         <h3>翻一遍否掉的方向</h3>
         <p>屋主否过的配色与版式都写着「为什么不是那样」，照着避开。<span class="soon">这一章下一轮补</span></p>
       </li>
-      <li class="step">
+      <li class="step" id="use-4" data-press>
         <span class="step-no" aria-hidden="true">4</span>
         <h3>照做网站的方法验收</h3>
         <p>三台设备的视口、先量后截图、防假信号、测试不出声。<span class="soon">这一章下一轮补</span></p>
@@ -51,13 +79,13 @@
   <section class="group" id="g-two" data-scope="common">
     <h2 class="group-title">两种气质</h2>
     <div class="duo">
-      <article class="duo-card">
+      <article class="duo-card" id="two-glass">
         <header class="duo-head">
           <span class="scope-chip scope-tools">工具</span>
           <h3>苹果液态玻璃</h3>
           <p>中性底 + 三团光晕 + 玻璃侧栏，六个苹果强调色可换。2026-09-23屋主拍板，四个工具通用。</p>
         </header>
-        <div class="mini-glass" aria-hidden="true">
+        <div class="mini-glass" aria-hidden="true" data-press>
           <div class="mg-side">
             <div class="mg-brand"><span class="brand-icon mg-icon" data-icon="brand" data-icon-class="brand-svg"></span><b>合集</b></div>
             <span class="mg-nav is-on"><svg class="i" viewBox="0 0 24 24"><path d="M3.6 11.2 12 4.2l8.4 7"/><path d="M5.8 10v9.6h12.4V10"/></svg>总览</span>
@@ -82,13 +110,13 @@
         <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:15</code>「颜色（苹果系统色）」、<code>:81</code>「降级与可访问性」、<code>:95</code>「次级字统一值」</p>
       </article>
 
-      <article class="duo-card">
+      <article class="duo-card" id="two-paper">
         <header class="duo-head">
           <span class="scope-chip scope-xw">小屋</span>
           <h3>小屋暖纸</h3>
           <p>暖纸、橄榄墨、楷书、手绘水彩；饱和色严格限量、限位置。夜里是同一间屋子，冷夜暖灯。</p>
         </header>
-        <div class="mini-xw xw" aria-hidden="true">
+        <div class="mini-xw xw" aria-hidden="true" data-press>
           <div class="mx-hall">
             <span class="mx-whose">Ysevan的</span>
             <b class="mx-big xw-kai">小屋</b>
@@ -112,18 +140,19 @@
 
   <section class="group" id="g-chapters" data-scope="common">
     <h2 class="group-title">章节目录</h2>
-    <div class="chapters" data-chapter-list></div>
+    <div class="chapters" data-chapter-list data-spot="chapters"></div>
   </section>
 
   <section class="group" id="g-taste" data-scope="common">
     <h2 class="group-title">屋主的审美原则</h2>
     <p class="group-lede">精选十条。每条附原话或出处，旁边是能点、能拖、能切换的对比小样：被否的样子都标了「示意」和出处。其余原则下一轮放进「做网站的方法」。</p>
     <ol class="tastes">
-      <li class="taste">
+      <li class="taste" id="taste-01">
         <div class="taste-text">
           <span class="taste-no" aria-hidden="true">01</span>
           <h3>两种气质，别混用</h3>
           <p>工具类走苹果液态玻璃；小屋走暖纸、橄榄墨、楷书、水彩，另一套，不套苹果风。字体栈两边一样，中文字族在前。</p>
+          <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
           <p class="source"><code>tools/plan/CLAUDE.md:89</code>「家族设计契约」</p>
         </div>
         <div class="taste-demo" data-tp="1">
@@ -171,7 +200,7 @@
           <p class="tp-note">左边是示意：暖纸底、楷书标题、熔岩橙日期，又挂着玻璃卡、苹果蓝按钮和强调色标签，两套语言打架。工具改版前确实和小屋共用过暖纸底，2026-09-23起不再共用（<code>tools/plan/CLAUDE.md:89</code>「家族设计契约」）。</p>
         </div>
       </li>
-      <li class="taste">
+      <li class="taste" id="taste-02">
         <div class="taste-text">
           <span class="taste-no" aria-hidden="true">02</span>
           <h3>偏软、偏轻，要有颜色但不能重</h3>
@@ -205,11 +234,12 @@
           <p class="tp-note">黑红是示意，色值照刷刷改版前：侧栏<code>#25282c</code>、首页今日面板<code>#303439</code>、刷刷红<code>#b4232c</code>、底<code>#f5f6f7</code>（<code>tools/shua/design-proposal.md:15</code>「现有视觉语言」）；plan、岗岗「对齐刷刷」做成这样后被否（<code>tools/gang/design-proposal.md:617</code>「留档：被否掉的那两版」）。</p>
         </div>
       </li>
-      <li class="taste">
+      <li class="taste" id="taste-03">
         <div class="taste-text">
           <span class="taste-no" aria-hidden="true">03</span>
           <h3>审美优先于对比度，例外只开一处</h3>
           <p>主按钮用品牌图标那条亮渐变配白字，白字压浅端只有1.41–3.52，照样采用；如实列出比值、记录不断言，不拿「大字3:1」粉饰。别的承载信息的文字一律≥4.5。</p>
+          <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-cta">总览 · 随便翻一条</a></p>
           <blockquote class="said"><p>「所有颜色的按钮色可以和页面左上角的颜色一样浅一点」</p><footer>屋主 · 2026-09-23</footer></blockquote>
           <p class="source"><code>tools/plan/docs/design/SPEC-apple-glass.md:81</code>「降级与可访问性」</p>
         </div>
@@ -232,7 +262,7 @@
           <p class="tp-note">比值按WCAG 2.x公式现算，「深端 / 浅端」，跟着当前明暗。左边是示意：照2026-09-23以前的规矩「主按钮白字对渐变浅端≥4.5，不够就把accent-2压深」（<code>tools/plan/docs/design/SPEC-apple-glass.md:79</code>「降级与可访问性」），两端一起压到刚过4.5；屋主看了说要和左上角一样浅，改成现行（同文件<code>:81</code>）。</p>
         </div>
       </li>
-      <li class="taste">
+      <li class="taste" id="taste-04">
         <div class="taste-text">
           <span class="taste-no" aria-hidden="true">04</span>
           <h3>要好看，不要更紧凑；拿不准先出样张</h3>
@@ -269,7 +299,7 @@
           <p class="tp-note">题库名和题数是假数据。胶囊那版信息密度更高（手机上题库区从9行卡片缩成5行标签），屋主看过觉得不如原来，整件撤回；以后再动这一页先出样张（<code>tools/shua/design-proposal.md:599</code>「专项练习的筛选标签：做过，撤回」）。</p>
         </div>
       </li>
-      <li class="taste">
+      <li class="taste" id="taste-05">
         <div class="taste-text">
           <span class="taste-no" aria-hidden="true">05</span>
           <h3>构图不变，等比放大</h3>
@@ -323,11 +353,12 @@
           <p class="tp-note">缩微版面是示意：两张都按1440×900的比例画，右边按当前宽度排好再整体缩到同宽——判定就是这样并排看。现行在2088以内和左边一模一样；2552触到1.45封顶，多出来的宽度只给卡片轨道吃，不加列。两种错法出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:39</code>「自适应」里作废的初版；控制室记录<code>memory/tools-palette-pastel-p2.md:13</code>「大屏规则」。</p>
         </div>
       </li>
-      <li class="taste">
+      <li class="taste" id="taste-06">
         <div class="taste-text">
           <span class="taste-no" aria-hidden="true">06</span>
           <h3>一目了然，首页净增为零</h3>
           <p>首页加新功能，要么替换现有元素，要么进二级页；plan从卡片仪表盘改成清单。</p>
+          <p>star自身是例外：屋主2026-10-08要求把合集的交互在star上用遍（原话「把我stars里面所有的逻辑都狠狠的用这些设计合集的内容，纯属炫技」），总览开头的<a href="index.html#spot-globe">条目星球</a>、「本书进度」圆环、「更新记录」刻度尺都是首页净增。对其他项目照旧。</p>
           <blockquote class="said"><p>「UI 好丑，不够一目了然」「首页感觉内容太杂」</p><footer>屋主 · 2026-09-22（plan、刷刷）</footer></blockquote>
           <p class="source"><code>tools/plan/docs/ui-redesign-proposal-v2.md:8</code>「从仪表盘改成清单」、<code>tools/shua/design-proposal.md:553</code>「三条容易踩的地方」</p>
         </div>
@@ -370,13 +401,14 @@
           <p class="tp-note">左边面板名照plan改版前的今日工作台（<code>tools/plan/docs/PAGE_STRUCTURE_SPEC.md:57</code>「一级页面：今日工作台」），同一条「交物业费」在两个面板里各出现一次，就是当时的毛病（<code>tools/plan/docs/ui-redesign-proposal-v2.md:17</code>「现状的六个问题」）；右边照现行今日页的四节清单（同文件「3.1 今日」）。数据是示意。</p>
         </div>
       </li>
-      <li class="taste">
+      <li class="taste" id="taste-07">
         <div class="taste-text">
           <span class="taste-no" aria-hidden="true">07</span>
           <h3>图标必须是真线条图标</h3>
           <p>灰方块占位、字符、emoji都不行；左上角放品牌图标不放字。品牌图标可以换成屋主手绘的文件，放在渐变方块里占84%。</p>
+          <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a><a href="index.html#spot-brand">全站 · 品牌方块</a></p>
           <blockquote class="said"><p>「看得难受」（说内置的SVG品牌图标）</p><footer>屋主 · 2026-09-23</footer></blockquote>
-          <p class="source"><code>tools/plan/docs/design/SPEC-apple-glass.md:88</code>「图标」、<code>:163</code>「品牌图标」</p>
+          <p class="source"><code>tools/plan/docs/design/SPEC-apple-glass.md:88</code>「图标」、<code>:164</code>「品牌图标」</p>
         </div>
         <div class="taste-demo" data-tp="7">
           <div class="tp-ctrl">
@@ -393,7 +425,7 @@
           <p class="tp-note">左两列是示意：苹果样张第一版侧栏用的是灰方块占位，屋主看了要线条图标（控制室记录<code>memory/tools-palette-pastel-p2.md:11</code>）；规格写死禁止用字符或emoji凑图标（<code>tools/plan/docs/design/SPEC-apple-glass.md:89</code>「图标」）。切到深色看：emoji不跟字色走，几个字符粗细高低各不一样，线条图标和文字一起换色、选中项一起变强调色。</p>
         </div>
       </li>
-      <li class="taste">
+      <li class="taste" id="taste-08">
         <div class="taste-text">
           <span class="taste-no" aria-hidden="true">08</span>
           <h3>暖要靠冷底才显得出来</h3>
@@ -438,7 +470,7 @@
           <p class="tp-note">三版都是Ysevan_web的真实色值（按HSL实算）：v1<code>Ysevan_web@46c409e app/globals.css:62</code>、v2<code>Ysevan_web@adb2fe4 app/globals.css:62</code>、v3即现行<code>Ysevan_web/app/globals.css:64</code>。下面那块是示意：字、黄铜按钮、炉火橙固定用v3的值，只把底色相从36°（琥珀棕）拖到225°（冷夜），看暖色怎么一点点显出来。</p>
         </div>
       </li>
-      <li class="taste">
+      <li class="taste" id="taste-09">
         <div class="taste-text">
           <span class="taste-no" aria-hidden="true">09</span>
           <h3>上下留白对称，「刚好装下」不合格</h3>
@@ -495,11 +527,12 @@
           <p class="tp-note">示意，按屋主台式机2040×1019画。左边舞台高写死69svh，在裸视口上量到卡底只剩4px就算「装下」；可浏览器工具栏、任务栏、远程桌面都在吃高度（带工具栏实测2040×930），一吃就溢出、出滚动条、上下不对称。右边舞台用flex:1吃掉剩余高度、再用等比值封顶，任何高度都装得下、上下留白相等（<code>tools/card/CLAUDE.md:168</code>「画廊的几条硬约束」）。</p>
         </div>
       </li>
-      <li class="taste">
+      <li class="taste" id="taste-10">
         <div class="taste-text">
           <span class="taste-no" aria-hidden="true">10</span>
           <h3>先做出来，再慢慢完善</h3>
           <p>给结论不给选项，只问好不好看、值不值得；分阶段交付，每轮写明「这一轮故意没做什么」。</p>
+          <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-ring">总览 · 本书进度</a></p>
           <blockquote class="said"><p>「全部按照你的建议来，后面再慢慢完善」</p><footer>屋主 · 2026-09-23</footer></blockquote>
           <p class="source">控制室记录 <code>memory/ship-staged-not-perfect.md:8</code></p>
         </div>
@@ -509,8 +542,9 @@
             <div class="tp10-steps" role="radiogroup" aria-label="设计合集的分阶段交付">
               <button type="button" role="radio" class="tp10-step" aria-checked="false" tabindex="-1" data-tp10="0"><span class="tp10-dot" aria-hidden="true">①</span><span class="tp10-name">提取素材</span></button>
               <button type="button" role="radio" class="tp10-step" aria-checked="false" tabindex="-1" data-tp10="1"><span class="tp10-dot" aria-hidden="true">②</span><span class="tp10-name">定目录与版式</span></button>
-              <button type="button" role="radio" class="tp10-step" aria-checked="true" tabindex="0" data-tp10="2"><span class="tp10-dot" aria-hidden="true">③</span><span class="tp10-name">第一阶段样张</span></button>
+              <button type="button" role="radio" class="tp10-step" aria-checked="false" tabindex="-1" data-tp10="2"><span class="tp10-dot" aria-hidden="true">③</span><span class="tp10-name">第一阶段样张</span></button>
               <button type="button" role="radio" class="tp10-step" aria-checked="false" tabindex="-1" data-tp10="3"><span class="tp10-dot" aria-hidden="true">④</span><span class="tp10-name">现场演示</span></button>
+              <button type="button" role="radio" class="tp10-step" aria-checked="true" tabindex="0" data-tp10="4"><span class="tp10-dot" aria-hidden="true">⑤</span><span class="tp10-name">全身用上合集</span></button>
             </div>
           </div>
           <div class="tp10-card" data-tp10-card="0" hidden>
@@ -519,7 +553,7 @@
               <div><p class="tp10-k"><span class="tp-flag tp-yes">交付了</span></p><ul><li>三份提取稿，加屋主给的六个交互组件原文，放进<code>docs/sources/</code></li></ul></div>
               <div><p class="tp10-k"><span class="tp-flag tp-rule">故意没做</span></p><ul><li>不直接写页面：提取稿是二手整理，写进页面前要回原文件核一遍</li></ul></div>
             </div>
-            <p class="tp10-src">出处：<code>tools/star/docs/目录与版式.md:146</code>「分阶段」、<code>:91</code>「内容规矩」</p>
+            <p class="tp10-src">出处：<code>tools/star/docs/目录与版式.md:158</code>「分阶段」、<code>:98</code>「内容规矩」</p>
           </div>
           <div class="tp10-card" data-tp10-card="1" hidden>
             <p class="tp10-when">②定目录与版式 · 2026-09-27</p>
@@ -527,23 +561,31 @@
               <div><p class="tp10-k"><span class="tp-flag tp-yes">交付了</span></p><ul><li>栏目（总览 + 10章）、条目版式、内容规矩、技术约定，写成一份文件</li></ul></div>
               <div><p class="tp10-k"><span class="tp-flag tp-rule">故意没做</span></p><ul><li>还不建站；改栏目、改版式都先改这份文件</li></ul></div>
             </div>
-            <p class="tp10-src">出处：<code>tools/star/docs/目录与版式.md:1</code>、<code>:147</code>「分阶段」</p>
+            <p class="tp10-src">出处：<code>tools/star/docs/目录与版式.md:1</code>、<code>:159</code>「分阶段」</p>
           </div>
-          <div class="tp10-card" data-tp10-card="2">
+          <div class="tp10-card" data-tp10-card="2" hidden>
             <p class="tp10-when">③第一阶段样张 · 0.1.0 · 2026-09-28</p>
             <div class="tp10-cols">
               <div><p class="tp10-k"><span class="tp-flag tp-yes">交付了</span></p><ul><li>外壳 + 总览、色彩（16条）、交互（21条）、收藏（49条）四页，给屋主看</li></ul></div>
               <div><p class="tp10-k"><span class="tp-flag tp-rule">故意没做</span></p><ul><li>排版、布局与自适应、材质、动画、3D与性能、否掉的方向、做网站的方法七章，导航里标「下一轮补」、不可点，不填半截内容</li></ul></div>
             </div>
-            <p class="tp10-src">出处：<code>tools/star/CHANGELOG.md:31</code>「0.1.0」、<code>tools/star/README.md:64</code></p>
+            <p class="tp10-src">出处：<code>tools/star/CHANGELOG.md:78</code>「0.1.0」、<code>tools/star/README.md:71</code></p>
           </div>
           <div class="tp10-card" data-tp10-card="3" hidden>
-            <p class="tp10-when">④现场演示 · 本轮 · 进行中</p>
+            <p class="tp10-when">④现场演示 · 第一阶段 · 0.2.0 · 2026-10-08</p>
             <div class="tp10-cols">
               <div><p class="tp10-k"><span class="tp-flag tp-yes">交付了</span></p><ul><li>屋主看过样张后要「每一个提到的设计都需要在旁边可以现场演示出来效果的」：色彩页每条补上用在真实元素上的样子，总览这十条原则各补一个能点的对比小样</li><li>交互页原来只有文字的8条补上演示</li><li>交互页加「弹窗」六种，毛玻璃浮层附没显卡那档的性能实测和降级开关</li><li>六种弹窗在自家项目里的落点逐个核过，三处已下发</li><li>色彩页加一条「黄色只给两天内到期」</li><li>收藏页55条现场演示：老特效在演示框里跑，skill和提示词是翻面卡，交互页已有的放缩略图</li></ul></div>
-              <div><p class="tp10-k"><span class="tp-flag tp-rule">故意没做</span></p><ul><li>star自己全身用上合集里的做法，放第二阶段</li><li>排版、布局与自适应、材质、动画、3D与性能、否掉的方向、做网站的方法七章，放第三阶段</li></ul></div>
+              <div><p class="tp10-k"><span class="tp-flag tp-rule">故意没做</span></p><ul><li>star自己全身用上合集里的做法，放第二阶段（见⑤）</li><li>排版、布局与自适应、材质、动画、3D与性能、否掉的方向、做网站的方法七章，放第三阶段</li></ul></div>
             </div>
-            <p class="tp10-src">出处：屋主原话由控制室本轮转达；<code>tools/star/CHANGELOG.md:5</code>「Unreleased」</p>
+            <p class="tp10-src">出处：屋主原话由控制室转达；<code>tools/star/docs/进度.md:9</code>「已完成」、<code>tools/star/CHANGELOG.md:50</code>「0.2.0」</p>
+          </div>
+          <div class="tp10-card" data-tp10-card="4">
+            <p class="tp10-when">⑤全身用上合集 · 第二阶段 · 0.3.0 · 2026-10-08</p>
+            <div class="tp10-cols">
+              <div><p class="tp10-k"><span class="tp-flag tp-yes">交付了</span></p><ul><li>屋主要「把我stars里面所有的逻辑都狠狠的用这些设计合集的内容」：合集里收的交互，照各条的数值用在star自己身上</li><li>全站搜索：联想、#标签、输入法选词的回车不算提交、Esc一下退一层，按「/」或⌘K呼出</li><li>切明暗从点的地方圆形揭开、切强调色淡入、切页进场与跨页过渡（双击打开也有）；背景模糊分自动、开、关，没显卡的机器自动只压暗</li><li>「本站这里在用」三页共39处，点一下跳到star自己用这一招的地方并点亮；按压倾斜、长代码下拉展开、复制气泡、恢复默认可撤销</li><li>总览：星野舞台上的条目星球、随便翻一条、本书进度圆环、更新记录刻度尺、接着看</li><li>收藏：类型单选加标签多选、标题点开详情照片抽屉、截图灯箱、卡片按压</li><li>屋主台式机那种扁屏上，侧栏一屏装下、不用滚</li></ul></div>
+              <div><p class="tp10-k"><span class="tp-flag tp-rule">故意没做</span></p><ul><li>排版、布局与自适应、材质、动画、3D与性能、否掉的方向、做网站的方法七章，放第三阶段</li><li>这一轮新加的过渡与动效写进「动画」章，也放第三阶段</li><li>星球只放色彩、交互两章的44条，收藏不上星</li><li>收藏详情不画进度条：收藏没有「剩余多少」这种量，「第几条」只是排序位置</li><li>星球、圆环、刻度尺这类首页净增只在star自己身上做，不往其他项目推：它们照旧守「首页净增为零」</li></ul></div>
+            </div>
+            <p class="tp10-src">出处：屋主原话由控制室转达，见<code>tools/star/docs/进度.md:4</code>「定位」；<code>:16</code>「已完成」、<code>:29</code>「第二阶段计划」；<code>tools/star/CHANGELOG.md:5</code>「0.3.0」</p>
           </div>
           <p class="tp-note">拿设计合集自己当例子：每一轮先交能看、能用的一块，并写明这一轮故意留着没做的，省得屋主把已知的粗糙当bug报回来。</p>
         </div>
@@ -561,7 +603,7 @@
         <li>各项目和规格对不上、正在修的地方，写「现状 + 正在对齐」，不把错的值当规范。</li>
         <li>某页条目数变了，同一轮改<code>assets/nav.js</code>里那一页的<code>count</code>（对不上时控制台会提醒）。</li>
       </ul>
-      <p class="source"><code>tools/star/docs/目录与版式.md:141</code>「维护规矩」、<code>tools/star/CLAUDE.md:53</code>「维护规矩」</p>
+      <p class="source"><code>tools/star/docs/目录与版式.md:152</code>「维护规矩」、<code>tools/star/CLAUDE.md:54</code>「维护规矩」</p>
     </div>
   </section>
 </main></body></html>

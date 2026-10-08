@@ -288,6 +288,8 @@
 .t-open { grid-area: open; justify-self: start; padding: calc(4 * var(--u)) calc(14 * var(--u)); border: 1px solid var(--tb); border-radius: 999px; background: transparent; color: var(--tb); font-size: calc(12.5 * var(--u)); transition: background-color .18s ease; }
 .t-open:hover { background: var(--tbs); }
 .t-open:focus-visible, .t-open.is-focus { outline: 2px solid var(--tb); outline-offset: 3px; }
+/* 演示用的那枚（.is-focus）平时就亮着焦点环；真被键盘聚焦时要看得出变化，改用外壳强调色、外扩一圈（2026-10-08 独立验收：原来聚焦前后一模一样） */
+.t-open.is-focus:focus-visible { outline-color: var(--accent); outline-offset: 6px; }
 .page .tool code { grid-area: code; justify-self: end; color: var(--xw-ink-2); font-size: calc(11.5 * var(--u)); white-space: nowrap; }
 /* 夜里的纸片规则：图标块与「打开」垫回白天那张纸；序号不垫纸、换夜里的次级墨 */
 .shelf[data-mode="dark"] .t-icon, .shelf[data-mode="dark"] .t-open { background: #F8F6F1; }

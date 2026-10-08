@@ -29,6 +29,7 @@
         <h3>中性底 + 两档玻璃；层次靠玻璃、投影、分隔线，不靠边框</h3>
         <p class="entry-lede">底色只写在<code>html</code>上。玻璃.62给侧栏、顶栏这类视口大小的磨砂面；强玻璃.78给条目卡这类随正文长的面，不挂磨砂。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
       </header>
       <div class="specimen">
         <div class="layer-pair">
@@ -77,7 +78,7 @@
 --shadow: 0 10px 30px rgba(20,30,60,.08), inset 0 1px 0 var(--glass-edge);
                                         /* 深 0 10px 30px rgba(0,0,0,.35) */</code></pre>
         </section>
-        <section class="fact"><h4>用在哪</h4><p>.62磨砂：侧栏、顶栏、tab bar、弹层——视口大小的面。.78不磨砂：条目卡、阅读栏、右栏——随正文长的面。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>.62磨砂：侧栏、顶栏、tab bar、弹层——视口大小的面。.78不磨砂：条目卡、阅读栏、右栏——随正文长的面。本站同样：侧栏、顶栏挂.62磨砂，条目卡.78不挂。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主要「参考苹果的UI和配色」。分层只靠玻璃、投影和分隔线，不用边框。长面不挂磨砂：长到近两万像素会超显卡纹理上限、整层丢弃，每次滚动还要重新光栅化；屋主台式机没显卡，磨砂正是那台机器的瓶颈。</p></section>
         <section class="fact trap"><h4>坑</h4><p><code>body</code>也写了不透明背景时，它画在<code>z-index:-1</code>的<code>body::before</code>之上，三团光晕整个被盖掉——而离线算的对比度照样「成立」。底色只写<code>html</code>，<code>body</code>透明。</p></section>
         <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:12</code>「结构」、<code>:15</code>「颜色（苹果系统色）」；<code>tools/gang/design-proposal.md:908</code>「磨砂只放在视口大小的表面上」；<code>tools/shua/design-proposal.md:350</code>「落到刷刷时自己拿的决定」；反例照<code>tools/shua/design-proposal.md:28</code>「做得好、不要动的地方」（面板统一1px描边 + 白底 + 小圆角）</p>
@@ -90,6 +91,7 @@
         <h3>文字分三级：次级.76承载文字，三级.32只作装饰</h3>
         <p class="entry-lede">正文#1C1C1E；次级字统一<code>rgba(60,60,67,.76)</code>，深色<code>rgba(235,235,245,.62)</code>；三级.32只给chevron与分隔符，不承载文字。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-chapters">总览 · 章节目录</a></p>
       </header>
       <div class="specimen">
         <div class="text-pair">
@@ -147,6 +149,7 @@
         <h3>六个苹果强调色：填充档与文字档分开</h3>
         <p class="entry-lede">填充、渐变、图标、色点、焦点环用系统色原值；一当文字用，就换HIG「增强对比度」那组。原值当字不达标：#007AFF压白只有4.02，#34C759只有2.2。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-accent">全站 · 强调色</a></p>
       </header>
       <div class="specimen">
         <div class="acc-grid">
@@ -288,7 +291,7 @@
         </section>
         <section class="fact"><h4>渐变浅端</h4><p>浅色accent-2：蓝#5AC8FA、绿#A8E063、靛#BF5AF2、橙#FFD60A、粉#FF9AA2、青#64D2FF。深色样张只重写了蓝（#64D2FF），其余沿用浅色那组，本站与岗岗、card一样照这个写。</p></section>
         <section class="fact"><h4>现状</h4><p>深色accent-2四家是三种写法：刷刷、plan各自配了一套，互相也对不上。统一与否等控制室定，正在对齐。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:17</code>「颜色（苹果系统色）」、<code>:37</code>「自适应」文字档、<code>:83</code>「降级与可访问性」、<code>:161</code>「各家有记录的偏离」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:17</code>「颜色（苹果系统色）」、<code>:37</code>「自适应」文字档、<code>:83</code>「降级与可访问性」、<code>:162</code>「各家有记录的偏离」</p>
       </div>
     </article>
 
@@ -298,6 +301,7 @@
         <h3>主按钮 = 品牌图标同一条亮渐变 + 白字，浅深都一样</h3>
         <p class="entry-lede"><code>linear-gradient(135deg,var(--accent),var(--accent-2))</code>加白字和一层<code>text-shadow</code>。白字对浅端的比值不够，这是屋主拍板的审美例外：如实记录、不断言。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-cta">总览 · 随便翻一条</a></p>
       </header>
       <div class="specimen">
         <div class="btn-rows">
@@ -367,6 +371,7 @@
         <h3>语义色固定、不随强调色；风险必须带文字</h3>
         <p class="entry-lede">红＝冲突、逾期、答错；橙＝今天截止；绿＝完成、答对。填充用系统色，字用文字档压在同色相的实色软底上，旁边一定有字，不只靠颜色。日期标签另有一档黄，只给两天内到期，见下一条。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="interaction.html#spot-trap">交互 · 条目里的坑</a></p>
       </header>
       <div class="specimen">
         <div class="sem-pair">
@@ -445,10 +450,10 @@
 橙      #FF9500 / #FF9F0A   #C93400 / #FFB340   #FFF3E3 / #413019
 绿      #34C759 / #30D158   #1F7A36 / #30DB5B   #E9F9ED / #1C3927</code></pre>
         </section>
-        <section class="fact"><h4>用在哪</h4><p>plan的风险色：红＝冲突逾期、橙＝今天截止、黄＝两天内到期（2026-10-08加，只给日期标签，见下一条<a href="#c-urgency">「黄色只给两天内到期」</a>）、绿＝完成、灰＝未开始和离截止三天以上；风险色覆盖阶段色，用户不能自定义。刷刷答对绿、答错红。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>plan的风险色：红＝冲突逾期、橙＝今天截止、黄＝两天内到期（2026-10-08加，只给日期标签，见下一条<a href="#c-urgency">「黄色只给两天内到期」</a>）、绿＝完成、灰＝未开始和离截止三天以上；风险色覆盖阶段色，用户不能自定义。刷刷答对绿、答错红。本站条目里的「坑」铺橙色实色软底，左边写着「坑」字，不只靠颜色。</p></section>
         <section class="fact"><h4>为什么</h4><p>语义不能跟着强调色变，换了强调色「红」还得是红。色弱的人分不清红绿，所以风险提示必须有文字说明，不能只靠颜色。</p></section>
         <section class="fact"><h4>本站本地</h4><p>深色红字HIG原值#FF6961压强玻璃叠青光晕最浓角只有4.49，本站提亮到#FF6E66（4.63）；其余五个文字档压最不利角都≥4.62。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:18</code>「颜色（苹果系统色）」、<code>:37</code>文字档；<code>tools/plan/docs/BUSINESS_LOGIC.md:970</code>「风险与颜色逻辑」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:18</code>「颜色（苹果系统色）」、<code>:37</code>文字档；<code>tools/plan/docs/BUSINESS_LOGIC.md:994</code>「风险与颜色逻辑」</p>
       </div>
     </article>
 
@@ -505,7 +510,7 @@ token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow
         <section class="fact"><h4>为什么</h4><p>改版前不急的日期（「明天」「还有12天」「10月20日」）也用强调色软底＋强调色字，和「逾期」一样大、一样粗、一样有颜色，远的和急的一样响。分四档以后，只有真急的带颜色，越急越暖；强调色只留给能点的东西，日期不再冒充按钮。</p></section>
         <blockquote class="said"><p>一眼不知道哪里是重点</p><footer>屋主，2026-10-08，对照SuperTodo（SPEC §2a记录）</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>系统黄当字压白只有1.51、压页面底1.39：浅色的字必须压到<code>#7A5200</code>，深色那档的字才能直接用系统黄。plan写完对比度测试后先把<code>--yellow-text</code>改回<code>#FFCC00</code>跑一次，当场红，判据才算接上了。已完成、已归档的任务要单独判：不判的话做完的事也挂着「逾期」，plan 10-08修过一次。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:19</code>「颜色（苹果系统色）」、<code>:22</code>「2a. 紧急程度标签」；<code>tools/plan/app/src/domain/dateLabel.ts:30</code>「urgencyTone」、<code>:102</code>「isSettledTask」；<code>tools/plan/app/src/styles/tokens.css:188</code>「--yellow-text」、<code>:381</code>「--soon-50」；<code>tools/plan/app/src/styles/tokens.contrast.test.ts:75</code>；<code>tools/plan/docs/BUSINESS_LOGIC.md:993</code>「黄色：两天内到期」、<code>:1831</code>「紧急程度只用一组色」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:19</code>「颜色（苹果系统色）」、<code>:22</code>「2a. 紧急程度标签」；<code>tools/plan/app/src/domain/dateLabel.ts:30</code>「urgencyTone」、<code>:102</code>「isSettledTask」；<code>tools/plan/app/src/styles/tokens.css:186</code>「--yellow-text」、<code>:376</code>「--soon-50」；<code>tools/plan/app/src/styles/tokens.contrast.test.ts:75</code>；<code>tools/plan/docs/BUSINESS_LOGIC.md:1017</code>「黄色：两天内到期」、<code>:1857</code>「紧急程度只用一组色」</p>
       </div>
     </article>
 
@@ -515,6 +520,7 @@ token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow
         <h3>承载文字的浅底一律实色；token按用途起名</h3>
         <p class="entry-lede">次按钮、选中项、标签、计数胶囊这类「上面压字」的软底不透明；半透明只留给投影、光晕、描边。<code>--accent-tint</code>实色软底、<code>--accent-shadow</code>投影，各管各的。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-filter-multi">收藏 · 标签多选</a></p>
       </header>
       <div class="specimen">
         <div class="tint-demo" data-accent="pink" data-mode="light">
@@ -551,7 +557,7 @@ token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow
         </section>
         <section class="fact"><h4>为什么</h4><p>半透明软底和压在上面的字是同一个色相，底吃进光晕后对比度随位置漂：岗岗实测同色相文字只有3.9–4.4，plan是「同一个chip挪个位置就从4.4掉到3.3」。实色把这一格从「随光晕变」变成确定值，文字档能原封不动用统一值。</p></section>
         <section class="fact"><h4>命名教训</h4><p>旧的<code>--accent-soft</code>同时当软底、投影、描边，<code>--on-accent</code>同时当主按钮白字和实底上的字——名字说的是长相，所以谁都拿去用。token的名字必须说明用途，不是说明颜色。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:96</code>「次级字统一值与各项目自测义务」、<code>:119</code>「plan本地第三轮」、<code>:134</code>「命名教训」；<code>tools/gang/design-proposal.md:832</code>「例外与理由」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:584</code>「对比度第三轮」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:96</code>「次级字统一值与各项目自测义务」、<code>:119</code>「plan本地第三轮」、<code>:134</code>「命名教训」；<code>tools/gang/design-proposal.md:832</code>「例外与理由」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:587</code>「对比度第三轮」</p>
       </div>
     </article>
 
@@ -561,6 +567,7 @@ token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow
         <h3>背景是三团光晕：一团跟强调色、一团暖、一团冷</h3>
         <p class="entry-lede">固定在视口的<code>body::before</code>画三团<code>radial-gradient</code>，透明度.2–.55，<code>blur(10px)</code>把边糊软；深色下减弱。点下面的开关，一团一团看。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-accent">全站 · 强调色</a></p>
       </header>
       <div class="specimen">
         <div class="halo-demo">
@@ -600,6 +607,7 @@ token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow
         <h3>深色靠两个属性切换；头部同步脚本在样式表前设好，免闪色</h3>
         <p class="entry-lede"><code>html[data-mode]</code>写已解析的light/dark，偏好（含auto）另存<code>data-mode-pref</code>；强调色<code>data-accent</code>。localStorage两个键<code>&lt;项目&gt;-mode</code>、<code>&lt;项目&gt;-accent</code>，默认light + blue。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-theme">全站 · 浅深切换</a></p>
       </header>
       <div class="specimen">
         <div class="theme-live">
@@ -686,6 +694,7 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
         <h3>舞台底用随强调色走的深色调，不用纯黑：星野</h3>
         <p class="entry-lede">卡集选卡台的底是屋主从六选里挑的「D星野」：深夜蓝紫160°渐变，中段混18%强调色，中心一团45%强调色柔光，十二颗CSS星点慢慢闪，四周压暗角。浅色模式也用，深色再压一档。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-globe">总览 · 条目星球</a></p>
       </header>
       <div class="specimen">
         <div class="stage-demo">

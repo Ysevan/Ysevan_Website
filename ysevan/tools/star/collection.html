@@ -1,12 +1,14 @@
 <!doctype html><html lang="zh-CN"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F4F5F9">
-<meta name="description" content="好看的skill、有意思的项目、屋主的提示词原文、老站的特效与小游戏：按类型分组，可按标签筛选，每条旁边都能现场看效果。">
+<meta name="description" content="好看的skill、有意思的项目、屋主的提示词原文、老站的特效与小游戏：按类型分组，可按类型与标签筛选，每条旁边都能现场看效果。">
 <title>收藏 · 设计合集</title>
 <script src="assets/boot.js"></script>
 <link rel="stylesheet" href="assets/star.css">
+<link rel="stylesheet" href="assets/kit.css">
 <link rel="stylesheet" href="assets/pages/collection.css">
 <script src="assets/star.js" defer></script>
+<script src="assets/kit.js" defer></script>
 <script src="data/collection.js" defer></script>
 <script src="assets/pages/collection.js" defer></script>
 </head><body data-page="collection">
@@ -15,17 +17,25 @@
 <main id="main" class="page">
   <header class="page-head">
     <h1 class="page-title">收藏</h1>
-    <p class="page-sub">好看的skill、有意思的项目、屋主写的提示词、老站攒下的特效与小游戏，每条旁边都能现场看效果：老特效滚到就在卡里跑（吃显卡、有声音的点了才跑，同一时间只跑一个），其余翻面看截图或跳到交互页玩。加一条只改<code>data/collection.js</code>，页面不用动。</p>
+    <p class="page-sub">好看的skill、有意思的项目、屋主写的提示词、老站攒下的特效与小游戏，每条旁边都能现场看效果：老特效滚到就在卡里跑（吃显卡、有声音的点了才跑，同一时间只跑一个），其余翻面看截图或跳到交互页玩。点卡片标题看这一条的全部内容，截图点了放大。加一条只改<code>data/collection.js</code>，页面不用动。</p>
     <nav class="page-toc" aria-label="本页目录"></nav>
   </header>
 
   <section class="col-filter" aria-labelledby="col-filter-title">
     <div class="col-filter-head">
-      <h2 class="col-filter-title" id="col-filter-title">按标签筛选</h2>
-      <p class="col-count" aria-hidden="true">显示<b id="col-count-n">0</b>条</p>
+      <h2 class="col-filter-title" id="col-filter-title">筛选</h2>
+      <div class="col-filter-side" id="col-filter-side">
+        <p class="col-count" aria-hidden="true">显示<b id="col-count-n">0</b>条</p>
+      </div>
     </div>
-    <div class="col-chips" id="col-chips" role="group" aria-labelledby="col-filter-title"></div>
-    <p class="sr-only" id="col-status" aria-live="polite"></p>
+    <div class="col-frow" data-spot="filter">
+      <p class="col-frow-label" aria-hidden="true"><b>类型</b><span>单选</span></p>
+      <div class="col-chips" id="col-kinds" role="group" aria-label="按类型筛选，单选"></div>
+    </div>
+    <div class="col-frow" data-spot="filter-multi">
+      <p class="col-frow-label" aria-hidden="true"><b>标签</b><span>可多选</span></p>
+      <div class="col-chips" id="col-chips" role="group" aria-label="按标签筛选，可多选，选了的任一个都算"></div>
+    </div>
   </section>
 
   <div class="col-groups" id="col-groups">

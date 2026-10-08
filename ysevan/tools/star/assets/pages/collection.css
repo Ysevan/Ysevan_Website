@@ -8,6 +8,10 @@
  * - 直接压在光晕上的字（筛选标题、计数、分组说明）只用正文色 --label：次级色压光晕中心只有 3.5（外壳 .group-lede 同理）。
  * - 动画只动 transform / opacity；prefers-reduced-motion 时外壳把 CSS 动画与过渡全关，脚本里的 FLIP 与跳动也跳过。
  * - 尺寸写 calc(N * var(--u))：--u 是外壳的等比放大单位（1440 及以下恒为 1px，2088 起 1.45px 封顶）。
+ * - 详情（StarKit.photo）与灯箱是套件挂在 body 下的弹层（assets/kit.css），不在 main.page 里：抽屉里的样式（.col-detail / .col-d*）
+ *   不能靠 .page 作用域；col- 类名本来就不限作用域，卡片上的零件（标签、提示词原文框、复制按钮）在抽屉里照样能用。
+ * - 筛选两排的数值照交互页 ix-filter（对勾 220ms cubic-bezier(.22,1,.36,1) 从 scale(.2) rotate(-30deg) 长出、铺底 scaleX 同一条曲线）；
+ *   FLIP 让位与计数跳动在 collection.js。卡片按压倾斜是外壳的（data-press），这里不写。
  */
 
 body[data-page="collection"] {
@@ -19,11 +23,12 @@ body[data-page="collection"] {
   --col-ease: cubic-bezier(.2, .8, .2, 1);
 }
 
-/* ---------- 筛选 ---------- */
+/* ---------- 筛选（两排：类型单选 ix-filter、标签多选 ix-filter-multi；行为见 collection.js 文件头） ---------- */
 .col-filter { margin-top: calc(28 * var(--u)); }
 .col-filter-head {
-  display: flex; align-items: baseline; justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   gap: calc(12 * var(--u));
+  min-height: calc(28 * var(--u));   /* 「清除」出现、消失时这一行不变高 */
   margin-bottom: calc(10 * var(--u));
 }
 .col-filter-title {
@@ -33,6 +38,7 @@ body[data-page="collection"] {
   letter-spacing: .04em;
   color: var(--label);
 }
+.col-filter-side { display: flex; align-items: center; gap: calc(10 * var(--u)); }
 .col-count {
   margin: 0;
   font-size: var(--fs-small);
@@ -45,12 +51,31 @@ body[data-page="collection"] {
   font-variant-numeric: tabular-nums;
 }
 
+/* 一排 = 左边一列小字（类型 · 单选 / 标签 · 可多选）+ 右边胶囊；直接压在光晕上的字只用正文色 */
+.col-frow {
+  display: grid;
+  grid-template-columns: calc(52 * var(--u)) minmax(0, 1fr);
+  gap: calc(10 * var(--u));
+  align-items: start;
+}
+.col-frow + .col-frow { margin-top: calc(10 * var(--u)); }
+.col-frow-label {
+  margin: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: calc(32 * var(--u));
+  line-height: 1.25;
+  color: var(--label);
+}
+.col-frow-label b { font-size: var(--fs-small); font-weight: 600; }
+.col-frow-label span { font-size: var(--fs-xs); }
+
 .col-chips {
   display: flex; flex-wrap: wrap;
   gap: calc(8 * var(--u));
 }
 
 .col-chip,
+.col-kchip,
 .col-more {
   position: relative;
   isolation: isolate;
@@ -66,15 +91,18 @@ body[data-page="collection"] {
   cursor: pointer;
   transition: transform .16s var(--col-ease);
 }
-.col-chip {
+.col-chip,
+.col-kchip {
   overflow: hidden;
   color: var(--label);
   background: var(--fill);
 }
 .col-chip:active,
+.col-kchip:active,
 .col-more:active { transform: scale(.96); }
+.col-chip-body { display: inline-flex; align-items: center; gap: calc(6 * var(--u)); }
 
-/* 底色从左铺满：只缩放这一层（实色软底），胶囊本身的宽度不做动画 */
+/* 底色从左铺满：只缩放这一层（实色软底），胶囊本身的宽度不做动画；220ms cubic-bezier(.22,1,.36,1)（ix-filter） */
 .col-chip-fill {
   position: absolute; inset: 0;
   z-index: -1;
@@ -82,12 +110,14 @@ body[data-page="collection"] {
   background: var(--accent-tint);
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform .28s var(--col-ease);
+  transition: transform .22s cubic-bezier(.22, 1, .36, 1);
 }
-.col-chip[aria-pressed="true"] .col-chip-fill { transform: scaleX(1); }
-.col-chip[aria-pressed="true"] { font-weight: 600; }
+.col-chip[aria-pressed="true"] .col-chip-fill,
+.col-kchip[aria-pressed="true"] .col-chip-fill { transform: scaleX(1); }
+.col-chip[aria-pressed="true"],
+.col-kchip[aria-pressed="true"] { font-weight: 600; }
 
-/* 对勾：选中才占位（胶囊确实变宽，相邻的由脚本 FLIP 让位），出现时缩放淡入 */
+/* 对勾：选中才占位（胶囊确实变宽，相邻的由脚本 FLIP 让位）；首次渲染之后（.is-live）每次选中从 .2 转着长出来 */
 .col-chip-check {
   display: none;
   flex: none;
@@ -96,12 +126,11 @@ body[data-page="collection"] {
   margin-left: calc(-2 * var(--u));
   color: var(--accent-text);
 }
-.col-chip[aria-pressed="true"] .col-chip-check {
-  display: block;
-  animation: col-pop .24s var(--col-ease) both;
-}
-@keyframes col-pop {
-  from { opacity: 0; transform: scale(.3); }
+.col-chip[aria-pressed="true"] .col-chip-check,
+.col-kchip[aria-pressed="true"] .col-chip-check { display: block; }
+.col-chips.is-live [aria-pressed="true"] .col-chip-check { animation: col-check-in .22s cubic-bezier(.22, 1, .36, 1) both; }
+@keyframes col-check-in {
+  from { opacity: 0; transform: scale(.2) rotate(-30deg); }
   to { opacity: 1; transform: none; }
 }
 .col-chip-n {
@@ -123,6 +152,27 @@ body[data-page="collection"] {
   transition: transform .24s var(--col-ease);
 }
 .col-more[aria-expanded="true"] .col-chev { transform: rotate(-90deg); }
+
+/* 「清除」：有选中的标签才出现，在计数旁边 */
+.col-clear {
+  display: inline-flex; align-items: center;
+  gap: calc(4 * var(--u));
+  height: calc(28 * var(--u));
+  padding: 0 calc(10 * var(--u)) 0 calc(8 * var(--u));
+  border: 0;
+  border-radius: 999px;
+  background: var(--raised);
+  color: var(--accent-text);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .16s var(--col-ease);
+}
+.col-clear[hidden] { display: none; }
+.col-clear:active { transform: scale(.96); }
+.col-clear .i { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
 
 /* ---------- 目录胶囊里的条数（胶囊本身用外壳的 .toc-pill） ---------- */
 .col-toc-n {
@@ -200,6 +250,31 @@ body[data-page="collection"] {
   line-height: 1.35;
   overflow-wrap: anywhere;
 }
+/* 标题本身就是「详情」按钮（ix-dialog）：字照标题的样子，后面一枚小箭头；悬停、按下换文字档强调色 */
+.col-name-btn {
+  display: inline;
+  margin: 0; padding: 0;
+  border: 0;
+  border-radius: calc(4 * var(--u));
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.col-name-go {
+  display: inline-block;
+  width: calc(15 * var(--u));
+  height: calc(15 * var(--u));
+  margin-left: calc(2 * var(--u));
+  vertical-align: calc(-2 * var(--u));
+  color: var(--label2);
+  transition: transform .2s var(--col-ease);
+}
+.col-name-btn:hover { color: var(--accent-text); }
+.col-name-btn:hover .col-name-go { color: var(--accent-text); transform: translateX(calc(2 * var(--u))); }
 .col-kind {
   margin: calc(1 * var(--u)) 0 0;
   font-size: var(--fs-xs);
@@ -378,7 +453,8 @@ body[data-page="collection"] {
   min-width: 0;
   line-height: 1.55;
 }
-.col-card-foot .i {
+.col-card-foot .i,
+.col-dsrc .i {
   width: calc(14 * var(--u));
   height: calc(14 * var(--u));
   margin-top: calc(2 * var(--u));
@@ -394,7 +470,8 @@ body[data-page="collection"] {
 /* source 里「样例见 interaction.html#…」画成的站内链接：文字档强调色，悬停加下划线 */
 .col-source-link { color: var(--accent-text); text-decoration: none; border-radius: calc(4 * var(--u)); }
 .col-source-link:hover { text-decoration: underline; }
-.page .col-source code {
+.page .col-source code,
+.col-dsrc .col-source code {
   padding: 0;
   background: none;
   color: inherit;
@@ -633,19 +710,36 @@ body[data-page="collection"] {
   color: var(--label);
   text-decoration: none;
 }
-.col-thumb-media { position: absolute; inset: 0; display: block; }
-/* 交互页「弹窗」的截图是竖的手机舞台：整张放下、居中；透明导航栏的小窗铺满 */
+/* 交互页「弹窗」的截图是竖的手机舞台：整张放下、居中（上下各留8，留白放在框上不放在图上——灯箱按图的盒子算
+   object-fit 画出来的那块，图带内边距会算偏）；透明导航栏的小窗铺满 */
+.col-thumb-media { position: absolute; inset: calc(8 * var(--u)) 0; display: block; }
+.col-thumb-media.is-cover { inset: 0; }
 .col-thumb-media img {
   display: block;
   width: 100%; height: 100%;
-  padding: calc(8 * var(--u)) 0;
   object-fit: contain;
   transition: transform .4s var(--col-ease);
 }
-.col-thumb-media.is-cover img { padding: 0; object-fit: cover; object-position: center top; }
-.col-thumb:hover .col-thumb-media img { transform: scale(1.03); }
+.col-thumb-media.is-cover img { object-fit: cover; object-position: center top; }
+/* 悬停放大只给有悬停的设备：触屏点一下会粘上 :hover，图在灯箱起飞那一刻才开始放大，幽灵第0帧就和缩略图差一截（417档实测1.3px） */
+@media (hover: hover) {
+  .col-thumb:hover .col-thumb-media img { transform: scale(1.03); }
+}
+/* 能放大的缩略图：整块是一枚 button（ix-lightbox），「去交互页玩」是压在右下角的另一个链接 */
+.col-zoom {
+  display: block;
+  width: 100%;
+  margin: 0; padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: zoom-in;
+}
+.col-thumb-zoom { position: absolute; inset: 0; height: 100%; border-radius: inherit; }
+.col-thumb-zoom:focus-visible { outline-offset: -3px; }   /* 外框 overflow:hidden，往外画会被裁掉 */
 .col-thumb-cta {
-  position: absolute;
+  position: absolute; z-index: 1;
   right: calc(8 * var(--u)); bottom: calc(8 * var(--u));
   display: inline-flex; align-items: center;
   gap: calc(5 * var(--u));
@@ -659,6 +753,8 @@ body[data-page="collection"] {
   font-weight: 600;
 }
 .col-thumb-cta .i { width: calc(14 * var(--u)); height: calc(14 * var(--u)); fill: currentColor; }
+a.col-thumb-cta { text-decoration: none; }
+a.col-thumb-cta:hover span { text-decoration: underline; }
 
 /* 透明导航栏缩略小窗：老站封面原图 + 60%黑罩 + 一条不画底的导航（照交互页那条样例缩小） */
 .col-oldnav { position: absolute; inset: 0; display: block; }
@@ -693,6 +789,7 @@ body[data-page="collection"] {
   background: #101116;
 }
 .col-shot-media img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.col-shot-media.col-zoom { border-radius: calc(12 * var(--u)); }
 .col-shot-empty {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: calc(6 * var(--u));
@@ -717,6 +814,72 @@ body[data-page="collection"] {
   box-shadow: var(--shadow);
 }
 
+/* ---------- 详情（StarKit.photo 的抽屉里；弹层挂 body 下，不在 .page 里，.page 作用域的样式够不着，这里写全） ---------- */
+.col-detail { display: grid; gap: calc(16 * var(--u)); min-width: 0; }
+.col-detail .col-dbadges { margin-left: 0; }   /* 压过 ≤600 卡头徽标那条 margin-left */
+.col-dcap {
+  display: flex; align-items: flex-start;
+  gap: calc(6 * var(--u));
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+  color: var(--label2);
+}
+.col-dcap .i { flex: none; width: calc(14 * var(--u)); height: calc(14 * var(--u)); margin-top: calc(2 * var(--u)); }
+.col-dcol { display: grid; gap: calc(18 * var(--u)); align-content: start; min-width: 0; }
+.col-dh {
+  margin: 0 0 calc(6 * var(--u));
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--label2);
+}
+.col-dp {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.col-dp + .col-dp, .col-ddemo > * + * { margin-top: calc(6 * var(--u)); }
+.col-dp-sub { font-size: var(--fs-small); color: var(--label2); }
+.col-dsaid { max-width: none; }
+.col-dsrc {
+  display: grid;
+  gap: calc(6 * var(--u));
+  font-size: var(--fs-small);
+  color: var(--label2);
+}
+.col-dsrc p { margin: 0; }
+.col-ddemo .col-live-sound {
+  display: flex; align-items: flex-start;
+  gap: calc(5 * var(--u));
+  margin: 0;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+.col-ddemo .col-live-sound .i { flex: none; width: calc(14 * var(--u)); height: calc(14 * var(--u)); margin-top: calc(3 * var(--u)); color: var(--orange-text); }
+.col-dlink {
+  display: inline-flex; align-items: center;
+  gap: calc(4 * var(--u));
+  border-radius: calc(4 * var(--u));
+  color: var(--accent-text);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  text-decoration: none;
+}
+.col-dlink:hover span { text-decoration: underline; }
+.col-dlink .i { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
+.col-dsketch {
+  margin: calc(8 * var(--u)) 0 0;
+  max-width: calc(380 * var(--u));
+  padding: calc(10 * var(--u)) calc(12 * var(--u));
+  border: 1px solid var(--sep);
+  border-radius: calc(12 * var(--u));
+  background: var(--well);
+}
+.col-dsketch .col-sketch { height: auto; aspect-ratio: 320 / 176; }
+.col-dsketch figcaption { margin-top: calc(6 * var(--u)); }
+
 /* ---------- ≤600：胶囊一行横滑，贴着屏幕边滑出去，但不把页面撑宽 ---------- */
 @media (max-width: 600px) {
   .col-filter { margin-top: 20px; }
@@ -731,14 +894,19 @@ body[data-page="collection"] {
     scroll-padding: 0 16px;
   }
   .col-chips::-webkit-scrollbar { display: none; }
-  .col-chip, .col-more { flex: none; }
+  .col-chip, .col-kchip, .col-more { flex: none; }
+  /* 两排筛选：小字一行在上、胶囊横滑在下 */
+  .col-frow { display: block; }
+  .col-frow + .col-frow { margin-top: 8px; }
+  .col-frow-label { flex-direction: row; justify-content: flex-start; align-items: baseline; gap: 6px; min-height: 0; }
   .col-card { padding: 14px; }
   .col-badges { margin-left: 42px; }
 }
 
 /* ---------- 减弱动效：外壳已把 CSS 动画与过渡全关；这里再把按下缩放去掉 ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .col-chip:active, .col-more:active, .col-copy:active { transform: none; }
+  .col-chip:active, .col-kchip:active, .col-more:active, .col-copy:active, .col-clear:active { transform: none; }
+  .col-name-btn:hover .col-name-go { transform: none; }
   .col-thumb:hover .col-thumb-media img { transform: none; }
   /* 翻面卡：不转，两面原地淡入淡出（两面带 data-rm="fade"，外壳只给它们留 opacity 过渡） */
   .col-flip-card, .col-flip.is-flipped .col-flip-card { transform: none; }

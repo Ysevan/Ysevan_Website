@@ -1,6 +1,179 @@
-/* 总览页专属样式（外壳与条目组件在 assets/star.css）。尺寸一律「1440 处的值 × --u」。 */
+/* 总览页专属样式（外壳与条目组件在 assets/star.css，整页弹层在 assets/kit.css）。尺寸一律「1440 处的值 × --u」。
+ *
+ * 第二阶段（2026-10-08）加在开头的几块：
+ *   .hero      星野舞台（色彩页 c-stage：深夜蓝紫160°渐变、中段混18%强调色、一团45%强调色柔光、十二颗星9秒慢闪、暗角），
+ *              挂 data-hero：≤900 顶到顶栏底下、左右出血，顶栏在它上面整条透明（ix-oldnav，外壳 star.css 第18节）；
+ *              <body> 上写 data-hero-top（外壳的开页预判：第一帧就透明，不从玻璃淡成透明）；≤900 舞台 padding-top 不小于
+ *              var(--topbar-h)（让出顶栏，也免得 h1 的上 margin 和负 margin 折叠、舞台停不到顶）；
+ *              浅色模式也用深色舞台，字一律白（舞台本身就是压暗）。星点只在看得见时闪（.is-still 暂停）。
+ *   .globe     条目星球（ix-xw-globe）：.gl-pt 由 index.js 按搜索索引画，位置每帧用 transform 写；透明度、层级只在变了时写。
+ *              整颗星只占一个Tab位（ix-xw-tabstop）：键盘选中的那颗 .is-sel 只在 :focus-visible 时画白圈。
+ *              字（.gl-name）只在朝外那半边显示、前面互相压着时远的那个淡掉，都只改 opacity；能点的只有点和亮着的字。
+ *   .resume    「接着看」（ix-resume）：外壳的分组列表行 a.row，按压倾斜外壳自动管。
+ *   .pg-* / .up-*   「本书进度」圆环弹层、「更新记录」刻度尺弹层里的列表（弹层本身是 StarKit.sheet）。
+ * 动画只动 transform / opacity；减弱动效时外壳关掉全部过渡与动画（星点不闪、首帧不淡入）。
+ */
 
 .head-said { margin-top: calc(18 * var(--u)); }
+.page-head > .page-sub:first-child { margin-top: 0; }
+
+/* ---- 星野舞台（c-stage）：总览的门面 ---- */
+.hero {
+  --stage-1: var(--lt, #0F1128) var(--dk, #0A0B1E);
+  --stage-2: var(--lt, #1B1740) var(--dk, #141030);
+  --stage-3: var(--lt, #0B0C1E) var(--dk, #070812);
+  --glow: 32% 58% at 73% 52%;          /* 那团强调色柔光对着星球（c-stage 原文是舞台正中 50% 45% at 50% 55%） */
+  --top-shade: linear-gradient(transparent, transparent);
+  position: relative; isolation: isolate; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); align-items: center; gap: calc(8 * var(--u)) calc(20 * var(--u));
+  min-height: calc(452 * var(--u));
+  padding: calc(32 * var(--u)) calc(28 * var(--u)) calc(28 * var(--u)) calc(44 * var(--u));
+  border-radius: var(--r-lg);
+  color: #FFFFFF;
+  background:
+    var(--top-shade),
+    radial-gradient(var(--glow), color-mix(in srgb, var(--accent) 45%, transparent), transparent 70%),
+    linear-gradient(160deg, var(--stage-1), color-mix(in srgb, var(--accent) 18%, var(--stage-2)) 55%, var(--stage-3));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(0,0,0,.25);
+}
+/* 十二颗星（照 c-stage 的位置与大小），9秒慢闪；暗角压四周 */
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    radial-gradient(1.2px 1.2px at 12% 18%, #fff 60%, transparent), radial-gradient(1px 1px at 33% 72%, #fff 60%, transparent),
+    radial-gradient(1.6px 1.6px at 58% 12%, #fff 60%, transparent), radial-gradient(1px 1px at 76% 40%, #fff 60%, transparent),
+    radial-gradient(1.4px 1.4px at 88% 78%, #fff 60%, transparent), radial-gradient(1px 1px at 22% 48%, #fff 60%, transparent),
+    radial-gradient(1px 1px at 45% 88%, #fff 60%, transparent), radial-gradient(1.3px 1.3px at 68% 64%, #fff 60%, transparent),
+    radial-gradient(1px 1px at 8% 90%, #fff 60%, transparent), radial-gradient(1px 1px at 93% 20%, #fff 60%, transparent),
+    radial-gradient(1px 1px at 40% 30%, #fff 60%, transparent), radial-gradient(1px 1px at 82% 55%, #fff 60%, transparent);
+  opacity: .85; animation: hero-twinkle 9s ease-in-out infinite;
+}
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(90% 90% at 50% 50%, transparent 60%, rgba(0,0,0,.5)); }
+@keyframes hero-twinkle { 0%, 100% { opacity: .85; } 50% { opacity: .55; } }
+/* 滚出视口、页面在后台：星点停闪（合成器动画也要整块重画舞台，没显卡的机器上白费） */
+.hero.is-still::before { animation-play-state: paused; }
+
+.hero-text { min-width: 0; display: grid; justify-items: start; gap: calc(14 * var(--u)); }
+.hero-title { margin: 0; font-size: calc(46 * var(--u)); line-height: 1.12; font-weight: 700; letter-spacing: -.8px; color: #FFFFFF; text-shadow: 0 2px 18px rgba(0,0,0,.35); }
+.hero-sub { margin: 0; max-width: calc(400 * var(--u)); font-size: var(--fs-lead); line-height: 1.75; color: rgba(255,255,255,.82); }
+.hero-acts { display: flex; flex-wrap: wrap; gap: calc(10 * var(--u)); margin-top: calc(8 * var(--u)); }
+/* 次按钮：深色舞台上的半透明白（不挂磨砂） */
+.hero-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: calc(6 * var(--u));
+  height: calc(38 * var(--u)); padding: 0 calc(14 * var(--u));
+  border: 1px solid rgba(255,255,255,.24); border-radius: calc(12 * var(--u));
+  background: rgba(255,255,255,.1); color: #FFFFFF;
+  font-family: inherit; font-size: var(--fs-body); font-weight: 600; white-space: nowrap; cursor: pointer;
+  transition: background-color .15s ease;
+}
+.hero-btn .i { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
+.hero-btn:hover { background: rgba(255,255,255,.18); }
+.hero :focus-visible { outline-color: #FFFFFF; outline-offset: 3px; }
+
+/* ---- 条目星球（ix-xw-globe） ---- */
+.globe { position: relative; min-width: 0; height: calc(388 * var(--u)); border-radius: calc(18 * var(--u)); }
+.globe.is-live { touch-action: pan-y pinch-zoom; cursor: grab; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+.globe.is-dragging { cursor: grabbing; }
+.globe:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
+/* 首帧：星点画好第一帧再整颗淡入 600ms（ix-xw-globe「首帧」） */
+.globe-ball { position: absolute; inset: 0; isolation: isolate; opacity: 0; transition: opacity .6s ease; }
+.globe.is-live .globe-ball { opacity: 1; }
+.globe-orb {
+  position: absolute; left: 0; top: 0; z-index: -1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle at 34% 28%, rgba(255,255,255,.11), rgba(255,255,255,.025) 52%, rgba(255,255,255,0) 72%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.09), inset 0 calc(-18 * var(--u)) calc(40 * var(--u)) rgba(0,0,0,.25);
+}
+.gl-pt {
+  position: absolute; left: 0; top: 0;
+  display: inline-flex; align-items: center; gap: calc(5 * var(--u));
+  padding: calc(3 * var(--u)) calc(7 * var(--u)) calc(3 * var(--u)) calc(5 * var(--u)); border-radius: 999px;
+  color: #FFFFFF; font-size: calc(12.5 * var(--u)); line-height: 1.4; font-weight: 600; white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0,0,0,.7);
+  transform-origin: 0 0; will-change: transform, opacity;
+  pointer-events: none;          /* 能点的只有点和字本身：字淡掉时（背面、被前面的挡住）点击穿过去 */
+}
+.globe.is-live .gl-dot, .globe.is-live .gl-name { pointer-events: auto; cursor: pointer; }
+.globe.is-live .gl-pt.is-back .gl-dot { pointer-events: none; }
+.globe.is-dragging .gl-dot, .globe.is-dragging .gl-name { cursor: grabbing; }
+.gl-dot { position: relative; flex: none; width: calc(8 * var(--u)); height: calc(8 * var(--u)); border-radius: 50%; background: var(--c); box-shadow: 0 0 calc(10 * var(--u)) var(--g); }
+.gl-dot::after { content: ""; position: absolute; inset: calc(-6 * var(--u)); border-radius: 50%; }   /* 只剩点时也好点中 */
+/* 字：背面不显示、转到正面渐显；前面互相压着时离得远的那个淡掉（index.js 写 opacity，这里管过渡） */
+.gl-name { opacity: 0; will-change: opacity; transition: opacity .25s ease; }
+.gl-pt.is-hover { background: rgba(255,255,255,.14); }
+.globe:focus-visible .gl-pt.is-sel, .globe.is-kbd .gl-pt.is-sel { background: rgba(255,255,255,.18); box-shadow: 0 0 0 2px #FFFFFF; }
+/* 悬停 / 键盘选中那条的全名：只是内容，不是操作提示（ix-xw-globe「球上不叠任何操作提示」） */
+.globe-cap {
+  position: absolute; left: 50%; bottom: 0; z-index: 1;
+  max-width: 96%; margin: 0; padding: calc(5 * var(--u)) calc(12 * var(--u)); border-radius: 999px;
+  background: rgba(8,10,28,.66); color: #FFFFFF; font-size: var(--fs-small); line-height: 1.5;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transform: translateX(-50%); opacity: 0; transition: opacity .2s ease; pointer-events: none;
+}
+.globe-cap.is-on { opacity: 1; }
+
+/* ---- 接着看（ix-resume） ---- */
+.resume { margin-top: calc(16 * var(--u)); }
+.resume .row { min-height: calc(64 * var(--u)); }
+.resume .t b { color: var(--label); }
+.resume + .page-head { margin-top: calc(16 * var(--u)); }
+
+/* ---- 「本书进度」弹层：圆环下面一句总数 + 各章状态 ---- */
+.pg-sum { margin: 0 0 calc(14 * var(--u)); color: var(--label2); font-size: var(--fs-small); line-height: 1.75; text-align: center; }
+.pg-list { background: var(--well); box-shadow: none; border-radius: calc(16 * var(--u)); }
+.pg-list > li + li > .row::before { left: calc(56 * var(--u)); }
+.pg-list .row { min-height: calc(54 * var(--u)); padding: calc(8 * var(--u)) calc(12 * var(--u)); gap: calc(12 * var(--u)); }
+.pg-list .row .ico { width: calc(30 * var(--u)); height: calc(30 * var(--u)); border-radius: calc(8 * var(--u)); }
+.pg-list .row .ico .i { width: calc(17 * var(--u)); height: calc(17 * var(--u)); }
+.pg-list .badge.is-ready { background: var(--accent-tint); color: var(--accent-text); font-weight: 600; }
+
+/* ---- 「更新记录」弹层：刻度尺下面按版本列（每条先露第一句，原地展开全文） ---- */
+.up-vers { display: grid; gap: calc(18 * var(--u)); margin-top: calc(20 * var(--u)); padding-top: calc(16 * var(--u)); border-top: 1px solid var(--sep); }
+.up-ver h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(4 * var(--u)) calc(8 * var(--u)); margin: 0 0 calc(4 * var(--u)); font-size: calc(16 * var(--u)); line-height: 1.4; }
+.up-ver h3 span { color: var(--label2); font-size: var(--fs-small); font-weight: 400; }
+.up-note { margin: 0 0 calc(6 * var(--u)); color: var(--label2); font-size: var(--fs-small); line-height: 1.7; }
+.up-g { margin: calc(10 * var(--u)) 0 calc(4 * var(--u)); color: var(--label2); font-size: var(--fs-xs); font-weight: 600; }
+.up-items { display: grid; gap: calc(6 * var(--u)); margin: 0; padding-left: 1.2em; font-size: var(--fs-small); line-height: 1.75; color: var(--label); }
+.up-items p { margin: 0; overflow-wrap: anywhere; }
+.up-more {
+  display: inline-flex; align-items: center; height: calc(22 * var(--u)); margin-left: calc(6 * var(--u)); padding: 0 calc(9 * var(--u));
+  border: 0; border-radius: 999px; background: var(--accent-tint); color: var(--accent-text);
+  font-family: inherit; font-size: var(--fs-xs); font-weight: 600; line-height: 1; vertical-align: 1px; cursor: pointer;
+}
+.up-rest:not([hidden]) { animation: up-in .24s ease; }
+@keyframes up-in { from { opacity: 0; } }
+
+/* 搜索索引锚到总览各块（怎么用四步、两种气质、十条原则）：跳过来时上面留一点 */
+.step, .duo-card, .taste { scroll-margin-top: calc(16 * var(--u)); }
+
+@media (max-width: 1000px) {
+  /* 两栏挤不下星球：字在上、星球在下，柔光跟着挪到下半截 */
+  .hero { grid-template-columns: minmax(0, 1fr); --glow: 62% 36% at 50% 72%; padding: calc(32 * var(--u)) calc(28 * var(--u)) calc(20 * var(--u)); }
+  .hero-sub { max-width: calc(560 * var(--u)); }
+  .globe { height: calc(340 * var(--u)); }
+}
+@media (max-width: 900px) {
+  /* 大图契约（star.css 文件头 data-hero）：外壳把它拉到顶栏底下；这里左右出血、让出顶栏那一截。
+     顶栏整条透明压在舞台上，可读性交给舞台自己的压暗（ix-oldnav）：舞台本来就是近黑的深夜蓝紫，
+     顶栏那一截再垫一层从 .4 黑渐隐的压暗，免得强调色柔光跑上来 */
+  .hero {
+    margin-inline: calc(-1 * var(--page-x));
+    padding: calc(var(--topbar-h) + 26px) var(--page-x) 16px;
+    border-radius: 0 0 var(--r-lg) var(--r-lg);
+    min-height: 0;
+    --top-shade: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,0) calc(var(--topbar-h) + 48px));
+  }
+  .step, .duo-card, .taste { scroll-margin-top: 12px; }
+}
+@media (max-width: 600px) {
+  .hero { margin-inline: -16px; padding: calc(var(--topbar-h) + 22px) 16px 12px; }
+  .hero-title { font-size: 34px; }
+  .hero-sub { font-size: 15px; }
+  .hero-acts { gap: 8px; }
+  .hero-acts .btn, .hero-btn { height: 40px; padding: 0 13px; }
+  .globe { height: 300px; }
+  .gl-pt { font-size: 11.5px; padding: 2px 6px 2px 4px; gap: 4px; }
+  .gl-dot { width: 7px; height: 7px; }
+}
 
 /* ---- 怎么用：四步 ---- */
 .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(14 * var(--u)); }
@@ -365,11 +538,11 @@
 .tp9-read { font-size: var(--fs-small); line-height: 1.6; color: var(--label); }
 .tp9-read b { color: var(--red-text); }
 
-/* 10 先做出来再慢慢完善：分阶段时间线 */
+/* 10 先做出来再慢慢完善：分阶段时间线（五个阶段：进度线从第1格中心画到第5格中心，左右各留半格＝10%） */
 .tp10-track { position: relative; }
-.tp10-line { position: absolute; left: 12.5%; right: 12.5%; top: calc(17 * var(--u)); height: 3px; overflow: hidden; border-radius: 999px; background: var(--fill); }
-.tp10-fill { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform: scaleX(.6667); transform-origin: 0 50%; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
-.tp10-steps { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(6 * var(--u)); }
+.tp10-line { position: absolute; left: 10%; right: 10%; top: calc(17 * var(--u)); height: 3px; overflow: hidden; border-radius: 999px; background: var(--fill); }
+.tp10-fill { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform: scaleX(.75); transform-origin: 0 50%; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.tp10-steps { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: calc(6 * var(--u)); }
 .tp10-step { display: grid; justify-items: center; gap: calc(5 * var(--u)); min-width: 0; padding: 0 calc(2 * var(--u)) calc(4 * var(--u)); border: 0; border-radius: calc(10 * var(--u)); background: none; color: var(--label2); font-size: var(--fs-xs); text-align: center; cursor: pointer; }
 .tp10-dot { display: grid; place-items: center; width: calc(34 * var(--u)); height: calc(34 * var(--u)); border-radius: 50%; background: var(--raised); box-shadow: var(--shadow-sm); color: var(--label2); font-size: calc(15 * var(--u)); font-weight: 700; }
 .tp10-step.is-done .tp10-dot { background: var(--accent-tint); color: var(--accent-text); }

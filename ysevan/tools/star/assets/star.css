@@ -55,11 +55,68 @@
  *                          .brand-icon 不写 data-icon="brand"，star.js 就不去换它
  *
  * ── 外壳保留的属性（页面和样例别用）──────────────────────────────────────
- *   data-mode-set / data-accent-set / data-theme-controls
- *                          外壳主题控件专用：star.js 只认 nav.js 画的两处（侧栏底部、「更多」面板），
+ *   data-mode-set / data-accent-set / data-blur-set / data-theme-reset / data-theme-controls
+ *                          外壳外观控件专用：star.js 只认 nav.js 画的两处（侧栏底部、「更多」面板），
  *                          页面里写了也不会生效，还会被误以为是全站开关。样例要演示切主题，用页面自己的属性
  *                          （交互页用 data-ix-accent），只改样例容器上的 data-mode / data-accent（令牌在任何元素上都会重算）。
  *   data-more-toggle / data-more-close   「更多」面板的开关按钮
+ *   data-search-open / data-search-close 搜索入口与整页搜索浮层的关闭
+ *   html 上：data-blur / data-blur-pref（模糊档位，boot.js 写）、data-jump 与类 jump-in（带锚点打开时关平滑滚动、进场只淡入）、
+ *            data-over-hero / data-hero-checked（顶栏压在大图上 / 已经判过）、类 vt-reveal / vt-fade / vt-nav / hero-live（过渡期间的钩子）
+ *
+ * ── 页面可以用的外壳钩子（第二阶段加）────────────────────────────────────
+ *   data-spot="名字 名字2"  「本站这里在用」的落点：地址 页面.html#spot-名字 打开（或 hashchange）时，star.js 找
+ *                          [data-spot~="名字"] 里第一个看得见的，瞬间滚到视口中间、一圈强调色光环亮两下（1.2s；
+ *                          减弱动效静态描边2秒）。看不见但在「更多」面板里的先打开面板。外壳内置、不用写属性的名字：
+ *                          copy（第一个 [data-copy]）/ pull（第一个可下拉的长代码）/ trap（第一个 .fact.trap）/
+ *                          theme / accent / blur / reset（外观控件）/ search / nav / brand / skip / more。
+ *                          JS：StarShell.spot("名字") 不改地址直接点亮。
+ *   <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-filter-multi">收藏 · 标签多选</a>…</p>
+ *                          条目里放在 .entry-head 的 .entry-tags 下面（总览原则卡放在卡片说明下面）；链接是小胶囊带「→」，可多个、窄屏换行。
+ *   data-press              按压倾斜（ix-press）：a.row、.list .row 自动吃；别的元素写 data-press（默认按卡片那套数：7°、.96），
+ *                          写 data-press="row" 按宽行那套（鼠标1°/.985、触屏3°/.97、左右倾角按行宽压）。按下期间 WAAPI 接管
+ *                          transform（走完撤掉），元素自己别在按下时靠 CSS transform 做别的事。.specimen 里的行不归外壳，要接管写 data-press。
+ *   data-press-block        按在它里面不倾（卡片里的「详情」按钮、外链、折叠的 summary 这类）。外壳已经默认拦 button / a[href] / summary /
+ *                          input / select / textarea / .specimen / iframe 这些后代；被按的元素自己就是链接或按钮时照常倾。
+ *   data-hero               大图（≤900 时顶栏压在它上面变透明，ix-oldnav）。写在 main.page 的第一个子元素上，star.css 在 ≤900 给它
+ *                          margin-top: calc(-1 * (var(--topbar-h) + var(--page-pt)))，让图顶到顶栏底下；图自己的内容要让出顶栏那一截
+ *                          （padding-top 至少 var(--topbar-h)）——这条 padding 不能省：没有它，图里第一个子元素（如 h1）的上 margin
+ *                          会和这条负 margin 折叠，图停不到顶（实测 417 下停在 18.75px，顶栏就判成「没压在图上」）。
+ *                          左右要出血就自己加 margin-inline: calc(-1 * var(--page-x))（≤600 是 -16px）。
+ *                          透明时顶栏不画底、不描边、不模糊，字和图标改白：可读性交给图自己的压暗（整张图压一层 ≥.45 的黑，
+ *                          照 ix-oldnav 的 .6）。页面晚加 [data-hero] 后调 StarShell.refreshHero()。
+ *                          开页第一帧就要透明：在 <body> 上写 data-hero-top（body 一解析出来就生效）；不写也有 :has 退路，
+ *                          但 <main> 还没解析到的那一帧看不见图，会先画一帧玻璃（实测）。判定扣掉正文进场的8px位移。
+ *   data-no-pull            超过14行的 <pre> 默认收起只露8行（ix-sheet-pull）；不想收的写这个。.specimen 里的 <pre> 不收。
+ *
+ * ── 模糊档位（ix-sheet-frosted 的降级档）：html[data-blur] = full | lite | off ───────────
+ *   偏好存 localStorage「star-blur」= auto / on / off（外观里「背景模糊：自动 / 开 / 关」）；boot.js 在样式表前解析好：
+ *   on → full；off → off；auto → 有显卡 full、没显卡 lite（WebGL failIfMajorPerformanceCaveat 探测，缓存「star-gpu」，
+ *   没测过先按 lite）。JS 读档位：StarShell.blurTier()（或 StarTheme.blur()）。
+ *     full  整页遮罩背景从清楚糊到26px（1s cubic-bezier(.2,.7,.2,1)，关 .3s），只糊不压暗；弹层面板 .88 玻璃 + 自己的磨砂
+ *     lite  整页遮罩不模糊、压暗淡入（--scrim-dim，浅 rgba(20,24,36,.28) / 深 rgba(0,0,0,.5)）；弹层面板不模糊、底提到 .97；
+ *           侧栏 / 顶栏 / tab bar 的常驻磨砂照旧。实测合成开销约基线1.3×，模糊2.9–3.3×（数字见交互页「毛玻璃浮层」那条）
+ *     off   同 lite，并且侧栏 / 顶栏 / tab bar 的常驻磨砂也关、玻璃提到近乎不透明（同第5节「做不出磨砂」）
+ *   切主题的圆形揭开、强调色淡入、跨页过渡只在 full 下做（View Transition 要整屏截图，软件合成下最贵）。
+ *   给弹层用的两个类（kit 与外壳共用）：
+ *     .scrim-frost + .is-open   整页遮罩：position:fixed; inset:0; 默认 z-index 40（使用方可改）；关着 visibility:hidden、
+ *                              不挡点击；按档位自己选做法。做不出磨砂、用户要求减少透明度时 full 也走压暗。
+ *                              减弱动效下外壳关掉一切过渡：开关直接到位。
+ *     .sheet-glass              弹层面板：full = --glass-panel + blur(30px) saturate(160%)；lite / off = --glass-panel-solid、不模糊。
+ *   z-index 梯子：侧栏 20、tab bar 30、「更多」遮罩 / 面板 40 / 41、搜索遮罩 / 面板 / 结果 44 / 45 / 46、提示条 50、
+ *                复制气泡 60、跳到正文 60、跳转点亮光环 70、kit 弹层 80、kit 灯箱 90。
+ *
+ * ── 过渡（第二阶段加）──────────────────────────────────────────────────
+ *   切明暗：document.startViewTransition，新画面从点的那个控件处圆形揭开（clip-path circle，420ms cubic-bezier(.25,.5,.3,1)，理由见 star.js 第1条）；
+ *   切强调色：View Transition 默认交叉淡入，260ms。减弱动效、lite / off、不支持时直接切。
+ *   切页：正文 .page 淡入＋上移8px（260ms cubic-bezier(.2,.8,.2,1)），侧栏不动；跨文档 View Transition
+ *   （@view-transition navigation:auto），侧栏 / tab bar 临时起名 star-side / star-tabbar 原地不动，正文那层同样淡入上移；
+ *   有跨页过渡时 CSS 进场不做（html.vt-nav）。file:// 下也做（屋主是双击打开的）：开关除了第14节这份，boot.js 还用
+ *   构造样式表挂了一份——file:// 下只靠外部样式表，新页判开关那一刻它时有时无（实测20次跳转9–10次被中止、留一条报错）；
+ *   挂上以后20/20次都有过渡、零报错。lite / off / 减弱动效时 boot.js（pagereveal）与 star.js（pageswap）跳过。
+ *   带 #锚点 打开时（html.jump-in）正文进场只淡入不上移：浏览器按带位移的盒子算锚点落点，8px 没走完落点就偏。
+ *   注意：带 view-transition-name 的元素是 backdrop root，它里面的子元素 backdrop-filter 只糊得到它自己——
+ *   所以侧栏只在过渡那一下起名，侧栏的磨砂也一直挂在侧栏自己身上，不挪到伪元素或子元素上。
  *
  * ── 样例框与减弱动效的约定 ─────────────────────────────────────────────
  *   .specimen.is-overflow-visible
@@ -107,6 +164,7 @@
   --fs-body: calc(clamp(14px, .15vw + 12.84px, 15px) * var(--scale));
   --fs-small: calc(13px * var(--scale));
   --fs-xs: calc(12px * var(--scale));
+  --page-pt: calc(26 * var(--u));      /* 正文上内边距：[data-hero] 顶到顶栏底下要抵掉它（文件头「页面可以用的外壳钩子」） */
   --gap: calc(clamp(10px, 1vw, 14.4px) * var(--scale));
   --pad: calc(clamp(18px, .95vw + 14.32px, 28px) * var(--scale));
   --side-w: calc(clamp(200px, 17vw, 244.8px) * var(--scale));
@@ -127,6 +185,7 @@
   /* 跟随文字色的图标：mask-image 取形状、background:currentColor 上色（换主题、换强调色自动跟上） */
   --ic-doc: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7.4 3.6h6.2L18 8v10.9a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 18.9V5.1a1.5 1.5 0 0 1 1.4-1.5z'/%3E%3Cpath d='M13.4 3.6v4.6H18'/%3E%3Cpath d='M9 12.6h6M9 16h4'/%3E%3C/svg%3E");
   --ic-alert: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4.8 20.6 19.2H3.4z'/%3E%3Cpath d='M12 10.2v4.2'/%3E%3Cpath d='M12 16.9v.01'/%3E%3C/svg%3E");
+  --ic-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h13.4'/%3E%3Cpath d='m13 6.6 5.4 5.4-5.4 5.4'/%3E%3C/svg%3E");
 }
 /* 不支持三角函数的内核：探针必须写 scale:（接受无单位数），写 width: 会恒真、把上面的公式整个盖掉。 */
 @supports not (scale: tan(atan2(1px, 1px))) {
@@ -200,6 +259,9 @@
   --seg-on: var(--lt, #FFFFFF) var(--dk, #5B5C63);
   --hover: var(--lt, rgba(255,255,255,.55)) var(--dk, rgba(255,255,255,.07));
   --scrim: var(--lt, rgba(20,24,36,.18)) var(--dk, rgba(0,0,0,.5));
+  /* 模糊档位 lite / off 的整页遮罩与弹层面板（ix-sheet-frosted「降级」：压暗 .28 / .5，面板底近乎不透明） */
+  --scrim-dim: var(--lt, rgba(20,24,36,.28)) var(--dk, rgba(0,0,0,.5));
+  --glass-panel-solid: var(--lt, rgba(255,255,255,.97)) var(--dk, rgba(36,38,48,.97));
   --shadow: var(--lt, 0 10px 30px rgba(20,30,60,.08)) var(--dk, 0 10px 30px rgba(0,0,0,.35)), inset 0 1px 0 var(--glass-edge);
   --shadow-sm: var(--lt, 0 1px 3px rgba(20,30,60,.12)) var(--dk, 0 1px 3px rgba(0,0,0,.4));
   --shadow-pop: var(--lt, 0 24px 60px rgba(20,30,60,.18)) var(--dk, 0 24px 60px rgba(0,0,0,.55)), inset 0 1px 0 var(--glass-edge);
@@ -257,6 +319,8 @@ html {
   text-size-adjust: 100%;
   scroll-behavior: smooth;
 }
+/* 带 #锚点 打开、搜索跳同页锚点时：boot.js / star.js 挂 data-jump，瞬间跳（长页平滑滚会慢慢滚、量具读早、看着跑偏） */
+html[data-jump] { scroll-behavior: auto; }
 body {
   margin: 0;
   min-height: 100svh;
@@ -366,7 +430,7 @@ a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
 }
 .top-more { display: none; }
 .side-foot { flex: none; padding: calc(12 * var(--u)) calc(8 * var(--u)) 0; border-top: 1px solid var(--sep); }
-.side-ver { margin: calc(10 * var(--u)) 0 0; font-size: var(--fs-xs); color: var(--label2); }
+.side-ver { margin: 0; font-size: var(--fs-xs); color: var(--label2); white-space: nowrap; }
 
 /* 外观控件：分段（radiogroup）+ 六个色点（每个点显示它自己的颜色，不引用当前 --accent） */
 .theme { display: grid; gap: calc(10 * var(--u)); }
@@ -403,6 +467,18 @@ a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
   opacity: 0; transition: opacity .15s ease;
 }
 .dot:hover .dot-name, .dot:focus-visible .dot-name { opacity: 1; }
+/* 「背景模糊：自动 / 开 / 关」：这一行的「自动」和外观的「自动」同名，所以标签看得见、排在分段左边 */
+.theme-row-blur { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: calc(8 * var(--u)); }
+.theme-label.is-shown { position: static; width: auto; height: auto; overflow: visible; clip: auto; font-size: var(--fs-xs); color: var(--label2); white-space: nowrap; }
+.seg-sm button { padding: calc(3 * var(--u)) 0; font-size: var(--fs-xs); }
+.theme-foot { display: flex; align-items: center; justify-content: space-between; gap: calc(8 * var(--u)); margin: calc(-2 * var(--u)) 0 calc(-4 * var(--u)); }
+.theme-reset {
+  display: inline-flex; align-items: center; gap: calc(5 * var(--u)); margin-left: calc(-7 * var(--u));
+  height: calc(26 * var(--u)); padding: 0 calc(9 * var(--u)) 0 calc(7 * var(--u)); border: 0; border-radius: calc(8 * var(--u));
+  background: transparent; color: var(--label2); font-size: var(--fs-xs); cursor: pointer;
+}
+.theme-reset:hover { background: var(--hover); color: var(--label); }
+.theme-reset .i { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
 
 /* ---------- 底部 tab bar（≤600 才显示）---------- */
 .tabbar { display: none; }
@@ -415,7 +491,7 @@ a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
 .tab[aria-current="page"], .tab[aria-expanded="true"] { color: var(--accent-text); background: var(--glass-strong); font-weight: 600; }
 
 /* ---------- 「更多」面板（≤900 才有入口）：浮在正文上，玻璃提到 .88 让字的底可预测 ---------- */
-.more-scrim { position: fixed; inset: 0; z-index: 40; background: var(--scrim); }
+/* 遮罩是 .scrim-frost（第13节），按模糊档位糊开或压暗 */
 .more-panel {
   position: fixed; z-index: 41;
   top: calc(var(--topbar-h) + 8px); right: max(12px, env(safe-area-inset-right));
@@ -450,9 +526,16 @@ a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
 /* ---------- 8. 页面、目录、分组 ---------- */
 .page {
   min-width: 0;
-  padding: calc(26 * var(--u)) var(--page-x) calc(72 * var(--u));
+  padding: var(--page-pt) var(--page-x) calc(72 * var(--u));
   padding-right: max(var(--page-x), env(safe-area-inset-right));
+  /* 切页进场：正文淡入＋上移8px，侧栏不动。fill 只取 backwards：走完就不再作用（不留 transform，
+     不然 .page 会一直是 fixed 后代的参照）。跨页 View Transition 接手时 html.vt-nav 关掉它（第14节） */
+  animation: page-in 260ms cubic-bezier(.2, .8, .2, 1) backwards;
 }
+@keyframes page-in { from { opacity: 0; transform: translateY(8px); } }
+/* 带 #锚点 打开（boot.js 挂 jump-in）：只淡入不上移——浏览器按带位移的盒子算锚点落点，会偏 8px（实测 16 → 7.6） */
+html.jump-in .page { animation-name: page-fade; }
+@keyframes page-fade { from { opacity: 0; } }
 .page-head { padding: var(--pad); border-radius: var(--r-lg); background: var(--glass-strong); box-shadow: var(--shadow); }
 .page-title { margin: 0; font-size: var(--fs-title); line-height: 1.2; font-weight: 700; letter-spacing: -.4px; }
 .page-sub { margin: calc(8 * var(--u)) 0 0; max-width: var(--measure); color: var(--label2); font-size: var(--fs-lead); line-height: 1.7; }
@@ -617,15 +700,31 @@ a.row:hover { background: var(--hover); }
 .row[aria-disabled="true"] .ico { opacity: .5; }
 .row[aria-current="page"] .t b { color: var(--accent-text); }
 
-/* 点一下复制：button[data-copy]；气泡压在按钮上，实色 */
+/* 点一下复制：button[data-copy]。「已复制」气泡（ix-lightbox 气泡那半）挂 body、position:fixed（按钮常在
+   overflow 裁切的样例框里，挂在按钮里会被裁），浮在按钮上方、箭头指着按钮中心；贴边时整体挪进来，箭头按 --ax 反向移；
+   上方被顶栏 / 视口顶挡住就翻到下方（.is-below）。出现 160ms，1400ms 后 .is-leaving 淡出 140ms 再删。实色。 */
 [data-copy] { position: relative; cursor: pointer; }
-.copy-tip {
-  position: absolute; left: 50%; top: 50%; z-index: 2; transform: translate(-50%, -50%);
-  padding: 2px 8px; border-radius: 7px; background: var(--label); color: var(--bg);
-  font-size: 12px; line-height: 1.5; font-weight: 600; white-space: nowrap; pointer-events: none;
-  animation: tip-out 1.3s ease forwards;
+.copy-bubble {
+  position: fixed; left: 0; top: 0; z-index: 60;
+  padding: calc(4 * var(--u)) calc(10 * var(--u)); border-radius: calc(8 * var(--u));
+  background: var(--label); color: var(--bg);
+  font-size: calc(12 * var(--u)); line-height: 1.5; font-weight: 600; white-space: nowrap; pointer-events: none;
+  transform-origin: var(--ax, 50%) 100%;
+  animation: bub-in 160ms cubic-bezier(.2, .8, .2, 1) both;
 }
-@keyframes tip-out { 0% { opacity: 0; } 12% { opacity: 1; } 78% { opacity: 1; } 100% { opacity: 0; } }
+/* 箭头：边框三角，不用 transform；按 --ax 停在按钮中心正上方（气泡躲了多少，它反向移多少） */
+.copy-bubble::after { content: ""; position: absolute; left: var(--ax, 50%); top: 100%; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--label); }
+.copy-bubble.is-below { transform-origin: var(--ax, 50%) 0; animation-name: bub-in-below; }
+.copy-bubble.is-below::after { top: auto; bottom: 100%; border-top-color: transparent; border-bottom-color: var(--label); }
+.copy-bubble.is-leaving { animation: bub-out 140ms ease both; }
+@keyframes bub-in { from { opacity: 0; transform: translateY(4px) scale(.92); } to { opacity: 1; transform: none; } }
+@keyframes bub-in-below { from { opacity: 0; transform: translateY(-4px) scale(.92); } to { opacity: 1; transform: none; } }
+@keyframes bub-out { from { opacity: 1; } to { opacity: 0; } }
+@media (forced-colors: active) {
+  .copy-bubble { border: 1px solid CanvasText; }
+  .copy-bubble::after { forced-color-adjust: none; border-top-color: CanvasText; }
+  .copy-bubble.is-below::after { border-top-color: transparent; border-bottom-color: CanvasText; }
+}
 
 /* ---------- 11. .xw 小屋暖纸作用域（Ysevan_web/app/globals.css 的色值；夜里 .xw[data-mode="dark"]）----------
    色值按 globals.css 里的 HSL 实算（夜里那组的十六进制注释是近似值，差 1–8 个色阶，以 HSL 为准）。
@@ -689,7 +788,9 @@ a.row:hover { background: var(--hover); }
   }
   .top-more .i { width: 18px; height: 18px; }
   .top-more[aria-expanded="true"] { background: var(--accent-tint); color: var(--accent-text); }
-  .entry, .group { scroll-margin-top: calc(var(--topbar-h) + 12px); }
+  /* 吸顶顶栏的高度只让 html 的 scroll-padding 管一次；条目自己只留 12px（两处都加顶栏高时，768 下锚点落在
+     132px 处——顶栏下面空出 76px，2026-10-08 搜索跳转实测）。落点 = 64 + 12 = 76，顶栏下留 20，和 ≤600 一样 */
+  .entry, .group { scroll-margin-top: 12px; }
   html { scroll-padding-top: calc(var(--topbar-h) + 8px); }
 }
 @media (min-width: 901px) {
@@ -731,4 +832,404 @@ a.row:hover { background: var(--hover); }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   /* 约定：data-rm="fade" 的元素只留 opacity 过渡（原地淡入淡出），其余照关。见文件头「样例框与减弱动效的约定」 */
   [data-rm="fade"] { transition: opacity var(--rm-fade, .2s) ease !important; }
+}
+
+/* ==========================================================================
+ * 第二阶段：外壳用上合集（2026-10-08）。规则与契约见文件头「页面可以用的外壳钩子」「模糊档位」「过渡」。
+ * ========================================================================== */
+
+/* ---------- 13. 模糊档位与整页遮罩 ---------- */
+/* .scrim-frost + .is-open：整页遮罩（「更多」面板、搜索浮层、kit 弹层共用）。
+   默认（lite / off / 没写档位）= ix-sheet-frosted 的降级做法：不模糊、压暗淡入（开 1s、关 .3s）。 */
+.scrim-frost {
+  position: fixed; inset: 0; z-index: 40;
+  background: var(--scrim-dim);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .3s cubic-bezier(.4, 0, 1, 1), visibility 0s linear .3s;
+}
+.scrim-frost.is-open {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transition: opacity 1s cubic-bezier(.2, .7, .2, 1), visibility 0s;
+}
+/* full：背景由清楚糊到26px、只糊不压暗（例外：动的是 backdrop-filter 半径，照原文；代价写在交互页那一条里） */
+html[data-blur="full"] .scrim-frost {
+  background: transparent; opacity: 1;
+  -webkit-backdrop-filter: blur(0px);
+  backdrop-filter: blur(0px);
+  transition: -webkit-backdrop-filter .3s cubic-bezier(.4, 0, 1, 1), backdrop-filter .3s cubic-bezier(.4, 0, 1, 1), visibility 0s linear .3s;
+}
+html[data-blur="full"] .scrim-frost.is-open {
+  -webkit-backdrop-filter: blur(26px);
+  backdrop-filter: blur(26px);
+  transition: -webkit-backdrop-filter 1s cubic-bezier(.2, .7, .2, 1), backdrop-filter 1s cubic-bezier(.2, .7, .2, 1), visibility 0s;
+}
+/* 做不出磨砂 / 用户要求减少透明度：full 也走压暗（探针带前缀，外层括号不能省） */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-blur="full"] .scrim-frost { background: var(--scrim-dim); opacity: 0; transition: opacity .3s cubic-bezier(.4, 0, 1, 1), visibility 0s linear .3s; }
+  html[data-blur="full"] .scrim-frost.is-open { opacity: 1; transition: opacity 1s cubic-bezier(.2, .7, .2, 1), visibility 0s; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html[data-blur="full"] .scrim-frost, html[data-blur="full"] .scrim-frost.is-open { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--scrim-dim); }
+  html[data-blur="full"] .scrim-frost { opacity: 0; transition: opacity .3s cubic-bezier(.4, 0, 1, 1), visibility 0s linear .3s; }
+  html[data-blur="full"] .scrim-frost.is-open { opacity: 1; transition: opacity 1s cubic-bezier(.2, .7, .2, 1), visibility 0s; }
+}
+/* 弹层面板：full 玻璃 + 自己的磨砂；lite / off 不模糊、底提到 .97（压在压暗的背景上，磨砂本来也看不出） */
+.sheet-glass {
+  background: var(--glass-panel);
+  -webkit-backdrop-filter: blur(30px) saturate(160%);
+  backdrop-filter: blur(30px) saturate(160%);
+}
+html[data-blur="lite"] .more-panel, html[data-blur="off"] .more-panel,
+html[data-blur="lite"] .search-sheet, html[data-blur="off"] .search-sheet,
+html[data-blur="lite"] .sheet-glass, html[data-blur="off"] .sheet-glass {
+  background: var(--glass-panel-solid);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* off：侧栏 / 顶栏 / tab bar 的常驻磨砂也关，玻璃提到近乎不透明（同第5节「做不出磨砂」那套数） */
+html[data-blur="off"], html[data-blur="off"] [data-mode], html[data-blur="off"] [data-accent] {
+  --glass: var(--lt, rgba(255,255,255,.9)) var(--dk, rgba(40,42,52,.92));
+  --glass-strong: var(--lt, rgba(255,255,255,.96)) var(--dk, rgba(44,46,58,.96));
+  --glass-panel: var(--lt, rgba(255,255,255,.97)) var(--dk, rgba(36,38,48,.97));
+}
+html[data-blur="off"] .side, html[data-blur="off"] .tabbar {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ---------- 14. 过渡：切明暗、切强调色、切页（View Transition）---------- */
+/* 跨页：两页都写了才生效（http(s) 与 file:// 同目录都行，Chrome 155 实测）。减弱动效不开；lite / off 由脚本跳过。
+   boot.js 还用构造样式表再挂了一份同样的规则：file:// 下只靠这里的话，新页判开关那一刻外部样式表时有时无（20次9–10次被中止）。 */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+/* 侧栏与 tab bar 只在跨页那一下起名（起了名的元素是 backdrop root，见文件头「过渡」） */
+html.vt-nav .side { view-transition-name: star-side; }
+html.vt-nav .tabbar { view-transition-name: star-tabbar; }
+html.vt-nav .page { animation: none; }
+html.vt-nav::view-transition-old(root) { animation: vt-out 200ms cubic-bezier(.4, 0, 1, 1) both; }
+html.vt-nav::view-transition-new(root) { animation: vt-in 260ms cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(8px); } }
+/* 切明暗：新画面整张盖在旧画面上，由 star.js 在 ::view-transition-new(root) 上动 clip-path 圆（420ms），这里关掉默认的交叉淡入 */
+html.vt-reveal::view-transition-old(root),
+html.vt-reveal::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+/* 切强调色：默认交叉淡入，时长改 260ms */
+html.vt-fade::view-transition-group(root),
+html.vt-fade::view-transition-old(root),
+html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
+
+/* ---------- 15. 搜索 ---------- */
+/* 侧栏里的搜索框（>900）；≤900 这一格藏起来，整个 form 被 star.js 搬进 #search-sheet */
+.side-search { flex: none; padding: 0 calc(2 * var(--u)) calc(8 * var(--u)); }
+.search-field {
+  position: relative;
+  display: flex; flex-wrap: wrap; align-items: center; gap: calc(4 * var(--u));
+  min-height: calc(34 * var(--u)); margin: 0;
+  padding: calc(3 * var(--u)) calc(7 * var(--u)) calc(3 * var(--u)) calc(9 * var(--u));
+  border-radius: calc(10 * var(--u)); background: var(--fill); color: var(--label); cursor: text;
+}
+.search-field:focus-within { background: var(--raised); outline: 2px solid var(--accent); outline-offset: 2px; }
+.search-ic { flex: none; display: grid; place-items: center; color: var(--label2); }
+.search-ic .i { width: calc(16 * var(--u)); height: calc(16 * var(--u)); }
+.search-input {
+  flex: 1 1 calc(60 * var(--u)); min-width: calc(60 * var(--u)); height: calc(28 * var(--u));
+  margin: 0; padding: 0 calc(3 * var(--u)); border: 0; background: transparent;
+  color: var(--label); font: inherit; font-size: var(--fs-small);
+}
+.search-input:focus, .search-input:focus-visible { outline: none; }    /* 焦点环画在整只框上（:focus-within） */
+.search-input::placeholder { color: var(--label2); opacity: 1; }
+.search-kbd, .more-search kbd {
+  flex: none; min-width: calc(19 * var(--u)); height: calc(19 * var(--u)); padding: 0 calc(5 * var(--u));
+  border: 1px solid var(--sep); border-radius: calc(5 * var(--u)); background: var(--raised); color: var(--label2);
+  font: 600 calc(11 * var(--u)) / calc(17 * var(--u)) var(--mono); text-align: center;
+}
+.search-field:focus-within .search-kbd { display: none; }
+/* 标签胶囊（ix-tags）：底色单独一层，删除时横竖各按自己的比例缩成圆点；中心圆点再淡入、缩没 */
+.search-chip {
+  position: relative; isolation: isolate;
+  display: inline-flex; align-items: center; gap: calc(1 * var(--u)); max-width: 100%;
+  height: calc(24 * var(--u)); padding: 0 calc(1 * var(--u)) 0 calc(8 * var(--u)); border-radius: 999px;
+  color: var(--accent-text); font-size: var(--fs-xs); font-weight: 600; white-space: nowrap;
+}
+.sc-bg { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--accent-tint); }
+.sc-dot {
+  position: absolute; left: 50%; top: 50%; z-index: 1;
+  width: calc(6 * var(--u)); height: calc(6 * var(--u)); margin: calc(-3 * var(--u)) 0 0 calc(-3 * var(--u));
+  border-radius: 50%; background: var(--accent); opacity: 0; pointer-events: none;
+}
+.sc-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; max-width: calc(140 * var(--u)); }
+.sc-x {
+  flex: none; display: inline-grid; place-items: center;
+  width: calc(22 * var(--u)); height: calc(22 * var(--u)); padding: 0; border: 0; border-radius: 50%;
+  background: transparent; color: inherit; cursor: pointer;
+}
+.sc-x:hover { background: var(--raised); }
+.sc-x-i, .so-hash-i { width: calc(12 * var(--u)); height: calc(12 * var(--u)); fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.search-chip.is-removing { pointer-events: none; }
+
+/* ≤900：顶栏品牌右边的搜索按钮 → 整页浮层（遮罩 .scrim-frost + 顶上一条面板） */
+.top-search { display: none; }
+.search-scrim { z-index: 44; }
+.search-sheet {
+  position: fixed; z-index: 45;
+  top: calc(8px + env(safe-area-inset-top)); left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right));
+  max-width: 640px; margin: 0 auto;
+  display: flex; align-items: flex-start; gap: 6px; padding: 8px;
+  border-radius: 20px;
+  background: var(--glass-panel);
+  -webkit-backdrop-filter: blur(30px) saturate(160%);
+  backdrop-filter: blur(30px) saturate(160%);
+  box-shadow: var(--shadow-pop);
+  opacity: 0; visibility: hidden; transform: translateY(-8px) scale(.98);
+  transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+}
+.search-sheet.is-open {
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity .22s cubic-bezier(.2, .8, .2, 1), transform .22s cubic-bezier(.2, .8, .2, 1), visibility 0s;
+}
+.search-slot { flex: 1; min-width: 0; }
+.search-sheet .search-field { min-height: 42px; padding: 4px 8px 4px 11px; border-radius: 13px; }
+.search-sheet .search-ic .i { width: 18px; height: 18px; }
+.search-sheet .search-input { height: 32px; font-size: 16px; }   /* iOS 上输入框字号小于 16px 会在聚焦时整页放大 */
+.search-sheet .search-chip { height: 28px; font-size: 13px; }
+.search-cancel {
+  flex: none; height: 42px; padding: 0 10px; border: 0; border-radius: 12px;
+  background: transparent; color: var(--accent-text); font-size: 15px; font-weight: 600; cursor: pointer;
+}
+@media (min-width: 901px) {
+  .search-sheet, .search-scrim { display: none !important; }
+}
+
+/* 结果列表：挂 body、fixed 贴着输入框（侧栏有 overflow 与 backdrop-filter，放里面会被裁、fixed 会错参照）。
+   实色、不挂磨砂（ix-suggest：浮层挂上磨砂，没显卡那台整页 P95 翻倍） */
+.search-pop {
+  position: fixed; z-index: 46; left: 0; top: 0;
+  margin: 0; padding: calc(4 * var(--u)); overflow-y: auto; overscroll-behavior: contain;
+  border-radius: var(--r-sm); background: var(--raised); color: var(--label); box-shadow: var(--shadow-pop);
+  transform-origin: top left;
+}
+.search-list { list-style: none; margin: 0; padding: 0; }
+.so {
+  display: grid; gap: calc(1 * var(--u)); min-width: 0;
+  padding: calc(7 * var(--u)) calc(10 * var(--u)); border-radius: calc(8 * var(--u)); cursor: pointer;
+}
+.so[aria-selected="true"] { background: var(--accent-tint); }
+.so-line { display: flex; align-items: baseline; gap: calc(8 * var(--u)); min-width: 0; }
+.so-title { flex: 0 1 auto; min-width: 0; font-size: var(--fs-small); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.so[aria-selected="true"] .so-title { color: var(--accent-text); }
+.so-where { flex: 0 1 auto; max-width: 45%; margin-left: auto; font-size: var(--fs-xs); color: var(--label2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.so-sum { min-width: 0; font-size: var(--fs-xs); line-height: 1.5; color: var(--label2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.so mark { background: transparent; color: var(--accent-text); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .2em; }
+.so-badge { flex: none; padding: 0 calc(6 * var(--u)); border-radius: 999px; background: var(--fill); color: var(--label2); font-size: var(--fs-xs); font-weight: 400; }
+.so-tag .so-line { align-items: center; }
+.so-hash { flex: none; display: grid; place-items: center; color: var(--label2); }
+.so[aria-selected="true"] .so-hash { color: inherit; }
+.so-n { flex: none; margin-left: auto; font-size: var(--fs-xs); color: var(--label2); }
+.search-note, .search-foot { margin: 0; padding: calc(6 * var(--u)) calc(10 * var(--u)) calc(4 * var(--u)); font-size: var(--fs-xs); line-height: 1.5; color: var(--label2); }
+.search-foot { margin-top: calc(4 * var(--u)); border-top: 1px solid var(--sep); }
+
+/* 「更多」面板顶上的搜索入口（≤600 顶栏随页面滚走） */
+.more-search {
+  display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; margin: 2px 0 4px; padding: 0 10px 0 12px;
+  border: 0; border-radius: 12px; background: var(--fill); color: var(--label2); font-size: 15px; text-align: left; cursor: pointer;
+}
+.more-search .i { width: 18px; height: 18px; }
+.more-search span { flex: 1; }
+
+@media (max-width: 900px) {
+  .side-search { display: none; }
+  .top-search {
+    display: inline-grid; place-items: center; flex: none;
+    width: 34px; height: 34px; padding: 0; border: 0; border-radius: 10px;
+    background: var(--fill); color: var(--label); cursor: pointer;
+  }
+  .top-search .i { width: 18px; height: 18px; }
+  .top-search[aria-expanded="true"] { background: var(--accent-tint); color: var(--accent-text); }
+}
+@media (max-width: 600px) {
+  :root { --page-pt: 16px; }
+  .top-search { margin-left: auto; }
+}
+
+/* ---------- 16. 提示条（恢复默认外观 · 撤销）、跳转点亮的光环 ---------- */
+.toast {
+  position: fixed; z-index: 50; left: 50%; bottom: calc(20 * var(--u) + env(safe-area-inset-bottom));
+  display: inline-flex; align-items: center; gap: calc(8 * var(--u)); max-width: calc(100vw - 32px);
+  padding: calc(6 * var(--u)) calc(6 * var(--u)) calc(6 * var(--u)) calc(16 * var(--u)); border-radius: 999px;
+  background: var(--label); color: var(--bg); box-shadow: 0 10px 30px rgba(0, 0, 0, .22);
+  font-size: var(--fs-small); font-weight: 600; line-height: 1.5; white-space: nowrap;
+  opacity: 0; visibility: hidden; transform: translate(-50%, 8px);
+  transition: opacity .16s ease, transform .16s ease, visibility 0s linear .16s;
+}
+.toast:empty { display: none; }
+.toast.is-open {
+  opacity: 1; visibility: visible; transform: translate(-50%, 0);
+  transition: opacity .18s cubic-bezier(.2, .8, .2, 1), transform .18s cubic-bezier(.2, .8, .2, 1), visibility 0s;
+}
+.toast-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.toast-dot { flex: none; width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: .7; }
+.toast-undo {
+  flex: none; padding: calc(4 * var(--u)) calc(12 * var(--u)); border: 0; border-radius: 999px;
+  background: transparent; color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: .2em; cursor: pointer;
+}
+.toast:not(:has(.toast-undo)) { padding-right: calc(16 * var(--u)); }
+.toast-undo:focus-visible { outline-color: var(--bg); outline-offset: 1px; }
+@media (max-width: 600px) {
+  .toast { bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 12px); }
+}
+@media (forced-colors: active) { .toast { border: 1px solid CanvasText; } }
+
+/* 跳转点亮：挂 body、fixed 跟着目标走（star.js 每帧量）；只动 opacity / transform，亮两下 */
+.spot-ring {
+  position: fixed; z-index: 70; left: 0; top: 0; pointer-events: none;
+  border: 2.5px solid var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-shadow), 0 0 24px 2px var(--accent-shadow);
+  animation: spot-pulse 1.2s cubic-bezier(.4, 0, .2, 1) both;
+}
+.spot-ring.is-static { animation: none; opacity: 1; }
+@keyframes spot-pulse {
+  0% { opacity: 0; transform: scale(1.06); }
+  16% { opacity: 1; transform: scale(1); }
+  40% { opacity: .2; transform: scale(1); }
+  60% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+/* ---------- 17. 长代码下拉展开（ix-sheet-pull）、「本站这里在用」 ---------- */
+/* 超过14行的 pre 包进 .code-clip 只露前8行；下沿 .code-pull 一条虚线 + 把手。
+   例外：动的是 .code-clip 的 height——代码块在正文流里，展开要把下面的内容推下去（理由见 star.js 第15条）。 */
+.codebox.is-pull .code-clip {
+  position: relative; overflow: hidden; height: var(--code-h);
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
+  transition: height .5s cubic-bezier(.3, 1.35, .5, 1);
+}
+.codebox.is-pull.is-open .code-clip { height: var(--code-full); transition: height .45s cubic-bezier(.2, .7, .2, 1); }
+.codebox.is-pull:not(.is-open) .code-clip::after {
+  content: ""; position: absolute; left: 1px; right: 1px; bottom: 0; height: calc(28 * var(--u));
+  background: linear-gradient(180deg, transparent, var(--code-bg)); pointer-events: none;
+}
+.codebox.is-pull pre { border-bottom: 0; border-radius: var(--r-sm) var(--r-sm) 0 0; }
+.code-pull {
+  position: relative;
+  border: 1px solid var(--sep); border-top: 0; border-radius: 0 0 var(--r-sm) var(--r-sm);
+  background: var(--code-bg);
+  transform-origin: 50% 0;
+  transition: transform .5s cubic-bezier(.3, 1.35, .5, 1);
+}
+.code-pull::before { content: ""; position: absolute; left: calc(14 * var(--u)); right: calc(14 * var(--u)); top: 0; border-top: 2px dashed var(--sep); }
+.codebox.is-dragging .code-clip, .codebox.is-dragging .code-pull { transition: none; }
+.code-handle {
+  display: grid; justify-items: center; align-content: center; gap: calc(4 * var(--u)); width: 100%;
+  padding: calc(9 * var(--u)) 0 calc(9 * var(--u)); border: 0; border-radius: 0 0 var(--r-sm) var(--r-sm);
+  background: transparent; color: var(--label2); font: inherit; font-size: var(--fs-xs); line-height: 1.3;
+  cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none;
+}
+.code-handle:active { cursor: grabbing; }
+.code-handle:hover { color: var(--label); }
+.code-handle i { display: block; width: calc(36 * var(--u)); height: calc(4 * var(--u)); border-radius: 999px; background: var(--label3); }
+.code-handle:focus-visible { outline-offset: -4px; }
+
+/* 「本站这里在用」：小、不抢标题；链接是小胶囊带一个「→」线条图标，可多个、窄屏换行 */
+.used-here {
+  display: flex; flex-wrap: wrap; align-items: center; gap: calc(6 * var(--u)) calc(8 * var(--u));
+  margin: calc(10 * var(--u)) 0 0; font-size: var(--fs-xs); line-height: 1.4;
+}
+.used-label { color: var(--label2); font-weight: 600; white-space: nowrap; }
+.used-here a {
+  display: inline-flex; align-items: center; gap: calc(4 * var(--u)); max-width: 100%;
+  min-height: calc(22 * var(--u)); padding: calc(2 * var(--u)) calc(7 * var(--u)) calc(2 * var(--u)) calc(9 * var(--u));
+  border-radius: 999px; background: var(--accent-tint); color: var(--accent-text);
+  font-weight: 600; text-decoration: none; overflow-wrap: anywhere;
+}
+.used-here a::after {
+  content: ""; flex: none; width: calc(12 * var(--u)); height: calc(12 * var(--u)); background: currentColor;
+  -webkit-mask: var(--ic-arrow) center / contain no-repeat; mask: var(--ic-arrow) center / contain no-repeat;
+}
+.used-here a:hover { text-decoration: underline; text-underline-offset: .2em; }
+
+/* ---------- 18. 大图上的透明顶栏（ix-oldnav）----------
+   页面契约：[data-hero] 写在 main.page 的第一个子元素上；≤900 这里把它往上拉到顶栏底下（抵掉顶栏高与正文上内边距）。
+   html[data-over-hero]（star.js 判：整条顶栏都压在图上）：顶栏不画底、不描边、不模糊，字和图标改白。
+   开页预判：star.js 第一次判之前（还没有 data-hero-checked）先按「压在图上」画——defer 脚本跑之前浏览器可能已经画了几帧，
+   不预判的话那几帧是玻璃、随后才变透明。两种预判：
+     <body data-hero-top>     页面自己声明（推荐）：body 一解析出来就生效，第一帧就对；
+     :has(正文第一个子元素是 [data-hero])   没声明时的退路：<main> 还没解析到的那一帧看不见图，实测会有一帧玻璃。
+   :has 那条包在 :is() 里：:is 的选择器表是宽容的，不认 :has 的内核只当它匹配不上，不会把整条规则丢掉。
+   切换过渡（hero-live 之后才有，免得开页那一下也渐变）：例外动的是底色、边线、字色与 backdrop-filter——
+   一次性、只在 ≤900（手机有显卡），只动 transform / opacity 做不到「玻璃 → 透明」。 */
+@media (max-width: 900px) {
+  .page > [data-hero]:first-child { margin-top: calc(-1 * (var(--topbar-h) + var(--page-pt))); }
+  html.hero-live .side {
+    transition: background-color .3s ease, border-color .3s ease, -webkit-backdrop-filter .3s ease, backdrop-filter .3s ease;
+  }
+  html.hero-live .side .brand, html.hero-live .side .nav-item, html.hero-live .side .nav-ic,
+  html.hero-live .side .top-more, html.hero-live .side .top-search { transition: color .3s ease, background-color .3s ease; }
+  /* 下面每条选择器都写三份：判定结果 [data-over-hero] / 页面声明的开页预判 body[data-hero-top] / :has 退路（包在 :is 里） */
+  html[data-over-hero] .side,
+  html:not([data-hero-checked]) body[data-hero-top] .side,
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side {
+    background: transparent; border-bottom-color: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  html[data-over-hero] .side .brand,
+  html:not([data-hero-checked]) body[data-hero-top] .side .brand,
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .brand,
+  html[data-over-hero] .side .nav-ic,
+  html:not([data-hero-checked]) body[data-hero-top] .side .nav-ic,
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .nav-ic,
+  html[data-over-hero] .side .top-more,
+  html:not([data-hero-checked]) body[data-hero-top] .side .top-more,
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .top-more,
+  html[data-over-hero] .side .top-search,
+  html:not([data-hero-checked]) body[data-hero-top] .side .top-search,
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .top-search,
+  html[data-over-hero] .side .nav-item[aria-current="page"],
+  html:not([data-hero-checked]) body[data-hero-top] .side .nav-item[aria-current="page"],
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .nav-item[aria-current="page"],
+  html[data-over-hero] .side .nav-item[aria-current="page"] .nav-ic,
+  html:not([data-hero-checked]) body[data-hero-top] .side .nav-item[aria-current="page"] .nav-ic,
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .nav-item[aria-current="page"] .nav-ic { color: #FFFFFF; }
+  html[data-over-hero] .side .nav-item:not([aria-current]),
+  html:not([data-hero-checked]) body[data-hero-top] .side .nav-item:not([aria-current]),
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .nav-item:not([aria-current]) { color: rgba(255, 255, 255, .78); }
+  html[data-over-hero] .side .nav-item[aria-current="page"],
+  html:not([data-hero-checked]) body[data-hero-top] .side .nav-item[aria-current="page"],
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .nav-item[aria-current="page"] { background: transparent; box-shadow: none; }
+  html[data-over-hero] .side .top-more,
+  html:not([data-hero-checked]) body[data-hero-top] .side .top-more,
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .top-more,
+  html[data-over-hero] .side .top-search,
+  html:not([data-hero-checked]) body[data-hero-top] .side .top-search,
+  html:is(:not([data-hero-checked]):has(> body > main.page > [data-hero]:first-child)) .side .top-search { background: transparent; }
+}
+
+/* ≤900 浮层开着时，结果列表被 star.js 搬进 #search-sheet（aria-modal 对话框里，读屏才读得到）：挂在面板下沿 */
+.search-sheet .search-pop { position: absolute; top: calc(100% + 6px); left: 0; right: 0; }
+
+/* ---------- 19. 扁视口的紧凑侧栏（>900、视口比 1440×900 扁）----------
+   侧栏按 --u 等比放大，竖向也跟着放大；视口比 1440×900 扁时（屋主台式 2040×1019、带工具栏 2040×930，
+   笔记本 2552×1274）放大后的侧栏比视口高，导航要滚。这里只收竖向节奏：导航项 34→28、分组标题上下距 12/4→6/2、
+   侧栏上下内边距、品牌与搜索格、外观三行的间距与分段高度；横向尺寸、字号、图标一个都不动。
+   条件：宽高比大于 1.6（宽 ≥1440 时，有效高度 = 高 × 1440 ÷ 宽，比 900 矮就等于宽高比大于 1.6）；
+   宽在 901–1440 之间 --scale 恒为1，宽高比量不出来，另加「高不到 900」。1440×900 正好 1.6、高 900，两条都不中，一个像素不变。
+   实测（软件渲染 DPR 1.25）：2040×1019 与 2040×930 两档 11 项导航和外观控件全看得见、导航不滚；
+   最后一组下面还空着：1019 那档约130px、930 那档约40px（量具 accept-shell.mjs 的 side 段）。 */
+@media (min-width: 901px) and (min-aspect-ratio: 1601/1000), (min-width: 901px) and (max-height: 899.98px) {
+  .side { gap: 0; padding-top: calc(12 * var(--u)); padding-bottom: calc(8 * var(--u)); }
+  .brand { padding-top: 0; padding-bottom: calc(8 * var(--u)); }
+  .side-search { padding-bottom: calc(6 * var(--u)); }
+  .search-field { min-height: calc(30 * var(--u)); padding-top: calc(2 * var(--u)); padding-bottom: calc(2 * var(--u)); }
+  .search-input { height: calc(26 * var(--u)); }
+  .side-nav { padding-bottom: calc(2 * var(--u)); }
+  .side-group { margin-top: calc(6 * var(--u)); margin-bottom: calc(2 * var(--u)); line-height: 1.3; }
+  .side-sec:first-child .side-group { margin-top: 0; }
+  .nav-item { height: calc(28 * var(--u)); }
+  .side-foot { padding-top: calc(8 * var(--u)); }
+  .theme { gap: calc(6 * var(--u)); }
+  .side-foot .seg button { padding-top: calc(3 * var(--u)); padding-bottom: calc(3 * var(--u)); }
+  .side-foot .seg-sm button { padding-top: calc(2 * var(--u)); padding-bottom: calc(2 * var(--u)); }
+  .side-foot .dots { padding-top: 2px; padding-bottom: 2px; }
+  .side-foot .theme-foot { margin-bottom: calc(-6 * var(--u)); }
 }

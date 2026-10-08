@@ -1,0 +1,379 @@
+/* ==========================================================================
+ * kit.css —— 整页弹层套件（配 assets/kit.js，window.StarKit）。总览、收藏页用；star.css 之后引入。
+ *
+ * 交互页「弹窗 · 屋主收集」的六个样例是手机舞台里的演示（sheets.css，弹层 absolute 在舞台里）；
+ * 这里是真在整页上弹的版本，数值照那几条的「数值 / 代码」逐位照搬，尺寸 = 「1440 处的值 × --u」（star.css 第2节）。
+ *   ix-sheet-frosted  遮罩满档：背景模糊 0→26px 1s；面板 scale(.94)→1 .6s、opacity .3s；关闭统一 .3s 收回
+ *   ix-sheet-ring     ≤600 底部面板 translateY(105%)→0 .5s；遮罩 #000 压到 .4、.5s（任何档位）；圆环 1.2s、delay .5s
+ *   ix-sheet-ruler    53根周刻度：.16 → 走过的 .78，每根错开 16.7ms；今天那根叠强调色；编号每字 .2s、错开 50ms
+ *   ix-sheet-photo    照片 1.08→1 .8s；抽屉 margin-top:-22px，translateY(100%)→0 .55s delay .12s；进度条 .8s delay .6s
+ *   ix-dialog         >600 居中大卡片：lg 宽 min(920 × --u, 92vw)、高上限 86vh；标题行与底栏固定，只有正文区滚动
+ *   ix-lightbox       遮罩 rgba(12,14,20,.62)；幽灵外框非等比缩放当裁切、内图反向缩放（动画在 kit.js 里，WAAPI）
+ *   曲线 --kit-ease = cubic-bezier(.2,.7,.2,1)（sheets.css 的 --sh-ease）；关闭 --kit-ease-in = cubic-bezier(.4,0,1,1)。
+ *
+ * 类名一律 kit- 开头，不改外壳的类。约定：
+ *   · 弹层挂 body 下（position:fixed 不能放进带 backdrop-filter / filter / transform 的祖先）。
+ *     z-index：弹层 80、灯箱 90；外壳的「更多」面板是 40–41、tab bar 30。
+ *   · 状态写在 .kit-layer[data-state]：closed（visibility:hidden）/ open / closing（还看得见、点击穿透、等关闭过渡走完）。
+ *     visibility 由 kit.js 在过渡走完后切，不写进 transition——减弱动效下外壳关掉一切过渡，只给 data-rm="fade" 留 opacity，
+ *     visibility 跟着过渡走的话关闭那一下会瞬间消失、看不到淡出。
+ *   · 遮罩：只有 plain 跟外壳的模糊档位 html[data-blur]——full = 背景从清楚糊到26px、不压暗（照 ix-sheet-frosted）；
+ *     lite / off / 没写档位 = 不模糊、压暗淡入（frosted 的降级做法，代价接近基线）；做不出磨砂、用户要求减少透明度时，
+ *     full 也走降级那一套（探针带前缀，外层括号不能省）。
+ *     ring / ruler / photo 在任何档位都只用它们自己条目的遮罩：#000 压到 .4、.5s（ix-sheet-ring「背景压暗到40%」，
+ *     原话「底部面板只占下半屏，背景压暗就分得清层次，用不着模糊」）。star 主窗口2026-10-08裁定：2040软件渲染档实测
+ *     full 下这三种打开时圆环 / 刻度 / 照片每帧都在动，全屏26px模糊跟着每帧重算，长帧 23–49 个（P95 33ms），所以不跟模糊。
+ *     档位由外壳 boot.js 解析后写在 html 上（偏好「star-blur」+ 显卡缓存「star-gpu」，StarTheme.blur() 可读），
+ *     这里只认这个属性、不另判；外壳要是另出统一的遮罩类，第三轮再看合不合并。
+ *   · 面板底：plain 照毛玻璃浮层（满档 .42、降级 .96，.42 只有压在糊开的背景上才读得清，两样一起换）；
+ *     ring / ruler / photo 照各自条目，实色 --raised。
+ *   · 动画只动 transform / opacity。例外照原文：plain 满档遮罩的 backdrop-filter 半径过渡、圆环 stroke-dashoffset。
+ *   · 减弱动效：外壳用 !important 关掉全部过渡，圆环、刻度、照片、进度条直接到终点；面板、遮罩挂 data-rm="fade"，
+ *     这里把位移缩放钉在终点，只剩原地淡入淡出；plain 的满档遮罩直接是26px、只淡入。
+ *   · 颜色只用外壳令牌；原文给死的几个值（.42 / .96 面板底、.28 压暗、#000 .4、灯箱 .62、照片暗角）写成下面的 --kit-* 。
+ * ========================================================================== */
+
+.kit-layer, .kit-lb, .kit-flip {
+  --kit-ease: cubic-bezier(.2, .7, .2, 1);       /* 原文第1、2条；第3、4条没写曲线，沿用同一条 */
+  --kit-ease-in: cubic-bezier(.4, 0, 1, 1);      /* 关闭：统一 .3 秒收回，不倒放 */
+  --kit-flip-ease: cubic-bezier(.3, .7, .2, 1);  /* 原文第5条 */
+  /* 第1条面板底照原文 .42 白；深色同透明度、取外壳深色玻璃的底色（sheets.css 同一组）；降级时提到 .96 */
+  --kit-frost: var(--lt, rgba(255,255,255,.42)) var(--dk, rgba(40,42,52,.42));
+  --kit-frost-solid: var(--lt, rgba(255,255,255,.96)) var(--dk, rgba(44,46,58,.96));
+  --kit-dim: var(--lt, rgba(20,24,36,.28)) var(--dk, rgba(0,0,0,.5));
+}
+
+/* ================================================================ 弹层：外框、遮罩、面板 */
+.kit-layer {
+  position: fixed; inset: 0; z-index: 80;
+  display: grid; place-items: center;
+  padding: calc(16 * var(--u));
+  visibility: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.kit-layer[data-state="open"], .kit-layer[data-state="closing"] { visibility: visible; }
+.kit-layer[data-state="closing"] { pointer-events: none; }
+
+.kit-scrim { position: absolute; inset: 0; touch-action: none; }
+
+/* --- 遮罩 · plain 降级（lite / off / 没写档位）：不模糊、压暗淡入（ix-sheet-frosted「降级」）--- */
+.kit-scrim { background: var(--kit-dim); opacity: 0; transition: opacity .3s var(--kit-ease-in); }
+.kit-layer[data-state="open"] .kit-scrim { opacity: 1; transition: opacity 1s var(--kit-ease); }
+/* ring / ruler / photo：任何档位都照它们自己的原文，#000 压到 40%，.5s（ix-sheet-ring「背景压暗到40%」「用不着模糊」） */
+.kit-layer:not([data-kind="plain"]) .kit-scrim { background: #000000; }
+.kit-layer:not([data-kind="plain"])[data-state="open"] .kit-scrim { opacity: .4; transition: opacity .5s var(--kit-ease); }
+
+/* --- 遮罩 · plain 满档（html[data-blur="full"]）：背景由清楚糊到26px、只糊不压暗（ix-sheet-frosted「背景层」）--- */
+html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-scrim {
+  background: transparent; opacity: 1;
+  -webkit-backdrop-filter: blur(0px);
+  backdrop-filter: blur(0px);
+  transition: -webkit-backdrop-filter .3s var(--kit-ease-in), backdrop-filter .3s var(--kit-ease-in);
+}
+html[data-blur="full"] .kit-layer[data-kind="plain"][data-state="open"] .kit-scrim {
+  opacity: 1;
+  -webkit-backdrop-filter: blur(26px);
+  backdrop-filter: blur(26px);
+  transition: -webkit-backdrop-filter 1s var(--kit-ease), backdrop-filter 1s var(--kit-ease);
+}
+
+/* --- 面板（>600 居中大卡片：ix-dialog；动画照 ix-sheet-frosted 的面板浮起）--- */
+.kit-panel {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  width: min(calc(520 * var(--u)), 92vw);
+  max-height: 86vh;
+  border-radius: calc(26 * var(--u));
+  background: var(--raised); color: var(--label);
+  box-shadow: var(--shadow-pop);
+  opacity: 0; transform: scale(.94);
+  transition: transform .3s var(--kit-ease-in), opacity .3s var(--kit-ease-in);
+}
+.kit-layer[data-size="lg"] .kit-panel { width: min(calc(920 * var(--u)), 92vw); }
+.kit-layer[data-state="open"] .kit-panel {
+  opacity: 1; transform: scale(1);
+  transition: transform .6s var(--kit-ease), opacity .3s var(--kit-ease);
+}
+.kit-panel:focus { outline: none; }
+.kit-layer[data-kind="plain"] .kit-panel { background: var(--kit-frost-solid); }
+html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-panel { background: var(--kit-frost); }
+
+/* --- 面板里的三段：标题行与底栏固定，只有正文区滚动（ix-dialog）--- */
+.kit-grabber { display: none; }
+.kit-head {
+  flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: calc(12 * var(--u));
+  padding: calc(20 * var(--u)) calc(22 * var(--u)) calc(12 * var(--u));
+}
+.kit-title { margin: 0; min-width: 0; font-size: calc(19 * var(--u)); line-height: 1.35; font-weight: 700; letter-spacing: -.2px; overflow-wrap: anywhere; }
+.kit-x {
+  display: inline-grid; place-items: center; flex: none;
+  width: calc(32 * var(--u)); height: calc(32 * var(--u)); padding: 0; border: 0; border-radius: 50%;
+  background: var(--fill); color: var(--label2); cursor: pointer;
+}
+.kit-x svg { width: calc(16 * var(--u)); height: calc(16 * var(--u)); fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; }
+.kit-body {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  padding: 0 calc(22 * var(--u)) calc(22 * var(--u));
+}
+.kit-body:focus-visible { outline-offset: -3px; }
+.kit-foot {
+  flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: calc(10 * var(--u));
+  padding: calc(12 * var(--u)) calc(22 * var(--u)) calc(18 * var(--u));
+  border-top: 1px solid var(--sep);
+}
+.kit-foot:empty { display: none; }
+/* 详情正文分两列（ix-dialog「视口 ≥1000px 正文分两列」），名字允许折行、不许省略号 */
+.kit-cols { display: grid; gap: calc(14 * var(--u)) calc(22 * var(--u)); }
+@media (min-width: 1000px) { .kit-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ================================================================ 圆环计数（ix-sheet-ring） */
+.kit-ring { position: relative; }
+.kit-ring-wrap { position: relative; width: calc(172 * var(--u)); height: calc(172 * var(--u)); margin: calc(14 * var(--u)) auto calc(10 * var(--u)); }
+.kit-ring-svg { display: block; width: 100%; height: 100%; transform: rotate(-90deg); }
+.kit-ring-track { fill: none; stroke: var(--fill); stroke-width: 12; }
+.kit-ring-arc {
+  fill: none; stroke: var(--accent); stroke-width: 12; stroke-linecap: round;
+  stroke-dasharray: 100 100; stroke-dashoffset: 100;
+  transition: stroke-dashoffset .3s var(--kit-ease-in);
+}
+/* 面板 .5 秒落定后再画：delay .5s；同一条曲线 1.2 秒画到比例（--kit-off = 100 − 100 × value / max） */
+.kit-ring.is-on .kit-ring-arc { stroke-dashoffset: var(--kit-off); transition: stroke-dashoffset 1.2s var(--kit-ease) var(--kit-delay, .5s); }
+.kit-ring-center { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; }
+.kit-ring-num { font-size: calc(46 * var(--u)); line-height: 1; font-weight: 700; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.kit-ring-unit { margin-top: calc(4 * var(--u)); color: var(--label2); font-size: calc(13 * var(--u)); }
+
+/* ================================================================ 刻度尺（ix-sheet-ruler） */
+.kit-ruler { position: relative; }
+.kit-ticks { display: flex; align-items: flex-end; justify-content: space-between; height: calc(40 * var(--u)); margin: calc(22 * var(--u)) 0 calc(14 * var(--u)); }
+.kit-tick { position: relative; flex: none; width: calc(2.2 * var(--u)); height: calc(26 * var(--u)); border-radius: 1px; }
+.kit-tick.is-month { height: calc(36 * var(--u)); }
+.kit-tick-base, .kit-tick-now { position: absolute; inset: 0; border-radius: inherit; }
+.kit-tick-base { background: var(--label); opacity: .16; transition: opacity .2s var(--kit-ease-in); }
+.kit-tick-now { background: var(--accent); opacity: 0; transition: opacity .2s var(--kit-ease-in); }
+/* 面板 .5 秒到位后开走：每根错开1帧（60Hz：16.7ms），走到今天那根换成强调色停住，后面的不动 */
+.kit-ruler.is-on .kit-tick.is-past .kit-tick-base { opacity: .78; transition: opacity .24s var(--kit-ease) calc(var(--kit-delay, .5s) + var(--i) * 16.7ms); }
+.kit-ruler.is-on .kit-tick.is-today .kit-tick-base { opacity: 0; transition: opacity .24s var(--kit-ease) calc(var(--kit-delay, .5s) + var(--i) * 16.7ms); }
+.kit-ruler.is-on .kit-tick.is-today .kit-tick-now { opacity: 1; transition: opacity .24s var(--kit-ease) calc(var(--kit-delay, .5s) + var(--i) * 16.7ms); }
+.kit-tick-flag {
+  position: absolute; left: 50%; bottom: calc(100% + 4 * var(--u)); transform: translateX(-50%);
+  padding: 0 calc(6 * var(--u)); border-radius: 999px; background: var(--accent-tint); color: var(--accent-text);
+  font-size: calc(11 * var(--u)); line-height: 1.6; white-space: nowrap; opacity: 0; transition: opacity .2s var(--kit-ease-in);
+}
+/* 今天落在头两根 / 末两根时，「今天」贴着那一边，不伸出面板 */
+.kit-tick.is-start .kit-tick-flag { left: 0; transform: none; }
+.kit-tick.is-end .kit-tick-flag { left: auto; right: 0; transform: none; }
+.kit-ruler.is-on .kit-tick-flag { opacity: 1; transition: opacity .3s var(--kit-ease) calc(var(--kit-delay, .5s) + var(--i) * 16.7ms + .1s); }
+/* 有记录的周：刻度下面一个点，level 1–3 越大越实；和那根刻度同一个 delay 淡入 */
+.kit-tick-dot {
+  position: absolute; left: 50%; top: calc(100% + 4 * var(--u));
+  width: calc(4 * var(--u)); height: calc(4 * var(--u)); margin-left: calc(-2 * var(--u)); border-radius: 50%;
+  background: var(--accent); opacity: 0; transition: opacity .2s var(--kit-ease-in);
+}
+.kit-tick-dot[data-level="2"] { width: calc(5 * var(--u)); height: calc(5 * var(--u)); margin-left: calc(-2.5 * var(--u)); }
+.kit-tick-dot[data-level="3"] { width: calc(6 * var(--u)); height: calc(6 * var(--u)); margin-left: calc(-3 * var(--u)); }
+.kit-ruler.is-on .kit-tick-dot { opacity: .55; transition: opacity .24s var(--kit-ease) calc(var(--kit-delay, .5s) + var(--i) * 16.7ms); }
+.kit-ruler.is-on .kit-tick-dot[data-level="2"] { opacity: .78; }
+.kit-ruler.is-on .kit-tick-dot[data-level="3"] { opacity: 1; }
+.kit-ruler-axis { display: flex; justify-content: space-between; color: var(--label2); font-size: calc(11 * var(--u)); font-variant-numeric: tabular-nums; }
+.kit-ruler-stat { display: flex; justify-content: space-between; margin: calc(12 * var(--u)) 0 0; font-size: calc(13 * var(--u)); color: var(--label2); }
+.kit-ruler-stat b { color: var(--label); font-variant-numeric: tabular-nums; }
+
+/* 遮住的编号：每个字一个 inline-block 槽位，先占好最终宽度和行高；展开只换 opacity / transform */
+.kit-code-card { display: flex; align-items: center; gap: calc(10 * var(--u)); margin: calc(16 * var(--u)) 0 0; padding: calc(12 * var(--u)) calc(14 * var(--u)); border-radius: calc(16 * var(--u)); background: var(--well); }
+.kit-code-text { flex: 1; min-width: 0; display: grid; gap: calc(2 * var(--u)); }
+.kit-code-label { color: var(--label2); font-size: calc(12 * var(--u)); }
+.kit-code { display: block; white-space: nowrap; overflow: hidden; font-family: var(--mono); font-size: calc(19 * var(--u)); line-height: 1.5; font-variant-numeric: tabular-nums; }
+.kit-ch { position: relative; display: inline-block; width: .62em; height: 1.5em; vertical-align: top; overflow: hidden; }
+.kit-ch.is-gap { width: .4em; }
+.kit-ch-mask, .kit-ch-real { position: absolute; inset: 0; text-align: center; line-height: 1.5em; }
+.kit-ch-mask { color: var(--label2); transition: opacity .12s linear, transform .12s var(--kit-ease-in); }
+.kit-ch-real { opacity: 0; transform: translateY(.45em); transition: opacity .12s linear, transform .12s var(--kit-ease-in); }
+/* 逐字：每字错开 50ms（3帧，交互页定的；原文没给数），每字 .2 秒；--kit-rd 是自动展开时等刻度走完的那一段 */
+.kit-code.is-revealed .kit-ch-mask { opacity: 0; transform: translateY(-.45em); transition: opacity .2s var(--kit-ease) calc(var(--kit-rd, 0s) + var(--j) * 50ms), transform .2s var(--kit-ease) calc(var(--kit-rd, 0s) + var(--j) * 50ms); }
+.kit-code.is-revealed .kit-ch-real { opacity: 1; transform: translateY(0); transition: opacity .2s var(--kit-ease) calc(var(--kit-rd, 0s) + var(--j) * 50ms), transform .2s var(--kit-ease) calc(var(--kit-rd, 0s) + var(--j) * 50ms); }
+.kit-code-card .btn { flex: none; height: calc(34 * var(--u)); padding: 0 calc(14 * var(--u)); font-size: calc(14 * var(--u)); }
+
+/* 重放：先瞬间回到初态再开走（只关过渡，不放回任何过渡） */
+.kit-instant, .kit-instant * { transition: none !important; }
+
+/* ================================================================ 照片抽屉（ix-sheet-photo） */
+/* 整块只淡入（原文没有面板位移）；照片缩回、抽屉推上、进度条随后涨，三件各自走 */
+.kit-layer[data-kind="photo"] .kit-panel {
+  overflow: hidden; background: var(--raised);
+  transform: none; transition: opacity .3s var(--kit-ease-in);
+}
+.kit-layer[data-kind="photo"][data-state="open"] .kit-panel { transform: none; transition: opacity .25s var(--kit-ease); }
+.kit-photo {
+  position: relative; flex: none; overflow: hidden;
+  height: min(calc(300 * var(--u)), 42vh);
+  color: #FFFFFF;
+}
+/* 封面：没有照片、照片还没到、照片加载不到时露出来的那块——强调色渐变 + 调用方给的线条图标 */
+.kit-photo-cover, .kit-photo-img {
+  position: absolute; inset: 0;
+  transform: scale(1.08); transform-origin: 50% 40%;
+  transition: transform .3s var(--kit-ease-in);
+}
+.kit-photo-cover { display: grid; place-items: center; padding-bottom: calc(40 * var(--u)); background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+.kit-photo-cover svg {
+  width: calc(76 * var(--u)); height: calc(76 * var(--u));
+  fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; opacity: .9;
+}
+.kit-photo:not(.is-missing) .kit-photo-cover svg { display: none; }
+.kit-photo-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
+.kit-photo.is-missing .kit-photo-img { display: none; }
+.kit-layer[data-state="open"] .kit-photo-cover,
+.kit-layer[data-state="open"] .kit-photo-img { transform: scale(1); transition: transform .8s var(--kit-ease); }
+.kit-photo-shade {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% 30%, rgba(0,0,0,0) 45%, rgba(0,0,0,.42) 100%),
+    linear-gradient(0deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.2) 42%, rgba(0,0,0,0) 62%);
+}
+.kit-photo-text {
+  position: absolute; left: calc(22 * var(--u)); right: calc(22 * var(--u));
+  bottom: calc(22 * var(--u) + 14 * var(--u));   /* 抽屉压住的 22 那一截不放字 */
+  text-shadow: 0 1px 3px rgba(0,0,0,.35);
+}
+.kit-photo-kicker { margin: 0; font-size: calc(13 * var(--u)); opacity: .9; }
+.kit-photo-title { margin: calc(2 * var(--u)) 0 0; font-size: calc(30 * var(--u)); line-height: 1.15; font-weight: 700; letter-spacing: -.5px; overflow-wrap: anywhere; }
+.kit-photo .kit-x { position: absolute; top: calc(14 * var(--u)); right: calc(14 * var(--u)); background: rgba(0,0,0,.38); color: #FFFFFF; }
+.kit-photo .kit-x:focus-visible { outline-color: #FFFFFF; }
+.kit-drawer {
+  position: relative; z-index: 1; flex: 1 1 auto; min-height: 0;
+  margin-top: calc(-22 * var(--u));
+  display: flex; flex-direction: column; gap: calc(12 * var(--u));
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: calc(20 * var(--u)) calc(22 * var(--u)) calc(22 * var(--u));
+  border-radius: calc(22 * var(--u)) calc(22 * var(--u)) 0 0;
+  background: var(--raised); box-shadow: 0 calc(-6 * var(--u)) calc(18 * var(--u)) rgba(0,0,0,.12);
+  transform: translateY(100%);
+  transition: transform .3s var(--kit-ease-in);
+}
+.kit-layer[data-state="open"] .kit-drawer { transform: translateY(0); transition: transform .55s var(--kit-ease) .12s; }
+.kit-drawer:focus-visible { outline-offset: -3px; }
+.kit-drawer .kit-foot { margin: 0 calc(-22 * var(--u)) calc(-22 * var(--u)); }
+.kit-drawer-body { min-width: 0; }
+.kit-progress-head { display: flex; justify-content: space-between; align-items: baseline; gap: calc(12 * var(--u)); margin: 0; }
+.kit-progress-head span { color: var(--label2); font-size: calc(13 * var(--u)); }
+.kit-progress-head b { font-size: calc(22 * var(--u)); font-variant-numeric: tabular-nums; }
+.kit-progress { position: relative; flex: none; height: calc(8 * var(--u)); overflow: hidden; border-radius: 999px; background: var(--fill); }
+.kit-progress-fill {
+  position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .3s var(--kit-ease-in);
+}
+/* 抽屉 .12 秒起步、.55 秒到位；进度条随后（.6 秒起）.8 秒涨到比例 */
+.kit-layer[data-state="open"] .kit-progress-fill { transform: scaleX(var(--kit-p)); transition: transform .8s var(--kit-ease) .6s; }
+
+/* ================================================================ ≤600：从底部升起（ix-sheet-ring 的底部面板） */
+@media (max-width: 600px) {
+  /* 列宽钉成 minmax(0,1fr)：只有一列 auto 时，面板的自动最小宽取内容的 min-content，
+     列表行副标题 nowrap 一长就把面板撑到598px、比手机屏还宽（2026-10-08 独立验收实测，「本书进度」） */
+  .kit-layer { place-items: end stretch; grid-template-columns: minmax(0, 1fr); padding: calc(40px + env(safe-area-inset-top)) 0 0; }
+  .kit-panel, .kit-layer[data-size="lg"] .kit-panel {
+    /* 高度上限写成视口减上沿留白：图层是只有一行 auto 的 grid，max-height:100% 对着不定高的格子不生效，
+       长内容会把面板撑到视口外、又没有地方滚（2026-10-08 主窗口实测：417 下更新记录面板高2849px，下半截点不到） */
+    width: 100%; max-height: calc(100vh - 40px - env(safe-area-inset-top)); max-height: calc(100dvh - 40px - env(safe-area-inset-top));
+    border-radius: 26px 26px 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    opacity: 0; transform: translateY(105%);
+    transition: transform .3s var(--kit-ease-in), opacity .1s linear .2s;
+  }
+  .kit-layer[data-state="open"] .kit-panel { opacity: 1; transform: translateY(0); transition: transform .5s var(--kit-ease), opacity .12s linear; }
+  /* 照片抽屉在手机上同样只淡入，抽屉自己从下面推上来 */
+  .kit-layer[data-kind="photo"] .kit-panel { padding-bottom: 0; transform: none; transition: opacity .3s var(--kit-ease-in); }
+  .kit-layer[data-kind="photo"][data-state="open"] .kit-panel { transform: none; transition: opacity .25s var(--kit-ease); }
+  .kit-layer[data-kind="photo"] .kit-drawer { padding-bottom: calc(22px + env(safe-area-inset-bottom)); }
+  .kit-grabber { display: block; flex: none; width: 36px; height: 5px; margin: 8px auto -6px; border-radius: 999px; background: var(--label3); }
+}
+
+/* ================================================================ 灯箱（ix-lightbox） */
+.kit-lb { position: fixed; inset: 0; z-index: 90; }
+.kit-lb-scrim { position: absolute; inset: 0; background: rgba(12, 14, 20, .62); touch-action: none; }
+.kit-lb-box { position: absolute; inset: 0; pointer-events: none; }
+.kit-lb-box:focus { outline: none; }
+.kit-lb-big {
+  position: absolute; overflow: hidden; border-radius: calc(6 * var(--u));
+  background: var(--raised); box-shadow: 0 calc(18 * var(--u)) calc(40 * var(--u)) rgba(0, 0, 0, .35);
+  pointer-events: auto; cursor: zoom-out;
+}
+.kit-lb-big img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.kit-lb.is-morphing .kit-lb-big { opacity: 0; }
+.kit-lb-cap {
+  position: absolute; left: calc(16 * var(--u)); right: calc(16 * var(--u)); bottom: max(calc(16 * var(--u)), env(safe-area-inset-bottom));
+  margin: 0; text-align: center; color: #FFFFFF; font-size: var(--fs-small); text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
+}
+.kit-lb-close {
+  position: absolute; top: max(calc(14 * var(--u)), env(safe-area-inset-top)); right: max(calc(14 * var(--u)), env(safe-area-inset-right));
+  display: grid; place-items: center;
+  width: calc(36 * var(--u)); height: calc(36 * var(--u)); padding: 0; border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, .94); color: #1C1C1E; cursor: pointer; pointer-events: auto;
+}
+.kit-lb-close svg { width: calc(18 * var(--u)); height: calc(18 * var(--u)); fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; }
+.kit-lb-close:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
+@media (pointer: coarse) { .kit-lb-close { width: 44px; height: 44px; } }
+/* 幽灵：外框非等比缩放当裁切，内图反向缩放、始终按原图比例；两只框每帧在 JS 里算好，关键帧之间 linear */
+.kit-lb-ghost { position: absolute; z-index: 1; overflow: hidden; pointer-events: none; transform-origin: 0 0; background: var(--raised); }
+.kit-lb-ghost img { position: absolute; left: 0; top: 0; display: block; max-width: none; transform-origin: 0 0; }
+
+/* ================================================================ 原地翻面（ix-sheet-flip；StarKit.flip 的默认样式，页面也可以用自己的类） */
+.kit-flip { position: relative; perspective: calc(1200 * var(--u)); }
+.kit-flip-card {
+  position: relative; height: calc(190 * var(--u));
+  transform-style: preserve-3d; transform: rotateY(0deg);
+  transition: transform .8s var(--kit-flip-ease);
+}
+.kit-flip.is-flipped .kit-flip-card { transform: rotateY(180deg); }
+.kit-face {
+  position: absolute; inset: 0; overflow: hidden;
+  display: flex; flex-direction: column; padding: calc(16 * var(--u)) calc(18 * var(--u));
+  border-radius: calc(18 * var(--u));
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+}
+.kit-face-front { background: var(--accent-tint); color: var(--label); }
+.kit-face-back { transform: rotateY(180deg); background: var(--well); border: 1px solid var(--sep); }
+.kit-flip-btn { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; padding: 0; border: 0; border-radius: calc(18 * var(--u)); background: transparent; cursor: pointer; }
+
+/* ================================================================ 强制色 */
+@media (forced-colors: active) {
+  .kit-panel, .kit-lb-big { border: 1px solid CanvasText; }
+}
+
+/* ================================================================ 减弱动效：外壳已关掉全部过渡；这里把位移缩放钉在终点，只剩原地淡入淡出
+   选择器写成 [data-state] / [data-state][data-kind]，特异性不低于上面任何一条开关规则（含 ≤600、lg、photo），放在最后压住它们。 */
+@media (prefers-reduced-motion: reduce) {
+  .kit-layer[data-state] .kit-panel, .kit-layer[data-state][data-kind] .kit-panel { transform: none; }
+  .kit-layer[data-state] .kit-photo-cover, .kit-layer[data-state] .kit-photo-img { transform: none; }
+  .kit-layer[data-state] .kit-drawer { transform: none; }
+  /* plain 满档遮罩：直接是26px，只淡入（data-rm="fade" 留下 opacity 过渡） */
+  html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-scrim { opacity: 0; -webkit-backdrop-filter: blur(26px); backdrop-filter: blur(26px); }
+  html[data-blur="full"] .kit-layer[data-kind="plain"][data-state="open"] .kit-scrim { opacity: 1; }
+  /* 翻面：不转，两面原地淡入淡出 */
+  .kit-flip-card, .kit-flip.is-flipped .kit-flip-card { transform: none; }
+  .kit-face-back { transform: none; opacity: 0; }
+  .kit-face-front { opacity: 1; }
+  .kit-flip.is-flipped .kit-face-back { opacity: 1; }
+  .kit-flip.is-flipped .kit-face-front { opacity: 0; }
+}
+
+/* ================================================================ 满档的退路（只有 plain 有满档）
+   做不出磨砂 / 用户要求减少透明度：plain 满档也走降级那一套（压暗 + 面板近乎不透明）。
+   放在减弱动效之后：那里把满档遮罩钉成26px，两样都开时这里还要能把模糊摘掉。 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-scrim { background: var(--kit-dim); opacity: 0; transition: opacity .3s var(--kit-ease-in); }
+  html[data-blur="full"] .kit-layer[data-kind="plain"][data-state="open"] .kit-scrim { opacity: 1; transition: opacity 1s var(--kit-ease); }
+  html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-panel { background: var(--kit-frost-solid); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-scrim,
+  html[data-blur="full"] .kit-layer[data-kind="plain"][data-state="open"] .kit-scrim {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--kit-dim);
+  }
+  html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-scrim { opacity: 0; transition: opacity .3s var(--kit-ease-in); }
+  html[data-blur="full"] .kit-layer[data-kind="plain"][data-state="open"] .kit-scrim { opacity: 1; transition: opacity 1s var(--kit-ease); }
+  html[data-blur="full"] .kit-layer[data-kind="plain"] .kit-panel { background: var(--kit-frost-solid); }
+}

@@ -29,6 +29,7 @@
         <h3>单选筛选只升级手感：选中那枚长出对勾、底色从左铺满、邻居让位</h3>
         <p class="entry-lede">规则不变，仍是单选。对勾真实占位、标签确实变宽，相邻标签用FLIP滑过去；计数变了跳一下；筛出几项只用一条礼貌播报。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-filter">收藏 · 类型单选</a></p>
       </header>
       <div class="specimen ix-specimen ixf" data-demo="filter">
         <p class="ixf-head" aria-hidden="true">显示<span class="ixf-n ix-bump-holder"></span>项</p>
@@ -49,10 +50,10 @@
       @keyframes bump-in { from { opacity:0; transform:translateY(-45%) scale(1.15) } }
 播报  &lt;p class="visually-hidden" aria-live="polite"&gt;显示 N 项&lt;/p&gt;——整排只这一条
 减弱  不量位置、不挂动画类，直接到位</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>plan「全部任务」的状态筛选（全部／收件箱／进行中／已完成／已归档）。plan笔记页的标签筛选同样处理，但不铺底色——那一行本来是无边框文字，选中只换深色加粗，带下划线的蓝字会像超链接。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>plan「全部任务」的状态筛选（全部／收件箱／进行中／已完成／已归档）。plan笔记页的标签筛选同样处理，但不铺底色——那一行本来是无边框文字，选中只换深色加粗，带下划线的蓝字会像超链接。本站收藏页按「类型」筛选的那排单选也是这套。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主给的组件原文是多选，可plan这排筛选一直是单选；改成多选就改了筛选规则，等于造新功能。所以只把对勾、铺底、让位、数字跳动套到现有的单选上。播报集中成一条：一排标签每个数都播，读屏会被刷屏。</p></section>
         <section class="fact trap"><h4>坑</h4><p>验FLIP有没有动，要读<code>getComputedStyle(el).transform</code>；读<code>el.style.transform</code>永远是空的，位移设完下一帧就清掉了。位置快照在点击的事件里拍，不在每次渲染里拍，否则窗口改宽也会滑。</p></section>
-        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1103「20. 任务库逻辑」、:1558「30.2 笔记页」；tools/plan/app/src/App.css:1704「.status-chip」、:1752「.chip-check」、:1778「.bump-number.is-bumped」；tools/plan/app/src/pages/TaskLibrary.tsx:147、:170；tools/plan/app/src/hooks/useFlip.ts:3「FLIP 位移动画」；tools/plan/app/src/styles/tokens.css:289「--motion-*」</p>
+        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1127「20. 任务库逻辑」、:1583「30.2 笔记页」；tools/plan/app/src/App.css:1691「.status-chip」、:1739「.chip-check」、:1765「.bump-number.is-bumped」；tools/plan/app/src/pages/TaskLibrary.tsx:150、:173；tools/plan/app/src/hooks/useFlip.ts:3「FLIP 位移动画」；tools/plan/app/src/styles/tokens.css:284「--motion-*」</p>
       </div>
     </article>
 
@@ -62,6 +63,7 @@
         <h3>多选筛选胶囊：刷刷做过，屋主看后撤回</h3>
         <p class="entry-lede">要好看，不要更紧凑。题库那排从带全名的卡片换成短名胶囊，信息密度上去了，观感反而掉了。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-27撤回</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-filter-multi">收藏 · 标签多选</a></p>
       </header>
       <div class="specimen ix-specimen ixm" data-demo="filter-multi">
         <p class="ixm-flag"><svg class="ix-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 6.6 5 11l4.4 4.4"/><path d="M5.4 11h8.4a5.2 5.2 0 0 1 0 10.4H11"/></svg><span><b>已撤回</b>　刷刷3.13.0做过，屋主看后撤回，页面回到3.12.0。下面只是留档，不要照做。</span></p>
@@ -73,7 +75,7 @@
         <section class="fact"><h4>数值 / 代码</h4><pre><code>做法与单选版相同：&lt;button aria-pressed&gt; 胶囊、对勾长出、FLIP 让位、#pool-count 数字跳动
 差别  三排都能多选；题库那排从带全名的卡片换成短名胶囊
 结果  手机上题库区从 9 行卡片缩成 5 行标签</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>刷刷「专项练习」的题型、难度、混合题库三排。3.13.0做了，同一版撤回。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷「专项练习」的题型、难度、混合题库三排。3.13.0做了，同一版撤回。本站收藏页的标签筛选在用：star是展台，屋主2026-10-08要求把合集的交互用遍，例外写在<a href="#ix-only-upgrade">「只升级已有交互」</a>那条；其他项目照旧不用。</p></section>
         <section class="fact"><h4>为什么</h4><p>文档记的是「屋主看过觉得不如原来，撤回」（原话未见，文档转述）。留下的两条结论：屋主要的是好看，不是更紧凑；以后再动这一页先出样张给屋主看，不直接落代码。</p></section>
         <section class="fact trap"><h4>坑</h4><p>撤回用的是「只含这一件的补丁」反向打回：这件是在单独副本里做的、差异干净，同一轮的其他改动（搜题联想与标签、首页入口按压、两处输入法回车）一行没动。可能被撤回的试验，一开始就这样隔开做。</p></section>
         <p class="source">出处：tools/shua/design-proposal.md:597「十一、专项练习的筛选标签：做过，撤回（3.13.0）」、:599、:601</p>
@@ -86,6 +88,7 @@
         <h3>可删除标签缩成圆点再消失，后面的依次补位；输入#联想已有标签</h3>
         <p class="entry-lede">点叉号：文字先淡、底色缩成圆点、圆点再缩没；后面的标签错峰滑过来补位，框的高度等补位走完一次收缩。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-search">全站 · 搜索框</a></p>
       </header>
       <div class="specimen ix-specimen ixt is-overflow-visible" data-demo="tags">
         <div class="ixt-field">
@@ -123,10 +126,10 @@ form.addEventListener("submit", (event) =&gt; {
   if (imeKeyDown) return;                            // 只认 isComposing，不认 229
   addTag(input.value);
 });</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>刷刷搜题框（3.13.0，题库标签与关键词标签）；plan笔记的标签输入（2026-09-27，替换原来逗号分隔的一行字：输入#联想当前库已有的标签，回车或中英文逗号收成一枚，删一枚立刻落库）。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷搜题框（3.13.0，题库标签与关键词标签）；plan笔记的标签输入（2026-09-27，替换原来逗号分隔的一行字：输入#联想当前库已有的标签，回车或中英文逗号收成一枚，删一枚立刻落库）。本站搜索框也是：输入#联想已有标签，收成的标签可删。</p></section>
         <section class="fact"><h4>为什么</h4><p>「缩成圆点」全程只动transform和opacity：底色单独一层，横竖各按自己的比例缩，缩出来是真的圆，不是被压扁的胶囊。高度先撑住再一次放开：一删就收缩的话，从第二行往上滑的标签有240ms画在框外，压在下面的字上。</p></section>
         <section class="fact trap"><h4>坑</h4><p>回车和Esc的处理第一行先判<code>event.isComposing</code>：输入法选词那一下回车、取消选词的Esc都不是给网页的。表单的隐式提交是回车的默认动作，不经过任何keydown分支，所以submit里还要拦一次——而且拦提交那一处只认<code>isComposing</code>、不认<code>keyCode 229</code>：安卓软键盘不在合成时也常报229，认了会让键盘上的「搜索」「完成」键按了没反应。两种错代价不对等：拼音被收成一枚标签，删掉就好；手机上回车键失灵是功能坏了。</p></section>
-        <p class="source">出处：tools/shua/design-proposal.md:570「10.3 删除动画与高度」；tools/shua/app.js:2359「reflowQuestionSearchBox」、:2411「removeQuestionSearchTag」、:702「flipMove」、:2532；tools/plan/docs/BUSINESS_LOGIC.md:1576「30.2 笔记页·标签输入」；tools/plan/app/src/components/TagInput.tsx:95「remove」；tools/gang/design-proposal.md:1361「11.4 输入法规矩」</p>
+        <p class="source">出处：tools/shua/design-proposal.md:570「10.3 删除动画与高度」；tools/shua/app.js:2359「reflowQuestionSearchBox」、:2411「removeQuestionSearchTag」、:702「flipMove」、:2532；tools/plan/docs/BUSINESS_LOGIC.md:1601「30.2 笔记页·标签输入」；tools/plan/app/src/components/TagInput.tsx:95「remove」；tools/gang/design-proposal.md:1361「11.4 输入法规矩」</p>
       </div>
     </article>
 
@@ -136,6 +139,7 @@ form.addEventListener("submit", (event) =&gt; {
         <h3>联想浮层：最多6条、末项停住、零结果列相近、播报等停手400ms只播最后一句</h3>
         <p class="entry-lede">焦点一直留在输入框。只有选中了某一项的回车才拦，没选的回车照旧提交；第一下Esc只收浮层、字留着，第二下才清空。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-search">全站 · 搜索框</a></p>
       </header>
       <div class="specimen ix-specimen ixs2 is-overflow-visible" data-demo="suggest">
         <form class="ixs2-form" role="search" autocomplete="off">
@@ -163,7 +167,7 @@ Esc    第一下只收浮层、保留框内文字；第二下清空；再下一�
 去抖   不做（单次查询不到 1.5ms）
 鼠标   mousedown preventDefault()；mousemove 到哪条游标就到哪条，键盘鼠标共用一个高亮
 底     实色，不挂 backdrop-filter</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>岗岗顶栏搜索框（「选中后以标签插入正文」那一半不做：阅读器没有正文）。刷刷搜题框另有两条：联想只用现成数据（题库名＋术语表，合计最多8条），浮层左端对齐输入框里光标的横坐标。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>岗岗顶栏搜索框（「选中后以标签插入正文」那一半不做：阅读器没有正文）。刷刷搜题框另有两条：联想只用现成数据（题库名＋术语表，合计最多8条），浮层左端对齐输入框里光标的横坐标。本站搜索框的联想浮层照这几条做。</p></section>
         <section class="fact"><h4>为什么</h4><p>选项不可聚焦、焦点留在输入框，用户看着联想还能接着打字。播报等停手再说：每敲一个字播一次，读屏会被自己的播报打断。浮层不磨砂是量过的：换成半透明玻璃底加<code>blur(30px)</code>后，屋主台式机那档（2040×1019、软件渲染）整页帧间隔P95从16.7ms翻到33.4ms，超过25ms的长帧从0个涨到34–52个；有显卡的手机档一个都不多。</p></section>
         <section class="fact trap"><h4>坑</h4><p>收起时要把待播的那一句清掉，不然400ms后它会盖掉结果页自己的播报。零结果不能算「关着」：说明行照样显示，Esc照样能收。</p></section>
         <p class="source">出处：tools/gang/design-proposal.md:1315「11.2 数据口径」、:1336「11.3 键盘、鼠标与读屏」、:1396「11.6 为什么不加磨砂」；tools/gang/app.js:3357「speakSuggest」、:3410「搜索框keydown」；tools/shua/design-proposal.md:559「10.1 联想只用现成的两样数据」、:577「10.4 浮层」</p>
@@ -176,6 +180,7 @@ Esc    第一下只收浮层、保留框内文字；第二下清空；再下一�
         <h3>按压倾斜：朝触点压下去一点，松手弹簧复原</h3>
         <p class="entry-lede">按哪边哪边往屏幕里沉、整张缩一点、光团向触点聚拢；正常松手带过冲弹回，滚动或拖动撤掉按压时直接回位、不弹。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-chapters">总览 · 章节目录</a><a href="collection.html#spot-cards">收藏 · 卡片按压</a></p>
       </header>
       <div class="specimen ix-specimen ixp" data-demo="press">
         <div class="ixp-stage">
@@ -206,7 +211,7 @@ Esc    第一下只收浮层、保留框内文字；第二下清空；再下一�
 减弱   不倾斜不缩放，光团在触点原地淡入淡出
 写法   .card { transform: rotateX(var(--prx,0deg)) rotateY(var(--pry,0deg)) scale(var(--ps,1)) }
        透视写在父元素的 perspective 上，静止时 computed transform 回到单位矩阵</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>card画廊Cover Flow正中那张和查看器里的卡（本样例取这套数，撤掉按压那一档借刷刷的）。刷刷首页「练习方式」列表行是另一套数：行很宽，鼠标最大1°缩到.985、触屏最大3°缩到.97，左右倾角再按行宽压。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>card画廊Cover Flow正中那张和查看器里的卡（本样例取这套数，撤掉按压那一档借刷刷的）。刷刷首页「练习方式」列表行是另一套数：行很宽，鼠标最大1°缩到.985、触屏最大3°缩到.97，左右倾角再按行宽压。本站总览章节目录的每一行、收藏页的卡片，按下去都朝触点倾斜。</p></section>
         <section class="fact"><h4>为什么</h4><p>同一个角度在长行两端的位移随行宽平方增长：1°在1138宽的行两端要晃约7px，所以宽行要压角度，卡片不用。缩放不压：等比缩放两端对称，看着是「按进去」。撤掉按压不过冲：手指按下后开始滚动，用户在滚页面，不该看到一张卡在那里弹。</p></section>
         <section class="fact trap"><h4>坑</h4><p>倾斜并进元素原来那条transform，不另起一层，否则两套变换打架。光斑放在带透视变换、又被<code>overflow:hidden</code>裁切的元素里，里面的字会被先画进一张中间纹理再投影：刷刷第一版把光斑放在列表行里，手机417@3.5上按住时字明显发糊（文字边缘梯度28，静止73），后来把光斑垫到整个列表底下；card卡面是图，光团留在卡里。弹簧曲线只管这一次复原，走完要摘掉，不然下一次按下也会过冲。</p></section>
         <p class="source">出处：tools/card/collection/gallery.js:312「PRESS_TILT」、:315「press」、:359「拖出6px」；tools/card/collection/gallery.css:29–34「按压」；tools/card/CLAUDE.md:175「按压」；tools/shua/app.js:3819「首页入口行的按压反馈」、:3851「PRESS_CANCEL」；tools/shua/design-proposal.md:392「首页入口行的按压反馈（3.13.0）」</p>
@@ -219,6 +224,7 @@ Esc    第一下只收浮层、保留框内文字；第二下清空；再下一�
         <h3>会丢东西才确认，确认框写清丢什么；能撤销的不问，点了就生效的不加确认</h3>
         <p class="entry-lede">刷刷开始新练习会丢上次的作答，要确认；plan改完自动保存、给3秒撤销，不再问；岗岗「清空勾选」点了就生效。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23起</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-reset">全站 · 恢复默认</a></p>
       </header>
       <div class="specimen ix-specimen ixc is-overflow-visible" data-demo="confirm">
         <div class="ixc-col">
@@ -265,11 +271,11 @@ plan  文本失焦或回车即落库，点选类点了就落库 → 底部「已
 岗岗  「清空勾选」「从常办移出」不加确认，读屏播「已清空该卡的勾选，共N项」
 样例  &lt;dialog&gt; + showModal()：初始焦点在「取消」；Esc 走 cancel 事件 = 取消；
       close 后焦点还给「开始新的练习」；弹层实色，不挂 backdrop-filter</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>刷刷所有会顶掉半截练习的入口；plan任务与笔记的详情面板；岗岗速查卡的勾选清单与常办。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷所有会顶掉半截练习的入口；plan任务与笔记的详情面板；岗岗速查卡的勾选清单与常办。本站「恢复默认外观」能撤销，所以不问：点了就生效，提示条上给撤销。</p></section>
         <section class="fact"><h4>为什么</h4><p>确认框的用处是把代价说清楚：做到哪一题、答了几题、能不能恢复。能撤销的操作再问一句，等于每次多一步——plan原来的「有未保存的改动，放弃吗？」连同显式「保存／取消」一起删了，换成自动保存加撤销。</p></section>
         <blockquote class="said"><p>逻辑很不合适。</p><footer>屋主，2026-09-23，在手机上看过plan显式保存的详情面板后</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>样例用<code>&lt;dialog&gt;</code>而不是原生<code>confirm()</code>：要跟随深浅色和强调色，按钮要写动作名（「放弃并开始」而不是「确定」）。代价是三件事得自己管：Esc当取消、关闭后焦点还给触发按钮、压在正文上的弹层用实色。刷刷生产用的是原生<code>confirm()</code>，文案是同一句。</p></section>
-        <p class="source">出处：tools/shua/app.js:1368「confirmDiscardActiveSession」；tools/plan/docs/BUSINESS_LOGIC.md:1607「31. 表单自动保存」、:1619「31.1 规则」、:1627「31.2」、:1385「25.3 详情面板结构」；tools/gang/design-proposal.md:1437「12.1 八个组件的核对表」；tools/gang/app.js:1875</p>
+        <p class="source">出处：tools/shua/app.js:1368「confirmDiscardActiveSession」；tools/plan/docs/BUSINESS_LOGIC.md:1632「31. 表单自动保存」、:1644「31.1 规则」、:1652「31.2」、:1410「25.3 详情面板结构」；tools/gang/design-proposal.md:1437「12.1 八个组件的核对表」；tools/gang/app.js:1875</p>
       </div>
     </article>
 
@@ -279,6 +285,7 @@ plan  文本失焦或回车即落库，点选类点了就落库 → 底部「已
         <h3>分段控件用radiogroup：←→循环并带焦点，只有选中那项在Tab序列里</h3>
         <p class="entry-lede">浅／深／自动是单选，语义用<code>role="radio"</code>加<code>aria-checked</code>，不用<code>aria-pressed</code>；六个色点是一组<code>aria-pressed</code>按钮。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-theme">全站 · 浅深切换</a><a href="index.html#spot-blur">全站 · 背景模糊</a></p>
       </header>
       <div class="specimen ix-specimen ixs" data-demo="seg">
         <div class="ixs-controls">
@@ -332,7 +339,7 @@ plan  文本失焦或回车即落库，点选类点了就落库 → 底部「已
 选中  色点双圈 box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent)
 播报  「外观已切换为深色」「强调色已切换为绿」
 存储  &lt;项目&gt;-mode、&lt;项目&gt;-accent，读写一律 try/catch（file:// 下 Safari 读 localStorage 直接抛错）</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>四个工具侧栏底部的外观控件；≤600px放进「更多」面板。本站侧栏底部那组也是这套。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具侧栏底部的外观控件；≤600px放进「更多」面板。本站侧栏底部的浅深分段、「背景模糊」分段也是这套。</p></section>
         <section class="fact"><h4>为什么</h4><p>单选组读屏读作「3项中的第1项，已选中」；按钮加<code>aria-pressed</code>读出来是三个互不相干的开关。roving tabindex让整组只占一个Tab位，组内换档用方向键。「自动」把解析结果写进可读名，读屏才答得出现在到底是深还是浅。</p></section>
         <section class="fact trap"><h4>坑</h4><p>roving tabindex和方向键必须一起做：只写前者，键盘用户Tab只能停在选中那一项，换不了档。岗岗现状就是这样——<code>tabindex</code>写了，<code>app.js</code>里没有←→处理（2026-09-27读代码所见，正在对齐）。刷刷3.13.1之前是radiogroup里放<code>aria-pressed</code>按钮，已改成<code>role="radio"</code>。</p></section>
         <p class="source">出处：tools/shua/app.js:4063「外观控件的键盘操作」；tools/shua/index.html:33；tools/shua/design-proposal.md:474「7.4 验收口径」；tools/gang/design-proposal.md:1113「分段控件是 radiogroup + radio」；tools/gang/app.js:1187「外观开关」、:1908「paintModeSwitch」；tools/plan/docs/design/SPEC-apple-glass.md:32「3. 主题与切换」</p>
@@ -345,6 +352,7 @@ plan  文本失焦或回车即落库，点选类点了就落库 → 底部「已
         <h3>入口用分组列表：彩色方块图标＋标题副标题＋计数胶囊＋SVG chevron</h3>
         <p class="entry-lede">列表行代替卡片网格里的入口卡；chevron画成线条图标，不用字符「›」。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-chapters">总览 · 章节目录</a></p>
       </header>
       <div class="specimen ix-specimen ixl" data-demo="list">
         <ul class="list ixl-list">
@@ -362,10 +370,10 @@ plan  文本失焦或回车即落库，点选类点了就落库 → 底部「已
         里面白色线条图标 18px、stroke 1.9；实心只给 play 这种本来就实心的形
 chevron 三级灰 rgba(60,60,67,.32)，&lt;path d="m9.8 6.2 5.8 5.8-5.8 5.8"/&gt;
 分隔    行间 1px rgba(60,60,67,.12)，首行无线；不用边框分层</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>刷刷首页「快速开始」；plan四块磁贴的图标块；岗岗速查卡各节标题；card的回退列表。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷首页「快速开始」；岗岗速查卡各节标题；card的回退列表。本站总览的章节目录也是这种列表。plan四块侧栏磁贴原来也是图标块，2026-10-08调轻成一行「彩色线条小图标＋名字＋右边数字」（只有逾期不为0时数字标红），图标块那套样式已从plan代码删掉（<code>tools/plan/docs/BUSINESS_LOGIC.md:2010</code>「39.1 侧栏磁贴调轻」）——首屏最抢眼的不该是磁贴，图标仍按四类上色、不用灰的。</p></section>
         <section class="fact"><h4>为什么</h4><p>像iOS设置那种图标块，一眼分得出类别；屋主明确说过不要灰色空方块。</p></section>
         <section class="fact trap"><h4>坑</h4><p>SPEC样张里chevron是字符「›」、导航图标stroke写的1.8，都是旧写法，以SPEC「图标」一节为准。白线条压在绿、橙、青实底上低于3:1（刷刷实算1.55–5.65:1），和主按钮一样按审美优先记录、不断言。</p></section>
-        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:10「1. 结构」、:90「5b. 图标」；tools/plan/docs/design/shua-glass.html:72「.row .ico」；tools/gang/styles.css:84「--ic-chevron」；tools/shua/design-proposal.md:390；tools/plan/docs/ui-redesign-proposal-v2.md:562</p>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:10「1. 结构」、:90「5b. 图标」；tools/plan/docs/design/shua-glass.html:72「.row .ico」；tools/gang/styles.css:84「--ic-chevron」；tools/shua/design-proposal.md:390；tools/plan/docs/ui-redesign-proposal-v2.md:565</p>
       </div>
     </article>
 
@@ -375,6 +383,7 @@ chevron 三级灰 rgba(60,60,67,.32)，&lt;path d="m9.8 6.2 5.8 5.8-5.8 5.8"/&gt
         <h3>图标用真SVG线条；要跟文字一起变色，就用mask画</h3>
         <p class="entry-lede">stroke 1.9、圆头圆角，导航20px、列表18px；禁止用字符或emoji凑图标。伪元素上用mask取形、<code>currentColor</code>上色，换强调色、深浅、高对比都自动跟上。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-nav">全站 · 侧栏导航</a></p>
       </header>
       <div class="specimen ix-specimen ixi2">
         <ul class="ixi2-rows">
@@ -396,7 +405,7 @@ chevron 三级灰 rgba(60,60,67,.32)，&lt;path d="m9.8 6.2 5.8 5.8-5.8 5.8"/&gt
   --ic-doc: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'
     fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E…%3C/svg%3E");
 }</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>岗岗全部图标（不改DOM，画在伪元素上）；刷刷用本地lucide，<code>stroke-width</code>统一成1.9；plan用lucide React；本站全部内联SVG。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>岗岗全部图标（不改DOM，画在伪元素上）；刷刷用本地lucide，<code>stroke-width</code>统一成1.9；plan用lucide React；本站全部内联SVG，侧栏导航的图标就是。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主2026-09-23两次纠正后定成硬规则：线条图标，不许字符、emoji、灰色空方块占位（据控制室记录，一次是侧栏图标用了灰方块，一次是左上角放了「刷」字）。mask只取形状，一份图标通吃六个强调色、浅深两档和高对比模式，不用每种主题备一份。</p></section>
         <section class="fact trap"><h4>坑</h4><p>data URI里的<code>#</code>不写成<code>%23</code>，会被当成URL片段分隔符，图直接不出、也不报错。<code>file://</code>下<code>&lt;use href="外部.svg#id"&gt;</code>会被Chrome当跨源拦掉，所以本站图标全部内联。</p></section>
         <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:89「5b. 图标」；tools/gang/styles.css:77「图标 data URI」；tools/gang/design-proposal.md:1060「10.13 图标」；tools/shua/design-proposal.md:390；tools/star/CLAUDE.md:27「特意为 file:// 设计」</p>
@@ -409,6 +418,7 @@ chevron 三级灰 rgba(60,60,67,.32)，&lt;path d="m9.8 6.2 5.8 5.8-5.8 5.8"/&gt
         <h3>品牌图标可换文件；favicon必须自带底</h3>
         <p class="entry-lede">渐变方块里的白色线条图优先读<code>brand/brand-icon.svg</code>，居中占84%；favicon没有页面替它画底，要另做一枚带渐变底的。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-brand">全站 · 品牌方块</a></p>
       </header>
       <div class="specimen ix-specimen ixb">
         <div class="ixb-item">
@@ -432,10 +442,10 @@ favicon 整块圆角方块铺满，rx="229"（边长 22.37%，iOS 应用图标�
         切强调色时读 getComputedStyle(root).getPropertyValue("--accent")，拼成 data:image/svg+xml,…
         必须 encodeURIComponent（# 会截断 data URI）；只接受 /^#[0-9a-fA-F]{3,8}$/
         深浅切换不重画（同一强调色浅深两值 16px 下分不出）</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>四个工具；本站侧栏的品牌方块同样认<code>brand/</code>里的文件，并且自带一份默认<code>brand-icon.svg</code>（就是内置那枚，视窗四周补了留白，按84%放进去和内置等大）：探测第一次就命中，不会因为找不到文件在控制台留下报错。本条样例里这枚示意图不跟着换。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具；本站侧栏的品牌方块同样认<code>brand/</code>里的文件，并且自带一份默认<code>brand-icon.svg</code>（就是内置那枚，视窗四周补了留白，按84%放进去和内置等大）：探测第一次就命中，不会因为找不到文件在控制台留下报错；标签页上的favicon按当前强调色画成自带渐变底的圆角方块。本条样例里这枚示意图不跟着换。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主看了内置SVG说「看得难受」，要自己手绘；65%他嫌太小，改成84%（他的画稿四周本来就留了白）。白线透明图挂成favicon，压在浅色标签栏上等于隐形。</p></section>
         <section class="fact trap"><h4>坑</h4><p>SVG是XML，注释里不许出现两个连字符连写：图会解不出来，页面不报错。验证要<code>new Image()</code>真解一遍看<code>naturalWidth</code>。探测文件在不在别用<code>fetch</code>：生产环境有SPA回退，缺文件回的是首页而不是404。</p></section>
-        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:163「6. 品牌图标」；tools/gang/design-proposal.md:1158「10.14b 品牌图标可换」（由65%调大）、:1170「10.14c 标签页图标 favicon」、:1235「踩过的坑」；tools/shua/design-proposal.md:390；tools/star/brand/README.txt</p>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:164「6. 品牌图标」；tools/gang/design-proposal.md:1158「10.14b 品牌图标可换」（由65%调大）、:1170「10.14c 标签页图标 favicon」、:1235「踩过的坑」；tools/shua/design-proposal.md:390；tools/star/brand/README.txt</p>
       </div>
     </article>
 
@@ -445,6 +455,7 @@ favicon 整块圆角方块铺满，rx="229"（边长 22.37%，iOS 应用图标�
         <h3>灯箱从缩略图原位放大、缩回原位；复制气泡带箭头，贴边自己躲开</h3>
         <p class="entry-lede">原来灯箱整块瞬间出现，关掉要重新找读到哪；现在从原图的位置变形出来，关的时候缩回去。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="color.html#spot-copy">色彩 · 复制气泡</a><a href="collection.html#spot-lightbox">收藏 · 截图放大</a></p>
       </header>
       <div class="specimen ix-specimen ixlb" data-demo="lightbox">
         <p class="ix-cap"><b>演示</b>左边点缩略图：大图从缩略图原位放大出来，Esc、关闭按钮或点大图外面缩回原位；先把正文滚到缩略图只露出一截再点开，关的时候缩略图看不全，就只淡出。右边点交易码复制：气泡带箭头，贴边那个整体往里躲、箭头仍指着码，顶上被吸顶栏挡住就翻到下面。截图和交易码都是示例。</p>
@@ -496,7 +507,7 @@ favicon 整块圆角方块铺满，rx="229"（边长 22.37%，iOS 应用图标�
       1400ms 后挂 .is-leaving 淡出 140ms 再删（animationend + 兜底计时器）
       贴边：平移量写进 --bubble-shift，箭头按同一个量反向移、仍指着徽章中心
       上方放不下（视口顶、吸顶栏、裁切祖先）就翻到下方</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>岗岗正文截图与速查卡胶片条的灯箱；交易码「已复制／请手动复制」气泡。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>岗岗正文截图与速查卡胶片条的灯箱；交易码「已复制／请手动复制」气泡。本站色彩页的色值点一下复制，弹的就是这种气泡；收藏页的截图点开放大、缩回原位。</p></section>
         <section class="fact"><h4>为什么</h4><p>从哪来回哪去，看完关掉还在原来读到的地方。打断时直接到终态，不做「半路倒着缩回去」：状态机要多一倍，换来的只是0.26秒里的一点连贯。</p></section>
         <section class="fact trap"><h4>坑</h4><p>幽灵是直角的，缩略图的圆角在头尾一两帧会被盖住一点：圆角跟不了非等比缩放，动画<code>border-radius</code>又违反只动transform／opacity，所以不处理。别用WAAPI的<code>pseudoElement</code>选项动<code>::backdrop</code>：不认它的内核会把动画落到dialog本体上，整只灯箱跟着透明。</p></section>
         <p class="source">出处：tools/gang/design-proposal.md:1450「12.2 ② 灯箱：原位放大 / 缩回」、:1496「12.3 ④ 复制气泡：箭头、进出、碰撞」</p>
@@ -509,6 +520,7 @@ favicon 整块圆角方块铺满，rx="229"（边长 22.37%，iOS 应用图标�
         <h3>详情用居中大对话框，不用右侧第三栏</h3>
         <p class="entry-lede">桌面居中920宽、只有正文区内部滚动；手机整屏页从右推入。第三栏在2552宽的实机上把阶段名截成「发通知并收…」，主区却空着。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-detail">收藏 · 卡片详情</a></p>
       </header>
       <div class="specimen ix-specimen ixd" data-demo="dialog">
         <p class="ix-cap"><b>演示</b>同一块缩微屏幕，按笔记本2552×1274的比例画，任务和阶段都是示例。切「居中对话框」「右侧第三栏」对照：点任务那一行看详情；对话框用Esc、关闭按钮或点遮罩关上，焦点回到那一行。第三栏是被否的做法（示意），宽度和截断照2552实机那次画。</p>
@@ -549,10 +561,10 @@ favicon 整块圆角方块铺满，rx="229"（边长 22.37%，iOS 应用图标�
 动画  scale(.96)→1 + 淡入，240ms cubic-bezier(.32,.72,0,1)；播完再卸载
       手机整屏页从右推入，同一套时长曲线；减弱动效只留淡入淡出
 两态  桌面对话框 / 手机整屏页，同一个 DOM，只靠媒体查询分</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>plan任务详情与笔记详情。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>plan任务详情与笔记详情。本站收藏卡的「详情」也用居中大对话框。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主在笔记本2552宽的实机上看了第三栏：栏太窄、名字被截断、主区空着一大片，于是否掉第三栏、选居中对话框（原话未见，文档记为屋主选A）。1000px分两列的阈值是量出来的：1000／1100／1200三档对话框都是920宽，三档列宽只差6px。</p></section>
         <section class="fact trap"><h4>坑</h4><p>关闭后焦点要还回那一行：屋主会连着改好几条，焦点掉回页首就得重新找。</p></section>
-        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1315「25.2 详情是居中对话框 / 手机整屏页」</p>
+        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1340「25.2 详情是居中对话框 / 手机整屏页」</p>
       </div>
     </article>
   </section>
@@ -606,6 +618,7 @@ favicon 整块圆角方块铺满，rx="229"（边长 22.37%，iOS 应用图标�
         <h3>每个工具恰好一个Tab位：只有「打开刷刷」那条链接可聚焦</h3>
         <p class="entry-lede">图、规格条、图标都不加<code>href</code>和<code>tabIndex</code>，四个工具就是四个Tab位。也因此工具页不做按压倾斜。</p>
         <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-27核</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-chapters">总览 · 章节目录</a></p>
       </header>
       <div class="specimen xw ixts" data-demo="tabstop">
         <p class="ix-cap ix-cap-xw"><b>演示</b>先点「从这里开始」，再按Tab走过这张工具卡，计数器实时数Tab在卡上停了几次。切到「多个Tab位」（反例，示意）再走一遍：图、序号、标题、规格条都成了Tab位。卡上文案是示例。</p>
@@ -641,7 +654,7 @@ favicon 整块圆角方块铺满，rx="229"（边长 22.37%，iOS 应用图标�
         transition: background-color .18s ease, color .18s ease; }   /* 不位移、不放大、不换阴影档 */
 .open:hover { background: var(--tool-brand-soft); }
 .open:focus-visible { outline: 2px solid var(--tool-brand); outline-offset: 3px; }</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>小屋工具页（刷刷、plan、岗岗、card四层）。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋工具页（刷刷、plan、岗岗、card四层）。本站总览的章节目录借了这条：一行一个Tab位。</p></section>
         <section class="fact"><h4>为什么</h4><p>不然键盘用户在同一张卡上要按两次Tab。可见文字必须被可读名包含（WCAG 2.5.3）。焦点环用身份色：中性色画的焦点环在暖纸底上看不见。把整层做成可按压等于多造一个入口，所以屋主给的「按压倾斜卡片」在这页不做。</p></section>
         <section class="fact trap"><h4>坑</h4><p>工具页五层叠放，Tab进一个此刻不在场的层时，脚本要把页面滚到那一层停留的正中，焦点所在的链接才看得见。</p></section>
         <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md:2111「6.6 无障碍与外链」、:2140；Ysevan_web/app/projects/tools.module.css:173「打开工具」</p>
@@ -653,6 +666,7 @@ favicon 整块圆角方块铺满，rx="229"（边长 22.37%，iOS 应用图标�
         <h3>随笔球：慢慢自转、手一碰就停，点开和拖动靠位移阈值分开</h3>
         <p class="entry-lede">同一批随笔的另一种看法。读屏、键盘、无JS、省流量拿到的都是普通卡片网格，内容一张不少。</p>
         <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-20定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-globe">总览 · 条目星球</a></p>
       </header>
       <div class="specimen xw ixg" data-demo="globe">
         <p class="ix-cap ix-cap-xw"><b>轻量示意，不是原物</b>原物是WebGL，这里没有嵌进来：用CSS 3D把14张随笔卡（标题、日期都是示例）排在球面上慢慢转。按住拖动转球；按下到松开位移≤4px（触摸≤8px）算点击，超过算拖动，右边实时显示判定。键盘：Tab进球，←→换一张、把它转到正面，回车「打开」。没有脚本时这里是普通卡片网格。</p>
@@ -692,7 +706,7 @@ favicon 整块圆角方块铺满，rx="229"（边长 22.37%，iOS 应用图标�
 键盘  焦点走透明网格里的链接；焦点落在哪张，球就把哪张转到正面，:focus-visible 时画 --ring 焦点环
 首帧  3D 多半会来时网格先 opacity:0 占位，球画出第一帧直接淡入 600ms；1800ms 没来就放出网格
 提示  球上不叠任何操作提示（「拖动旋转」之类）</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>小屋 /notes/globe。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋 /notes/globe。本站总览开头的条目星球借了这条：自转、一碰就停，拖动与点开靠位移阈值分开。</p></section>
         <section class="fact"><h4>为什么</h4><p>手一碰就停，才看得清要点的那张；点击和拖动靠位移阈值分开，拖完松手不会误进详情。</p></section>
         <blockquote class="said"><p>先出平面网格再变成球，像闪了一下。</p><footer>屋主，2026-09-20</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>只写<code>touch-action: pan-y</code>会把这一大块的双指缩放也关掉。手机上网格出流用<code>overflow: clip</code>不用<code>hidden</code>：<code>hidden</code>会建滚动容器，焦点落进被裁的部分时浏览器会去滚它。</p></section>
@@ -710,6 +724,7 @@ favicon 整块圆角方块铺满，rx="229"（边长 22.37%，iOS 应用图标�
         <h3>回车确认先判isComposing：输入法选词那一下不算提交</h3>
         <p class="entry-lede">凡keydown处理，第一行先挡合成态；表单的隐式提交不经过keydown，submit里再挡一次，而且那一处只认<code>isComposing</code>。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-search">全站 · 搜索框</a></p>
       </header>
       <div class="specimen ix-specimen ixi" data-demo="ime">
         <form class="ixi-form" autocomplete="off">
@@ -732,10 +747,10 @@ form.addEventListener("submit", (event) =&gt; {
 });
 // React 里判 event.nativeEvent.isComposing
 // 组字中不切逗号，由 compositionend 补一次（候选词和「，」一起上屏时不会再来一次普通 input）</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>岗岗搜索框与目录过滤框；plan所有回车确认的输入框（标题、材料、提醒、阶段、笔记标签、快速记录、收件箱、顶栏搜索）；刷刷搜题与按题号跳转；old首页搜索。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>岗岗搜索框与目录过滤框；plan所有回车确认的输入框（标题、材料、提醒、阶段、笔记标签、快速记录、收件箱、顶栏搜索）；刷刷搜题与按题号跳转；old首页搜索。本站搜索框同样先判。</p></section>
         <section class="fact"><h4>为什么</h4><p>中文选词按回车时，keydown的<code>key</code>照样是<code>Enter</code>，只认<code>key</code>的代码分不清选词和提交，内容会提前落库。这类bug用户感觉得到、报不上来：打字时偶尔跳走、被清空、自己提交了，只会以为是自己手快。</p></section>
         <section class="fact trap"><h4>坑</h4><p>keydown里提前返回，两个都认：部分内核选词回车那一下<code>isComposing</code>已经是false，只剩229可认（岗岗文档注明未实测）。拦提交那一处只认<code>isComposing</code>：安卓软键盘不在合成时也常报229，认了会让键盘上的「搜索」键按了没反应——拼音被当成词搜一次，改个词就好；搜索键失灵是功能坏了，往后果轻的那边错。写完规矩要grep全仓<code>key === 'Enter'</code>和<code>'Escape'</code>核覆盖面：plan收件箱那处（选词回车会直接把这条转成任务、跳到下一条）就是这样查出来的。</p></section>
-        <p class="source">出处：tools/gang/design-proposal.md:1361「11.4 输入法规矩」；tools/gang/app.js:3236「submit」、:3413；tools/gang/CLAUDE.md:97「七、输入法」；tools/plan/docs/BUSINESS_LOGIC.md:1629「31.2b 回车确认必须先过输入法这一关」；old@4156029 说明.md:147「首页搜索联想、素材卡片按压」</p>
+        <p class="source">出处：tools/gang/design-proposal.md:1361「11.4 输入法规矩」；tools/gang/app.js:3236「submit」、:3413；tools/gang/CLAUDE.md:97「七、输入法」；tools/plan/docs/BUSINESS_LOGIC.md:1654「31.2b 回车确认必须先过输入法这一关」；old@4156029 说明.md:147「首页搜索联想、素材卡片按压」</p>
       </div>
     </article>
 
@@ -744,6 +759,7 @@ form.addEventListener("submit", (event) =&gt; {
         <h3>Esc一下只退一层；合成中的Esc是取消选词，不算关闭</h3>
         <p class="entry-lede">浮层开着先收浮层、字留着；再按才清空；再按才收起整行搜索。关详情前先让正在打字的输入框失焦，失焦即存。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-search">全站 · 搜索框</a><a href="index.html#spot-more">全站 · 更多面板</a></p>
       </header>
       <div class="specimen ix-specimen ixe" data-demo="esc">
         <p class="ix-cap"><b>演示</b>点「摆好四层」（或者自己点开：搜索 → 打字出联想 → 目录），然后连按Esc：一下只退一层，右边先列着现在叠了哪几层，日志写每一下退了哪层。打开「模拟输入法组字中」，这时的Esc只算取消选词，什么都不关。业务名都是示例。</p>
@@ -793,10 +809,10 @@ form.addEventListener("submit", (event) =&gt; {
 plan 详情对话框
   Esc → 先 blur 正在打字的输入框（失焦即存）→ 再关；合成中的 Esc 不关面板
 快捷键说明面板同步列出这条链</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>岗岗全站键盘分发；plan任务与笔记详情、<code>InlineField</code>、顶栏铃铛菜单。上面「联想浮层」「可删除标签」两个样例里都能试。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>岗岗全站键盘分发；plan任务与笔记详情、<code>InlineField</code>、顶栏铃铛菜单。上面「联想浮层」「可删除标签」两个样例里都能试。本站搜索联想和「更多」面板也是Esc一下只退一层。</p></section>
         <section class="fact"><h4>为什么</h4><p>一下Esc既清字又关面板，刚打的字就没了。每按一下只做一件看得见的事，用户按到哪一层停都知道发生了什么。</p></section>
         <section class="fact trap"><h4>坑</h4><p>plan「合成态的Esc不能当关闭」这句曾经只是写着：2026-09-27核实，除收件箱外的Esc处理都没判合成态，组字中按Esc会把正在改的字整段丢掉。补完再grep全仓<code>'Escape'</code>核了一遍。</p></section>
-        <p class="source">出处：tools/gang/design-proposal.md:296「6.2 键盘导航」、:1347「11.3」、:1056；tools/plan/docs/BUSINESS_LOGIC.md:1333「25.2」、:1650「31.2b」</p>
+        <p class="source">出处：tools/gang/design-proposal.md:296「6.2 键盘导航」、:1347「11.3」、:1056；tools/plan/docs/BUSINESS_LOGIC.md:1358「25.2」、:1675「31.2b」</p>
       </div>
     </article>
 
@@ -805,6 +821,7 @@ plan 详情对话框
         <h3>键盘走得到每个功能：跳到正文、焦点归还、装饰对读屏隐藏、播报集中一处</h3>
         <p class="entry-lede">首个Tab越过导航；弹层关了焦点回到打开它的那个元素；3D画布、光斑、品牌图文件都<code>aria-hidden</code>；结果数和切换用一条<code>aria-live</code>播。</p>
         <ul class="entry-tags"><li class="scope">通用</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-skip">全站 · 跳到正文</a><a href="index.html#spot-more">全站 · 更多面板</a></p>
       </header>
       <div class="specimen ix-specimen ixa" data-demo="a11y">
         <p class="ix-cap"><b>演示</b>一块迷你页面（内容是示例）。点「从这里开始」再按Tab：第一下落在「跳到正文」；打开详情再关上，焦点回到「打开详情」；光斑和3D画布对读屏隐藏，Tab也走不进去；播报只走一条aria-live，右边「读屏会听到」把它播的和焦点落到哪同步写出来。</p>
@@ -866,7 +883,7 @@ plan 详情对话框
 强制色      forced-colors:active 下给气泡补 CanvasText 边框</code></pre></section>
         <section class="fact"><h4>用在哪</h4><p>四个工具与小屋。本站外壳也照这套：跳到正文、焦点环、侧栏与「更多」面板的焦点归还。</p></section>
         <section class="fact"><h4>为什么</h4><p>岗岗改版前每次交互整片<code>innerHTML</code>重建，焦点掉到<code>&lt;body&gt;</code>，是当时最严重的缺口：键盘用户每点一下都得从页首重新Tab。</p></section>
-        <p class="source">出处：tools/gang/design-proposal.md:289「6.1 焦点管理」、:303「6.3 读屏语义」；tools/plan/docs/design/SPEC-apple-glass.md:79「5. 降级与可访问性」；tools/plan/docs/BUSINESS_LOGIC.md:1334；Ysevan_web/docs/xiaowu-ui-spec.md:4607「焦点环」</p>
+        <p class="source">出处：tools/gang/design-proposal.md:289「6.1 焦点管理」、:303「6.3 读屏语义」；tools/plan/docs/design/SPEC-apple-glass.md:79「5. 降级与可访问性」；tools/plan/docs/BUSINESS_LOGIC.md:1359；Ysevan_web/docs/xiaowu-ui-spec.md:4607「焦点环」</p>
       </div>
     </article>
 
@@ -875,6 +892,7 @@ plan 详情对话框
         <h3>续做：任何入口要么默认续上，要么点之前就写明会从头开始</h3>
         <p class="entry-lede">不许静默丢进度。续上的写清续到哪，会从头的在点之前就说。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-resume">总览 · 接着看</a></p>
       </header>
       <div class="specimen ix-specimen ixr" data-demo="resume">
         <p class="ix-cap"><b>演示</b>一套12题的迷你练习（题目是假的）。从「连续刷题」进去答几题，点「退出」回到入口，再点进去：默认续上，入口胶囊写着做到第几题。换「只练后6题」，题目范围变了，入口上点之前就写明会从第1题开始。切到「默认从头」（反例，示意）再走一遍：进度被静默丢掉。</p>
@@ -918,7 +936,7 @@ plan 详情对话框
 其余入口  会顶掉半截练习时先确认（见上面「确认」一条）
 signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增删、换序都敏感
 存位置    在 saveState() 一处抄，不在每个翻页函数里抄</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>刷刷的三类练习入口。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷的三类练习入口。本站总览的「接着看」：从上次看到的那条续上。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主看到「1/799」以为连续刷题坏了，查下来是换了题库、进度在旧题库里；真正静默丢进度的是另外两处入口。所以定成判据，以后加入口都照它办。</p></section>
         <blockquote class="said"><p>连续刷题可以点击后回到原本刷题的地方吗，而不是从第一题开始</p><footer>屋主，2026-09-23</footer></blockquote>
         <p class="source">出处：tools/shua/design-proposal.md:529「九、练习入口的判据」、:531、:533、:539</p>
@@ -930,6 +948,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
         <h3>只升级已有的交互，不为套组件造新功能</h3>
         <p class="entry-lede">屋主给的六个交互组件，各家先对着代码核一遍：对得上的只升级手感，对不上的不做，写一句为什么。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-27定</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-globe">总览 · 条目星球</a></p>
       </header>
       <div class="specimen ix-specimen ixu" data-demo="upgrade">
         <p class="ix-cap"><b>演示</b>点一个组件（或表头那一列）：它在各项目的落点亮起来，下面逐家写做在哪、没做的为什么。数据就是下面「数值 / 代码」那张表；表里没单列理由的格子照写「没单列理由」，不补猜测。</p>
@@ -958,8 +977,9 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
           <p class="ixo-note">①多选筛选标签　②可删除的标签　③输入联想浮层　④拨动字号刻度　⑤按压倾斜卡片　⑥长按变录音条。④各家都没做（plan：正文编辑区有，但工具条和字号偏好都得新造，桌面上也没有「键盘顶部」；岗岗：没有字号调节，字号靠<code>clamp()</code>随窗口变）。</p>
         </section>
         <section class="fact"><h4>为什么</h4><p>组件只是手感的参考，套到没有对应功能的地方就是造新功能：多一个入口、多一条规则、多一处要维护。对应表只是起点，每一项都要回代码核一遍。</p></section>
+        <section class="fact"><h4>本站例外</h4><p>star自身不照这条：屋主2026-10-08要求把合集的交互在star上用遍（原话「把我stars里面所有的逻辑都狠狠的用这些设计合集的内容，纯属炫技」）。总览开头的条目星球、「本书进度」圆环是为了展示新加的，收藏页的标签筛选用的是刷刷撤回的多选版。对其他项目照旧。</p></section>
         <section class="fact trap"><h4>坑</h4><p>动了一个组件，要自己grep全仓看同类输入框有没有漏掉（输入法那条就是这么补全的）。改完同一轮改文档：CHANGELOG、规格、README里写着交互的地方。</p></section>
-        <p class="source">出处：tools/star/docs/sources/six-components.md「四家共同规矩」；tools/plan/docs/BUSINESS_LOGIC.md:1790「34. 交互组件轮」；tools/shua/design-proposal.md:392、:557、:599；tools/gang/design-proposal.md:1304「11.1 六个组件的核对表」；tools/card/CLAUDE.md:175；old@4156029 说明.md:129「老站卡片按压反馈」、:144「首页搜索联想、素材卡片按压」；Ysevan_web/docs/xiaowu-ui-spec.md:68、:2140</p>
+        <p class="source">出处：tools/star/docs/sources/six-components.md「四家共同规矩」；tools/plan/docs/BUSINESS_LOGIC.md:1816「34. 交互组件轮」；tools/shua/design-proposal.md:392、:557、:599；tools/gang/design-proposal.md:1304「11.1 六个组件的核对表」；tools/card/CLAUDE.md:175；old@4156029 说明.md:129「老站卡片按压反馈」、:144「首页搜索联想、素材卡片按压」；Ysevan_web/docs/xiaowu-ui-spec.md:68、:2140</p>
       </div>
     </article>
 
@@ -969,6 +989,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
         <h3>大图当主角时，导航栏整条透明：可读性交给整张图的压暗，不交给导航本身</h3>
         <p class="entry-lede">导航条不画底、不描边、不模糊、不加阴影，直接浮在封面大图上；字看得清，是因为整张图先压了一层60%的黑。主次只靠白的深浅，整条唯一的彩色是右端的绿胶囊。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>老站约2021年</li><li>2026-09-27收录</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-hero-nav">总览 · 透明顶栏</a></p>
       </header>
       <div class="specimen ix-specimen ixn" data-demo="oldnav">
         <div class="ixn-controls">
@@ -1022,7 +1043,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
         去掉黑罩、只加 text-shadow: 0 1px 2px rgba(0, 0, 0, .6)   半透明白链接 4.0–4.9（中位）
         图上最亮那块光斑，有黑罩时半透明白也只有 2.7
         胶囊白字对 #58ca7e   2.07:1</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>老站「书生子白」首页<code>Blog/Home.html</code>（约2021年，页脚写着「© 2021 书生子白」），同一条导航也在Explore、Blog、ACGN三页顶上。模板是FREEHTML5.co的「Drag &amp; Drop Cards」。右端「网站素材」一项和中、右两栏5:4的比例是2026-09-25整理老站时加的，透明做法、字、胶囊都是原版。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>老站「书生子白」首页<code>Blog/Home.html</code>（约2021年，页脚写着「© 2021 书生子白」），同一条导航也在Explore、Blog、ACGN三页顶上。模板是FREEHTML5.co的「Drag &amp; Drop Cards」。右端「网站素材」一项和中、右两栏5:4的比例是2026-09-25整理老站时加的，透明做法、字、胶囊都是原版。本站总览开头借了这条：≤900时顶栏压在星野上整条透明。</p></section>
         <section class="fact"><h4>为什么</h4><p>图是主角：导航不占面积、不画边，整张封面从页面最顶铺满，看上去就是一张图上写了几个字。主次只靠白的深浅——品牌和当前页纯白，其余半透明白，悬停才亮起来；整条唯一的彩色是右端的绿胶囊，眼睛自然落到「回主页」上。</p></section>
         <section class="fact"><h4>与液态玻璃的对照</h4>
           <div class="ixo-wrap">
@@ -1056,6 +1077,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
         <h3>毛玻璃浮层：背景由清楚糊到26px、面板从0.94浮起，12个月份格错开4帧依次灌满，1秒收完</h3>
         <p class="entry-lede">Frosted Glass Sheet。背景只糊不压暗，靠景深把面板托出来；.42的白底只有压在糊开的背景上才读得清，模糊和面板是一套。代价是没显卡的机器上最贵的那种动画，实测在下面。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>屋主2026-10-08收集</li><li>backdrop-filter</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-blur">全站 · 背景模糊</a><a href="index.html#spot-more">全站 · 更多面板</a></p>
       </header>
       <div class="specimen sh-specimen" data-demo="sheet-frosted">
         <div class="sh-demo">
@@ -1152,10 +1174,11 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
             <li>travel：一趟旅行1–60天，没有按月的东西；弹窗遮罩已经是<code>blur(5px)</code>。</li>
             <li>小屋：规格写明不存在弹窗和数据看板。</li>
           </ul>
+          <p>star自身是例外（见<a href="#ix-only-upgrade">「只升级已有交互」</a>）：「更多」面板的遮罩用这一条；外观里的「背景模糊」分段（自动／开／关）就是这条的降级档。</p>
         </section>
         <section class="fact"><h4>为什么好看</h4><p>背景糊开和面板浮起同时发生，视线的焦点从「背景」移到「面板」，不用压暗也分得清前后。12格错开4帧，用量高低变成从左往右的一道波，比12格同时长出来更容易一格一格看清；曲线前快后慢，第一眼就看到大致高度，后段只是落定。</p></section>
         <section class="fact trap"><h4>要注意的地方</h4><p>backdrop-filter半径的过渡不在合成器上：每一帧都要按新半径把整块背景重新模糊一遍，没显卡的机器上它就是整页的瓶颈（上面实测）。.42的白底离不开模糊：降级去掉模糊时，面板底要同时提到近乎不透明，否则字压在清楚的背景上读不清。错开写成<code>transition-delay</code>，单格时长要跟着格数重算，最后一格才能正好1秒收完。关闭时去掉delay统一收回，否则要等最后一格倒着退完。</p></section>
-        <p class="source">出处：屋主2026-10-08收集，原出处未知。落点核对（行号以2026-10-08的工作区为准；全文见<code>tools/star/docs/落点-六种弹窗.md</code>「二、按弹窗逐条」「六、控制室裁定」）：刷刷<code>tools/shua/app.js:3243</code>「renderStats」；plan<code>tools/plan/app/src/App.css:2641</code>「.detail-dialog-backdrop」、<code>tools/plan/docs/BUSINESS_LOGIC.md:1776</code>「33.6 明确不做」；travel<code>tools/travel/PLANNER.md:31</code>、<code>tools/travel/planner/app.css:965</code>；小屋<code>Ysevan_web/docs/xiaowu-ui-spec.md:59</code>「1.3 明确不存在的元素」、<code>:85</code></p>
+        <p class="source">出处：屋主2026-10-08收集，原出处未知。落点核对（行号以2026-10-08的工作区为准；全文见<code>tools/star/docs/落点-六种弹窗.md</code>「二、按弹窗逐条」「六、控制室裁定」）：刷刷<code>tools/shua/app.js:3243</code>「renderStats」；plan<code>tools/plan/app/src/App.css:2628</code>「.detail-dialog-backdrop」、<code>tools/plan/docs/BUSINESS_LOGIC.md:1802</code>「33.6 明确不做」；travel<code>tools/travel/PLANNER.md:31</code>、<code>tools/travel/planner/app.css:965</code>；小屋<code>Ysevan_web/docs/xiaowu-ui-spec.md:59</code>「1.3 明确不存在的元素」、<code>:85</code></p>
       </div>
     </article>
 
@@ -1165,6 +1188,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
         <h3>圆环计数弹出：面板先落定，圆环再画到剩余比例，中心数字跟着同一条曲线滚到目标值</h3>
         <p class="entry-lede">Ring Count Sheet。底部面板0.5秒从屏幕外升到位，背景压暗到40%；落定后圆环用同一条曲线1.2秒画到剩余比例，中心数字同步从0滚上去。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>屋主2026-10-08收集</li><li>底部面板</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-ring">总览 · 本书进度</a></p>
       </header>
       <div class="specimen sh-specimen" data-demo="sheet-ring">
         <div class="sh-demo">
@@ -1224,11 +1248,12 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
             <li>travel · 「行程与导出」里的旅行费用：可以做，没下发。「已填写¥X／预算¥Y」＋原生进度条＋余量一行，全部项目里最直白的「剩余多少」。超预算要满圈转红、不能画过一圈；「未填费用不计入」那行字要留；没设预算不出环。</li>
             <li>plan · 汇总卡：<b>不改圆环</b>。今日页「今天要做」和全部任务页「进行中」是同一个<code>SummaryCard</code>，数和比例都对口，但屋主2026-10-08看样张后定了「一个大数字＋一条进度」，照这个留着，也不出二选一样张；plan的数字首次渲染不跳，和「中心数字从0滚上去」正相反。</li>
             <li>card：十三张都已收藏，没有「剩余」。小屋：规格禁数据看板。</li>
+            <li><b>本站 · 总览「本书进度」</b>　点开弹出这个圆环，数的是写完的章节；整个面板都借了，是star的例外（见<a href="#ix-only-upgrade">「只升级已有交互」</a>）。</li>
           </ul>
         </section>
         <section class="fact"><h4>为什么好看</h4><p>两个动作排队：面板先落定、眼睛跟到位置，圆环才开始画，注意力不被同时抢走。圆环和数字同一条曲线、同一个起点，数字读到几，圆环就画到几分之几，不会出现数字先到、环还在走。底部面板只占下半屏，背景压暗就分得清层次，用不着模糊。</p></section>
         <section class="fact trap"><h4>要注意的地方</h4><p><code>stroke-dashoffset</code>不在合成器上，每帧都要重画这条弧；面积小、代价不大，但它不是transform或opacity。数字别用<code>setInterval</code>：那是另一只时钟，和圆环各走各的，后台标签页、掉帧时就对不上；读圆环过渡自己的<code>currentTime</code>，暂停、拖进度两边也一致。数字在滚的时候不播报，读屏读面板里另写的一句「剩余26次，共40次」。</p></section>
-        <p class="source">出处：屋主2026-10-08收集，原出处未知。落点核对（行号以2026-10-08的工作区为准；全文见<code>tools/star/docs/落点-六种弹窗.md</code>「二、按弹窗逐条」「六、控制室裁定」）：刷刷<code>tools/shua/app.js:2085</code>「renderSummary」、<code>tools/shua/design-proposal.md:603</code>「十二、结算页分数圈」；岗岗<code>tools/gang/app.js:1249</code>「qc-docs」、<code>:691</code>「check-progress」、<code>tools/gang/design-proposal.md:1706</code>「16. 材料进度小圆环」；travel<code>tools/travel/planner/JourneyOutputs.tsx:149</code>「budget-total」；plan<code>tools/plan/app/src/components/cards.tsx:12</code>「SummaryCard」、<code>tools/plan/docs/BUSINESS_LOGIC.md:1828</code>「35.2 规则」第1条、<code>tools/plan/app/src/components/BumpNumber.tsx:5</code>「首次渲染不跳」</p>
+        <p class="source">出处：屋主2026-10-08收集，原出处未知。落点核对（行号以2026-10-08的工作区为准；全文见<code>tools/star/docs/落点-六种弹窗.md</code>「二、按弹窗逐条」「六、控制室裁定」）：刷刷<code>tools/shua/app.js:2085</code>「renderSummary」、<code>tools/shua/design-proposal.md:603</code>「十二、结算页分数圈」；岗岗<code>tools/gang/app.js:1249</code>「qc-docs」、<code>:691</code>「check-progress」、<code>tools/gang/design-proposal.md:1706</code>「16. 材料进度小圆环」；travel<code>tools/travel/planner/JourneyOutputs.tsx:149</code>「budget-total」；plan<code>tools/plan/app/src/components/cards.tsx:12</code>「SummaryCard」、<code>tools/plan/docs/BUSINESS_LOGIC.md:1854</code>「35.2 规则」第1条、<code>tools/plan/app/src/components/BumpNumber.tsx:5</code>「首次渲染不跳」</p>
       </div>
     </article>
 
@@ -1238,6 +1263,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
         <h3>刻度尺进度弹出：53根周刻度逐根变深，走到今天换成强调色停住；编号原地逐字展开，行高不动</h3>
         <p class="entry-lede">Tick Ruler Sheet。面板滑入后，一年53周从左到右逐根变深，每根错开1帧；点「显示」，被遮住的编号在原地一个字一个字露出来。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>屋主2026-10-08收集</li><li>底部面板</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="index.html#spot-ruler">总览 · 更新记录</a></p>
       </header>
       <div class="specimen sh-specimen" data-demo="sheet-ruler">
         <div class="sh-demo">
@@ -1304,6 +1330,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
             <li>岗岗：办理指引只有四个环节，四根刻度就是现在的步骤条；交易码是柜员自己输系统用的，没有遮住的理由。card：十三张卡全摆在Cover Flow上，用不着刻度。小屋：不对口。</li>
             <li>「遮住编号、逐字展开」唯一用得上的是travel的订单编号，并进「原地翻面」那条，而且出示时多一步，不建议放。</li>
           </ul>
+          <p>star自身是例外（见<a href="#ix-only-upgrade">「只升级已有交互」</a>）：总览的「更新记录」点开弹出53周刻度尺。</p>
         </section>
         <section class="fact"><h4>为什么好看</h4><p>一年53周一字排开，走过的变深、今天那根用强调色停住，「过去多少、还剩多少」不用读数字就看得出。每根只差1帧，41根约0.7秒扫完，快到像一道光扫过去，又慢到看得出是从左往右走。编号在原地露出来，宽度和行高事先占好，面板不跳，眼睛不用重新找位置。</p></section>
         <section class="fact trap"><h4>要注意的地方</h4><p>逐字展开别直接改<code>textContent</code>：「•」和数字宽度不同，会挤动后面的字、可能换行。每个字先占好最终的宽和行高，换字只动opacity和transform。读屏不要逐字播：遮住时读「编号已隐藏」，展开完再用<code>aria-live</code>播一次完整编号。「今天」跟日期有关：真实页面验收要把页面时钟拨到固定日期，否则判据每天都在变（这里写死第41周）。错开写死成毫秒，120Hz屏上按时间走、不按帧走。</p></section>
@@ -1317,6 +1344,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
         <h3>照片抽屉弹出：照片从1.08缩回1铺满，抽屉压住照片底边22px推上来，进度条随后涨到剩余比例</h3>
         <p class="entry-lede">Photo Drawer Sheet。上半部是照片，暗角托住白色大字；下半部抽屉用负外边距压在照片上，从下方推入，最后进度条才涨。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>屋主2026-10-08收集</li><li>照片</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-detail">收藏 · 卡片详情</a></p>
       </header>
       <div class="specimen sh-specimen" data-demo="sheet-photo">
         <div class="sh-demo">
@@ -1378,6 +1406,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
             <li>小屋 · 随笔：配图在正文末尾，正文才是主角；照片铺满、白字压暗角是苹果风的做法，小屋用暖纸。</li>
             <li>岗岗：截图是系统界面、含客户信息，不能当主图、不能裁切压字。刷刷、plan：没有图。</li>
           </ul>
+          <p>star自身是例外（见<a href="#ix-only-upgrade">「只升级已有交互」</a>）：收藏卡的「详情」是居中大对话框加这个照片抽屉。</p>
         </section>
         <section class="fact"><h4>为什么好看</h4><p>照片从1.08缩回1，像镜头往后退一步把景收进来，这就是「打开」的动作。抽屉压住照片底边22px，上下两块像叠在一起的两张纸，不像拼起来的两个框。暗角从四周和底部压暗，白字放在最暗的一角，换一张照片也读得清。进度条最后才涨，视线顺序是图、标题、数字。</p></section>
         <section class="fact trap"><h4>要注意的地方</h4><p>照片缩放要在<code>overflow:hidden</code>的框里做，框的圆角才裁得住放大的图。抽屉压住的那22px里不能放字：标题的下边距要把这一截让出来。图要有兜底：加载不到时照片框露出底色渐变，白字照样读得清。白字压照片的对比度看图：换一张更亮的照片要重测暗角够不够。</p></section>
@@ -1391,6 +1420,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
         <h3>原地翻面面板：绕Y轴翻180度，翻过90度那一帧换面，背面是出示用的编号；再点沿原路翻回</h3>
         <p class="entry-lede">Flip to Reveal。透视1200px，曲线cubic-bezier(.3,.7,.2,1)，0.8秒。翻面是「同一张卡的另一面」，比再弹一个框更说明这是同一件东西。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>屋主2026-10-08收集</li><li>3D翻面</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-flip">收藏 · 翻面卡</a></p>
       </header>
       <div class="specimen sh-specimen" data-demo="sheet-flip">
         <div class="sh-demo">
@@ -1456,6 +1486,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
             <li>card：已经有，而且更好。查看器有「翻看背面」按钮和F键，three里整张卡转180°，CSS翻面只会是降级。</li>
             <li>刷刷：题卡翻面看答案看似对口，但解析要和题干一起看，翻过去题干就没了；题卡已有滑动切题的transform，会打架。</li>
             <li>岗岗：交易码给柜员自己输，不给别人看。plan、小屋：没有要出示的编号。</li>
+            <li><b>本站 · 收藏的翻面卡</b>　skill、项目、提示词这几类收藏：正面一句话说它是什么，翻过来看效果截图。</li>
           </ul>
         </section>
         <section class="fact"><h4>为什么好看</h4><p>翻面让人知道背面的编号和正面是同一张卡，不是另一个东西。透视1200px够远，翻的时候梯形变形不夸张。曲线前快后慢，不到五分之一的时间就翻过90度，剩下的时间慢慢落定，看起来是被「甩」过去再稳住。</p></section>
@@ -1470,6 +1501,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
         <h3>下拉展开面板：拖把手把下半张沿虚线撕开，跟手下移带2度摆动，过40%松手展开、不到就弹回</h3>
         <p class="entry-lede">Pull Down Reveal。面板从底部弹入落定，下沿留一截把手和一条虚线；往下拉，完整信息从撕开的缝里露出来。键盘有替代：把手按↓展开、↑或Esc收回。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>屋主2026-10-08收集</li><li>拖动</li></ul>
+        <p class="used-here"><span class="used-label">本站这里在用</span><a href="interaction.html#spot-pull">交互 · 长代码展开</a></p>
       </header>
       <div class="specimen sh-specimen" data-demo="sheet-pull">
         <div class="sh-demo">
@@ -1538,6 +1570,7 @@ signature 条数 + 首尾题号 + 全部题号的 32 位哈希：定长，对增
             <li>刷刷 · 结算页错题回顾每道是<code>&lt;details&gt;</code>，点开看解析：改成拖开会和滚动打架，错题又常是一长串。岗岗 · 勾选卡的「原文」折叠（<code>.check-source</code>）同理，点开比拖开好。</li>
             <li>plan、card、小屋：没有票据形态。</li>
           </ul>
+          <p>star自身是例外（见<a href="#ix-only-upgrade">「只升级已有交互」</a>）：页面里过长的代码块先收起一截，照这一条下拉展开。</p>
         </section>
         <section class="fact"><h4>为什么好看</h4><p>把「看完整信息」做成撕开一张票：虚线告诉人哪里能分开，下半张跟着手走、带一点摆，像真的纸。过线才展开、不到就弹回，松手那一刻结果是确定的，不会停在半路。</p></section>
         <section class="fact trap"><h4>要注意的地方</h4><p>拖动一定要有键盘替代：把手本身是能聚焦的按钮，另有「展开完整信息」按钮，两处的<code>aria-expanded</code>一起变。拖动中关掉过渡、直接跟手，松手才按结果给过渡；没拖动的按下抬起交给click，拖过的那一下要吞掉随后的click。Esc先收起下半张，再按才关面板：一下只退一层。把手要<code>touch-action:none</code>，否则手机上一拖就成了滚页面。减弱动效下拖动照样跟手，松手直接到位、不弹。</p></section>
