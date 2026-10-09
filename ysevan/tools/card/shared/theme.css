@@ -102,8 +102,9 @@ svg.icon,.icon svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:non
 .icon-btn svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 /* chip 与列表 */
 .chip{display:inline-flex;align-items:center;height:calc(24 * var(--u));padding:0 calc(10 * var(--u));border-radius:999px;background:var(--accent-chip);color:var(--accent-text);font-size:calc(12.5 * var(--u));font-weight:600;font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
-/* 灰 chip 只放中文标签（辑名、主题），没有数字：退回正文字体、不要 tabular-nums，否则「·」跟着换成系统字体变窄、标签发挤 */
-.chip-grey{background:var(--fill);color:var(--label2);font-weight:500;font-family:var(--font);font-variant-numeric:normal}
+/* 灰 chip 只放中文标签（辑名、主题），没有数字：退回正文字体、不要 tabular-nums，否则「·」跟着换成系统字体变窄、标签发挤。
+   字重 400：字重三档（400 / 600 / 700，2026-08-25 定）里它不是选中项、按钮或小标题，归「其余」（原 500）。 */
+.chip-grey{background:var(--fill);color:var(--label2);font-weight:400;font-family:var(--font);font-variant-numeric:normal}
 .list{background:var(--glass);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
 .row{display:flex;align-items:center;gap:calc(14 * var(--u));padding:calc(12 * var(--u)) var(--pad);border-top:1px solid var(--sep);min-width:0;color:inherit}
 .row:first-child{border-top:0}
