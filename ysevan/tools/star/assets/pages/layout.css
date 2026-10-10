@@ -392,9 +392,9 @@
 .l-ti-side[data-ti="after"] .l-tile { display: flex; align-items: center; gap: calc(8 * var(--u)); padding: calc(8 * var(--u)) calc(12 * var(--u)); }
 .l-ti-side[data-ti="after"] .l-tile-ic { flex: none; display: grid; color: var(--tile-ink); }
 .l-ti-side[data-ti="after"] .l-tile-ic svg { width: calc(16 * var(--u)); height: calc(16 * var(--u)); }
-.l-ti-side[data-ti="after"] .l-tile-l { flex: 1 1 auto; font-size: calc(13 * var(--u)); font-weight: 500; }
+.l-ti-side[data-ti="after"] .l-tile-l { flex: 1 1 auto; font-size: calc(13 * var(--u)); font-weight: 400; }
 .l-ti-side[data-ti="after"] .l-tile-n { flex: none; font-size: calc(15 * var(--u)); line-height: 1; color: var(--label); }
-.l-ti-side[data-ti="after"] .l-tile.is-zero .l-tile-n { color: var(--label2); font-weight: 500; }
+.l-ti-side[data-ti="after"] .l-tile.is-zero .l-tile-n { color: var(--label2); font-weight: 400; }
 .l-ti-side[data-ti="after"] .l-tile.is-alert .l-tile-n { color: var(--red-text); }
 /* 改前：彩色图标块 + 大数字 */
 .l-ti-side[data-ti="before"] .l-tile { display: block; padding: calc(12 * var(--u)); }

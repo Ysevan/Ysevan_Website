@@ -84,7 +84,7 @@
         <section class="fact"><h4>用在哪</h4><p>plan：侧栏、tab bar、手机底部面板用重的一档（<code>--blur-glass-strong</code>），顶栏、详情对话框、菜单、提示条用轻的一档（<code>--blur-glass</code>）。会随正文长的面不在这里，见下面「磨砂放在哪」。本站：侧栏、顶栏、tab bar、「更多」面板都是30px·160%，条目卡不挂。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主要「参考苹果的UI和配色」；分层只靠玻璃、投影和分隔线，不用边框（反例在色彩页「中性底与玻璃」的对照里）。亮线放在阴影里，不占盒子、不改尺寸；浅色下.9的白很显，深色下只留.12。</p></section>
         <section class="fact trap"><h4>坑</h4><p>样张<code>shua-glass.html</code>是旧写法：侧栏、卡片是标准属性在前，玻璃按钮只写了<code>backdrop-filter: blur(20px)</code>、没配前缀。照着抄要按下面「前缀顺序」那条改过来。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:12</code>「不用边框分层」、<code>:3</code>「屋主原话」；<code>tools/plan/docs/design/shua-glass.html:36</code><code>.side</code>、<code>:59</code><code>.card</code>、<code>:11</code><code>--shadow</code>、<code>:56</code><code>.btn.glass</code>；<code>tools/plan/app/src/styles/tokens.css:356</code>「--blur-glass」；<code>tools/plan/app/src/App.css:39</code>「--blur-glass-strong」（<code>.sidebar</code>）、<code>:517</code>「--blur-glass」（<code>.topbar</code>）；<code>tools/star/assets/star.css:392</code>「blur(30px) saturate(160%)」（<code>.side</code>）</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:12</code>「不用边框分层」、<code>:3</code>「屋主原话」；<code>tools/plan/docs/design/shua-glass.html:36</code><code>.side</code>、<code>:59</code><code>.card</code>、<code>:11</code><code>--shadow</code>、<code>:56</code><code>.btn.glass</code>；<code>tools/plan/app/src/styles/tokens.css:356</code>「--blur-glass」；<code>tools/plan/app/src/App.css:39</code>「--blur-glass-strong」（<code>.sidebar</code>）、<code>:516</code>「--blur-glass」（<code>.topbar</code>）；<code>tools/star/assets/star.css:392</code>「blur(30px) saturate(160%)」（<code>.side</code>）</p>
       </div>
     </article>
 
@@ -184,7 +184,7 @@ body::before {
         <section class="fact"><h4>用在哪</h4><p>只有plan过Vite 8构建，顺序在它那儿是真故障：源码18处，产物里标准属性只剩2处。刷刷、岗岗、card是静态页、不过压缩器，顺序不影响结果，四家还是统一前缀在前，省得哪天接了构建再踩一遍。本站<code>star.css</code>、<code>kit.css</code>全部前缀在前。</p></section>
         <section class="fact"><h4>为什么</h4><p>Chrome从来不认<code>-webkit-backdrop-filter</code>（上面那行本浏览器的回答就是），产物里只剩它，Chrome上就等于没写；<code>build.cssTarget</code>拦不住。</p></section>
         <section class="fact trap"><h4>坑</h4><p>dev预览不压缩，看着一切正常，只有构建产物里没磨砂。验收要打开产物读<code>getComputedStyle(el).backdropFilter</code>；数源码里字符串出现几次不算数，压缩会合并规则。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:103</code>「-webkit-在前、标准在后」；<code>tools/plan/app/src/App.css:2</code>「构建陷阱」；<code>memory/lightningcss-backdrop-filter-drop.md:14</code>「Chrome从来不支持」、<code>:19</code>「How to apply」；<code>tools/star/CLAUDE.md:33</code>「-webkit-在前、标准在后」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:116</code>「-webkit-在前、标准在后」；<code>tools/plan/app/src/App.css:2</code>「构建陷阱」；<code>memory/lightningcss-backdrop-filter-drop.md:14</code>「Chrome从来不支持」、<code>:19</code>「How to apply」；<code>tools/star/CLAUDE.md:33</code>「-webkit-在前、标准在后」</p>
       </div>
     </article>
 
@@ -249,7 +249,7 @@ body::before {
         <section class="fact"><h4>用在哪</h4><p>四家现在都写对了（刷刷<code>styles.css</code>、岗岗三处、plan<code>tokens.css</code>、card<code>theme.css</code>）。本站<code>star.css</code>第5节、<code>kit.css</code>与交互页的弹窗样式同一写法。</p></section>
         <section class="fact"><h4>为什么</h4><p>探针写错的两个方向代价不一样：测宽了，个别设备看到它撑不住的效果；测窄了，一整类设备永远看不到做好的东西，而且不报错、不留痕，只能靠人眼发现。<code>not (A) or (B)</code>是不合法的条件，整条规则直接被丢掉——表里第三行就是本浏览器丢掉它的样子。</p></section>
         <section class="fact trap"><h4>坑</h4><p>刷刷3.11.1在屋主手机上「从来没出过磨砂」就是窄探针（声明本身成对、都对）。改完别只看<code>CSS.supports</code>的返回值，要在旧Safari或真机上肉眼看一次。plan的构建产物一直是对的（压缩器会把探针补成两种写法），只有dev预览中招。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:97</code>「降级探针必须同时测前缀形式」、<code>:101</code>「手机上玻璃全变成实心白块」；<code>tools/gang/design-proposal.md:914</code>「外层那对括号不能省」；<code>memory/supports-probe-too-narrow.md:17</code>「降级探针的错误方向是不对称的」、<code>:21</code>「四家最终账」；<code>tools/plan/app/src/styles/tokens.css:680</code>；<code>tools/star/assets/star.css:312</code>「降级」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:110</code>「降级探针必须同时测前缀形式」、<code>:114</code>「手机上玻璃全变成实心白块」；<code>tools/gang/design-proposal.md:915</code>「外层那对括号不能省」；<code>memory/supports-probe-too-narrow.md:17</code>「降级探针的错误方向是不对称的」、<code>:21</code>「四家最终账」；<code>tools/plan/app/src/styles/tokens.css:680</code>；<code>tools/star/assets/star.css:312</code>「降级」</p>
       </div>
     </article>
 
@@ -315,7 +315,7 @@ body::before {
         <section class="fact"><h4>用在哪</h4><p>岗岗的白名单只有五处：工作台头、目录栏（不是整列）、吸底条、≤900的目录抽屉、≤600的手机快捷栏与速查卡抽屉。刷刷3.14.0起结算面板改<code>--glass-strong</code>底，错题卡的模糊一并去掉。本站：条目卡不挂磨砂，搜索结果列表与复制气泡是实色。</p></section>
         <section class="fact"><h4>为什么</h4><p>岗岗2026-09-22真机实测：三栏各19,570px，超过纹理上限整层被丢，切配色后整栏空白、等下次滚动才出现；不超限也要每次滚动把整层重新光栅化。刷刷结算页模拟考60道错题时6.9–9屏高，手机上折合23661设备像素。浮层跟着打字频繁开合，挂磨砂等于把开销挪到最高频的那个动作上。</p></section>
         <section class="fact trap"><h4>坑</h4><p>以后新加会随内容变长的面板（列表、回顾、历史记录），先想它最长能有几屏。卡片里每张小卡各自再模糊一层，代价叠着算：刷刷结算页2040软件渲染滚动，原样66.7ms一帧，只去面板33.3ms，连错题卡一起去才16.7ms。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:110</code>「磨砂只放在视口大小的表面」；<code>tools/gang/design-proposal.md:898</code>「磨砂只放在视口大小的表面上」、<code>:909</code>「实测三栏各19,570px」、<code>:1396</code>「为什么不加磨砂」；<code>tools/shua/design-proposal.md:371</code>「长面板不加」、<code>:581</code>「实底」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:123</code>「磨砂只放在视口大小的表面」；<code>tools/gang/design-proposal.md:899</code>「磨砂只放在视口大小的表面上」、<code>:910</code>「实测三栏各19,570px」、<code>:1397</code>「为什么不加磨砂」；<code>tools/shua/design-proposal.md:371</code>「长面板不加」、<code>:581</code>「实底」</p>
       </div>
     </article>
 
@@ -367,7 +367,7 @@ body::before {
         <section class="fact"><h4>怎么量</h4><p>相对判据：改动和基线跑同一串操作，交替跑3次合并，比整页<code>requestAnimationFrame</code>间隔的中位、P95，<b>另数长帧（&gt;25ms）的个数</b>；要看合成器自己，另开tracing量每帧<code>Display::DrawAndSwap</code>。新加一块磨砂之前先做这个A/B。</p></section>
         <section class="fact"><h4>为什么</h4><p>CPU合成时，玻璃卡里任何一处重画都要重算整块模糊；砍3D画质（投影、张数、纸纹、分辨率）逐项都在噪声里。所以3D精简档只管少画、少出帧，不去碰界面层的磨砂。</p></section>
         <section class="fact trap"><h4>坑</h4><p>只看P95会漏掉稀疏卡顿：每次更新卡30ms的坏副本，卡帧不到总数5%，P95纹丝不动，必须另数长帧（让它红一次才发现）。无头Chrome每帧整屏重画，比有窗口时悲观，数字只当相对代价看；Windows的WARP未必和SwiftShader一样贵，屋主那台没实地量过。</p></section>
-        <p class="source">出处：<code>tools/shua/design-proposal.md:304</code>「精简档为什么只砍这几样」、<code>:396</code>「软件渲染下是30帧」；<code>tools/gang/design-proposal.md:919</code>「软件渲染下磨砂的代价」、<code>:1402</code>「量过」；<code>memory/glass-blur-cpu-compositing.md:13</code>「Why」、<code>:21</code>「只看P95会漏掉稀疏卡顿」；交互页<a href="interaction.html#ix-sheet-frosted">「毛玻璃浮层」</a>的实测表；本页那一行是2026-10-08本机无头Chrome量的</p>
+        <p class="source">出处：<code>tools/shua/design-proposal.md:304</code>「精简档为什么只砍这几样」、<code>:396</code>「软件渲染下是30帧」；<code>tools/gang/design-proposal.md:920</code>「软件渲染下磨砂的代价」、<code>:1403</code>「量过」；<code>memory/glass-blur-cpu-compositing.md:13</code>「Why」、<code>:21</code>「只看P95会漏掉稀疏卡顿」；交互页<a href="interaction.html#ix-sheet-frosted">「毛玻璃浮层」</a>的实测表；本页那一行是2026-10-08本机无头Chrome量的</p>
       </div>
     </article>
 
@@ -488,7 +488,7 @@ if (gl) { var lose = gl.getExtension("WEBGL_lose_context"); if (lose) lose.loseC
         <section class="fact"><h4>用在哪</h4><p>plan的<code>tokens.css</code>就是这一套；岗岗的表C同一档（目录条目与输入框10、按钮12、中等面14、卡18、抽屉弹层20、胶囊999）。本站按钮12、品牌块10、图标块9、导航项10和这一套一致。star主窗口2026-10-08定：条目卡与页头22、样例框16保留——条目卡是整宽长卡，面积比工具里的卡大得多，圆角跟面积大一档；家族圆角阶管的是工具界面。</p></section>
         <section class="fact"><h4>为什么</h4><p>大屏等比放大时圆角同样乘缩放系数——不跟着放大，卡变大了角显得硬，构图就不等比了。数值来自样张：卡18、按钮12、品牌块10、图标块9。</p></section>
         <section class="fact trap"><h4>坑</h4><p>家族契约里的<code>4 / 6 / 8 / 12</code>圆角阶与暖墨阴影，2026-09-23起只约束小屋；工具端以液态玻璃规格为准，两套别混用。</p></section>
-        <p class="source">出处：<code>tools/plan/app/src/styles/tokens.css:280</code>「圆角」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:350</code>「圆角」；<code>tools/plan/docs/design/SPEC-apple-glass.md:91</code>「圆角同样乘--ui-scale」；<code>tools/gang/design-proposal.md:699</code>「表C：圆角与流式尺度」；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.3 圆角、阴影、焦点环」（「只约束小屋本身」）；<code>tools/star/assets/star.css:188</code>「--r-xs」；本站条目卡圆角：star主窗口2026-10-08定</p>
+        <p class="source">出处：<code>tools/plan/app/src/styles/tokens.css:280</code>「圆角」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:350</code>「圆角」；<code>tools/plan/docs/design/SPEC-apple-glass.md:104</code>「圆角同样乘--ui-scale」；<code>tools/gang/design-proposal.md:700</code>「表C：圆角与流式尺度」；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.3 圆角、阴影、焦点环」（「只约束小屋本身」）；<code>tools/star/assets/star.css:188</code>「--r-xs」；本站条目卡圆角：star主窗口2026-10-08定</p>
       </div>
     </article>
   </section>

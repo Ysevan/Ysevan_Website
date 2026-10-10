@@ -331,7 +331,7 @@
         <section class="fact"><h4>实例</h4><p>周回顾本可以「工作库已解锁就合并显示两个库」。但工作库上锁时是加密存的，密钥只在它自己那个已解锁页面的内存里，生活库页面读不到——所以「合并」只在工作库从没设过口令时才会发生。屋主会看到回顾页一会儿有工作、一会儿没有，而完全不会把它和「当初设没设口令」联系起来。现行：周回顾只看当前库，「另一个库上锁了」这种提示也不出现。</p></section>
         <section class="fact"><h4>为什么</h4><p>用户解释不了的行为就是bug，哪怕代码完全按设计在跑。控制室原话：这条理由比隔离原则本身还硬。代价（某天看起来像普通空天）是隔离该付的钱。</p></section>
         <section class="fact"><h4>护栏</h4><p>「只看当前库」三条测试走整个<code>&lt;App /&gt;</code>（真实的读库键路径），不给组件喂数组——喂数组的话「读错键」根本没机会发生。先让它红过一次：组件临时去读另一个库，三条当场全红。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/BUSINESS_LOGIC.md:1696</code>「隔离到什么程度」、<code>:1773</code>「为什么不做「已解锁就合并」」、<code>:1778</code>；控制室记录 <code>memory/no-behavior-from-forgotten-state.md:13</code>「一律否掉」</p>
+        <p class="source">出处：<code>tools/plan/docs/BUSINESS_LOGIC.md:1709</code>「隔离到什么程度」、<code>:1786</code>「为什么不做「已解锁就合并」」、<code>:1791</code>；控制室记录 <code>memory/no-behavior-from-forgotten-state.md:13</code>「一律否掉」</p>
       </div>
     </article>
   </section>
@@ -385,8 +385,8 @@
 Mac：   1440 × 900             （开发机，等比基准，1440及以下一个数都不许变）</code></pre>
         </section>
         <section class="fact"><h4>怎么用</h4><ul><li>大屏两档都拍：2040那档看「未封顶的纯等比」，2552那档才看得出1.45封顶后的样子。</li><li>「为什么没有3D」只属于台式那台；笔记本、手机本来就有。</li><li>手机按417拍图；判「装不装得下」用750（最坏），判「会不会显得空」用903。高度相关的尺寸一律dvh / svh，不用裸vh。</li></ul></section>
-        <section class="fact"><h4>为什么</h4><p>台式机物理2560宽、Windows缩放125%，视口其实是2040。按2560推出来的「1.45封顶在他机器上触得到」「填满与等比要取舍」全错了；公式也因此必须是「视口÷1440」，线性爬坡在2040处只给1.241，比等比的1.417小约12.4%（反过来说等比大14%；plan的SPEC原文写成「小14%」，是比反了）。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:68</code>「屋主实机实测」、<code>:70</code>、<code>:75</code>、<code>:76</code>、<code>:78</code>、<code>:79</code>；<code>tools/shua/design-proposal.md:425</code>「中间一律偏小」（刷刷3.14.2改对的算法）；控制室记录 <code>memory/owner-devices-viewports.md:8</code>「错过两次」、<code>:12</code>「Windows 台式」、<code>:14</code>、<code>:22</code>「手机档按」、<code>:24</code>、<code>:25</code></p>
+        <section class="fact"><h4>为什么</h4><p>台式机物理2560宽、Windows缩放125%，视口其实是2040。按2560推出来的「1.45封顶在他机器上触得到」「填满与等比要取舍」全错了；公式也因此必须是「视口÷1440」，线性爬坡在2040处只给1.241，比等比的1.417小约12.4%（反过来说等比大14%；plan的SPEC原来写成「小14%」，是比反了，plan提交ab7bbd4已改正）。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:81</code>「屋主实机实测」、<code>:83</code>「线性爬坡」、<code>:88</code>、<code>:89</code>、<code>:91</code>、<code>:92</code>；<code>tools/shua/design-proposal.md:425</code>「中间一律偏小」（刷刷3.14.2改对的算法）；控制室记录 <code>memory/owner-devices-viewports.md:8</code>「错过两次」、<code>:12</code>「Windows 台式」、<code>:14</code>、<code>:22</code>「手机档按」、<code>:24</code>、<code>:25</code></p>
       </div>
     </article>
 
@@ -413,7 +413,7 @@ Mac：   1440 × 900             （开发机，等比基准，1440及以下一�
       <div class="entry-body">
         <section class="fact"><h4>档位</h4><ul><li>1440×900@1浅 / 深：等比基准；1440及以下数值一个都不许变。对比度在这两档按最不利角两法验收，见色彩页<a href="color.html#c-contrast">对比度两法</a>。</li><li>1100（侧栏还在的窄桌面）、768（900以下收成顶栏、还没到600换底部tab bar）。</li><li>390@3与417×750@3.5都跑：390更窄，反而会掩盖「417才刚好放不下」那一类。</li><li>2040×1019@1.25带软件渲染旗标：屋主台式机，看长帧；2552×1274@1.5：只有它看得出封顶。</li><li>带工具栏的真实高度：台式2040×930、笔记本2552×1180，断言<code>scrollHeight === clientHeight</code>。</li><li>⌘+缩放：等价视口变窄，不许出横向滚动条。</li></ul></section>
         <section class="fact"><h4>为什么</h4><p>每一档对应一类只在那里露馅的错：封顶后的形态只在2552、浏览器工具栏吃掉的高度只在930、软件合成的卡顿只在台式那档。档位清单就是「错会躲在哪」的地图。</p></section>
-        <p class="source">出处：<code>tools/star/CLAUDE.md:71</code>「测试」；<code>tools/plan/docs/design/SPEC-apple-glass.md:66</code>「现行规则」、<code>:78</code>、<code>:82</code>「浏览器缩放」；<code>tools/card/CLAUDE.md:172</code>「带浏览器工具栏」；控制室记录 <code>memory/owner-devices-viewports.md:22</code>「手机档按」</p>
+        <p class="source">出处：<code>tools/star/CLAUDE.md:71</code>「测试」；<code>tools/plan/docs/design/SPEC-apple-glass.md:79</code>「现行规则」、<code>:91</code>、<code>:95</code>「浏览器缩放」；<code>tools/card/CLAUDE.md:172</code>「带浏览器工具栏」；控制室记录 <code>memory/owner-devices-viewports.md:22</code>「手机档按」</p>
       </div>
     </article>
 

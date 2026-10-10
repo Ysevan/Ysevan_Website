@@ -86,7 +86,7 @@
         <section class="fact"><h4>用在哪</h4><p>刷刷三处纸闪卡（首页牌堆、做题小牌堆、结算落堆）、岗岗案头手册、plan台历、小屋工具页展品与走进小屋、随笔球、漂浮层。刷刷另有一条「槽位只在3D能成时撑开」：本机成功过（记号<code>shua-fx-ok</code>）首帧就撑开、3D到了直接淡入；从没成功过就等就绪再撑开（0.3秒过渡），每台设备只跳这一次。小屋工具页更严：物件准备好了也要等它那一层看不见时才接管。</p></section>
         <section class="fact"><h4>为什么</h4><p>3D在这几个站里不承载信息：刷刷答题、岗岗查业务、plan排期都是一步不多、一毫秒不等。降级的终点就是今天那一页，关掉3D不用另做一套界面；读屏、键盘、SEO走的一直是静态那一层。</p></section>
         <section class="fact trap"><h4>坑</h4><p>「进入视口前N像素再下载」在手机视口里一开场就满足，等于没拦住，所以触发用「第一次滚动」。Lighthouse不滚动、不动鼠标，量不到这些懒加载层，要另写脚本化滚动来量。首屏零3D字节不等于零增量：小屋每页首屏仍多约0.9KB gzip（组件登记表一行，加上为保留GSAP版权注释一起留下的许可头）。</p></section>
-        <p class="source">出处：tools/shua/design-proposal.md:250「原则」、:251、:267「加载与体积」、:310「本机从没成功加载过」；tools/gang/design-proposal.md:436「什么时候不出现」；tools/plan/docs/3d-decor-proposal.md:24「不抢首屏」、:68「bus.ts」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9 3D 展品」（「3D 是叠加层」）、「6.9.3 滚动编排」（「只在看不见的时候接管」）、「6.9.6 加载纪律」（「首屏零 3D 字节，但不是零增量」「等第一次滚动再下载」）</p>
+        <p class="source">出处：tools/shua/design-proposal.md:250「原则」、:251、:267「加载与体积」、:310「本机从没成功加载过」；tools/gang/design-proposal.md:437「什么时候不出现」；tools/plan/docs/3d-decor-proposal.md:24「不抢首屏」、:78「bus.ts」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9 3D 展品」（「3D 是叠加层」）、「6.9.3 滚动编排」（「只在看不见的时候接管」）、「6.9.6 加载纪律」（「首屏零 3D 字节，但不是零增量」「等第一次滚动再下载」）</p>
       </div>
     </article>
 
@@ -135,11 +135,11 @@ const loose  = { ...strict, antialias: false, failIfMajorPerformanceCaveat: fals
 拿到严那段  → 按内存、核数起步（≤4 → 均衡，其余 → 高）
 只拿到宽那段 → 一律 soft，不看内存、核数、指针、会话记账
 两段都拿不到 → 静态：零请求、控制台零输出</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>刷刷<code>effects.js</code>（3.11.2起）、岗岗<code>desk-book.js</code>、小屋四个岛（各岛<code>quality.ts</code>的<code>probeWebGL()</code>，漂浮层在<code>hall-float.tsx</code>里自己一份）、card查看器（2026-10-08跟上，<code>acquireContext()</code>：严参数被拒、或渲染器名是软件渲染，就关抗锯齿走省力档）。plan已定要跟（控制室10-08定：照这套四家样板，严参数先要、被拒走精简档、两段都拿不到才回静态），现状仍是「只有软件渲染就不出」，正在对齐。本站外壳的背景模糊「自动」档也靠这个标志判有没有显卡：只探一段WebGL1严参数，拿不到就按没显卡，模糊落lite（只压暗不模糊）；结果连UA存<code>star-gpu</code>，没测过先按lite。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷<code>effects.js</code>（3.11.2起）、岗岗<code>desk-book.js</code>、小屋四个岛（各岛<code>quality.ts</code>的<code>probeWebGL()</code>，漂浮层在<code>hall-float.tsx</code>里自己一份）、card查看器（2026-10-08跟上，<code>acquireContext()</code>：严参数被拒、或渲染器名是软件渲染，就关抗锯齿走省力档）。plan的台历2026-10-09跟上（93f8d72，<code>fx3d/capability.ts</code>的<code>probeWebGL()</code>）：严参数先要，被拒就放宽、关抗锯齿走软件档；渲染器名是SwiftShader、WARP这类的也归软件档；两段都拿不到才回静态。本站外壳的背景模糊「自动」档也靠这个标志判有没有显卡：只探一段WebGL1严参数，拿不到就按没显卡，模糊落lite（只压暗不模糊）；结果连UA存<code>star-gpu</code>，没测过先按lite。</p></section>
         <section class="fact"><h4>为什么</h4><p>一刀切拒绝软件渲染，屋主那台没显卡的台式机（Windows走WARP）就永远只看静态版。只放宽一条、其余参数照旧，有显卡的机器第一段就拿到，行为一字不变。判出软件渲染就钉soft、不看内存核数：那台机器32G、20核，按内存核数会判成高档，软件渲染跑高档就是灾难。</p></section>
         <blockquote class="said"><p>虚拟机小屋打开后为什么没有3D</p><footer>屋主，2026-09-23</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>测这条要带对旗标：Chrome 122起默认不给SwiftShader的WebGL，<code>--disable-gpu</code>不带<code>--enable-unsafe-swiftshader</code>时三次全是null（这时正确行为就是安静回静态，不是报错）；<code>--use-angle=swiftshader</code>会让严参数也通过，页面按高档跑，不是屋主那台的情形。Windows多一档WARP，Mac上模拟不出来，要上真机跑工作区根目录的<code>3D诊断.html</code>。</p><p>渲染器名：岗岗多一条正则（名字里有swiftshader、basic render这类也算软件渲染）；小屋裁定不加——屋主那台本来就过不了严参数，这条救不到任何机器，只多一处误伤有显卡虚拟机的可能，名字只进诊断。增强层反过来：小屋画内景深盖在一张已经好看的图上，只要严参数、不做第二段，「做不好就别做」。</p></section>
-        <p class="source">出处：tools/shua/design-proposal.md:281「精简 3D：soft」、:298「精简档只看这一次探测」；tools/gang/design-proposal.md:445「两段都拿不到 WebGL2 上下文」、:472「渲染器名」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「虚拟机小屋打开后为什么没有 3D」「两段取上下文」「enable-unsafe-swiftshader」「不按渲染器名判精简档」）、「4.6.1 视差层只在真显卡上挂」（「做不好就别做」）；Ysevan_web/components/hall-walk/quality.ts「strictAttributes」、「probeWebGL」；tools/plan/docs/3d-decor-proposal.md:46「plan 暂不跟」（现状）；控制室10-08定（plan、card跟四家样板）；tools/card/collection/shared/viewer.js:189「四家样板」、:220「acquireContext」（card 537d878）；tools/star/assets/star.js:644「probeGpu」；memory/webgl-software-render-gate.md:12「测试陷阱」</p>
+        <p class="source">出处：tools/shua/design-proposal.md:281「精简 3D：soft」、:298「精简档只看这一次探测」；tools/gang/design-proposal.md:446「两段都拿不到 WebGL2 上下文」、:473「渲染器名」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「虚拟机小屋打开后为什么没有 3D」「两段取上下文」「enable-unsafe-swiftshader」「不按渲染器名判精简档」）、「4.6.1 视差层只在真显卡上挂」（「做不好就别做」）；Ysevan_web/components/hall-walk/quality.ts「strictAttributes」、「probeWebGL」；tools/plan/docs/3d-decor-proposal.md:46「软件渲染」、:50「渲染器名」、:52「软件档」；plan提交93f8d72；控制室10-08定（plan、card跟四家样板）；tools/card/collection/shared/viewer.js:189「四家样板」、:220「acquireContext」（card 537d878）；tools/star/assets/star.js:644「probeGpu」；memory/webgl-software-render-gate.md:12「测试陷阱」</p>
       </div>
     </article>
 
@@ -185,10 +185,10 @@ const loose  = { ...strict, antialias: false, failIfMajorPerformanceCaveat: fals
 画质          同均衡档，不另砍                      关纸纹、各向异性1、几何同均衡
 判档          只看这一次探测：拿到宽松那段就是 soft，排在会话记账、内存、核数之前
 手机          —                                     随笔球手机版面 min(dpr, 2) 与130万取小，什么都不砍</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>刷刷3.11.2起三档；岗岗同日；小屋四个岛2026-09-23跟进；card查看器2026-10-08跟进，它的省力档只关抗锯齿、像素比不压（画不许为性能牺牲：2040×1019@1.25下关抗锯齿帧耗时约40→19ms，再压像素比只多省4ms却发糊）。plan已定要跟（控制室10-08定），正在对齐（见上一条）。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷3.11.2起三档；岗岗同日；小屋四个岛2026-09-23跟进；card查看器2026-10-08跟进，它的省力档只关抗锯齿、像素比不压（画不许为性能牺牲：2040×1019@1.25下关抗锯齿帧耗时约40→19ms，再压像素比只多省4ms却发糊）。plan的台历2026-10-09跟上（93f8d72）：软件档像素比1、关纸纹、几何细分减半。</p></section>
         <section class="fact"><h4>为什么</h4><p>在屋主视口（2040×1019@1.25，SwiftShader）逐项开关投影、双面两遍、张数减半、纸纹、分辨率、抗锯齿，出帧都在9–13帧之间晃，差别在噪声里；把全站<code>backdrop-filter</code>和光晕的<code>filter</code>去掉，精简3D立刻稳定30帧、页面100帧。砍画质换不来帧率，所以只砍像素和帧。小屋把像素比从钉1改成<code>min(dpr, 1.5)</code>：屋主那台DPR 1.25，钉1只画64%的像素，他看得见糊、看不见少了几片叶子，像素预算先给分辨率。手机的2和精简的1.5别统一成一个数：一个封软件光栅器的CPU填充率，一个封高密度屏的绝对像素数——1.5在3.5的屏上只剩18%的像素，卡片标题当场糊。</p></section>
         <section class="fact trap"><h4>坑</h4><p>判soft要排在一切记账之前（小屋<code>initialTier()</code>第一句就是<code>if (probe.software) return "soft";</code>）：排在会话记账、内存、核数之后，会被「本会话降过」或「内存大」带偏。无头Chrome的软件合成每帧整屏重画，比有窗口时悲观，量合成开销要用有窗口的浏览器。没显卡时真正的瓶颈是模糊不是3D，见<a href="material.html#m-cost">材质章「模糊的代价」</a>。</p></section>
-        <p class="source">出处：tools/shua/design-proposal.md:281「精简 3D：soft」、:304「精简档为什么只砍这几样」；tools/gang/design-proposal.md:480「像素比上限」、:518「soft 没有砍画质」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「精简档本身」「限帧怎么排」「像素比（精简档）」「手机那一行的像素比上限是 2」）、「6.9.7 门禁」（「initialTier」）；Ysevan_web/components/hall-walk/quality.ts「softMaxPixels」；Ysevan_web/lib/frame-pacer.ts「createFramePacer」；memory/glass-blur-cpu-compositing.md:11「去掉全站」</p>
+        <p class="source">出处：tools/shua/design-proposal.md:281「精简 3D：soft」、:304「精简档为什么只砍这几样」；tools/gang/design-proposal.md:481「像素比上限」、:519「soft 没有砍画质」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「精简档本身」「限帧怎么排」「像素比（精简档）」「手机那一行的像素比上限是 2」）、「6.9.7 门禁」（「initialTier」）；Ysevan_web/components/hall-walk/quality.ts「softMaxPixels」；Ysevan_web/lib/frame-pacer.ts「createFramePacer」；memory/glass-blur-cpu-compositing.md:11「去掉全站」</p>
       </div>
     </article>
 
@@ -250,7 +250,7 @@ if (delivered &lt; target * ratio) 降一档;           // 高 → 均衡 → �
         <section class="fact"><h4>为什么</h4><p>旧写法「N秒中位帧间隔＞X毫秒」两头都错：限30帧后间隔只有33.3／50／66.7三个值，中位数在一半一半处整体翻面，旧阈值又正好是50——同一构建三次量到47.7／49.7／59.6ms，活不活得下来靠抛硬币；每隔几帧卡120ms的页面真实只有22帧，中位数照样报正常；干净的30Hz屏上30.1帧反被判慢。三条规矩缺一不可：相对阈值；量平均送出率；不限帧的档目标从这块屏估，不写死60。做对了之后<code>capped</code>那类分支整个消失，一张表管所有档。</p></section>
         <blockquote class="said"><p>有时候有3D有时候没有</p><footer>屋主，2026-09-23（控制室记录）</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>取第5百分位估刷新率不违反「不用中位数」：禁的是拿分位数当判快慢的判据，这里估的是一个外部常量。限帧闸门（小屋的<code>lib/frame-pacer.ts</code>，原来是各岛的<code>softFrameMs</code>）是节流器不是判据，别顺手判红。两种错代价不对等时往后果轻的那边错：误判会关掉好机器的3D、整个会话记住，漏判只是让匀速偏慢的画面继续跑——所以「匀速16.5–30帧不判慢」这块盲区故意留在漏判一侧。两个条件相与时（岗岗），至少一个得是不掺自己限帧的干净量，并且它能独立决定结果。小屋规格里两张降级表原来还留着「中位帧时长」的旧行，2026-10-09已照代码改成现状（判送出率、每攒够3秒活跃时长判一次）。</p></section>
-        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级 › 看门狗的判据：送出率 + 相对阈值」（「47.7 / 49.7 / 59.6」「规矩三条」「取值」「pauseMs」「漂浮层根本没有看门狗」）、「4.9.3 什么时候有跑道（分档与降级）」（「看门狗的判据」）；Ysevan_web/components/hall-walk/scene/index.ts「cappedTargetFps」、「delivered」；tools/shua/design-proposal.md:292「运行中出帧太少」、:294「往后果轻的那边错」；tools/gang/design-proposal.md:485「出帧间隔均值超标线」、:511「岗岗为什么没有出现小屋那种抛硬币」；memory/three-rules-against-false-signals.md:31「有时候有 3D 有时候没有」</p>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级 › 看门狗的判据：送出率 + 相对阈值」（「47.7 / 49.7 / 59.6」「规矩三条」「取值」「pauseMs」「漂浮层根本没有看门狗」）、「4.9.3 什么时候有跑道（分档与降级）」（「看门狗的判据」）；Ysevan_web/components/hall-walk/scene/index.ts「cappedTargetFps」、「delivered」；tools/shua/design-proposal.md:292「运行中出帧太少」、:294「往后果轻的那边错」；tools/gang/design-proposal.md:486「出帧间隔均值超标线」、:512「岗岗为什么没有出现小屋那种抛硬币」；memory/three-rules-against-false-signals.md:31「有时候有 3D 有时候没有」</p>
       </div>
     </article>
 
@@ -291,7 +291,7 @@ if (soft &amp;&amp; SOFT.frameIntervalMs &gt; 0) {
         <section class="fact"><h4>用在哪</h4><p>刷刷、岗岗的soft档；小屋2026-10-09跟上：工具页展品、走进小屋、随笔球三个岛和门厅漂浮层共用一份<code>lib/frame-pacer.ts</code>（精简档和随笔球手机版面那道30帧闸门都是它），同一个式子、容差4ms。改前小屋是按间隔排（<code>now - drawnAt &lt; softFrameMs</code>，29ms＝33.3留4ms）：rAF满60拍时同样是30帧，不满60拍时掉到每两拍一帧（45拍时约22帧，上面第一行）；改后45拍、40拍都回到30帧。</p></section>
         <section class="fact"><h4>为什么</h4><p>软件合成下rAF本来就常常不满60拍，按「离上一帧多久」排会被凑成每两拍画一次（约23帧）；按到期时刻排，长期平均仍是30帧。真正让固定4ms容差够用的是「落后超过一个间隔就重新基准」这一句：欠账一旦累积，卡顿之后就会连画补帧或持续跳帧。</p></section>
         <section class="fact trap"><h4>坑</h4><p>岗岗中途改过「半拍容差」（<code>max(4ms, 上一拍间隔/2)</code>），理由是固定容差在整页只有10–20拍时会掉到7帧——后来复现不出来，已撤销：建两份只差这一行的副本，在被磨砂拖到30拍以下的一档各跑3次，出帧/拍均值0.63对0.75，区间大幅重叠，当时机器上还有几十个Chrome在跑，这点差别立不住。一个「安全但不存在」的故障，会换来一个永远没人敢删的多余机械。</p></section>
-        <p class="source">出处：tools/gang/design-proposal.md:490「为什么按到期时刻」、:492「限帧容差写死 4ms」、:499「重新基准」、:501「安全但不存在」；tools/gang/desk-book.js:863「到期时刻」；tools/shua/effects-3d.js:76「FRAME_INTERVAL_SLACK_MS」、:764「到期时刻」；Ysevan_web/lib/frame-pacer.ts「createFramePacer」、「pacingSlackMs」（「不累积欠账」）；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「限帧怎么排」「45 拍只出 22.5 帧」）</p>
+        <p class="source">出处：tools/gang/design-proposal.md:491「为什么按到期时刻」、:493「限帧容差写死 4ms」、:500「重新基准」、:502「安全但不存在」；tools/gang/desk-book.js:863「到期时刻」；tools/shua/effects-3d.js:76「FRAME_INTERVAL_SLACK_MS」、:764「到期时刻」；Ysevan_web/lib/frame-pacer.ts「createFramePacer」、「pacingSlackMs」（「不累积欠账」）；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「限帧怎么排」「45 拍只出 22.5 帧」）</p>
       </div>
     </article>
 
@@ -344,7 +344,7 @@ function kick() { if (!raf &amp;&amp; visible &amp;&amp; !document.hidden &amp;&
         <section class="fact"><h4>用在哪</h4><p>刷刷：全站一个WebGL上下文、一块画布在三个槽位间移动，只在动画或指针阻尼进行中出帧，标签页隐藏时停。岗岗手册静止时不跑任何帧。plan只有补间在跑时才渲染。小屋工具页展品只在进度在变、主题在过渡、刚改尺寸或刚接管时画；随笔球离开视口或标签页隐藏就停。本站总览开头的条目星球照这套写：只在星球看得见、页面可见、没有整页弹层开着时跑rAF。</p></section>
         <section class="fact"><h4>为什么</h4><p>3D是点缀，静止时不该花任何电和帧。按需渲染也是看门狗判得对的前提：只统计动画进行中的帧，静止那段不进窗口，否则「没画」会被当成「画得慢」。</p></section>
         <section class="fact trap"><h4>坑</h4><p>任何一个「一直在动」的小东西都会让循环永不退出：小屋夜里的灯呼吸就是这样被发现的（见本页<a href="#d-rest">停稳重画</a>）。后台标签页rAF停摆，量具跑到一半页面进了后台会红得冤：启动加<code>--disable-renderer-backgrounding</code>这类旗标，每项结束断言<code>document.hidden</code>为false。</p></section>
-        <p class="source">出处：tools/shua/design-proposal.md:306「渲染纪律」；tools/gang/design-proposal.md:422「静止」；tools/plan/docs/3d-decor-proposal.md:25「静止不耗电」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.3 滚动编排」（「按需渲染」）、「7.5.4 3D（接管之后）」（「按需渲染」）；tools/star/assets/pages/index.js:16「globeFrame」、:320「running」；memory/browser-pane-raf-pause.md:17「无头 Chrome + CDP 也会中招」</p>
+        <p class="source">出处：tools/shua/design-proposal.md:306「渲染纪律」；tools/gang/design-proposal.md:423「静止」；tools/plan/docs/3d-decor-proposal.md:25「静止不耗电」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9.3 滚动编排」（「按需渲染」）、「7.5.4 3D（接管之后）」（「按需渲染」）；tools/star/assets/pages/index.js:16「globeFrame」、:320「running」；memory/browser-pane-raf-pause.md:17「无头 Chrome + CDP 也会中招」</p>
       </div>
     </article>
 
@@ -399,7 +399,7 @@ build.rolldownOptions.output.comments = { legal: true, annotation: false, jsdoc:
         <section class="fact"><h4>用在哪</h4><p>小屋三个three岛。刷刷用esbuild把场景和两个vendor子集打成经典脚本IIFE（file://下也能注入）：three子集17个符号547KB（gzip 140KB），整包是742KB；GSAP只取核心；许可注释原样保留，另加来源说明与NOTICE。岗岗three子集13个导出符号、GSAP用官方UMD，两份许可注释原样保留。plan构建门禁：首屏入口chunk不得含three／gsap特征串，3D chunk必须含两份许可注释、不超过200KB gzip。</p></section>
         <section class="fact"><h4>为什么</h4><p>「不执行」不等于「不打包」：写在<code>useEffect</code>里、用<code>next/dynamic</code>的<code>ssr: false</code>，打包器照样给服务端再产一份three和gsap。经变量中转（先<code>const env = import.meta.env</code>再<code>env.SSR</code>），Vite的文本替换认不出来。整包比按需多约48KB。GSAP 3.13起全部免费，但许可证禁止删版权注释，而压缩默认会删。</p></section>
         <section class="fact trap"><h4>坑</h4><p>门禁只认原样那一行；而且要断言「零件接没接上」：只查名字在不在的门禁，名字都在、只是不再连着用了照样是绿的。保留注释的开关是全局的，React、lucide这些依赖的许可头也一起留下，每页首屏多约825字节gzip。three 0.186不自带类型，要装<code>@types/three</code>。</p></section>
-        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.6 加载纪律」（「SSR 守卫」「必须原样写」「当时它是 Worker」「禁止 import * as THREE」「不从 CDN 挂」「825 字节」）；memory/vinext-client-only-import-leak.md:11「不执行」、:13「Worker 只 +11 KiB」、:19「经变量中转」、:22「许可证禁止删」、:23「@types/three」；tools/shua/design-proposal.md:268「经典脚本 bundle」、:269「three 用按需子集」、:270「许可注释保留」；tools/gang/design-proposal.md:529「13 个导出符号」；tools/plan/docs/3d-decor-proposal.md:70「许可注释」、:71「门禁」</p>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.6 加载纪律」（「SSR 守卫」「必须原样写」「当时它是 Worker」「禁止 import * as THREE」「不从 CDN 挂」「825 字节」）；memory/vinext-client-only-import-leak.md:11「不执行」、:13「Worker 只 +11 KiB」、:19「经变量中转」、:22「许可证禁止删」、:23「@types/three」；tools/shua/design-proposal.md:268「经典脚本 bundle」、:269「three 用按需子集」、:270「许可注释保留」；tools/gang/design-proposal.md:530「13 个导出符号」；tools/plan/docs/3d-decor-proposal.md:80「许可注释」、:81「门禁」</p>
       </div>
     </article>
 
@@ -407,7 +407,7 @@ build.rolldownOptions.output.comments = { legal: true, annotation: false, jsdoc:
     <article class="entry" id="d-roster" data-scope="common" data-toc="各家3D一览">
       <header class="entry-head">
         <h3>各家3D一览：同一种纸、同一套降级；挑一台机器，看每处此刻落在哪一档</h3>
-        <p class="entry-lede">三档口径四处同一条：有显卡→完整档，只有软件渲染→精简档，拿不到WebGL才静态。card查看器2026-10-08跟上；plan已定照这条走（控制室10-08定），正在对齐；card画廊不靠WebGL。</p>
+        <p class="entry-lede">三档口径四处同一条：有显卡→完整档，只有软件渲染→精简档，拿不到WebGL才静态。card查看器2026-10-08跟上，plan台历2026-10-09跟上；card画廊不靠WebGL。</p>
         <ul class="entry-tags"><li class="scope">通用</li><li>2026-09-23定</li></ul>
       </header>
       <div class="specimen td-ro" data-demo="roster">
@@ -434,10 +434,10 @@ card   画廊 Cover Flow：纯 CSS 3D，不靠 WebGL；查看器：three   impor
        画内景深与漂浮层是手写 WebGL（约3.4KB / 岛约1.3KB gzip）
 三档   有显卡 → 完整档（高 / 均衡）；只有软件渲染 → 精简档；拿不到 WebGL → 静态</code></pre></section>
         <section class="fact"><h4>用在哪</h4><p>开新网站要加3D时先看这张表：落点放在本来就空着的地方（岗岗右栏末尾、plan侧栏空白、刷刷题数旁的小槽），物件照左边图标做成有厚度的同一个东西。手机上要不要3D按值不值算：小屋随笔球做了手机版面；岗岗手机3D屋主嫌代价大，一句话砍掉。</p></section>
-        <section class="fact"><h4>为什么</h4><p>同一个屋主、同一台没显卡的台式机：哪一处在那台机器上是什么样子，得一眼查得到，否则「这台看不到3D」要逐个项目翻代码。差异也要写明：plan「只有软件渲染就不出」原来是有意没跟、留着待定，现在已定照岗岗那套四家样板走（控制室10-08定：严参数先要、被拒走精简档、两段都拿不到才回静态），表里写的是现状，正在对齐。card查看器原来不带<code>failIfMajorPerformanceCaveat</code>、软件渲染下照跑完整的three，2026-10-08改成两段，省力档只关抗锯齿、像素比不压。</p></section>
+        <section class="fact"><h4>为什么</h4><p>同一个屋主、同一台没显卡的台式机：哪一处在那台机器上是什么样子，得一眼查得到，否则「这台看不到3D」要逐个项目翻代码。差异也要写明：plan「只有软件渲染就不出」原来是有意没跟、留着待定，控制室10-08定照岗岗那套四家样板走，2026-10-09跟上（93f8d72）：严参数先要、被拒走软件档、两段都拿不到才回静态。card查看器原来不带<code>failIfMajorPerformanceCaveat</code>、软件渲染下照跑完整的three，2026-10-08改成两段，省力档只关抗锯齿、像素比不压。</p></section>
         <blockquote class="said"><p>岗可以不管</p><footer>屋主，2026-09-23（控制室记录；答「岗岗手机端3D要一个子代理工作日」）</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>「看不到3D」先让那台设备跑工作区根目录的<code>3D诊断.html</code>（严／宽松参数、WebGL1/2、渲染器名、核数、内存、减弱动效一次列全），别拿本机无头Chrome猜。窄屏与减弱动效是「呈现条件」不是「机器能力」：中途拖窄或打开减弱动效当场拆掉，反过来要等下一次滚动才重新来。</p></section>
-        <p class="source">出处：tools/shua/design-proposal.md:259「首页题库牌堆」、:269「three 用按需子集」、:280「触屏起步」；tools/gang/design-proposal.md:410「位置」、:441「窗口 ≤1120px」；tools/plan/docs/3d-decor-proposal.md:14「侧栏导航」、:36「视口宽度 ≤900px」、:40「只有软件渲染」；tools/card/CLAUDE.md:160「Cover Flow」、:193「画廊不再依赖 WebGL」；tools/card/collection/shared/viewer.js:220「acquireContext」；tools/card/CLAUDE.md:194「查看器拿 WebGL 分两段」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9 3D 展品」（「不引 three」）、「6.9.5 分档与降级」（「三档口径」「随笔球」「随笔球·手机版面」）、「7.5.5 分档与降级」（「网格」）、「4.6.1 视差层只在真显卡上挂」（「failIfMajorPerformanceCaveat」）、「4.8.4 触发与降级」（「拿到宽松那一遍」「触摸屏」）；memory/ship-staged-not-perfect.md:8「岗可以不管」；memory/webgl-software-render-gate.md:16「3D诊断.html」；控制室10-08定（plan、card软件渲染照四家样板）</p>
+        <p class="source">出处：tools/shua/design-proposal.md:259「首页题库牌堆」、:269「three 用按需子集」、:280「触屏起步」；tools/gang/design-proposal.md:411「位置」、:442「窗口 ≤1120px」；tools/plan/docs/3d-decor-proposal.md:14「侧栏导航」、:36「视口宽度 ≤900px」、:40「两段都建不起来」、:46「软件渲染」；plan提交93f8d72；tools/card/CLAUDE.md:160「Cover Flow」、:193「画廊不再依赖 WebGL」；tools/card/collection/shared/viewer.js:220「acquireContext」；tools/card/CLAUDE.md:194「查看器拿 WebGL 分两段」；Ysevan_web/docs/xiaowu-ui-spec.md「6.9 3D 展品」（「不引 three」）、「6.9.5 分档与降级」（「三档口径」「随笔球」「随笔球·手机版面」）、「7.5.5 分档与降级」（「网格」）、「4.6.1 视差层只在真显卡上挂」（「failIfMajorPerformanceCaveat」）、「4.8.4 触发与降级」（「拿到宽松那一遍」「触摸屏」）；memory/ship-staged-not-perfect.md:8「岗可以不管」；memory/webgl-software-render-gate.md:16「3D诊断.html」；控制室10-08定（plan、card软件渲染照四家样板）</p>
       </div>
     </article>
   </section>
@@ -485,7 +485,7 @@ card   画廊 Cover Flow：纯 CSS 3D，不靠 WebGL；查看器：three   impor
         <section class="fact"><h4>用在哪</h4><p>小屋工具页四件物件（<code>paper.ts</code>）；刷刷纸闪卡照搬这一套（纸色v3.11.0起对齐界面上的半透明白卡）；岗岗案头手册（颜色全走<code>--book-*</code>令牌，读不到就不画）；plan台历（现状：侧栏改深色后，2026-09-22由假投影改成three阴影贴图的真投影）。card的镭射是全场唯一「亮」的东西：一条随倾角滑过卡面的软带，只加不乘，加完照样压平涂、纸纹、颜料边。</p></section>
         <section class="fact"><h4>为什么</h4><p>物件和门厅那幅水彩画、洇纸转场说同一种话：它们是纸做的文具，不是产品渲染图。card的卡身是唯一的例外色（深蓝哑光<code>#182B3D</code>），因为全息闪卡本来就不是纸做的，拿纸色去涂只会得到一张「纸卡」；这两支色只归card用。</p></section>
         <section class="fact trap"><h4>坑</h4><p>颜色不走three的色彩管理：贴图<code>NoColorSpace</code>、输出原样sRGB，和页面里那张图逐值一致，乘法都在sRGB上做。屋主的画贴上去也照加纸纹（台历那三张界面图不加，那是真实界面），否则贴了画的纸和旁边没贴的纸像两种材料。</p></section>
-        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.2 着色：像水彩，不像 CG」（「只取家族色板」「唯一的例外是 card」「光是平涂」「纸纹」「颜料边」「假投影」「入夜」「镭射」）、「4.9.2 接管：接缝为什么看不出来」（「不走 three 的色彩管理」）；tools/shua/design-proposal.md:252「同一种纸」；tools/gang/design-proposal.md:426「着色器自写」、:427「令牌读不到就不画」；tools/plan/docs/3d-decor-proposal.md:61「真投影」</p>
+        <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.9.2 着色：像水彩，不像 CG」（「只取家族色板」「唯一的例外是 card」「光是平涂」「纸纹」「颜料边」「假投影」「入夜」「镭射」）、「4.9.2 接管：接缝为什么看不出来」（「不走 three 的色彩管理」）；tools/shua/design-proposal.md:252「同一种纸」；tools/gang/design-proposal.md:427「着色器自写」、:428「令牌读不到就不画」；tools/plan/docs/3d-decor-proposal.md:71「真投影」</p>
       </div>
     </article>
 

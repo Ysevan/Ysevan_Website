@@ -144,7 +144,8 @@
  *   --font-num  数字（SPEC §3a「数字字体」，2026-10-08）：凡写了 font-variant-numeric: tabular-nums 的规则，同一条里必须写
  *               font-family: var(--font-num)。苹方在 Chrome 里不认 tabular-nums / "tnum"，--font 下写了也照样跳（40px 600的
  *               「1111」宽65.6、「0000」宽96.0）；BlinkMacSystemFont（Mac 的 Chrome）/ -apple-system（Safari、iOS）/ "Segoe UI"（Windows）/
- *               system-ui 的数字认；中文仍落到后面那串中文字族上。Windows 待核（SPEC §3a 末条）。
+ *               system-ui 的数字认；中文仍落到后面那串中文字族上。Windows 已实测（SPEC §3a「Windows 实测」，2026-10-09
+ *               屋主台式机 Edge 154）：落到 Segoe UI，等宽；微软雅黑的数字本来就等宽，只有 Mac 上的 Chrome 会跳；Windows 上只是数字变窄约8–10%。
  *               body 不写 tabular-nums（写了也只在认它的字体上生效，还会让人以为全站数字都等宽）；要等宽的数字各自写这两条。
  *               护栏：本机量具 phase3/type/fontnum-guard.mjs（源码扫描 + 浏览器里量「1111」「0000」「8888」，差 ≤0.5px 才算等宽）。
  *   --mono      代码（真等宽字族）；写了 tabular-nums 的代码块用它也算数。Mac 的 Chrome 按名字取不到 ui-monospace、"SF Mono"，

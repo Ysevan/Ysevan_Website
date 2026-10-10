@@ -110,7 +110,7 @@
         <section class="fact"><h4>为什么</h4><p>屋主明确要求跟着他的缩放走。浏览器缩放改的是CSS视口宽，和把窗口拖窄是同一件事：字号、间距既然已经按视口宽插值，缩放就自动对了，不需要监听缩放、也不需要另一套「缩放档」。</p></section>
         <blockquote class="said"><p>「UI 要适配我页面的缩放大小」</p><footer>屋主，2026-09-23</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>clamp的上限要取「它在1440处的实算值」，不能拿设计稿上的整数凑：刷刷1441起改用「1440的设计值×<code>--u</code>」，和clamp在1440处插出来的值对不上，拖过这一格时侧栏244.8→240.2、内容内边距28.8→24、标题34.16→34.02各跳一次。任何宽度都不许出横向滚动条：判据跟目标宽度比，先注入一块撑破的元素让判据红一次。</p></section>
-        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:3（屋主原话）、:61「4. 自适应」、:82「浏览器缩放」、:91「每个尺寸 token 写成」；tools/gang/design-proposal.md:939「10.12 自适应」；tools/shua/design-proposal.md:472「自适应」、:463「边界上的小跳」；tools/plan/docs/ui-redesign-proposal-v2.md:538「任何宽度都不出现横向滚动条」；tools/star/assets/star.css:174「--fs-title」</p>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:3（屋主原话）、:74「4. 自适应」、:95「浏览器缩放」、:104「每个尺寸 token 写成」；tools/gang/design-proposal.md:940「10.12 自适应」；tools/shua/design-proposal.md:472「自适应」、:463「边界上的小跳」；tools/plan/docs/ui-redesign-proposal-v2.md:538「任何宽度都不出现横向滚动条」；tools/star/assets/star.css:174「--fs-title」</p>
       </div>
     </article>
 
@@ -174,7 +174,7 @@
         <section class="fact"><h4>为什么</h4><p>屋主在Windows大屏上要「跟Mac一样」：构图不变、整体放大。初版抬clamp上限、≥1600拆多列，字只涨1.13–1.18倍、版面涨1.36倍还多一列，整屏变密，不像同一个设计。公式也必须是「视口÷1440」：刷刷写过1440→2560的线性爬坡，两端对、中间偏小，2040处只有1.241（等比给1.417，大14%），整屏小一圈，就是屋主反复说「刷刷跟Mac差距大」的来源。原则见总览<a href="index.html#taste-05">「构图不变，等比放大」</a>。</p></section>
         <blockquote class="said"><p>「跟 mac 的差距很大，希望跟 mac 一样」</p><footer>屋主，2026-09-23（在Windows大屏上看刷刷）</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p><code>zoom</code>和<code>transform</code>缩放会把边框宽度、文字光栅化、sticky / fixed的定位一起拖下水，<code>zoom</code>还不是标准属性。等比放大只管横向：屋主的屏比Mac扁（宽高比2.00对1.60），按视口高定尺寸的东西不会跟着<code>--u</code>走，要逐个单独决定（见本页「扁视口紧凑排」和「dvh」两条）。</p></section>
-        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:65（屋主原话）、:67「填满」、:70「线性爬坡」、:87「4b. 大屏规则」、:92「CSS 里写死的像素」；tools/shua/design-proposal.md:409「引入长度单位」、:414「不乘 --u」、:423「为什么线性爬坡是错的」、:437「内容宽度是填满还是严格等比」；tools/gang/design-proposal.md:979「刻意不用 CSS zoom」；tools/card/CLAUDE.md:251「等比放大只解决横向」；tools/star/assets/star.css:171「--scale」</p>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:78（屋主原话）、:80「填满」、:83「线性爬坡」、:100「4b. 大屏规则」、:105「CSS 里写死的像素」；tools/shua/design-proposal.md:409「引入长度单位」、:414「不乘 --u」、:423「为什么线性爬坡是错的」、:437「内容宽度是填满还是严格等比」；tools/gang/design-proposal.md:980「刻意不用 CSS zoom」；tools/card/CLAUDE.md:251「等比放大只解决横向」；tools/star/assets/star.css:171「--scale」</p>
       </div>
     </article>
 
@@ -223,7 +223,7 @@
         <section class="fact"><h4>用在哪</h4><p>四个工具与本站外壳（<code>star.css</code>第2节，紧跟在公式后面）。老内核走台阶，放大不连续但能放大。</p></section>
         <section class="fact"><h4>为什么</h4><p>探针要测的是「这条声明能不能成立」。<code>width: 1.417</code>在任何浏览器里都不成立，所以那条探针测不出任何东西；<code>scale: 1.417</code>是合法值，认三角函数的内核里探针为真、不认的为假，<code>not</code>之后才正好只罩住老内核。</p></section>
         <section class="fact trap"><h4>坑</h4><p>台阶要按屋主的视口排：岗岗2026-09-27以前只写了三档（1600 / 1920→1.33 / 2088封顶），台式2040在老内核上只拿到1.33；改成六档后给1.39，离公式的1.417从差6%缩到差2%。探针错了不报错，只有在认三角函数的浏览器里量<code>--scale</code>才看得出来。</p></section>
-        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:90「探针必须用 scale:」；tools/gang/design-proposal.md:982「三角函数兜底的坑」、:1000「六档表」；tools/star/assets/star.css:206「探针必须写 scale:」</p>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:103「探针必须用 scale:」；tools/gang/design-proposal.md:983「三角函数兜底的坑」、:1001「六档表」；tools/star/assets/star.css:206「探针必须写 scale:」</p>
       </div>
     </article>
 
@@ -269,7 +269,7 @@
         <section class="fact"><h4>用在哪</h4><p>四个工具与本站。刷刷的<code>renderNav()</code>一次产出三份导航DOM（左侧栏、底部tab bar、「更多」层），本站的<code>nav.js</code>也一样，全靠CSS断点显示哪一份。</p></section>
         <section class="fact"><h4>为什么</h4><p>900是SPEC给四个工具定的统一断点（岗岗从820改过来）。断点按CSS像素判，浏览器缩放时自然跟着走；它管的是「这一档用哪种形态」，不属于构图，所以不乘<code>--u</code>（媒体查询里本来也写不了<code>var()</code>）。</p></section>
         <section class="fact trap"><h4>坑</h4><p>tab bar和「更多」面板是<code>position:fixed</code>，不能放进带<code>backdrop-filter</code>的侧栏里：plan的「更多」面板一度挂在侧栏里，<code>bottom:0</code>量的是那条65px高的顶栏，面板贴在顶栏下沿被压扁（见本页陷阱集第1条）。</p></section>
-        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:62「4. 自适应」；tools/gang/design-proposal.md:950「900 是 SPEC 给四个工具定的统一断点」；tools/shua/design-proposal.md:375「窄屏分两段，不在 JS 里判视口」；tools/plan/docs/ui-redesign-proposal-v2.md:542「两个踩过的坑」；tools/star/assets/star.css:778「12. 断点」</p>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:75「4. 自适应」；tools/gang/design-proposal.md:951「900 是 SPEC 给四个工具定的统一断点」；tools/shua/design-proposal.md:375「窄屏分两段，不在 JS 里判视口」；tools/plan/docs/ui-redesign-proposal-v2.md:542「两个踩过的坑」；tools/star/assets/star.css:778「12. 断点」</p>
       </div>
     </article>
 
@@ -410,7 +410,7 @@
         <section class="fact"><h4>用在哪</h4><p>plan≤600的顶栏（<code>TopBar</code>）。本站的搜索框焦点环也是只画在整只框上（<code>:focus-within</code>），里面的输入框不另画。</p></section>
         <section class="fact"><h4>为什么</h4><p>改前三行167px：标题＋日期＋切库｜整行搜索框｜铃铛＋「新建任务」；再加汇总卡和快速记录，第一条任务要到y=412才露头。常用的三件事收成图标，搜索按需展开，第一条任务提到334。</p></section>
         <section class="fact trap"><h4>坑</h4><p>搜索框聚焦时套两圈焦点环：框子一圈，里面的输入框又被全局<code>input:focus-visible</code>画一圈；桌面上同样有，一起修了。601–900那一档的内容区顶栏还是三行（768上175px），屋主的三台设备都碰不到，这一轮没扩范围，要改就照手机这套。</p></section>
-        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:2028「39.2 手机顶栏压矮」、:2031「现在」、:2034「才在两行之间展开」、:2035「量出来」、:2040「39.3 顺手修的」、:2045「601–900px 那一档」；tools/plan/app/src/App.css:6951「手机顶栏」；tools/plan/app/src/components/layout.tsx:528「输入法选词」</p>
+        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:2041「39.2 手机顶栏压矮」、:2044「现在」、:2047「才在两行之间展开」、:2048「量出来」、:2053「39.3 顺手修的」、:2058「601–900px 那一档」；tools/plan/app/src/App.css:6487「手机顶栏」；tools/plan/app/src/components/layout.tsx:528「输入法选词」</p>
       </div>
     </article>
 
@@ -450,18 +450,18 @@
 <pre><code>.sidebar-tiles { display: grid; grid-template-columns: 1fr 1fr; }   /* 仍是2×2 */
 .sidebar-tile  { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); }
 .sidebar-tile-icon  { color: var(--tile-ink); }   /* 16px 线条图标；今天 强调色文字档、逾期 红、本周 橙、收件箱 青 */
-.sidebar-tile-label { flex: 1 1 auto; font-size: var(--fs-13); }
+.sidebar-tile-label { flex: 1 1 auto; font-size: var(--fs-13); font-weight: 400; }
 .sidebar-tile-count { font-size: var(--fs-15); font-weight: 600; color: var(--text-title); }
-.sidebar-tile.is-zero  .sidebar-tile-count { color: var(--text-muted); font-weight: 500; }
+.sidebar-tile.is-zero  .sidebar-tile-count { color: var(--text-muted); font-weight: 400; }   /* 这两处原写500，字重收三档后归400 */
 .sidebar-tile.is-alert .sidebar-tile-count { color: var(--danger-500); }   /* 只有逾期 &gt; 0 */
 量出来  宽1440：磁贴区227 → 78px、单块109 → 35px，导航第一项 y = 363 → 214；
         宽2040：磁贴区321 → 111px；数字24 → 15px，汇总卡大数字56px（差回到三倍多）</code></pre>
         </section>
-        <section class="fact"><h4>用在哪</h4><p>plan侧栏（&gt;900）与601–900顶栏里横排的磁贴（横排单块44→30px）。彩色图标块那套样式只有磁贴在用，一并从plan删了；刷刷、岗岗、card的列表行还在用它，见交互页<a href="interaction.html#ix-list">「入口用分组列表」</a>。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>plan侧栏（&gt;900）与601–900顶栏里横排的磁贴（横排单块44→30px）。彩色图标块那套样式只有磁贴在用，一并从plan删了；刷刷、岗岗、card的列表行还在用它，见交互页<a href="interaction.html#ix-list">「入口用分组列表」</a>。2026-10-10 plan字重收成三档（61282be），磁贴名和为0的计数从500改成400，见排版页<a href="type.html#t-weight">「字重三档」</a>。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主对照SuperTodo说一眼抓不住重点。诊断第4条：1440首屏最显眼的依次是「新建任务」按钮、侧栏四块磁贴（24px数字＋四色图标）、台历，正文排在后面，汇总卡的大数字反而被抢了。图标仍按类上色、不改成灰的：屋主说过不要灰的。</p></section>
         <blockquote class="said"><p>「我觉得它这个一眼就能抓住重点，而我现在这个不知道为什么一眼不知道哪里是重点。」</p><footer>屋主，2026-10-08（看SuperTodo的截图之后）</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>「今天」磁贴和「今日」导航项右边是同一个数，侧栏上出现两次；这一轮只调轻、不删入口。彩色线条图标用文字档颜色才过得了图形3:1：青没有单独的文字档，借回顾页库色那支（浅<code>#00608B</code> / 深<code>#5AC8F5</code>）。</p></section>
-        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1844「35. 层级改版」、:1854「第一眼落不到正文」、:2017「39.1 侧栏磁贴调轻」、:2024「量出来」、:2047（「今天」磁贴与导航重复）；tools/plan/app/src/App.css:155「侧栏磁贴」；tools/plan/app/src/components/layout.tsx:305「2026-10-08 调轻」、:331「青没有单独的文字档」</p>
+        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1857「35. 层级改版」、:1867「第一眼落不到正文」、:2030「39.1 侧栏磁贴调轻」、:2037「量出来」、:2060（「今天」磁贴与导航重复）；tools/plan/app/src/App.css:154「侧栏磁贴」、:198「.sidebar-tile-label」、:218「.sidebar-tile.is-zero」；plan提交61282be（字重三档）；tools/plan/app/src/components/layout.tsx:305「2026-10-08 调轻」、:331「青没有单独的文字档」</p>
       </div>
     </article>
 
@@ -1116,7 +1116,7 @@ min-height: clamp(&lt;下限&gt;, min(calc(&lt;系数&gt; * var(--u)), calc(100s
         </section>
         <section class="fact"><h4>用在哪</h4><p>①刷刷「开始练习」底栏（3.11.0–3.12.0手机上滚动途中看不到、滚到底盖住最后一组36px）、plan「更多」面板；②plan的<code>.app-shell</code>（顶栏形态下侧栏那行凭空长出两百多像素）；③card画廊（整条舞台从950缩到594）；④plan分组小标题的动作链接与计数；⑤岗岗品牌图标；⑥plan笔记页「记一条」；⑦⑧⑨小屋门厅；⑩本站的底部弹层（更新记录面板撑到2849px）；⑪本站601–900宽的锚点（768下顶栏下面空76px）。</p></section>
         <section class="fact"><h4>为什么</h4><p>这些都不报错，常常只在某一档宽度、滚到中途、或者换一台机器才露馅：只看页面顶部截图、只在开发机上看，三轮验收都没发现第1个。所以每个修法都配了量法：量滚动顶中底三处的位置、量<code>scrollWidth</code>、量计算样式，不靠目测。</p></section>
-        <p class="source">出处：1 memory/glass-panel-breaks-fixed.md:8、:10、tools/shua/design-proposal.md:379「玻璃面板里的贴底」、tools/plan/docs/ui-redesign-proposal-v2.md:542「两个踩过的坑」；2 tools/plan/docs/ui-redesign-proposal-v2.md:547「平均分给每一行」；3 tools/card/CLAUDE.md:190「列 flex 里 margin:auto」；4 tools/plan/docs/ui-redesign-proposal-v2.md:302「flex 的 margin-left: auto」；5 tools/gang/design-proposal.md:1159「这里刻意不用百分比 padding」；6 tools/plan/CLAUDE.md:174「八点五、&lt;input&gt; 会把换行吃掉」；7 Ysevan_web/docs/xiaowu-ui-spec.md「11.3 CSS reset 必须覆盖 figure」（「一定要在这一行里」）；8 Ysevan_web/docs/xiaowu-ui-spec.md「11.4 实现避坑」（「装饰禁用负 right 偏移」）；9 Ysevan_web/docs/xiaowu-ui-spec.md「11.4 实现避坑」（「装饰不要挂在带 overflow: hidden 的容器上」）；10 tools/star/CLAUDE.md:96「只有一行 auto 的 grid 里」；11 tools/star/CLAUDE.md:94「吸顶顶栏的高度」</p>
+        <p class="source">出处：1 memory/glass-panel-breaks-fixed.md:8、:10、tools/shua/design-proposal.md:379「玻璃面板里的贴底」、tools/plan/docs/ui-redesign-proposal-v2.md:542「两个踩过的坑」；2 tools/plan/docs/ui-redesign-proposal-v2.md:547「平均分给每一行」；3 tools/card/CLAUDE.md:190「列 flex 里 margin:auto」；4 tools/plan/docs/ui-redesign-proposal-v2.md:302「flex 的 margin-left: auto」；5 tools/gang/design-proposal.md:1160「这里刻意不用百分比 padding」；6 tools/plan/CLAUDE.md:174「八点五、&lt;input&gt; 会把换行吃掉」；7 Ysevan_web/docs/xiaowu-ui-spec.md「11.3 CSS reset 必须覆盖 figure」（「一定要在这一行里」）；8 Ysevan_web/docs/xiaowu-ui-spec.md「11.4 实现避坑」（「装饰禁用负 right 偏移」）；9 Ysevan_web/docs/xiaowu-ui-spec.md「11.4 实现避坑」（「装饰不要挂在带 overflow: hidden 的容器上」）；10 tools/star/CLAUDE.md:96「只有一行 auto 的 grid 里」；11 tools/star/CLAUDE.md:94「吸顶顶栏的高度」</p>
       </div>
     </article>
   </section>

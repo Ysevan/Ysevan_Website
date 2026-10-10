@@ -76,7 +76,7 @@ h1 { font-size: var(--fs-title); font-weight: 700; letter-spacing: -.4px; }</cod
         <section class="fact"><h4>为什么</h4><p>上限写1440处的实算值（1.4×14.4＋14＝34.16）：≤1440时--scale恒为1、clamp也没到顶，数值和改版前逐位相同；&gt;1440时clamp已封住，字、卡片、间距只乘同一个--scale，构图不变。样张写的上限36在1440处还没摸到，封在34.16才让1440一个数都不变。</p></section>
         <blockquote class="said"><p>「UI要适配我页面的缩放大小」</p><footer>屋主，2026-09-23</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>上限写成好看的整数会在1440→1441跳一格：刷刷1441起用设计值34×<code>--u</code>，而clamp在1440处是34.16，拖过这一格标题34.16→34.02、侧栏244.8→240.2各跳一次。上限照1440处的实算值写就不跳。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:10</code>「结构」、<code>:91</code>「大屏规则」；<code>tools/plan/app/src/styles/tokens.css:68</code>「三行样张原值」、<code>:71</code>「--fs-title」；<code>tools/shua/design-proposal.md:463</code>「边界上的小跳」；原话<code>tools/plan/docs/design/SPEC-apple-glass.md:3</code>「屋主原话」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:10</code>「结构」、<code>:104</code>「大屏规则」；<code>tools/plan/app/src/styles/tokens.css:68</code>「三行样张原值」、<code>:71</code>「--fs-title」；<code>tools/shua/design-proposal.md:463</code>「边界上的小跳」；原话<code>tools/plan/docs/design/SPEC-apple-glass.md:3</code>「屋主原话」</p>
       </div>
     </article>
 
@@ -84,7 +84,7 @@ h1 { font-size: var(--fs-title); font-weight: 700; letter-spacing: -.4px; }</cod
     <article class="entry" id="t-weight" data-scope="tools" data-toc="字重三档">
       <header class="entry-head">
         <h3>字重只用400、600、700；600往上在屋主的机器上都是同一个粗</h3>
-        <p class="entry-lede">标题700，选中项、按钮、小标题600，其余400；不写650、750。Windows上微软雅黑只有细、常规、粗三档，600以上全落到粗；苹方最粗是中粗，Mac上600以上也一样。层级要靠字号拉开，别指望600和700分得出来。</p>
+        <p class="entry-lede">标题700，选中项、按钮、小标题600，其余400；不写500、650、750、800，画布上画的字也一样。Windows上微软雅黑只有细、常规、粗三档，500落成常规、600以上全落到粗；苹方最粗是中粗，Mac上600以上也一样。层级要靠字号拉开，别指望600和700分得出来。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-08-25定</li></ul>
       </header>
       <div class="specimen">
@@ -101,13 +101,14 @@ h1 { font-size: var(--fs-title); font-weight: 700; letter-spacing: -.4px; }</cod
 <pre><code>body                      { font-weight: 400; }
 .btn, .group-title,
 .seg [aria-checked="true"] { font-weight: 600; }
-h1, h2                    { font-weight: 700; }
-/* 不写650 / 750：微软雅黑上和700一样，苹方上600以上也一样 */</code></pre>
+h1, h2, b, strong         { font-weight: 700; }   /* b、strong默认是「更粗一档」，要明写 */
+/* 不写500：微软雅黑上和400一样；不写650 / 750 / 800：微软雅黑上和700一样，苹方上600以上也一样 */
+ctx.font = `400 30px ${stack}`;   /* canvas上画的字同样只许三档，CSS护栏扫不到它 */</code></pre>
         </section>
-        <section class="fact"><h4>用在哪</h4><p>刷刷改版时把650收成600、750收成700（Windows上看不出变化，Mac上苹方有细微变化）。本站<code>star.css</code>里只出现400、600、700三个值。刷刷后加的「按周回看」写过650，3.14.1改回600（offline 67baa55）。</p></section>
-        <section class="fact"><h4>为什么</h4><p>刷刷旧方案用650、750想分出层级，可字体栈首位落到微软雅黑，Windows上只有Light、Regular、Bold，650和750都画成Bold，跟700完全一样——区分只是名义上的。</p></section>
-        <section class="fact trap"><h4>坑</h4><p>判断「是不是同一款字重」别靠肉眼比：量同一行字的宽度，宽度一样就是同一款。演示里的读数就是这么来的，换台机器打开结果会不一样。</p></section>
-        <p class="source">出处：<code>tools/shua/design-proposal.md:106</code>「P24」、<code>:139</code>「B4」；<code>tools/shua/CHANGELOG.md:406</code>「字重和图标尺寸收敛为设计令牌」；<code>tools/shua/styles.css:753</code>「.week-head .week-range」；<code>tools/shua/design-proposal.md:630</code>「十三、字重回到三档（3.14.1）」；<code>tools/plan/docs/design/SPEC-apple-glass.md:10</code>「结构」（标题700）</p>
+        <section class="fact"><h4>用在哪</h4><p>刷刷改版时把650收成600、750收成700（Windows上看不出变化，Mac上苹方有细微变化）。刷刷后加的「按周回看」写过650，3.14.1改回600（offline 67baa55）。岗岗2026-10-09跟上（de31496）：650→600、800→700，500按角色归——顶部按钮→600，时间轴圆圈里的步骤序号→400。plan 2026-10-10跟上（61282be）：650→600，22处500按角色归——上传框主文字、「加日期」空chip是按钮→600，磁贴名、页眉小字、表单标签、灰标签、计数、名字→400；规则同时写进plan的规格。plan随后又查出台历纸面是canvas现画的字，年份、星期还是500，2026-10-10改成400（11caf94），护栏加扫<code>.ts</code>、<code>.tsx</code>里的<code>.font =</code>。本站<code>star.css</code>里只出现400、600、700三个值，演示里故意画出来的别的字重不算。</p></section>
+        <section class="fact"><h4>为什么</h4><p>刷刷旧方案用650、750想分出层级，可字体栈首位落到微软雅黑，Windows上只有Light、Regular、Bold，650和750都画成Bold，跟700完全一样——区分只是名义上的。500反过来落成常规，跟400一样：plan原来20处500改成400，屋主的Windows上一处也看不出变化。Mac上也一样：plan做canvas的判据时把台历月份从600改成700，苹方画出来逐像素零差异——苹方没有Bold，600以上都是同一档中粗。</p></section>
+        <section class="fact trap"><h4>坑</h4><p>判断「是不是同一款字重」别靠肉眼比：量同一行字的宽度，宽度一样就是同一款。演示里的读数就是这么来的，换台机器打开结果会不一样。<code>b</code>、<code>strong</code>不写字重时是「比父级粗一档」，放进600或700的父级会算成900：岗岗搜索结果的业务名在600的按钮里，原来就是900，跟着刷刷3.14.1明写成700。改字重的判据有两道：源码护栏扫CSS，<code>font-weight</code>和<code>font</code>简写里只许400、600、700，canvas的<code>ctx.font</code>在CSS里扫不到，要另扫脚本（plan的台历纸面就这样漏过一次）；改动前后全站逐元素比计算后的字重，变了的只许是事先列明的「元素 → 原值 → 新值」，别的变化一律红，先让它红一次。</p></section>
+        <p class="source">出处：<code>tools/shua/design-proposal.md:106</code>「P24」、<code>:139</code>「B4」；<code>tools/shua/CHANGELOG.md:406</code>「字重和图标尺寸收敛为设计令牌」；<code>tools/shua/styles.css:753</code>「.week-head .week-range」；<code>tools/shua/design-proposal.md:630</code>「十三、字重回到三档（3.14.1）」；<code>tools/plan/docs/design/SPEC-apple-glass.md:10</code>「结构」（标题700）、<code>:64</code>「字重三档」、<code>:66</code>「理由」、<code>:68</code>「判据」、<code>:69</code>「canvas 上画的字」；<code>tools/plan/app/src/styles/fontWeight.test.ts:2</code>「字重三档护栏」、<code>:6</code>「canvas 上画的字」；<code>tools/plan/docs/BUSINESS_LOGIC.md:9</code>「台历纸面的字也归三档」、<code>:10</code>「字重三档」；plan提交61282be、11caf94；plan r13验收记录（台历月份600→700逐像素零差异，控制室10-10转）；<code>tools/gang/design-proposal.md:1833</code>「19. 字重三档」、<code>:1854</code>「b, strong」；岗岗提交de31496</p>
       </div>
     </article>
 
@@ -143,7 +144,7 @@ body { line-height: 1.72; }</code></pre>
         </section>
         <section class="fact"><h4>用在哪</h4><p>岗岗的正文段落、定义行、步骤列表、勾选卡、提示块都收在<code>--measure</code>里，搜索结果页是居中的920×scale阅读列。本站页头副标题、条目说明、正文段落收在680×<code>--u</code>。</p></section>
         <section class="fact"><h4>为什么</h4><p>「填满」是为了大屏上不留两大块空白（屋主最初的抱怨），不是为了让一行更长。所以填满只给外壳、卡片网格、列表轨道；正文行宽另外收住，大屏上搜索页两侧露出光晕底属预期，不改成铺满。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:123</code>「次级字统一值与各项目自测义务」；<code>tools/gang/design-proposal.md:719</code>「--measure」、<code>:1017</code>「填满的边界」；<code>tools/gang/styles.css:102</code>「--measure」、<code>:938</code>「.document-body p」、<code>:610</code>「body」；<code>tools/star/assets/star.css:186</code>「--measure」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:136</code>「次级字统一值与各项目自测义务」；<code>tools/gang/design-proposal.md:720</code>「--measure」、<code>:1018</code>「填满的边界」；<code>tools/gang/styles.css:100</code>「--measure」、<code>:913</code>「.document-body p」、<code>:607</code>「body」；<code>tools/star/assets/star.css:186</code>「--measure」</p>
       </div>
     </article>
 
@@ -185,7 +186,7 @@ body { line-height: 1.72; }</code></pre>
         </section>
         <section class="fact"><h4>用在哪</h4><p>岗岗的手机形态和目录分组标题（13px是SPEC偏离表里登记过的）。刷刷和本站侧栏的分组小标题照SPEC写11px——那几个字只是分组标签，不承载要读的信息。</p></section>
         <section class="fact"><h4>为什么</h4><p>11px的中文低于岗岗「辅助字≥13px」的地板；岗岗的分组标题不是纯标签，带着计数、能点开合，是要读、要点的一行。</p></section>
-        <p class="source">出处：<code>tools/gang/design-proposal.md:266</code>「字号与触控」、<code>:732</code>「字号仍是13px」；<code>tools/plan/docs/design/SPEC-apple-glass.md:9</code>「结构」、<code>:175</code>「分组小标题」</p>
+        <p class="source">出处：<code>tools/gang/design-proposal.md:266</code>「字号与触控」、<code>:733</code>「字号仍是13px」；<code>tools/plan/docs/design/SPEC-apple-glass.md:9</code>「结构」、<code>:188</code>「分组小标题」</p>
       </div>
     </article>
   </section>
@@ -404,7 +405,7 @@ body {
         <section class="fact"><h4>用在哪</h4><p>岗岗、plan、card、小屋、本站同一条；plan的token注释写着「改字体要四处一起改」。现状：刷刷是登记过的偏离，系统UI在前——试改成中文在前后，Mac上做题页「↑ ↓ ← →」改由苹方出字、间距不匀，中点「·」也变宽，控制室2026-09-28裁定不改；Windows上前几个字体都取不到、一律微软雅黑，只影响苹果设备。</p></section>
         <section class="fact"><h4>为什么</h4><p>苹方缺字时应落到冬青黑、微软雅黑、思源黑，而不是先落到<code>-apple-system</code>这类UI字体，否则同一段中文会混进两套字形；中文界面也不该落到Arial、Helvetica这类西文回退上。<code>lang</code>决定标点与断行的字形（zh-CN和zh-TW的引号形状不同）。</p></section>
         <section class="fact trap"><h4>坑</h4><p>谁排第一，西文和符号就归谁画：中文在前时Mac上的箭头、中点都是苹方的全宽字形，系统UI在前时是SF的窄字形。改字体栈要在Mac上看一眼符号多的那几页。</p></section>
-        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.1 字体」（「正文字体栈」「三条的理由」）；<code>tools/plan/app/src/styles/tokens.css:256</code>「字体」；<code>tools/plan/docs/design/SPEC-apple-glass.md:180</code>「字体栈」；<code>tools/shua/design-proposal.md:354</code>「字体栈保持系统 UI 在前」；<code>tools/gang/styles.css:610</code>「body」；<code>tools/shua/styles.css:122</code>「font-family」</p>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.1 字体」（「正文字体栈」「三条的理由」）；<code>tools/plan/app/src/styles/tokens.css:256</code>「字体」；<code>tools/plan/docs/design/SPEC-apple-glass.md:193</code>「字体栈」；<code>tools/shua/design-proposal.md:354</code>「字体栈保持系统 UI 在前」；<code>tools/gang/styles.css:607</code>「body」；<code>tools/shua/styles.css:122</code>「font-family」</p>
       </div>
     </article>
 
@@ -440,7 +441,7 @@ font-family: "Songti SC", "STSong", "SimSun", serif;   /* 不带 "Noto Serif SC"
         <section class="fact"><h4>用在哪</h4><p>四个工具和小屋都不引网络字体；小屋的设计小样用的是Google Fonts外链，实现时换成自托管的子集。本站零依赖，也不引外部字体。</p></section>
         <section class="fact"><h4>为什么</h4><p>刷刷的CSP是<code>default-src 'self'</code>，外部资源被浏览器直接拦截——不是效果差一点，是完全加载不出来。小屋生产是<code>font-src 'self' data:</code>，外链字体一律失败；宋体栈末尾留着<code>"Noto Serif SC"</code>只会让栈变长，还无效。</p></section>
         <section class="fact trap"><h4>坑</h4><p>老站品牌字写的是网络字体Montserrat，从来没加载过，实际一直是Arial（见交互页<a href="interaction.html#ix-oldnav">「老站透明导航栏」</a>）。设计稿上看着好看的那款字，上线后可能一次都没画出来过。</p></section>
-        <p class="source">出处：<code>tools/shua/design-proposal.md:171</code>「引入外部字体或 CDN 资源」；<code>tools/gang/design-proposal.md:1283</code>「不引入任何网络字体」；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「3.1 五个字族」（「Noto Serif SC」）、「3.5 CSP 约束」（「font-src」）；<code>Ysevan_web/scripts/postexport.mjs</code>「basePolicy」；<code>memory/ysevan-web-state.md:31</code>「Google Fonts」</p>
+        <p class="source">出处：<code>tools/shua/design-proposal.md:171</code>「引入外部字体或 CDN 资源」；<code>tools/gang/design-proposal.md:1284</code>「不引入任何网络字体」；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「3.1 五个字族」（「Noto Serif SC」）、「3.5 CSP 约束」（「font-src」）；<code>Ysevan_web/scripts/postexport.mjs</code>「basePolicy」；<code>memory/ysevan-web-state.md:31</code>「Google Fonts」</p>
       </div>
     </article>
 
@@ -487,7 +488,7 @@ font-family: "Songti SC", "STSong", "SimSun", serif;   /* 不带 "Noto Serif SC"
         <section class="fact"><h4>用在哪</h4><p>四个工具和小屋所有看得见的文案：标题、导航、按钮、提示、metadata的title与description；代码注释和文档叙述不管。plan已全改（2026-10-08提交98ac0fb，界面上数字两边原来带空格的文案一并改掉），并加了源码判据<code>app/src/numberSpacing.test.ts</code>：字符串、模板串、JSX文本里「汉字＋空格＋数字」或插值紧挨汉字隔一个空格就红。不归这条管的：「 · 」这类分隔符两边的空格；两个各自完整的词组之间的元素间距（见「坑」）；「标签＋名字」（如无障碍名「删除附件 报表.pdf」）；照搬的原文（题库、员工手册条文、小屋的随笔正文、出处里引的原话）。本站页面文案同样。</p></section>
         <section class="fact"><h4>为什么</h4><p>几个工具的用户是同一批同事，界面文案的口音要一致。这条2026-08-26屋主裁定，小屋全站先行，工具端照家族契约对齐。</p></section>
         <section class="fact trap"><h4>坑</h4><p>CSS撑出来的空隙看它在不在一个词组里（控制室10-08定）：一个词组内部的照样不许——工具架标题旁「共3件」把3拆成单独的元素、靠元素间距隔开，画出来字和数字之间空着一截，算违规；两个各自完整的词组之间的空隙是版式，不算，比如徽章胶囊和后面的说明、读数标签和读数块之间的元素间距。SPEC原文是「CSS 撑出来的空隙（flex 的 gap、margin）在标签和数字之间也算空格，一样不要」；小屋规格原来把「共3件」那个间距写成例外，现在那句已改成「不算例外」，站上也已经没有这一处。JSX里<code>本周完成 {n} 项</code>两侧的空格会原样画出来——plan回顾页的汇总那一行踩过，98ac0fb改掉了。另外plan的CLAUDE.md曾写反成「中文与数字之间保留」，2026-09-27改正：这条别写反。扫描看不见拼接：<code>"有 " + n + " 处"</code>里每个字面量单看都没有「汉字＋空格＋数字」，共用扫描器报0处，拼出来的界面字照样带空格（岗岗踩到）。拼接、模板串、JSX插值两边的空格都得另核，最稳的是看画出来的字。</p></section>
-        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「1.4 文案排版规则」（「不算例外」）、「A.5 文案排版」（「中英文之间不加空格」「标点用简体中文全角标点贴底」）；<code>tools/plan/CLAUDE.md:87</code>「中英文词语之间不加空格」；<code>tools/plan/docs/design/SPEC-apple-glass.md:53</code>「界面文案：数字与中文之间不加空格」、<code>:55</code>「CSS 撑出来的空隙」（词组内外怎么分：控制室10-08定）、<code>:57</code>「不归这条管的源」；<code>tools/plan/app/src/pages/WeekReview.tsx:138</code>「本周完成」；plan提交98ac0fb；<code>tools/plan/app/src/numberSpacing.test.ts:2</code>「数字与中文之间不留空格」；<code>memory/ysevan-workspace-map.md:71</code>「家族契约」；扫描看不见拼接：控制室2026-10-08（岗岗踩到）</p>
+        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「1.4 文案排版规则」（「不算例外」）、「A.5 文案排版」（「中英文之间不加空格」「标点用简体中文全角标点贴底」）；<code>tools/plan/CLAUDE.md:87</code>「中英文词语之间不加空格」；<code>tools/plan/docs/design/SPEC-apple-glass.md:56</code>「界面文案：数字与中文之间不加空格」、<code>:58</code>「CSS 撑出来的空隙」（词组内外怎么分：控制室10-08定）、<code>:61</code>「不归这条管的源」；<code>tools/plan/app/src/pages/WeekReview.tsx:138</code>「本周完成」；plan提交98ac0fb；<code>tools/plan/app/src/numberSpacing.test.ts:2</code>「数字与中文之间不留空格」；<code>memory/ysevan-workspace-map.md:71</code>「家族契约」；扫描看不见拼接：控制室2026-10-08（岗岗踩到）</p>
       </div>
     </article>
 
@@ -539,8 +540,8 @@ font-family: "Songti SC", "STSong", "SimSun", serif;   /* 不带 "Noto Serif SC"
         </section>
         <section class="fact"><h4>用在哪</h4><p>plan先落地，源码护栏是<code>app/src/styles/fontNum.test.ts</code>：写了tabular-nums的规则没指定<code>--font-num</code>就红。本站全站跟上：外壳的计数胶囊、搜索里的标签条数、总览「本书进度」圆环与更新刻度尺、收藏的条数、色彩页的对比度读数、交互页弹窗演示里的大数字，都换成了<code>--font-num</code>；<code>body</code>不再写tabular-nums。刷刷的栈系统UI打头，本来就生效。现状：小屋规格还没跟，随笔日期仍是中文字族打头＋tabular-nums。</p></section>
         <section class="fact"><h4>为什么</h4><p>家族契约要等宽数字（「等宽数字是工具感最便宜的来源」），家族字体栈又是中文字族打头。实测苹方在Chrome里写<code>tabular-nums</code>、<code>"tnum" 1</code>都不生效：40px、600下「1111」宽65.6、「0000」宽96.0。Chrome也不认<code>-apple-system</code>和<code>"SF Pro Text"</code>，按名字取不到就退回苹方；<code>BlinkMacSystemFont</code>、<code>system-ui</code>打头时「1111」「0000」「8888」都是102.7。</p></section>
-        <section class="fact trap"><h4>坑</h4><p>Windows待核：本机只有Mac，按字体本身Segoe UI的数字默认就等宽；核的办法是共享盘工作区根目录的「数字等宽诊断.html」：屋主在Windows台式机上双击打开，页上直接写「等宽 / 会跳」，核过再改这句。量「等不等宽」要在目标浏览器里造一个span，套上元素的字体、字号、字重，依次放「1111」「0000」「8888」，差≤0.5px才算；别用canvas量——canvas不认<code>-apple-system</code>，字体串不认时还会静默保留上一个。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:34</code>「3a. 数字字体」、<code>:37</code>「取值」、<code>:40</code>「为什么」、<code>:43</code>「量法」、<code>:46</code>「Windows 还没实测」、<code>:47</code>「数字等宽诊断.html」；plan提交769b07a；<code>tools/plan/app/src/styles/tokens.css:271</code>「--font-num」；<code>tools/plan/app/src/styles/fontNum.test.ts:2</code>「数字字体护栏」；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.1 字体」（「tabular-nums」「三条的理由」）；<code>tools/shua/design-proposal.md:103</code>「P21」；<code>tools/star/assets/star.css:197</code>「--font-num」</p>
+        <section class="fact trap"><h4>坑</h4><p>先量再下结论：原来担心Windows也跳，屋主2026-10-09在台式机上用共享盘工作区根目录的「数字等宽诊断.html」实测（Edge 154）——<code>--font-num</code>落到Segoe UI，40px的「1111」「0000」「8888」都是88.8px，等宽（同一页的proportional-nums对照是64.4 / 88.8 / 88.8，说明这页量得出差别）；微软雅黑的数字本来就等宽（三串都是98.7px，它没有比例数字），所以苹方打头的旧栈在Windows上从来不跳，跳的只有Mac的Chrome。换成<code>--font-num</code>后，Windows上的变化只是数字变窄：40px下约10%（98.7→88.8），15px下约8%（35.2→32.3）。诊断页留在共享盘根目录，以后核新机器照样双击，页上大字写「等宽 / 会跳 / 本页无效」。量「等不等宽」要在目标浏览器里造一个span，套上元素的字体、字号、字重，依次放「1111」「0000」「8888」，差≤0.5px才算；别用canvas量——canvas不认<code>-apple-system</code>，字体串不认时还会静默保留上一个。</p></section>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:34</code>「3a. 数字字体」、<code>:37</code>「取值」、<code>:40</code>「为什么」、<code>:43</code>「量法」、<code>:46</code>「Windows 实测」、<code>:47</code>「Segoe UI，等宽」、<code>:48</code>「微软雅黑的数字本来就等宽」、<code>:49</code>「变窄」、<code>:50</code>「诊断页留在共享盘根目录」；plan提交769b07a、61282be；<code>tools/plan/app/src/styles/tokens.css:271</code>「--font-num」；<code>tools/plan/app/src/styles/fontNum.test.ts:2</code>「数字字体护栏」；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.1 字体」（「tabular-nums」「三条的理由」）；<code>tools/shua/design-proposal.md:103</code>「P21」；<code>tools/star/assets/star.css:197</code>「--font-num」</p>
       </div>
     </article>
 
@@ -583,7 +584,7 @@ code, pre, kbd { font-family: var(--mono); }</code></pre>
         <section class="fact"><h4>用在哪</h4><p>本站所有代码块、行内代码、色值都是<code>var(--mono)</code>，改完在Mac的Chrome里由Menlo画。岗岗查出的是同一件事。Safari认<code>ui-monospace</code>，取到的是系统的等宽字；Windows上取到Consolas（未核实）。</p></section>
         <section class="fact"><h4>为什么</h4><p>栈里排在前面的名字这台浏览器一个都取不到时，就一路落到最后一款取得到的。老栈里只剩Courier New取得到，代码看着像打字机。Menlo是Mac自带的等宽字，Chrome按名字取得到。</p></section>
         <section class="fact trap"><h4>坑</h4><p>和<code>-apple-system</code>在Chrome里不认是同一类事：名字写了不等于取得到，栈里每一个名字都要在目标浏览器里核。量法是用CDP的<code>CSS.getPlatformFontsForNode</code>看元素实际由哪款字画；页面里拿不到这个，就照这块演示量字宽对照。</p></section>
-        <p class="source">出处：控制室2026-10-08实测（CDP的CSS.getPlatformFontsForNode，明写Menlo、明写Courier New两个阳性对照）；<code>tools/plan/docs/design/SPEC-apple-glass.md:48</code>「等宽字族」；<code>tools/star/assets/star.css:198</code>「--mono」</p>
+        <p class="source">出处：控制室2026-10-08实测（CDP的CSS.getPlatformFontsForNode，明写Menlo、明写Courier New两个阳性对照）；<code>tools/plan/docs/design/SPEC-apple-glass.md:51</code>「等宽字族」；<code>tools/star/assets/star.css:198</code>「--mono」</p>
       </div>
     </article>
 
@@ -667,7 +668,7 @@ const latinRun = /[A-Za-z0-9]+(?:[._\-/]+[A-Za-z0-9]+)*/y;   // 127.0.0.1、util
         </section>
         <section class="fact"><h4>用在哪</h4><p>plan回顾页的汇总格（有测试盯着）、刷刷「按周回看」的汇总格、岗岗搜索联想的角标。</p></section>
         <section class="fact"><h4>为什么</h4><p>看汇总的人要的是数字和它的边界，标题写「本周汇总 · 工作库」就够了。「正文0处」是数对、话错：命中的只是上级路径，正文里一处都没有，写出来像是命中了正文。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/ui-redesign-proposal-v2.md:856</code>「只说事实」、<code>:857</code>「本周没有完成记录」；<code>tools/plan/app/src/pages/WeekReview.tsx:26</code>「只说事实」；<code>tools/shua/design-proposal.md:494</code>「只说事实」；<code>tools/gang/design-proposal.md:1327</code>「正文0处」</p>
+        <p class="source">出处：<code>tools/plan/docs/ui-redesign-proposal-v2.md:856</code>「只说事实」、<code>:857</code>「本周没有完成记录」；<code>tools/plan/app/src/pages/WeekReview.tsx:26</code>「只说事实」；<code>tools/shua/design-proposal.md:494</code>「只说事实」；<code>tools/gang/design-proposal.md:1328</code>「正文0处」</p>
       </div>
     </article>
 
@@ -750,7 +751,7 @@ const latinRun = /[A-Za-z0-9]+(?:[._\-/]+[A-Za-z0-9]+)*/y;   // 127.0.0.1、util
         </section>
         <section class="fact"><h4>用在哪</h4><p>plan详情对话框里的标题、chip、材料名与来源·截止、阶段名与起止·状态、提醒、附件名、通知原文、历史、toast、菜单项；回顾页日格里的任务名（这一页和列表页的规矩相反，别顺手加省略号）。</p></section>
         <section class="fact"><h4>为什么</h4><p>2026-09-23屋主在2552宽的笔记本上看详情第三栏：栏太窄，阶段名、材料名被截成「发通知并收…」「检查材料并…」，主区却空着一大片。于是否掉第三栏、改居中大对话框（见交互页<a href="interaction.html#ix-dialog">「详情对话框」</a>），名字完整显示成了验收硬指标。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/BUSINESS_LOGIC.md:1350</code>「栏太窄」、<code>:1357</code>「一律完整显示」、<code>:1364</code>「清单行（TaskRow）单行省略是故意的」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:852</code>「名字完整不截断」</p>
+        <p class="source">出处：<code>tools/plan/docs/BUSINESS_LOGIC.md:1363</code>「栏太窄」、<code>:1370</code>「一律完整显示」、<code>:1377</code>「清单行（TaskRow）单行省略是故意的」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:852</code>「名字完整不截断」</p>
       </div>
     </article>
   </section>

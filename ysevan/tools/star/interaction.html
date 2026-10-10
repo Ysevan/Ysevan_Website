@@ -53,7 +53,7 @@
         <section class="fact"><h4>用在哪</h4><p>plan「全部任务」的状态筛选（全部／收件箱／进行中／已完成／已归档）。plan笔记页的标签筛选同样处理，但不铺底色——那一行本来是无边框文字，选中只换深色加粗，带下划线的蓝字会像超链接。本站收藏页按「类型」筛选的那排单选也是这套。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主给的组件原文是多选，可plan这排筛选一直是单选；改成多选就改了筛选规则，等于造新功能。所以只把对勾、铺底、让位、数字跳动套到现有的单选上。播报集中成一条：一排标签每个数都播，读屏会被刷屏。</p></section>
         <section class="fact trap"><h4>坑</h4><p>验FLIP有没有动，要读<code>getComputedStyle(el).transform</code>；读<code>el.style.transform</code>永远是空的，位移设完下一帧就清掉了。位置快照在点击的事件里拍，不在每次渲染里拍，否则窗口改宽也会滑。</p></section>
-        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1134「20. 任务库逻辑」、:1590「30.2 笔记页」；tools/plan/app/src/App.css:1692「.status-chip」、:1740「.chip-check」、:1766「.bump-number.is-bumped」；tools/plan/app/src/pages/TaskLibrary.tsx:150、:173；tools/plan/app/src/hooks/useFlip.ts:3「FLIP 位移动画」；tools/plan/app/src/styles/tokens.css:295「--motion-*」</p>
+        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1147「20. 任务库逻辑」、:1603「30.2 笔记页」；tools/plan/app/src/App.css:1540「.status-chip」、:1588「.chip-check」、:1614「.bump-number.is-bumped」；tools/plan/app/src/pages/TaskLibrary.tsx:150、:173；tools/plan/app/src/hooks/useFlip.ts:3「FLIP 位移动画」；tools/plan/app/src/styles/tokens.css:295「--motion-*」</p>
       </div>
     </article>
 
@@ -130,7 +130,7 @@ form.addEventListener("submit", (event) =&gt; {
         <section class="fact"><h4>用在哪</h4><p>刷刷搜题框（3.13.0，题库标签与关键词标签）；plan笔记的标签输入（2026-09-27，替换原来逗号分隔的一行字：输入#联想当前库已有的标签，回车或中英文逗号收成一枚，删一枚立刻落库）。本站搜索框也是：输入#联想已有标签，收成的标签可删。</p></section>
         <section class="fact"><h4>为什么</h4><p>「缩成圆点」全程只动transform和opacity：底色单独一层，横竖各按自己的比例缩，缩出来是真的圆，不是被压扁的胶囊。高度先撑住再一次放开：一删就收缩的话，从第二行往上滑的标签有240ms画在框外，压在下面的字上。</p></section>
         <section class="fact trap"><h4>坑</h4><p>回车和Esc的处理第一行先判<code>event.isComposing</code>：输入法选词那一下回车、取消选词的Esc都不是给网页的。表单的隐式提交是回车的默认动作，不经过任何keydown分支，所以submit里还要拦一次——而且拦提交那一处只认<code>isComposing</code>、不认<code>keyCode 229</code>：安卓软键盘不在合成时也常报229，认了会让键盘上的「搜索」「完成」键按了没反应。两种错代价不对等：拼音被收成一枚标签，删掉就好；手机上回车键失灵是功能坏了。</p></section>
-        <p class="source">出处：tools/shua/design-proposal.md:572「10.3 删除动画与高度」；tools/shua/app.js:2359「reflowQuestionSearchBox」、:2411「removeQuestionSearchTag」、:702「flipMove」、:2532；tools/plan/docs/BUSINESS_LOGIC.md:1608「标签输入」；tools/plan/app/src/components/TagInput.tsx:95「remove」；tools/gang/design-proposal.md:1361「11.4 输入法规矩」</p>
+        <p class="source">出处：tools/shua/design-proposal.md:572「10.3 删除动画与高度」；tools/shua/app.js:2359「reflowQuestionSearchBox」、:2411「removeQuestionSearchTag」、:702「flipMove」、:2532；tools/plan/docs/BUSINESS_LOGIC.md:1621「标签输入」；tools/plan/app/src/components/TagInput.tsx:95「remove」；tools/gang/design-proposal.md:1362「11.4 输入法规矩」</p>
       </div>
     </article>
 
@@ -171,7 +171,7 @@ Esc    第一下只收浮层、保留框内文字；第二下清空；再下一�
         <section class="fact"><h4>用在哪</h4><p>岗岗顶栏搜索框（「选中后以标签插入正文」那一半不做：阅读器没有正文）。刷刷搜题框另有两条：联想只用现成数据（题库名＋术语表，合计最多8条），浮层左端对齐输入框里光标的横坐标。本站搜索框的联想浮层照这几条做。</p></section>
         <section class="fact"><h4>为什么</h4><p>选项不可聚焦、焦点留在输入框，用户看着联想还能接着打字。播报等停手再说：每敲一个字播一次，读屏会被自己的播报打断。浮层不磨砂是量过的：换成半透明玻璃底加<code>blur(30px)</code>后，屋主台式机那档（2040×1019、软件渲染）整页帧间隔P95从16.7ms翻到33.4ms，超过25ms的长帧从0个涨到34–52个；有显卡的手机档一个都不多。</p></section>
         <section class="fact trap"><h4>坑</h4><p>收起时要把待播的那一句清掉，不然400ms后它会盖掉结果页自己的播报。零结果不能算「关着」：说明行照样显示，Esc照样能收。</p></section>
-        <p class="source">出处：tools/gang/design-proposal.md:1315「11.2 数据口径」、:1336「11.3 键盘、鼠标与读屏」、:1396「11.6 为什么不加磨砂」；tools/gang/app.js:3357「speakSuggest」、:3410「searchInput」；tools/shua/design-proposal.md:561「10.1 联想只用现成的两样数据」、:579「10.4 浮层」</p>
+        <p class="source">出处：tools/gang/design-proposal.md:1316「11.2 数据口径」、:1337「11.3 键盘、鼠标与读屏」、:1397「11.6 为什么不加磨砂」；tools/gang/app.js:3357「speakSuggest」、:3410「searchInput」；tools/shua/design-proposal.md:561「10.1 联想只用现成的两样数据」、:579「10.4 浮层」</p>
       </div>
     </article>
 
@@ -276,7 +276,7 @@ plan  文本失焦或回车即落库，点选类点了就落库 → 底部「已
         <section class="fact"><h4>为什么</h4><p>确认框的用处是把代价说清楚：做到哪一题、答了几题、能不能恢复。能撤销的操作再问一句，等于每次多一步——plan原来的「有未保存的改动，放弃吗？」连同显式「保存／取消」一起删了，换成自动保存加撤销。</p></section>
         <blockquote class="said"><p>逻辑很不合适。</p><footer>屋主，2026-09-23，在手机上看过plan显式保存的详情面板后</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>样例用<code>&lt;dialog&gt;</code>而不是原生<code>confirm()</code>：要跟随深浅色和强调色，按钮要写动作名（「放弃并开始」而不是「确定」）。代价是三件事得自己管：Esc当取消、关闭后焦点还给触发按钮、压在正文上的弹层用实色。刷刷生产用的是原生<code>confirm()</code>，文案是同一句。</p></section>
-        <p class="source">出处：tools/shua/app.js:1368「confirmDiscardActiveSession」；tools/plan/docs/BUSINESS_LOGIC.md:1636「31. 表单自动保存」、:1651「31.1 规则」、:1659「31.2」、:1417「25.3 详情面板结构」；tools/gang/design-proposal.md:1437「12.1 八个组件的核对表」；tools/gang/app.js:1875</p>
+        <p class="source">出处：tools/shua/app.js:1368「confirmDiscardActiveSession」；tools/plan/docs/BUSINESS_LOGIC.md:1649「31. 表单自动保存」、:1664「31.1 规则」、:1672「31.2」、:1430「25.3 详情面板结构」；tools/gang/design-proposal.md:1438「12.1 八个组件的核对表」；tools/gang/app.js:1875</p>
       </div>
     </article>
 
@@ -343,7 +343,7 @@ plan  文本失焦或回车即落库，点选类点了就落库 → 底部「已
         <section class="fact"><h4>用在哪</h4><p>四个工具侧栏底部的外观控件；≤600px放进「更多」面板。本站侧栏底部的浅深分段、「背景模糊」分段也是这套。</p></section>
         <section class="fact"><h4>为什么</h4><p>单选组读屏读作「3项中的第1项，已选中」；按钮加<code>aria-pressed</code>读出来是三个互不相干的开关。roving tabindex让整组只占一个Tab位，组内换档用方向键。「自动」把解析结果写进可读名，读屏才答得出现在到底是深还是浅。</p></section>
         <section class="fact trap"><h4>坑</h4><p>roving tabindex和方向键必须一起做：只写前者，键盘用户Tab只能停在选中那一项，换不了档。岗岗2026-09-27读代码时就是这样——<code>tabindex</code>写了，<code>app.js</code>里没有←→处理；09-28补上了（774c278，统一键盘分发里的<code>handleModeKey</code>）。刷刷3.13.1之前是radiogroup里放<code>aria-pressed</code>按钮，已改成<code>role="radio"</code>。</p></section>
-        <p class="source">出处：tools/shua/app.js:4063「外观控件的键盘操作」；tools/shua/index.html:33；tools/shua/design-proposal.md:474「7.4 验收口径」；tools/gang/design-proposal.md:1113「分段控件是 radiogroup + radio」；tools/gang/app.js:1187「外观开关」、:1908「paintModeSwitch」、:3667「handleModeKey」；tools/plan/docs/design/SPEC-apple-glass.md:32「3. 主题与切换」</p>
+        <p class="source">出处：tools/shua/app.js:4063「外观控件的键盘操作」；tools/shua/index.html:33；tools/shua/design-proposal.md:474「7.4 验收口径」；tools/gang/design-proposal.md:1114「分段控件是 radiogroup + radio」；tools/gang/app.js:1187「外观开关」、:1908「paintModeSwitch」、:3667「handleModeKey」；tools/plan/docs/design/SPEC-apple-glass.md:32「3. 主题与切换」</p>
       </div>
     </article>
 
@@ -371,10 +371,10 @@ plan  文本失焦或回车即落库，点选类点了就落库 → 底部「已
         里面白色线条图标18px、stroke 1.9；实心只给 play 这种本来就实心的形
 chevron 三级灰 rgba(60,60,67,.32)，&lt;path d="m9.8 6.2 5.8 5.8-5.8 5.8"/&gt;
 分隔    行间1px rgba(60,60,67,.12)，首行无线；不用边框分层</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>刷刷首页「快速开始」；岗岗速查卡各节标题；card的回退列表。本站总览的章节目录也是这种列表。plan四块侧栏磁贴原来也是图标块，2026-10-08调轻成一行「彩色线条小图标＋名字＋右边数字」（只有逾期不为0时数字标红），图标块那套样式已从plan代码删掉（<code>tools/plan/docs/BUSINESS_LOGIC.md:2017</code>「39.1 侧栏磁贴调轻」）——首屏最抢眼的不该是磁贴，图标仍按四类上色、不用灰的。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>刷刷首页「快速开始」；岗岗速查卡各节标题；card的回退列表。本站总览的章节目录也是这种列表。plan四块侧栏磁贴原来也是图标块，2026-10-08调轻成一行「彩色线条小图标＋名字＋右边数字」（只有逾期不为0时数字标红），图标块那套样式已从plan代码删掉（<code>tools/plan/docs/BUSINESS_LOGIC.md:2030</code>「39.1 侧栏磁贴调轻」）——首屏最抢眼的不该是磁贴，图标仍按四类上色、不用灰的。</p></section>
         <section class="fact"><h4>为什么</h4><p>像iOS设置那种图标块，一眼分得出类别；屋主明确说过不要灰色空方块。</p></section>
         <section class="fact trap"><h4>坑</h4><p>SPEC样张里chevron是字符「›」、导航图标stroke写的1.8，都是旧写法，以SPEC「图标」一节为准。白线条压在绿、橙、青实底上低于3:1（刷刷实算1.55–5.65:1），和主按钮一样按审美优先记录、不断言。</p></section>
-        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:10「1. 结构」、:116「5b. 图标」；tools/plan/docs/design/shua-glass.html:72「.row .ico」；tools/gang/styles.css:90「--ic-chevron」；tools/shua/design-proposal.md:390；tools/plan/docs/ui-redesign-proposal-v2.md:565</p>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:10「1. 结构」、:129「5b. 图标」；tools/plan/docs/design/shua-glass.html:72「.row .ico」；tools/gang/styles.css:88「--ic-chevron」；tools/shua/design-proposal.md:390；tools/plan/docs/ui-redesign-proposal-v2.md:565</p>
       </div>
     </article>
 
@@ -409,7 +409,7 @@ chevron 三级灰 rgba(60,60,67,.32)，&lt;path d="m9.8 6.2 5.8 5.8-5.8 5.8"/&gt
         <section class="fact"><h4>用在哪</h4><p>岗岗全部图标（不改DOM，画在伪元素上）；刷刷用本地lucide，<code>stroke-width</code>统一成1.9；plan用lucide React；本站全部内联SVG，侧栏导航的图标就是。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主2026-09-23两次纠正后定成硬规则：线条图标，不许字符、emoji、灰色空方块占位（据控制室记录，一次是侧栏图标用了灰方块，一次是左上角放了「刷」字）。mask只取形状，一份图标通吃六个强调色、浅深两档和高对比模式，不用每种主题备一份。</p></section>
         <section class="fact trap"><h4>坑</h4><p>data URI里的<code>#</code>不写成<code>%23</code>，会被当成URL片段分隔符，图直接不出、也不报错。<code>file://</code>下<code>&lt;use href="外部.svg#id"&gt;</code>会被Chrome当跨源拦掉，所以本站图标全部内联。</p></section>
-        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:115「5b. 图标」；tools/gang/styles.css:83「图标 data URI」；tools/gang/design-proposal.md:1060「10.13 图标」；tools/shua/design-proposal.md:390；tools/star/CLAUDE.md:27「特意为 file:// 设计」</p>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:128「5b. 图标」；tools/gang/styles.css:83「图标 data URI」；tools/gang/design-proposal.md:1061「10.13 图标」；tools/shua/design-proposal.md:390；tools/star/CLAUDE.md:27「特意为 file:// 设计」</p>
       </div>
     </article>
 
@@ -446,7 +446,7 @@ favicon 整块圆角方块铺满，rx="229"（边长22.37%，iOS 应用图标比
         <section class="fact"><h4>用在哪</h4><p>四个工具；本站侧栏的品牌方块同样认<code>brand/</code>里的文件，并且自带一份默认<code>brand-icon.svg</code>（就是内置那枚，视窗四周补了留白，按84%放进去和内置等大）：探测第一次就命中，不会因为找不到文件在控制台留下报错；标签页上的favicon按当前强调色画成自带渐变底的圆角方块。本条样例里这枚示意图不跟着换。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主看了内置SVG说「看得难受」，要自己手绘；65%他嫌太小，改成84%（他的画稿四周本来就留了白）。白线透明图挂成favicon，压在浅色标签栏上等于隐形。</p></section>
         <section class="fact trap"><h4>坑</h4><p>SVG是XML，注释里不许出现两个连字符连写：图会解不出来，页面不报错。验证要<code>new Image()</code>真解一遍看<code>naturalWidth</code>。探测文件在不在别用<code>fetch</code>：生产环境有SPA回退，缺文件回的是首页而不是404。</p></section>
-        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:190「6. 品牌图标」；tools/gang/design-proposal.md:1158「10.14b 品牌图标可换」（由65%调大）、:1170「10.14c 标签页图标 favicon」、:1235「踩过的坑」；tools/shua/design-proposal.md:390；tools/star/brand/README.txt</p>
+        <p class="source">出处：tools/plan/docs/design/SPEC-apple-glass.md:203「6. 品牌图标」；tools/gang/design-proposal.md:1159「10.14b 品牌图标可换」（由65%调大）、:1171「10.14c 标签页图标 favicon」、:1236「踩过的坑」；tools/shua/design-proposal.md:390；tools/star/brand/README.txt</p>
       </div>
     </article>
 
@@ -511,7 +511,7 @@ favicon 整块圆角方块铺满，rx="229"（边长22.37%，iOS 应用图标比
         <section class="fact"><h4>用在哪</h4><p>岗岗正文截图与速查卡胶片条的灯箱；交易码「已复制／请手动复制」气泡。本站色彩页的色值点一下复制，弹的就是这种气泡；收藏页的截图点开放大、缩回原位。</p></section>
         <section class="fact"><h4>为什么</h4><p>从哪来回哪去，看完关掉还在原来读到的地方。打断时直接到终态，不做「半路倒着缩回去」：状态机要多一倍，换来的只是0.26秒里的一点连贯。</p></section>
         <section class="fact trap"><h4>坑</h4><p>幽灵是直角的，缩略图的圆角在头尾一两帧会被盖住一点：圆角跟不了非等比缩放，动画<code>border-radius</code>又违反只动transform／opacity，所以不处理。别用WAAPI的<code>pseudoElement</code>选项动<code>::backdrop</code>：不认它的内核会把动画落到dialog本体上，整只灯箱跟着透明。</p></section>
-        <p class="source">出处：tools/gang/design-proposal.md:1450「12.2 ② 灯箱：原位放大 / 缩回」、:1496「12.3 ④ 复制气泡：箭头、进出、碰撞」</p>
+        <p class="source">出处：tools/gang/design-proposal.md:1451「12.2 ② 灯箱：原位放大 / 缩回」、:1497「12.3 ④ 复制气泡：箭头、进出、碰撞」</p>
       </div>
     </article>
 
@@ -566,7 +566,7 @@ favicon 整块圆角方块铺满，rx="229"（边长22.37%，iOS 应用图标比
         <section class="fact"><h4>为什么</h4><p>屋主在笔记本上看了右侧第三栏，说放右边不合适、也没有动画，问能不能放到更合适的地方；控制室给了三种，他回「A」（原话在下面）。第三栏的宽照1440定，2552宽上名字被截、主区空着一大片，居中对话框借整屏的宽，名字不截（被否的样子见<a href="rejected.html#r-plan-detail">否掉的方向「详情第三栏」</a>）。1000px分两列的阈值是量出来的：1000／1100／1200三档对话框都是920宽，三档列宽只差6px。</p></section>
         <blockquote class="said"><p>plan右边这个窗口没有动画，并且我觉得他在右边会有点不合适，能不能放在别的更合适的地方，并且里面的内容例如材料他是可以修改的，而不是直接编辑后不能修改的。</p><p>A</p><footer>屋主，2026-09-23 14:39、14:43（控制室会话记录）</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>关闭后焦点要还回那一行：屋主会连着改好几条，焦点掉回页首就得重新找。</p></section>
-        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1347「25.2 详情是居中对话框 / 手机整屏页」；原话：控制室会话记录（2026-09-23 14:39、14:43）</p>
+        <p class="source">出处：tools/plan/docs/BUSINESS_LOGIC.md:1360「25.2 详情是居中对话框 / 手机整屏页」；原话：控制室会话记录（2026-09-23 14:39、14:43）</p>
       </div>
     </article>
   </section>
@@ -753,7 +753,7 @@ form.addEventListener("submit", (event) =&gt; {
         <section class="fact"><h4>用在哪</h4><p>岗岗搜索框与目录过滤框；plan所有回车确认的输入框（标题、材料、提醒、阶段、笔记标签、快速记录、收件箱、顶栏搜索）；刷刷搜题与按题号跳转；old首页搜索。本站搜索框同样先判。</p></section>
         <section class="fact"><h4>为什么</h4><p>中文选词按回车时，keydown的<code>key</code>照样是<code>Enter</code>，只认<code>key</code>的代码分不清选词和提交，内容会提前落库。这类bug用户感觉得到、报不上来：打字时偶尔跳走、被清空、自己提交了，只会以为是自己手快。</p></section>
         <section class="fact trap"><h4>坑</h4><p>keydown里提前返回，两个都认：部分内核选词回车那一下<code>isComposing</code>已经是false，只剩229可认（岗岗文档注明未实测）。拦提交那一处只认<code>isComposing</code>：安卓软键盘不在合成时也常报229，认了会让键盘上的「搜索」键按了没反应——拼音被当成词搜一次，改个词就好；搜索键失灵是功能坏了，往后果轻的那边错。写完规矩要grep全仓<code>key === 'Enter'</code>和<code>'Escape'</code>核覆盖面：plan收件箱那处（选词回车会直接把这条转成任务、跳到下一条）就是这样查出来的。</p></section>
-        <p class="source">出处：tools/gang/design-proposal.md:1361「11.4 输入法规矩」；tools/gang/app.js:3236「submit」、:3413；tools/gang/CLAUDE.md:97「七、输入法」；tools/plan/docs/BUSINESS_LOGIC.md:1661「31.2b 回车确认必须先过输入法这一关」；old@4156029 说明.md:147「首页搜索联想、素材卡片按压」</p>
+        <p class="source">出处：tools/gang/design-proposal.md:1362「11.4 输入法规矩」；tools/gang/app.js:3236「submit」、:3413；tools/gang/CLAUDE.md:97「七、输入法」；tools/plan/docs/BUSINESS_LOGIC.md:1674「31.2b 回车确认必须先过输入法这一关」；old@4156029 说明.md:147「首页搜索联想、素材卡片按压」</p>
       </div>
     </article>
 
@@ -815,7 +815,7 @@ plan 详情对话框
         <section class="fact"><h4>用在哪</h4><p>岗岗全站键盘分发；plan任务与笔记详情、<code>InlineField</code>、顶栏铃铛菜单。上面「联想浮层」「可删除标签」两个样例里都能试。本站搜索联想和「更多」面板也是Esc一下只退一层。</p></section>
         <section class="fact"><h4>为什么</h4><p>一下Esc既清字又关面板，刚打的字就没了。每按一下只做一件看得见的事，用户按到哪一层停都知道发生了什么。</p></section>
         <section class="fact trap"><h4>坑</h4><p>plan「合成态的Esc不能当关闭」这句曾经只是写着：2026-09-27核实，除收件箱外的Esc处理都没判合成态，组字中按Esc会把正在改的字整段丢掉。补完再grep全仓<code>'Escape'</code>核了一遍。</p></section>
-        <p class="source">出处：tools/gang/design-proposal.md:296「6.2 键盘导航」、:1347「11.3」、:1056；tools/plan/docs/BUSINESS_LOGIC.md:1365「25.2」、:1682「31.2b」</p>
+        <p class="source">出处：tools/gang/design-proposal.md:296「6.2 键盘导航」、:1348「11.3」、:1057；tools/plan/docs/BUSINESS_LOGIC.md:1378「25.2」、:1695「31.2b」</p>
       </div>
     </article>
 
@@ -886,7 +886,7 @@ plan 详情对话框
 强制色      forced-colors:active 下给气泡补 CanvasText 边框</code></pre></section>
         <section class="fact"><h4>用在哪</h4><p>四个工具与小屋。本站外壳也照这套：跳到正文、焦点环、侧栏与「更多」面板的焦点归还。</p></section>
         <section class="fact"><h4>为什么</h4><p>岗岗改版前每次交互整片<code>innerHTML</code>重建，焦点掉到<code>&lt;body&gt;</code>，是当时最严重的缺口：键盘用户每点一下都得从页首重新Tab。</p></section>
-        <p class="source">出处：tools/gang/design-proposal.md:289「6.1 焦点管理」、:303「6.3 读屏语义」；tools/plan/docs/design/SPEC-apple-glass.md:105「5. 降级与可访问性」；tools/plan/docs/BUSINESS_LOGIC.md:1366；Ysevan_web/docs/xiaowu-ui-spec.md「A.3 圆角、阴影、焦点环」（「焦点环」）</p>
+        <p class="source">出处：tools/gang/design-proposal.md:289「6.1 焦点管理」、:303「6.3 读屏语义」；tools/plan/docs/design/SPEC-apple-glass.md:118「5. 降级与可访问性」；tools/plan/docs/BUSINESS_LOGIC.md:1379；Ysevan_web/docs/xiaowu-ui-spec.md「A.3 圆角、阴影、焦点环」（「焦点环」）</p>
       </div>
     </article>
 
@@ -982,7 +982,7 @@ signature 条数 + 首尾题号 + 全部题号的32位哈希：定长，对增�
         <section class="fact"><h4>为什么</h4><p>组件只是手感的参考，套到没有对应功能的地方就是造新功能：多一个入口、多一条规则、多一处要维护。对应表只是起点，每一项都要回代码核一遍。</p></section>
         <section class="fact"><h4>本站例外</h4><p>star自身不照这条：屋主2026-10-08要求把合集的交互在star上用遍（原话「把我stars里面所有的逻辑都狠狠的用这些设计合集的内容，纯属炫技」）。总览开头的条目星球、「本书进度」圆环是为了展示新加的，收藏页的标签筛选用的是刷刷撤回的多选版。对其他项目照旧。</p></section>
         <section class="fact trap"><h4>坑</h4><p>动了一个组件，要自己grep全仓看同类输入框有没有漏掉（输入法那条就是这么补全的）。改完同一轮改文档：CHANGELOG、规格、README里写着交互的地方。</p></section>
-        <p class="source">出处：tools/star/docs/sources/six-components.md「四家共同规矩」；tools/plan/docs/BUSINESS_LOGIC.md:1823「34. 交互组件轮」；tools/shua/design-proposal.md:392、:559、:601；tools/gang/design-proposal.md:1304「11.1 六个组件的核对表」；tools/card/CLAUDE.md:175；old@4156029 说明.md:129「老站卡片按压反馈」、:144「首页搜索联想、素材卡片按压」；Ysevan_web/docs/xiaowu-ui-spec.md「1.3 明确不存在的元素」（「多选筛选标签」）、「6.6 无障碍与外链」（「不做按压倾斜」）</p>
+        <p class="source">出处：tools/star/docs/sources/six-components.md「四家共同规矩」；tools/plan/docs/BUSINESS_LOGIC.md:1836「34. 交互组件轮」；tools/shua/design-proposal.md:392、:559、:601；tools/gang/design-proposal.md:1305「11.1 六个组件的核对表」；tools/card/CLAUDE.md:175；old@4156029 说明.md:129「老站卡片按压反馈」、:144「首页搜索联想、素材卡片按压」；Ysevan_web/docs/xiaowu-ui-spec.md「1.3 明确不存在的元素」（「多选筛选标签」）、「6.6 无障碍与外链」（「不做按压倾斜」）</p>
       </div>
     </article>
 
@@ -1064,7 +1064,7 @@ signature 条数 + 首尾题号 + 全部题号的32位哈希：定长，对增�
         </section>
         <blockquote class="said"><p>上面我画框的这个透明背景可以值得我们后面学习使用，可以保存工具架的star里面</p><footer>屋主，2026-09-27（控制室转述；框的是老站书生子白首页顶上这条导航栏）</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>半透明白链接全靠黑罩才擦过4.5：照抄「透明导航加半透明白字」却不压图，对比度直接掉到2.8–4.0；只给字加阴影补不回来（中位4.0–4.9，最差5%只有3.1–4.1）。要么整张图压暗，要么链接用纯白。胶囊白字对<code>#58ca7e</code>只有2.07:1，照抄时要么记成审美例外（和主按钮白字同一口径：记录不断言），要么把绿色压深。老站四页都没写<code>&lt;meta name="viewport"&gt;</code>：真手机上按980px宽排版再整页缩到四成左右，导航里品牌字和ACGN各折成两行。老站<code>main.js</code>里那段「滚过500px就把头部钉到顶上」的<code>windowScroll</code>只定义、从没被调用过：这条导航从来都是跟着页面滚走的，别把「滚下去钉住变实色」当成它原本的样子。</p></section>
-        <p class="source">出处：old@4702be0 Blog/Home.html:48–70（导航）、:72（封面与背景图）、:150「© 2021」；old@4702be0 Blog/css/cards.css:611「NAV STYLE #1」、:693「call-to-action」、:945「COVER STYLE #2」、:954（黑罩）、:18「body」、:55「a」；old@4702be0 Blog/js/main.js:174「Window Scroll」；old@4702be0 Blog/css/style.css:4（模板名）；old@b516adc「整理老站」（加「网站素材」一项）；tools/gang/design-proposal.md:1401「11.6 为什么不加磨砂」；tools/plan/docs/design/SPEC-apple-glass.md:75「4. 自适应」（台式无显卡）、:110（磨砂只放视口大小的表面）；对比度为2026-09-27无头Chrome像素实测</p>
+        <p class="source">出处：old@4702be0 Blog/Home.html:48–70（导航）、:72（封面与背景图）、:150「© 2021」；old@4702be0 Blog/css/cards.css:611「NAV STYLE #1」、:693「call-to-action」、:945「COVER STYLE #2」、:954（黑罩）、:18「body」、:55「a」；old@4702be0 Blog/js/main.js:174「Window Scroll」；old@4702be0 Blog/css/style.css:4（模板名）；old@b516adc「整理老站」（加「网站素材」一项）；tools/gang/design-proposal.md:1401「11.6 为什么不加磨砂」；tools/plan/docs/design/SPEC-apple-glass.md:88「4. 自适应」（台式无显卡）、:123（磨砂只放视口大小的表面）；对比度为2026-09-27无头Chrome像素实测</p>
       </div>
     </article>
   </section>
@@ -1181,7 +1181,7 @@ signature 条数 + 首尾题号 + 全部题号的32位哈希：定长，对增�
         </section>
         <section class="fact"><h4>为什么好看</h4><p>背景糊开和面板浮起同时发生，视线的焦点从「背景」移到「面板」，不用压暗也分得清前后。12格错开4帧，用量高低变成从左往右的一道波，比12格同时长出来更容易一格一格看清；曲线前快后慢，第一眼就看到大致高度，后段只是落定。</p></section>
         <section class="fact trap"><h4>要注意的地方</h4><p>backdrop-filter半径的过渡不在合成器上：每一帧都要按新半径把整块背景重新模糊一遍，没显卡的机器上它就是整页的瓶颈（上面实测）。.42的白底离不开模糊：降级去掉模糊时，面板底要同时提到近乎不透明，否则字压在清楚的背景上读不清。错开写成<code>transition-delay</code>，单格时长要跟着格数重算，最后一格才能正好1秒收完。关闭时去掉delay统一收回，否则要等最后一格倒着退完。</p></section>
-        <p class="source">出处：屋主2026-10-08收集，原出处未知。落点核对（行号2026-10-09按当时各仓库的提交重核；全文见<code>tools/star/docs/落点-六种弹窗.md</code>「二、按弹窗逐条」「六、控制室裁定」）：刷刷<code>tools/shua/app.js:3243</code>「renderStats」；plan<code>tools/plan/app/src/App.css:2633</code>「.detail-dialog-backdrop」、<code>tools/plan/docs/BUSINESS_LOGIC.md:1809</code>「33.6 明确不做」；travel<code>tools/travel/PLANNER.md:31</code>、<code>tools/travel/planner/app.css:965</code>；小屋<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「1.3 明确不存在的元素」（「广告位、弹窗」）</p>
+        <p class="source">出处：屋主2026-10-08收集，原出处未知。落点核对（行号2026-10-09按当时各仓库的提交重核；全文见<code>tools/star/docs/落点-六种弹窗.md</code>「二、按弹窗逐条」「六、控制室裁定」）：刷刷<code>tools/shua/app.js:3243</code>「renderStats」；plan<code>tools/plan/app/src/App.css:2318</code>「.detail-dialog-backdrop」、<code>tools/plan/docs/BUSINESS_LOGIC.md:1822</code>「33.6 明确不做」；travel<code>tools/travel/PLANNER.md:31</code>、<code>tools/travel/planner/app.css:965</code>；小屋<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「1.3 明确不存在的元素」（「广告位、弹窗」）</p>
       </div>
     </article>
 
@@ -1256,7 +1256,7 @@ signature 条数 + 首尾题号 + 全部题号的32位哈希：定长，对增�
         </section>
         <section class="fact"><h4>为什么好看</h4><p>两个动作排队：面板先落定、眼睛跟到位置，圆环才开始画，注意力不被同时抢走。圆环和数字同一条曲线、同一个起点，数字读到几，圆环就画到几分之几，不会出现数字先到、环还在走。底部面板只占下半屏，背景压暗就分得清层次，用不着模糊。</p></section>
         <section class="fact trap"><h4>要注意的地方</h4><p><code>stroke-dashoffset</code>不在合成器上，每帧都要重画这条弧；面积小、代价不大，但它不是transform或opacity。数字别用<code>setInterval</code>：那是另一只时钟，和圆环各走各的，后台标签页、掉帧时就对不上；读圆环过渡自己的<code>currentTime</code>，暂停、拖进度两边也一致。数字在滚的时候不播报，读屏读面板里另写的一句「剩余26次，共40次」。</p></section>
-        <p class="source">出处：屋主2026-10-08收集，原出处未知。落点核对（行号2026-10-09按当时各仓库的提交重核；全文见<code>tools/star/docs/落点-六种弹窗.md</code>「二、按弹窗逐条」「六、控制室裁定」）：刷刷<code>tools/shua/app.js:2085</code>「renderSummary」、<code>tools/shua/design-proposal.md:605</code>「十二、结算页分数圈（3.14.0）」（offline 63c902c）；岗岗<code>tools/gang/app.js:1249</code>「qc-docs」、<code>:691</code>「check-progress」、<code>tools/gang/design-proposal.md:1706</code>「16. 材料进度小圆环」；travel<code>tools/travel/planner/JourneyOutputs.tsx:149</code>「budget-total」；plan<code>tools/plan/app/src/components/cards.tsx:12</code>「SummaryCard」、<code>tools/plan/docs/BUSINESS_LOGIC.md:1861</code>「35.2 规则」第1条、<code>tools/plan/app/src/components/BumpNumber.tsx:5</code>「首次渲染不跳」</p>
+        <p class="source">出处：屋主2026-10-08收集，原出处未知。落点核对（行号2026-10-09按当时各仓库的提交重核；全文见<code>tools/star/docs/落点-六种弹窗.md</code>「二、按弹窗逐条」「六、控制室裁定」）：刷刷<code>tools/shua/app.js:2085</code>「renderSummary」、<code>tools/shua/design-proposal.md:605</code>「十二、结算页分数圈（3.14.0）」（offline 63c902c）；岗岗<code>tools/gang/app.js:1249</code>「qc-docs」、<code>:691</code>「check-progress」、<code>tools/gang/design-proposal.md:1707</code>「16. 材料进度小圆环」；travel<code>tools/travel/planner/JourneyOutputs.tsx:149</code>「budget-total」；plan<code>tools/plan/app/src/components/cards.tsx:12</code>「SummaryCard」、<code>tools/plan/docs/BUSINESS_LOGIC.md:1874</code>「35.2 规则」第1条、<code>tools/plan/app/src/components/BumpNumber.tsx:5</code>「首次渲染不跳」</p>
       </div>
     </article>
 

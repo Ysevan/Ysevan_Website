@@ -81,7 +81,7 @@
         <section class="fact"><h4>用在哪</h4><p>.62磨砂：侧栏、顶栏、tab bar、弹层——视口大小的面。.78不磨砂：条目卡、阅读栏、右栏——随正文长的面。本站同样：侧栏、顶栏挂.62磨砂，条目卡.78不挂。</p></section>
         <section class="fact"><h4>为什么</h4><p>屋主要「参考苹果的UI和配色」。分层只靠玻璃、投影和分隔线，不用边框。长面不挂磨砂：长到近两万像素会超显卡纹理上限、整层丢弃，每次滚动还要重新光栅化；屋主台式机没显卡，磨砂正是那台机器的瓶颈。</p></section>
         <section class="fact trap"><h4>坑</h4><p><code>body</code>也写了不透明背景时，它画在<code>z-index:-1</code>的<code>body::before</code>之上，三团光晕整个被盖掉——而离线算的对比度照样「成立」。底色只写<code>html</code>，<code>body</code>透明。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:12</code>「结构」、<code>:15</code>「颜色（苹果系统色）」；<code>tools/gang/design-proposal.md:908</code>「磨砂只放在视口大小的表面上」；<code>tools/shua/design-proposal.md:350</code>「落到刷刷时自己拿的决定」；反例照<code>tools/shua/design-proposal.md:28</code>「做得好、不要动的地方」（面板统一1px描边 + 白底 + 小圆角）</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:12</code>「结构」、<code>:15</code>「颜色（苹果系统色）」；<code>tools/gang/design-proposal.md:909</code>「磨砂只放在视口大小的表面上」；<code>tools/shua/design-proposal.md:350</code>「落到刷刷时自己拿的决定」；反例照<code>tools/shua/design-proposal.md:28</code>「做得好、不要动的地方」（面板统一1px描边 + 白底 + 小圆角）</p>
       </div>
     </article>
 
@@ -139,7 +139,7 @@
         <section class="fact"><h4>为什么是.76</h4><p>样张原值.62叠最亮光晕角只有3.42；改.73只压过了蓝光晕，绿、橙、粉、青、靛的光晕更深，只有4.28–4.49；.76让六色都过（本站实测条目卡最低4.91）。一个值，不按强调色分表。</p></section>
         <section class="fact"><h4>各家本地压深</h4><p>统一值只是起点：plan内容区的字直接压光晕、没有玻璃底，本地压到.85；card的hero副标题、页脚也在裸光晕上，压到.89、深色.64。这两处都有记录，是SPEC允许的本地偏离。本站把所有文字都放在玻璃卡上，分组说明这类压裸光晕的字只用正文色，所以.76够用。</p></section>
         <section class="fact trap"><h4>坑</h4><p>次级字.76直接压在光晕中心（不隔玻璃）只有3.52。字要么上玻璃，要么换正文色，别指望统一值免检。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:108</code>「降级与可访问性」、<code>:120</code>「次级字统一值与各项目自测义务」、<code>:163</code>「各家有记录的偏离」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:121</code>「降级与可访问性」、<code>:133</code>「次级字统一值与各项目自测义务」、<code>:176</code>「各家有记录的偏离」</p>
       </div>
     </article>
 
@@ -291,7 +291,7 @@
         </section>
         <section class="fact"><h4>渐变浅端</h4><p>浅色accent-2：蓝#5AC8FA、绿#A8E063、靛#BF5AF2、橙#FFD60A、粉#FF9AA2、青#64D2FF。深色样张只重写了蓝（#64D2FF），其余沿用浅色那组，本站与岗岗、card一样照这个写。</p></section>
         <section class="fact"><h4>现状</h4><p>深色accent-2四家是三种写法：刷刷、plan各自配了一套，互相也对不上。统一与否等控制室定，正在对齐。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:17</code>「颜色（苹果系统色）」、<code>:63</code>「自适应」文字档、<code>:109</code>「降级与可访问性」、<code>:188</code>「各家有记录的偏离」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:17</code>「颜色（苹果系统色）」、<code>:76</code>「自适应」文字档、<code>:122</code>「降级与可访问性」、<code>:201</code>「各家有记录的偏离」</p>
       </div>
     </article>
 
@@ -361,7 +361,7 @@
         <section class="fact"><h4>为什么</h4><p>曾经为了4.5把渐变压深，屋主看了说要和左上角一样浅。审美例外只开这一处：别的承载信息的文字——正文、链接、chip、次按钮——一律≥4.5，压深的「文字档」只用在它们身上。</p></section>
         <blockquote class="said"><p>「所有颜色的按钮色可以和页面左上角的颜色一样浅一点」</p><footer>屋主 · 2026-09-23</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>别用「大字3:1」口径粉饰；对比度脚本把主按钮单列成「记录不断言」，其余照断言。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:107</code>「降级与可访问性」、<code>:131</code>「对比度验收方法」；比值与<code>tools/card/collection/shared/theme.css:5</code>文件头注释逐个对得上</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:120</code>「降级与可访问性」、<code>:144</code>「对比度验收方法」；比值与<code>tools/card/collection/shared/theme.css:5</code>文件头注释逐个对得上</p>
       </div>
     </article>
 
@@ -453,7 +453,7 @@
         <section class="fact"><h4>用在哪</h4><p>plan的风险色：红＝冲突逾期、橙＝今天截止、黄＝两天内到期（2026-10-08加，只给日期标签，见下一条<a href="#c-urgency">「黄色只给两天内到期」</a>）、绿＝完成、灰＝未开始和离截止三天以上；风险色覆盖阶段色，用户不能自定义。刷刷答对绿、答错红。本站条目里的「坑」铺橙色实色软底，左边写着「坑」字，不只靠颜色。</p></section>
         <section class="fact"><h4>为什么</h4><p>语义不能跟着强调色变，换了强调色「红」还得是红。色弱的人分不清红绿，所以风险提示必须有文字说明，不能只靠颜色。</p></section>
         <section class="fact"><h4>本站本地</h4><p>深色红字HIG原值#FF6961压强玻璃叠青光晕最浓角只有4.49，本站提亮到#FF6E66（4.63）；其余五个文字档压最不利角都≥4.62。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:18</code>「颜色（苹果系统色）」、<code>:63</code>文字档；<code>tools/plan/docs/BUSINESS_LOGIC.md:1001</code>「风险与颜色逻辑」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:18</code>「颜色（苹果系统色）」、<code>:76</code>文字档；<code>tools/plan/docs/BUSINESS_LOGIC.md:1014</code>「风险与颜色逻辑」</p>
       </div>
     </article>
 
@@ -510,7 +510,7 @@ token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow
         <section class="fact"><h4>为什么</h4><p>改版前不急的日期（「明天」「还有12天」「10月20日」）也用强调色软底＋强调色字，和「逾期」一样大、一样粗、一样有颜色，远的和急的一样响。分四档以后，只有真急的带颜色，越急越暖；强调色只留给能点的东西，日期不再冒充按钮。</p></section>
         <blockquote class="said"><p>一眼不知道哪里是重点</p><footer>屋主，2026-10-08，对照SuperTodo（SPEC §2a记录）</footer></blockquote>
         <section class="fact trap"><h4>坑</h4><p>系统黄当字压白只有1.51、压页面底1.39：浅色的字必须压到<code>#7A5200</code>，深色那档的字才能直接用系统黄。plan写完对比度测试后先把<code>--yellow-text</code>改回<code>#FFCC00</code>跑一次，当场红，判据才算接上了。已完成、已归档的任务要单独判：不判的话做完的事也挂着「逾期」，plan 10-08修过一次。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:19</code>「颜色（苹果系统色）」、<code>:22</code>「2a. 紧急程度标签」；<code>tools/plan/app/src/domain/dateLabel.ts:30</code>「urgencyTone」、<code>:102</code>「isSettledTask」；<code>tools/plan/app/src/styles/tokens.css:186</code>「--yellow-text」、<code>:387</code>「--soon-50」；<code>tools/plan/app/src/styles/tokens.contrast.test.ts:75</code>；<code>tools/plan/docs/BUSINESS_LOGIC.md:1024</code>「黄色：两天内到期」、<code>:1864</code>「紧急程度只用一组色」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:19</code>「颜色（苹果系统色）」、<code>:22</code>「2a. 紧急程度标签」；<code>tools/plan/app/src/domain/dateLabel.ts:30</code>「urgencyTone」、<code>:102</code>「isSettledTask」；<code>tools/plan/app/src/styles/tokens.css:186</code>「--yellow-text」、<code>:387</code>「--soon-50」；<code>tools/plan/app/src/styles/tokens.contrast.test.ts:75</code>；<code>tools/plan/docs/BUSINESS_LOGIC.md:1037</code>「黄色：两天内到期」、<code>:1877</code>「紧急程度只用一组色」</p>
       </div>
     </article>
 
@@ -557,7 +557,7 @@ token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow
         </section>
         <section class="fact"><h4>为什么</h4><p>半透明软底和压在上面的字是同一个色相，底吃进光晕后对比度随位置漂：岗岗实测同色相文字只有3.9–4.4，plan是「同一个chip挪个位置就从4.4掉到3.3」。实色把这一格从「随光晕变」变成确定值，文字档能原封不动用统一值。</p></section>
         <section class="fact"><h4>命名教训</h4><p>旧的<code>--accent-soft</code>同时当软底、投影、描边，<code>--on-accent</code>同时当主按钮白字和实底上的字——名字说的是长相，所以谁都拿去用。token的名字必须说明用途，不是说明颜色。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:122</code>「次级字统一值与各项目自测义务」、<code>:145</code>「plan本地第三轮」、<code>:160</code>「命名教训」；<code>tools/gang/design-proposal.md:832</code>「例外与理由」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:587</code>「对比度第三轮」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:135</code>「次级字统一值与各项目自测义务」、<code>:158</code>「plan本地第三轮」、<code>:173</code>「命名教训」；<code>tools/gang/design-proposal.md:833</code>「例外与理由」；<code>tools/plan/docs/ui-redesign-proposal-v2.md:587</code>「对比度第三轮」</p>
       </div>
     </article>
 
@@ -597,7 +597,7 @@ token 按用途起名   --soon-50: var(--yellow-soft);  --soon-700: var(--yellow
         </section>
         <section class="fact"><h4>为什么</h4><p>光晕是这套视觉的主要特征，不为了字色去减淡它——字不够就上玻璃或压深字，别动光晕。用固定伪元素而不是<code>background-attachment:fixed</code>：iOS Safari不支持固定附着，背景会被拉成整页高、越往下越跑偏。</p></section>
         <section class="fact trap"><h4>坑</h4><p>光晕的vw尺寸与blur半径不乘大屏缩放系数；<code>html</code>与<code>body</code>只能有一个写底色（见「中性底」那条）。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:20</code>「颜色（苹果系统色）」；<code>tools/plan/docs/design/shua-glass.html:31</code><code>body::before</code>；<code>tools/gang/styles.css:612</code>「刻意不用background-attachment:fixed」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:20</code>「颜色（苹果系统色）」；<code>tools/plan/docs/design/shua-glass.html:31</code><code>body::before</code>；<code>tools/gang/styles.css:613</code>「刻意不用background-attachment:fixed」</p>
       </div>
     </article>
 
@@ -684,7 +684,7 @@ const C=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.
         <section class="fact"><h4>两法</h4><ol><li>公式法压最不利角：对每个文字色，底取玻璃叠光晕最浓那一角的合成色，套上面的L/C。</li><li>像素法交叉验证：真实页面逐元素截图，取底色像素众数（含磨砂与光晕的最终合成），浅深 × 六强调色 × 全部承载文字的元素。</li></ol><p>两条路各抓得到对方漏的：岗岗公式法抓到粉色光晕下顶栏环节名4.35，像素法抓到深色弹层底太亮、三个强调色选中项4.17–4.25。任一条不过就算不过。</p></section>
         <section class="fact"><h4>本站实测</h4><p>条目卡（强玻璃.78叠光晕最浓角），浅深 × 六强调色：次级字最低4.91（浅靛）/5.17（深青）；强调色文字档最低4.75（浅粉）/4.68（深蓝）。侧栏磨砂.62叠饱和度提升后的光晕：粉文字档只有4.26，所以侧栏、顶栏、tab bar里的强调色字一律压在强玻璃选中底上（≥4.70）。</p></section>
         <section class="fact trap"><h4>坑</h4><p>读<code>getComputedStyle().backgroundColor</code>只拿到rgba字面量，算不出真实底色；统一值只是起点，各项目必须在自己最不利的光晕角下实测，不够就本地压深并记录。</p></section>
-        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:126</code>「对比度验收方法」、<code>:124</code>「各项目自测义务」；<code>tools/gang/design-proposal.md:771</code>「computed值不可信」</p>
+        <p class="source">出处：<code>tools/plan/docs/design/SPEC-apple-glass.md:139</code>「对比度验收方法」、<code>:137</code>「各项目自测义务」；<code>tools/gang/design-proposal.md:772</code>「computed值不可信」</p>
       </div>
     </article>
 

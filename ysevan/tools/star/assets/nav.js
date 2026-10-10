@@ -22,7 +22,7 @@
  * 同时暴露 window.STAR_NAV（页面清单 + 图标），总览页的章节目录、star.js 的 favicon 都从这里取，不另抄一份。
  */
 (function () {
-  var VERSION = "0.4.1";
+  var VERSION = "0.4.2";
 
   /* 图标：24×24 视窗，线条 stroke 1.9、圆头圆角（SPEC §5b）；颜色一律 currentColor。
      只有本来就是实心的形（「更多」的三个点）用填充。 */
