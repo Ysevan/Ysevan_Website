@@ -1,0 +1,47 @@
+{
+  "note": "保留本轮前模型既有厨卫/阳台水点与原图标识；不是完整机电竣工管网，也未测量隐蔽支管。禁止随户型切换移动。",
+  "source": "用户提供的建发玺院6#-1.dwg / 建发玺院6#.pdf",
+  "protectedRegions": [
+    [
+      0,
+      5.85,
+      1.8,
+      8.15
+    ],
+    [
+      5.2,
+      3.05,
+      7.15,
+      5.95
+    ],
+    [
+      6.35,
+      0,
+      8.95,
+      3.15
+    ],
+    [
+      8.9,
+      11.55,
+      10.65,
+      13.45
+    ]
+  ],
+  "sourceSegments": {
+    "kitchen": {
+      "start": "// Kitchen:",
+      "end": "// Entry bench",
+      "sha256": "a477e570233b6c38dd441e2c704502bc9c58dc0af6b42048d45abe0dd49e986f"
+    },
+    "bathrooms": {
+      "start": "// Bathrooms",
+      "end": "// Outdoor",
+      "sha256": "3536a6b213a97e85d707203f5b30e0d06f96e10095b3be025a1cb116f327bc1d"
+    },
+    "laundry": {
+      "start": "cyl(5.3,.64,12.48",
+      "end": "// Enclosed balcony",
+      "sha256": "d40e7f7113cb88639e6544b5885610ff41f26f49880ff58e9ce2262204a71407"
+    }
+  }
+}

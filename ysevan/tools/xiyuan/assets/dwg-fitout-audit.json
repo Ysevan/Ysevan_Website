@@ -1,0 +1,207 @@
+{
+  "source": {
+    "source": "建发玺院6#-1.dwg",
+    "sha256": "87c258e615f533e6e89cd4e60507886ca0e199d280f68a480775ecf24f2a1a76",
+    "bytes": 2746074,
+    "readAt": "2026-10-18T16:49:21.482Z",
+    "reader": "@mlightcad/libredwg-web",
+    "stats": {
+      "unknownEntityCount": 0
+    }
+  },
+  "basis": "原始DWG直接解析；PDF/截图未参与测量",
+  "units": {
+    "INSUNITS": 0,
+    "interpretation": "源文件为无单位；毫米解释由原生尺寸与端点实长交叉核验，不由截图或插入比例猜测",
+    "controls": [
+      {
+        "handle": "480CDA",
+        "nativeMeasurementMM": 600.0000000000001,
+        "endpointDistanceMM": 600.0
+      },
+      {
+        "handle": "480CE9",
+        "nativeMeasurementMM": 2700,
+        "endpointDistanceMM": 2700.0
+      },
+      {
+        "handle": "480D05",
+        "nativeMeasurementMM": 700.0000000018626,
+        "endpointDistanceMM": 700.0000000018626
+      },
+      {
+        "handle": "480D14",
+        "nativeMeasurementMM": 1800.0005488414317,
+        "endpointDistanceMM": 1800.0005488414317
+      },
+      {
+        "handle": "480D30",
+        "nativeMeasurementMM": 1100.000000000029,
+        "endpointDistanceMM": 1100.000000000029
+      }
+    ]
+  },
+  "selectedPlan": {
+    "title": "四~二十二层平面图",
+    "titleHandle": "47E22C",
+    "unitInsert": "4784E5",
+    "unitBlock": "B'HUXING",
+    "structureOverlayInsert": "478532"
+  },
+  "furniture": [
+    {
+      "name": "主卧长衣柜",
+      "handles": [
+        "480E15",
+        "480E16",
+        "480E17"
+      ],
+      "layer": "A-家具",
+      "box": [
+        2.8,
+        7.15,
+        3.4,
+        11.45
+      ],
+      "sizeMM": [
+        600,
+        4300
+      ]
+    },
+    {
+      "name": "南卧横衣柜",
+      "handles": [
+        "480E12"
+      ],
+      "layer": "A-家具",
+      "box": [
+        3.5,
+        7.55,
+        5.5,
+        8.15
+      ],
+      "sizeMM": [
+        2000,
+        600
+      ]
+    },
+    {
+      "name": "北卧原床符号",
+      "handles": [
+        "4766EE"
+      ],
+      "layer": "A-家具",
+      "box": [
+        3.0,
+        3.147254,
+        5.0,
+        4.350001
+      ],
+      "sizeMM": [
+        2000,
+        1203
+      ]
+    },
+    {
+      "name": "北卧原桌面",
+      "handles": [
+        "4766E9",
+        "4763E7"
+      ],
+      "layer": "A-家具",
+      "box": [
+        3.0,
+        4.4501,
+        3.6461,
+        5.65
+      ],
+      "sizeMM": [
+        646,
+        1200
+      ]
+    }
+  ],
+  "northRoom": {
+    "box": [
+      3.0,
+      3.15,
+      5.3,
+      5.85
+    ],
+    "clearWallDistanceMM": [
+      2300,
+      2700
+    ],
+    "door": {
+      "insert": "480E80",
+      "hinge": "east",
+      "opens": "north along east wall",
+      "nominalWidthMM": 900
+    },
+    "boundaryHandles": [
+      "480E0F",
+      "480EC1",
+      "480E10",
+      "480E4C"
+    ],
+    "note": "图中墙线间距，非完成面实测净尺寸；凸窗不并入房间矩形；家具/装修方案与原家具符号分别记录"
+  },
+  "walls": {
+    "southDivider": {
+      "handles": [
+        "480E83",
+        "480E84"
+      ],
+      "layer": "WALL",
+      "thicknessMM": 100,
+      "note": "衣柜为A-家具，后方另有100毫米WALL墙线；不能把衣柜厚度当墙厚，也不能因移柜而删除背墙"
+    },
+    "northDivider": {
+      "handles": [
+        "48100E",
+        "48100F",
+        "481010",
+        "481011",
+        "481012",
+        "481013"
+      ],
+      "layer": "COLUMN",
+      "thicknessMM": 200,
+      "note": "与建筑图叠加的COLUMN闭合轮廓重合；图例包含柱/剪力墙/构造柱。保留待结构专业确认，不仅凭图层名认定具体受力类别"
+    },
+    "balconyDivider": {
+      "handles": [
+        "480E5F",
+        "480E60",
+        "480E61"
+      ],
+      "layer": "WALL",
+      "thicknessMM": 100,
+      "note": "与北侧纵墙证据不同；WALL图层不等于可拆许可。需核对阳台连接构造、立面与原设计，现模型保留"
+    }
+  },
+  "xrefPathsFound": [],
+  "limitations": [
+    "本次直接重读出现解析警告68；依据LibreDWG文档为4+64（未处理类＋值超界），不保证所有专业对象完整。unknownEntityCount=0不能证明无遗漏。",
+    "尚未建立该户型与结构配筋/结构专业图的对应关系；不将未提取到解释为整个DWG不存在。",
+    "本审查不代替原设计单位的结构判断、现场复核和当地拆改手续。"
+  ],
+  "sources": [
+    {
+      "title": "Autodesk：对象属性与位置 LIST",
+      "url": "https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-Core/files/GUID-88FFCF22-5F25-48D9-BD43-4F248EFFCE17.htm"
+    },
+    {
+      "title": "Autodesk：插入块及图层继承",
+      "url": "https://help.autodesk.com/cloudhelp/2019/ENU/AutoCAD-MAC-Core/files/GUID-FA75897D-71EA-4929-A926-F0E1D7524986.htm"
+    },
+    {
+      "title": "Autodesk：尺寸与块插入缩放核验",
+      "url": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Blocks-xrefs-or-raster-images-are-scaled-when-inserted.html"
+    },
+    {
+      "title": "GNU LibreDWG：错误位码",
+      "url": "https://www.gnu.org/software/libredwg/manual/html_node/Errors.html"
+    }
+  ]
+}
