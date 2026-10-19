@@ -1,9 +1,10 @@
 import {resolveLayout,WITHDRAWAL_NOTICE} from './layout-policy.js';
 import {MASTER_ENTRIES,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT} from './door-layout.js';
-import {LAYOUTS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js';
+import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js';
 import {createDesignStudio} from './design-studio.js';
+import {createConceptRoom} from './concept-rooms.js';
 import {LIGHTING} from './design-presets.js';
-import {createGamingRoom} from './gaming-room.js';
+import {createGamingRoom} from './gaming-room.js'; import {createBayWindow} from './bay-window.js'; import {createSideCabinet} from './storage-fitout.js';
 import {createFittedWardrobe} from './fitted-wardrobe.js';
 import {STUDY_COLLISIONS,STUDY_VIEWS,GAMING_MODES,studyBoxes} from './design-data.js';
 import {createNavigator,pointIn} from './navigation.js';
@@ -21,6 +22,7 @@ let data;
 try { data=await (await fetch('./assets/plan-data.json')).json(); } catch(e){$('loading').hidden=true;$('error').hidden=false;throw e;}
 const redesignData=await (await fetch('./assets/layout-redesign.json')).json();
 const originalData=await (await fetch('./assets/layout-original.json')).json();
+const conceptData=await (await fetch('./assets/balanced-concept.json')).json();
 let activeLayout='original';const layoutBedWidths={original:1.8,redesign:1.8};
 const scene=new THREE.Scene(); scene.background=new THREE.Color('#e7e4db');
 let renderer;
@@ -202,11 +204,18 @@ for(const id of ['original','redesign']){furniture=id==='original'?originalFitou
  // Both alternatives use the less obstructive living layout.
  cyl(8.75,.31,9.35,.36,.045,M.stone);cyl(8.75,.035,9.35,.13,.275,M.walnut);vase(8.75,.355,9.35);
  rug(id==='original'?1.35:1.75,9.8,id==='original'?2.4:2.9,2.7,'#c6c6af');
- round(1.7,.5,11.9,1.9,.09,.42,M.olive);book(2.3,.59,11.91);
+ if(id==='original')createSideCabinet({box,materials:M,parent:furniture});
  // Wall-mounted reading lights, not bulky bedside tables filling the narrow side lanes.
  const c=MASTER_PLACEMENTS[id].cz;for(const z of [c-.62,c+.62]){rod([.16,1.05,z],[.16,1.35,z],.009,M.brass,furniture);box(.20,1.27,z,.06,.08,.07,M.white,furniture);}
 }
+// New A/B layouts share the exact original architectural group and only swap owner furniture.
+const conceptScenes=Object.fromEntries(['balanced','family'].map(id=>{
+ const scene=createConceptRoom(id,conceptData.layouts[id],{box,materials:M});
+ leftB.add(scene.group);scene.group.visible=false;return [id,scene];
+}));
 furniture=leftB;
+// Same master bed and bay in every layout, so the bay joinery sits outside the per-layout fit-outs.
+createBayWindow({box,cyl,book,vase,materials:M,parent:leftB});
 const ownerOldBoxRefs=OWNER_REPLACED_BOXES.map(b=>collisionBoxes.find(q=>q.every((v,i)=>v===b[i])));
 // A units: three bedrooms, living/dining and two bathrooms, not copies of B.
 const leftA=new THREE.Group();allFurnishings.add(leftA);furniture=leftA;
@@ -305,10 +314,15 @@ let mode='dollhouse',currentRoom='',yaw=0,pitch=0,keys={},drag=null,transition=n
 const EYE=1.62;
 function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').classList.remove('show'),3500);}
 const layoutNavigators={};
-for(const id of ['original','redesign'])layoutNavigators[id]=createNavigator({data:{...data,...(id==='original'?originalData:redesignData)},windows:winSegments,furniture:collisionBoxes.filter(b=>!ownerOldBoxRefs.includes(b)),furnitureEnabled:()=>allFurnishings.visible,dynamicBoxes:furn=>{const a=[],studyCollisions=studyBoxes(id);if(furn)a.push(...ownerExtraCollisions,masterBox(id,layoutBedWidths[id]),...layoutBoxes(id),guestMode?studyCollisions.guest:studyCollisions.day,studyCollisions.desk,studyCollisions.storage,studyCollisions.display);return a;}});
+for(const id of ['original','redesign','balanced','family'])layoutNavigators[id]=createNavigator({data:{...data,...(id==='redesign'?redesignData:originalData)},windows:winSegments,furniture:collisionBoxes.filter(b=>!ownerOldBoxRefs.includes(b)),furnitureEnabled:()=>allFurnishings.visible,dynamicBoxes:furn=>{
+ if(!furn)return [];
+ if(id==='balanced'||id==='family')return [...ownerExtraCollisions,...BAY_BOXES,...conceptData.layouts[id].furniture.filter(q=>q.kind!=='guest'&&q.kind!=='sofa'||(guestMode?q.kind==='guest':q.kind==='sofa')).map(q=>q.box),id==='balanced'?[4.92,8.17,5.48,8.73]:[4.27,8.37,4.83,8.93]];
+ const studyCollisions=studyBoxes(id);return [...ownerExtraCollisions,masterBox(id,layoutBedWidths[id]),...layoutBoxes(id),guestMode?studyCollisions.guest:studyCollisions.day,studyCollisions.desk,studyCollisions.storage,studyCollisions.display];
+}});
 const canWalk=(...args)=>layoutNavigators[activeLayout](...args);
-const activeGaming=()=>activeLayout==='redesign'?expandedGaming:gaming;
-const activeStudyViews=()=>activeLayout==='redesign'?REDESIGN_VIEWS:STUDY_VIEWS;
+const activeGaming=()=>conceptScenes[activeLayout]||gaming;
+const conceptStudyViews={balanced:{desk:{pos:[5.65,1.62,8.95],look:[4.45,1.1,7.9]},guest:{pos:[5.55,1.62,10.65],look:[4.12,1.0,10.15]}},family:{desk:{pos:[5.05,1.62,8.75],look:[3.75,1.1,8.35]},guest:{pos:[5.05,1.62,10.35],look:[3.8,1.1,10.2]}}};
+const activeStudyViews=()=>conceptStudyViews[activeLayout]||STUDY_VIEWS;
 
 function setViewOffset(){camera.clearViewOffset();if(['dollhouse','building'].includes(mode)){if(innerWidth>700)camera.setViewOffset(innerWidth,innerHeight,-innerWidth*.1,0,innerWidth,innerHeight);else camera.setViewOffset(innerWidth,innerHeight,0,-innerHeight*.08,innerWidth,innerHeight);}camera.updateProjectionMatrix();}
 function setArchitecturalCut(h){clipPlane.constant=h;wallCaps.forEach(q=>{q.position.y=h;q.visible=h<2.77;});}
@@ -328,7 +342,7 @@ function prepare(modeNew){mode=modeNew;if(mode==='walk'&&innerWidth<701&&!compac
  updateScopeUI();invalidate(1800,true);
 }
 function changeMode(m){prepare(m);if(m==='dollhouse'){const c=focusedCenter();tween(overviewPos(),[c[0],.1,c[1]]);currentRoom='';}
- else if(m==='plan'){const c=focusedCenter();tween([c[0],focusUnit==='floor'?(innerWidth<700?100:62):29,c[1]],[c[0],0,c[1]-.01]);$('roomTitle').textContent='图纸里的每一寸';$('roomDesc').textContent=activeLayout==='redesign'?'北侧两小房合成宽卧，电竞移到南侧；橙色为墙体调整范围，青绿为拟建隔墙。北侧依据业主转述专业意见，南侧移墙另待核验。':'儿童房与北卧间承重墙完整保留。旧三房已撤回；本页四房仅保留阳台横墙中段的条件示意。';$('roomKicker').textContent='PLAN VIEW · 1:1';}
+ else if(m==='plan'){const c=focusedCenter();tween([c[0],focusUnit==='floor'?(innerWidth<700?100:62):29,c[1]],[c[0],0,c[1]-.01]);$('roomTitle').textContent='图纸里的每一寸';$('roomDesc').textContent=activeLayout==='original'?'原四房家具摆位；北侧承重墙、门洞和原水点保留。':LAYOUTS[activeLayout].summary+'墙体与原四房完全相同。';$('roomKicker').textContent='PLAN VIEW · 1:1';}
  else if(m==='building'){tween([120,95-floorElevation(floor),140],[20.9,40-floorElevation(floor),4.6],2);toast('楼栋为体量示意；高亮为当前选择的 B 户型');}
  else if(m==='walk'){placeWalker(...unitEntry[focusUnit==='floor'?'bl':focusUnit]);currentRoom='';updateRoom();$('viewport').focus({preventScroll:true});toast('拖动环顾，W A S D 或方向键行走；也可点右侧房间定位');}
  else if(m==='tour'){focusUnit='bl';activeUnit='bl';updateScopeUI();tourTime=0;tourPaused=false;lastTourPhase=-1;$('pauseTour').textContent='Ⅱ 暂停';controls.enabled=false;camera.fov=48;camera.updateProjectionMatrix();}
@@ -339,7 +353,7 @@ function goRoom(id,immediate=false){const room=rooms.find(r=>r.id===id);if(!room
  if(!canWalk(p[0],p[2],.12)){let best=null;for(let dx=-.4;dx<=.4;dx+=.1)for(let dz=-.4;dz<=.4;dz+=.1)if(canWalk(p[0]+dx,p[2]+dz,.12)&&(!best||Math.hypot(dx,dz)<best.dist))best={pos:[p[0]+dx,EYE,p[2]+dz],dist:Math.hypot(dx,dz)};if(best)placeWalker(best.pos,room.look);else placeWalker(p,room.look);}else placeWalker(p,room.look);
  currentRoom='';updateRoom(room);$('viewport').focus({preventScroll:true});invalidate(600,true);}
 function updateRoom(force){let room=force||rooms.find(r=>camera.position.x>=r.rect[0]&&camera.position.x<=r.rect[2]&&camera.position.z>=r.rect[1]&&camera.position.z<=r.rect[3]);const id=room?.id||'hall';const unit=room?.unit||(camera.position.z<3.2&&camera.position.x>10.7&&camera.position.x<31.1?'common':camera.position.x<10.75?'bl':camera.position.x<20.9?'al':camera.position.x<31.05?'ar':'br');if(activeUnit!==unit){activeUnit=unit;rebuildShortcuts();}if(currentRoom===id)return;currentRoom=id;document.body.dataset.room=id;
- $('roomTitle').textContent=room?.name||'过道与玄关';$('roomDesc').textContent=room?.desc||'可以穿过入户门，沿公共连廊走到同层其它户型。';$('roomKicker').textContent=unitNames[unit]+' · '+(unit==='bl'?'我的装修预览':'整层参观');$('miniTitle').textContent=unitNames[unit]+' / 整层定位';$('bedPanel').hidden=id!=='master'||mode!=='walk';document.body.classList.toggle('bed-visible',id==='master'&&mode==='walk');$('studyControls').hidden=id!==(activeLayout==='redesign'?'south':'child')||mode!=='walk';
+ $('roomTitle').textContent=room?.name||'过道与玄关';$('roomDesc').textContent=room?.desc||'可以穿过入户门，沿公共连廊走到同层其它户型。';$('roomKicker').textContent=unitNames[unit]+' · '+(unit==='bl'?'我的装修预览':'整层参观');$('miniTitle').textContent=unitNames[unit]+' / 整层定位';$('bedPanel').hidden=id!=='master'||mode!=='walk';document.body.classList.toggle('bed-visible',id==='master'&&mode==='walk');$('studyControls').hidden=id!==(activeLayout==='original'?'child':'south')||mode!=='walk';
  document.querySelectorAll('[data-room]').forEach(b=>b.classList.toggle('selected',b.dataset.room===id));
 }
 function focusedCenter(){return focusUnit==='floor'?[20.9,5.5]:unitCenters[focusUnit];}
@@ -347,8 +361,8 @@ function frameForFocus(){const [x,z]=focusedCenter();return focusUnit==='floor'?
 function updateScopeUI(){
  document.querySelectorAll('[data-unit]').forEach(b=>{const selected=b.dataset.unit===focusUnit;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});
  $('introTitle').innerHTML=focusUnit==='floor'?'一整层，<br>都可以走进去。':focusUnit==='bl'?'家的下一步，<br>先在这里看见。':unitNames[focusUnit]+'<br>看见空间的尺度。';
- $('introSubtitle').textContent=focusUnit==='floor'?'四户住宅、左右前室与连廊。你的家，仍然在左侧。':(activeLayout==='redesign'?'北侧打通成宽卧，电竞移到南侧；主卧适度加宽，原有水点不动。':'墙体保留真实比例，软装与灯光提供居住想象。');
- $('introCount').textContent=focusUnit==='floor'?'4':focusUnit==='bl'?(activeLayout==='redesign'?'2':'3'):'1';$('introCountUnit').textContent=focusUnit==='floor'?'户':focusUnit==='bl'?'卧＋1':'户';$('introCountCaption').textContent=focusUnit==='floor'?'B · A · A · B':focusUnit==='bl'?(activeLayout==='redesign'?'书房 · 兼客房':'书房 · 兼客房'):'CAD 平面复建';
+ $('introSubtitle').textContent=focusUnit==='floor'?'四户住宅、左右前室与连廊。你的家，仍然在左侧。':LAYOUTS[activeLayout].summary;
+ $('introCount').textContent=focusUnit==='floor'?'4':focusUnit==='bl'?(activeLayout==='balanced'?'2':'3'):'1';$('introCountUnit').textContent=focusUnit==='floor'?'户':focusUnit==='bl'?'卧＋电竞':'户';$('introCountCaption').textContent=focusUnit==='floor'?'B · A · A · B':focusUnit==='bl'?LAYOUTS[activeLayout].program:'CAD 平面复建';
  $('enterBtnText').textContent=focusUnit==='floor'?'走进我的 B 户型':focusUnit==='common'?'走进公共区域':'走进'+unitNames[focusUnit];
  $('overviewLabel').textContent=focusUnit==='floor'?'整层全景':'户型全景';
  for(const p of pins)p.el.hidden=!['dollhouse','plan'].includes(mode)||(p.unitPin?focusUnit!=='floor':p.unit!==focusUnit);
@@ -378,7 +392,7 @@ const TOUR=[
  {start:51,end:60,phase:5,title:'原来，家一直在这里。',text:'回到沙盘。也可以选择自由漫游，自己走遍每个房间。',a:[17,18,22],b:[23,24,29],la:[5.2,0,6.7],lb:[5.2,0,6.7],overview:true}
 ];
 function tourFrame(dt){if(!tourPaused)tourTime+=dt;if(tourTime>=60){changeMode('dollhouse');toast('导览结束，点击“自由漫游”继续探索');return;}
- let s=TOUR.find(s=>tourTime>=s.start&&tourTime<s.end)||TOUR[0];if(s.phase===4&&activeLayout==='redesign')s={...s,title:'主卧只适度加宽。',text:'不再合并整间南卧。干区隔墙东移0.55米为待核验概念；床尾约1.07米，电竞书房仍独立。',a:[2.85,1.62,10.9],b:[2.85,1.62,10.9],la:[1.22,1,9.8],lb:[1.22,1,9.8]};const u=clamp((tourTime-s.start)/(s.end-s.start),0,1),k=ease(u);
+ let s=TOUR.find(s=>tourTime>=s.start&&tourTime<s.end)||TOUR[0];if(s.phase===4&&activeLayout!=='original')s={...s,title:'原墙不变，主卧床尾更松。',text:'1.8米床保留，床尾大长柜分配到别的房间；床尾至原墙1.12米。',a:[2.55,1.62,8.55],b:[2.55,1.62,10.9],la:[1.22,1,9.8],lb:[1.22,1,9.8]};const u=clamp((tourTime-s.start)/(s.end-s.start),0,1),k=ease(u);
  if(s.phase!==lastTourPhase){lastTourPhase=s.phase;$('tourNumber').textContent=String(s.phase+1).padStart(2,'0')+' / 06';$('tourTitle').textContent=s.title;$('tourText').textContent=s.text;roof.visible=!s.overview;stage.visible=!!s.overview;landscape.visible=!s.overview;scene.background.set(s.overview?'#e7e4db':'#d8e2d9');scene.fog=s.overview?null:new THREE.Fog('#d8e2d9',65,225);setArchitecturalCut(s.overview?1.28:2.79);camera.fov=s.overview?42:64;camera.updateProjectionMatrix();}
  camera.position.lerpVectors(V(...s.a),V(...s.b),k);const look=V(...s.la).lerp(V(...s.lb),k);camera.lookAt(look);
  let opacity=0;if([1,4,5].includes(s.phase)&&tourTime-s.start<.5)opacity=1-(tourTime-s.start)/.5;if([0,3,4].includes(s.phase)&&s.end-tourTime<.5)opacity=1-(s.end-tourTime)/.5;$('tourFade').style.opacity=String(opacity);
@@ -389,9 +403,9 @@ $('furnitureBtn').onclick=()=>{allFurnishings.visible=!allFurnishings.visible;$(
 $('measureBtn').onclick=()=>{if(mode==='building')changeMode('dollhouse');const active=$('measureBtn').getAttribute('aria-pressed')!=='true';$('measureBtn').setAttribute('aria-pressed',String(active));annotations.visible=active&&mode!=='building';toast(active?'尺寸取自 CAD 墙线与轴线；不等于不动产登记面积':'尺寸标注已隐藏');};
 $('lightBtn').onclick=()=>{const ids=Object.keys(LIGHTING),next=ids[(ids.indexOf(studio.getLighting())+1)%ids.length];studio.patchHome({lighting:next});toast(LIGHTING[next].label+'氛围 · 不是实际朝向或日照模拟');};
 $('resetBtn').onclick=()=>{if(mode==='walk')selectUnit(activeUnit,true);else changeMode(mode==='tour'?'dollhouse':mode);};
-function rebuildMasterBed(){leftB.remove(masterBed);masterBed.traverse(o=>{if(o.isMesh)o.geometry.dispose();});bedWidth=layoutBedWidths[activeLayout];const p=MASTER_PLACEMENTS[activeLayout];masterBed=bed(p.cx,p.cz,bedWidth,2,p.rotation,true);syncBedDimensions();}
-function syncBedDimensions(){const c=masterClearance(activeLayout,bedWidth);document.querySelectorAll('[data-bed]').forEach(b=>{b.disabled=Number(b.dataset.bed)===2;b.title=b.disabled?'本轮不推荐2米床，优先保留通道':'';const on=Number(b.dataset.bed)===bedWidth;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});$('bedDims').textContent=bedWidth.toFixed(2)+' × 2.00 m';$('bedSide').textContent=c.sides.map(n=>n.toFixed(2)).join(' / ')+' m';$('bedFootLabel').textContent=c.label;$('bedFoot').textContent=c.foot.toFixed(2)+' m';$('bedCaution').textContent=c.caution;}
-document.querySelectorAll('[data-bed]').forEach(b=>b.onclick=()=>{layoutBedWidths[activeLayout]=Number(b.dataset.bed);rebuildMasterBed();invalidate(700,true);if(mode==='walk'&&!canWalk(camera.position.x,camera.position.z,.12))goRoom('master');toast('已按床架外廓更新通道尺寸；家具仍需现场实测');});
+function rebuildMasterBed(){if(activeLayout!=='original'){masterBed.visible=false;bedWidth=1.8;syncBedDimensions();return;}leftB.remove(masterBed);masterBed.traverse(o=>{if(o.isMesh)o.geometry.dispose();});bedWidth=layoutBedWidths.original;const p=MASTER_PLACEMENTS.original;masterBed=bed(p.cx,p.cz,bedWidth,2,p.rotation,true);masterBed.visible=true;syncBedDimensions();}
+function syncBedDimensions(){const concept=activeLayout!=='original',c=concept?{sides:[.65,.65],foot:1.12,label:'床架尾至原墙',caution:'床架外廓2.18×2.00米；床尾增宽来自移走长柜，其他衣物放在别的房间。阳台与门五金条件还需现场核验。'}:masterClearance('original',bedWidth);document.querySelectorAll('[data-bed]').forEach(b=>{b.disabled=concept||Number(b.dataset.bed)===2;b.title=concept?'A/B按1.80米床与同尺度平面固定建模':b.disabled?'本轮不推荐2米床，优先保留通道':'';const on=Number(b.dataset.bed)===bedWidth;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});$('bedDims').textContent=bedWidth.toFixed(2)+' × 2.00 m';$('bedSide').textContent=c.sides.map(n=>n.toFixed(2)).join(' / ')+' m';$('bedFootLabel').textContent=c.label;$('bedFoot').textContent=c.foot.toFixed(2)+' m';$('bedCaution').textContent=c.caution;}
+document.querySelectorAll('[data-bed]').forEach(b=>b.onclick=()=>{if(activeLayout!=='original')return;layoutBedWidths.original=Number(b.dataset.bed);rebuildMasterBed();invalidate(700,true);if(mode==='walk'&&!canWalk(camera.position.x,camera.position.z,.12))goRoom('master');toast('已按床架外廓更新通道尺寸；家具仍需现场实测');});
 
 $('closeBed').onclick=()=>{$('bedPanel').hidden=true;document.body.classList.remove('bed-visible');};
 $('mapToggle').onclick=()=>{const h=$('minimap').hasAttribute('hidden');$('minimap').toggleAttribute('hidden',!h);$('roomShortcuts').hidden=!h;$('mapToggle').textContent=h?'−':'+';$('mapToggle').setAttribute('aria-label',h?'收起空间定位':'展开空间定位');};
@@ -429,8 +443,8 @@ function applyHomeDesign(home){
 }
 let gamingPreferences={strength:100};
 let lightSnapshot=null,roomLightKey='';
-function restoreGlobalLighting(){if(lightSnapshot){hemi.intensity=lightSnapshot.hemi;sun.intensity=lightSnapshot.sun;fill.intensity=lightSnapshot.fill;scene.environmentIntensity=lightSnapshot.environment;renderer.toneMappingExposure=lightSnapshot.exposure;lightSnapshot=null;}gaming.accent.intensity=0;expandedGaming.accent.intensity=0;roomLightKey='';}
-function updateGamingLighting(){const c=camera.position,inRoom=mode==='walk'&&allFurnishings.visible&&(activeLayout==='redesign'?(c.x>4.05&&c.x<6.5&&c.z>7.15&&c.z<11.45):(c.x>.1&&c.x<2.8&&c.z>2.5&&c.z<5.85));const key=inRoom?gamingMode:'';if(key===roomLightKey)return;
+function restoreGlobalLighting(){if(lightSnapshot){hemi.intensity=lightSnapshot.hemi;sun.intensity=lightSnapshot.sun;fill.intensity=lightSnapshot.fill;scene.environmentIntensity=lightSnapshot.environment;renderer.toneMappingExposure=lightSnapshot.exposure;lightSnapshot=null;}for(const g of [gaming,expandedGaming,...Object.values(conceptScenes)])g.accent.intensity=0;roomLightKey='';}
+function updateGamingLighting(){const c=camera.position,inRoom=mode==='walk'&&allFurnishings.visible&&(activeLayout==='original'?(c.x>.1&&c.x<2.8&&c.z>2.5&&c.z<5.85):(c.x>3.5&&c.x<6.5&&c.z>7.15&&c.z<11.45));const key=inRoom?gamingMode:'';if(key===roomLightKey)return;
  restoreGlobalLighting();const gaming=activeGaming();roomLightKey=key;if(!key){renderer.shadowMap.needsUpdate=true;return;}
  lightSnapshot={hemi:hemi.intensity,sun:sun.intensity,fill:fill.intensity,environment:scene.environmentIntensity,exposure:renderer.toneMappingExposure};renderer.toneMappingExposure=1.13;
  if(key==='game'){gaming.accent.intensity=.65;}
@@ -439,38 +453,39 @@ function updateGamingLighting(){const c=camera.position,inRoom=mode==='walk'&&al
  gaming.accent.intensity*=gamingPreferences.strength/100;
  renderer.shadowMap.needsUpdate=true;
 }
-function renderGamingPreferences(settings){gamingPreferences=settings;gamingMode=settings.mode;restoreGlobalLighting();gaming.setMood(gamingMode,settings);expandedGaming.setMood(gamingMode,settings);document.querySelectorAll('[data-gaming]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.gaming===gamingMode)));$('gamingMoodName').textContent=GAMING_MODES[gamingMode].label+'模式';document.body.dataset.gaming=gamingMode;invalidate(700,true);}
+function syncGamingModeLabels(){const family=activeLayout==='family';document.querySelector('button[data-gaming="rest"]').textContent=family?'柔光':'留宿';$('gamingMoodName').textContent=family&&gamingMode==='rest'?'柔光模式':GAMING_MODES[gamingMode].label+'模式';}
+function renderGamingPreferences(settings){gamingPreferences=settings;gamingMode=settings.mode;restoreGlobalLighting();for(const g of [gaming,expandedGaming,...Object.values(conceptScenes)])g.setMood(gamingMode,settings);document.querySelectorAll('[data-gaming]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.gaming===gamingMode)));syncGamingModeLabels();document.body.dataset.gaming=gamingMode;invalidate(700,true);}
 function setGamingMode(id){studio.setGaming({mode:id});}
 
 $('designBtn').onclick=()=>{const open=$('designPanel').hidden;$('designPanel').hidden=!open;document.body.classList.toggle('design-open',open);$('designBtn').setAttribute('aria-expanded',String(open));if(open){keys={};if(focusUnit!=='bl')selectUnit('bl');$('designPanel').scrollTop=0;}};
 $('closeDesign').onclick=()=>{$('designPanel').hidden=true;document.body.classList.remove('design-open');$('designBtn').setAttribute('aria-expanded','false');};
 document.querySelectorAll('[data-gaming]').forEach(b=>b.onclick=()=>setGamingMode(b.dataset.gaming));
-$('studyPreview').onclick=()=>{goRoom(activeLayout==='redesign'?'south':'child');if(innerWidth<701)$('closeDesign').click();};
+$('studyPreview').onclick=()=>{goRoom(activeLayout==='original'?'child':'south');if(innerWidth<701)$('closeDesign').click();};
 $('guideBtn').onclick=()=>{$('designGuide').showModal();keys={};};$('closeGuide').onclick=()=>$('designGuide').close();
 $('qualitySelect').onchange=e=>{applyQuality(e.target.value);toast(e.target.value==='smooth'?'流畅模式：减少三维像素与阴影，文字界面保持清晰':'画质已切换，静止时仍会停止重复绘制');};
 document.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>selectUnit(b.dataset.unit));
 const doorLeaves=[];arch.traverse(q=>{if(q.userData.doorLeaf)doorLeaves.push(q);});
 function setDoorView(show){doorView=show?'open':'hidden';for(const g of doorLeaves)g.visible=show;
  for(const id of ['doorsBtn','studioDoors','studyDoor']){const b=$(id);b.setAttribute('aria-pressed',String(show));if(id==='doorsBtn'){b.querySelector('small').textContent=show?'门扇开':'门扇藏';b.title=show?'收起门扇，清楚看房':'显示开启的门扇，检查开门方向';}else b.textContent=show?'收起门扇 · 清楚看房':'显示门扇 · 检查开启';}
- $('doorViewNote').textContent=show?'已显示开启门扇 · 开启方向示意，非门五金施工图':'看房模式：仅收起门叶供观看；原儿童房门洞保留，旧三房停用';invalidate(650,true);
+ $('doorViewNote').textContent=show?'已显示开启门扇 · 开启方向示意，非门五金施工图':'看房模式：仅收起门叶供观看；原儿童房门洞与北侧承重墙保留';invalidate(650,true);
 }
 for(const id of ['doorsBtn','studioDoors','studyDoor'])$(id).onclick=()=>{setDoorView(doorView!=='open');toast(doorView==='hidden'?'仅为看房收起门扇；实际房门、门洞和消防要求仍保留。':'正在查看开启门扇。门叶不作为行走碰撞，开启净距需施工深化。');};
-$('masterEntryView').onclick=()=>{focusUnit='bl';activeUnit='bl';rebuildShortcuts();prepare('walk');const v=ENTRY_VIEWS[activeLayout];placeWalker(v.pos,v.look);currentRoom='';updateRoom();$('roomTitle').textContent='主卧 · 进出与收纳';$('roomDesc').textContent=activeLayout==='redesign'?'经原主卧门进入，卫1原门不动；不加小门厅，不封旧门。只研究南侧干区隔墙的局部东移，避免吞掉整个次卧。':'保留原门位与DWG床向，南窗在床侧。长柜前仍只有约0.52米，应按实测选薄床架和柜门系统。';$('closeDesign').click();$('viewport').focus({preventScroll:true});invalidate(1000);};
-$('guestToggle').onclick=()=>{guestMode=!guestMode;for(const g of [gaming,expandedGaming]){g.guest.visible=guestMode;g.day.visible=!guestMode;}studyChair.position.z=guestMode?-.15:-.05;expandedGaming.chair.position.z=4.95+(guestMode?-.15:-.05);$('guestToggle').textContent=guestMode?'收起客床':'展开客床';$('guestToggle').setAttribute('aria-pressed',String(guestMode));setGamingMode(guestMode?'rest':'game');placeWalker(...Object.values(activeStudyViews().guest));updateRoom();invalidate(600,true);};
+$('masterEntryView').onclick=()=>{focusUnit='bl';activeUnit='bl';rebuildShortcuts();prepare('walk');const v=ENTRY_VIEWS[activeLayout];placeWalker(v.pos,v.look);currentRoom='';updateRoom();$('roomTitle').textContent='主卧 · 进出与收纳';$('roomDesc').textContent=activeLayout==='original'?'保留原门位与DWG床向，南窗在侧面；床尾至4.30米长柜约0.52米。':'原主卧门和床向保留；移走床尾长柜后留1.12米，床架尺寸仍为2.18×2.00米。';$('closeDesign').click();$('viewport').focus({preventScroll:true});invalidate(1000);};
+function setGuestMode(on){guestMode=on;for(const g of [gaming,expandedGaming,...Object.values(conceptScenes)]){g.guest.visible=on;g.day.visible=!on;}studyChair.position.z=on?-.15:-.05;expandedGaming.chair.position.z=4.95+(on?-.15:-.05);$('guestToggle').textContent=on?'收起客床':'展开客床';$('guestToggle').setAttribute('aria-pressed',String(on));}
+$('guestToggle').onclick=()=>{if(activeLayout==='family')return;setGuestMode(!guestMode);setGamingMode(guestMode?'rest':'game');placeWalker(...Object.values(activeStudyViews().guest));updateRoom();invalidate(600,true);};
 $('studyDeskView').onclick=()=>{placeWalker(...Object.values(activeStudyViews().desk));updateRoom();invalidate();};
 $('studyBedView').onclick=()=>{placeWalker(...Object.values(activeStudyViews().guest));updateRoom();invalidate();};
 const originalRoomRecords=Object.fromEntries(rooms.filter(r=>['master','south','north','child'].includes(r.id)).map(r=>[r.id,{...r}]));
-function applyLayout(id){const next=resolveLayout(id),changed=next!==activeLayout;activeLayout=next;const alt=next==='redesign';layoutWalls.original.group.visible=!alt;layoutWalls.redesign.group.visible=alt;originalMaster.visible=false;originalNorth.visible=false;originalSouth.visible=false;originalLoungeExtras.visible=false;originalFitout.visible=!alt;originalMasterDoor.visible=true;redesignMasterDoor.visible=false;childDoor.visible=!alt;studyDivider.visible=false;study.visible=!alt;redesignFurnishings.visible=alt;layoutMarkup.visible=alt;restoreGlobalLighting();
+function applyLayout(id){const next=resolveLayout(id),changed=next!==activeLayout;activeLayout=next;const original=next==='original';layoutWalls.original.group.visible=true;layoutWalls.redesign.group.visible=false;originalMaster.visible=false;originalNorth.visible=false;originalSouth.visible=false;originalLoungeExtras.visible=false;originalFitout.visible=original;originalMasterDoor.visible=true;redesignMasterDoor.visible=false;childDoor.visible=true;studyDivider.visible=false;study.visible=original;redesignFurnishings.visible=false;layoutMarkup.visible=false;for(const [key,g]of Object.entries(conceptScenes))g.group.visible=key===next;masterBed.visible=original;if(next==='family')setGuestMode(false);restoreGlobalLighting();
  for(const [key,value]of Object.entries(originalRoomRecords))Object.assign(rooms.find(r=>r.id===key),value);
- for(const [key,value]of Object.entries(OWNER_ROOMS[next]))Object.assign(rooms.find(r=>r.id===key),value);
+ for(const [key,value]of Object.entries(original?OWNER_ROOMS.original:CONCEPT_ROOMS[next]))Object.assign(rooms.find(r=>r.id===key),value);
  for(const p of pins){if(!p.roomId)continue;const r=rooms.find(r=>r.id===p.roomId);p.pos.set(r.x,.35,r.z);p.el.textContent=r.name;p.el.setAttribute('aria-label','进入'+unitNames[r.unit]+r.name);}
- miniWalls.replaceChildren();const plan=alt?redesignData:originalData;for(let i=0;i<plan.wallPolygons.length;i++)svgEl('path',{d:svgPath(plan.wallPolygons[i])+(plan.wallHoles[i]||[]).map(svgPath).join(''),fill:'#7c8b70','fill-rule':'evenodd'},miniWalls);
- if(alt){for(const p of redesignData.removedPolygons)svgEl('path',{d:svgPath(p),fill:'#cc8d4a'},miniWalls);for(const p of redesignData.addedPolygons||[])svgEl('path',{d:svgPath(p),fill:'#59958b'},miniWalls);}
- document.querySelectorAll('[data-layout]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.layout===next)));$('layoutSummary').textContent=LAYOUTS[next].summary;$('storageSummary').textContent=alt?'主卧衣柜：4.20米｜北侧宽卧：3.85米｜合计8.05米，展示柜另计':'主卧长柜：4.30米｜南卧：2.00米｜均深0.60米；北卧保留书桌';$('layoutWarning').textContent=LAYOUTS[next].warning;$('layoutFlag').textContent=LAYOUTS[next].name+(alt?' · 已撤回':' · 承重墙保留');$('layoutFlag').classList.toggle('conditional',alt);$('scaleNote').textContent=alt?'1 单位 = 1 米 · 北侧据专业咨询，南侧移墙待核验':'1 单位 = 1 米 · 北侧承重墙锁定保留';
- rebuildMasterBed();rebuildShortcuts();updateScopeUI();if(changed){currentRoom='';focusUnit='bl';activeUnit='bl';changeMode('plan');}invalidate(1500,true);
+ miniWalls.replaceChildren();for(let i=0;i<originalData.wallPolygons.length;i++)svgEl('path',{d:svgPath(originalData.wallPolygons[i])+(originalData.wallHoles[i]||[]).map(svgPath).join(''),fill:'#7c8b70','fill-rule':'evenodd'},miniWalls);
+ document.querySelectorAll('[data-layout]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.layout===next)));$('layoutSummary').textContent=LAYOUTS[next].summary;$('storageSummary').textContent=original?'衣柜合计6.30米；北侧原书房另有展示柜':next==='balanced'?'衣柜合计7.00米：主卧1.10＋北西卧1.60＋衣帽间4.30':'衣柜合计6.50米：主卧1.10＋北西卧1.60＋小北卧1.20＋南侧2.60';$('layoutWarning').textContent=LAYOUTS[next].warning;$('layoutFlag').textContent=LAYOUTS[next].name+' · 承重墙保留';$('layoutFlag').classList.toggle('conditional',!original);$('scaleNote').textContent='1 单位 = 1 米 · 三套共用原墙体与水点';$('guestToggle').hidden=next==='family';$('studyBedView').hidden=next==='family';syncGamingModeLabels();
+ rebuildMasterBed();rebuildShortcuts();updateScopeUI();if(changed){currentRoom='';focusUnit='bl';activeUnit='bl';if(mode==='walk'){prepare('walk');placeWalker(...unitEntry.bl);updateRoom();}else changeMode(mode==='plan'?'plan':'dollhouse');}invalidate(1500,true);
 }
 $('layoutPlanView').onclick=()=>{focusUnit='bl';selectUnit('bl');changeMode('plan');};
-const studio=createDesignStudio({applyLayout,applyHome:applyHomeDesign,applyGaming:renderGamingPreferences,previewRoom:id=>{goRoom(id==='child'&&activeLayout==='redesign'?'south':id);if(innerWidth<701)$('closeDesign').click();},toast});
+const studio=createDesignStudio({applyLayout,applyHome:applyHomeDesign,applyGaming:renderGamingPreferences,previewRoom:id=>{goRoom(id==='child'&&activeLayout!=='original'?'south':id);if(innerWidth<701)$('closeDesign').click();},toast});
 
 // Batch static architectural meshes without changing their metre-scale transforms.
 function batchStatic(group,exclude=null){group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert();const buckets=new Map(),original=[];group.traverse(o=>{if(!o.isMesh||!o.visible||Array.isArray(o.material))return;let a=o;while(a&&a!==group){if((Array.isArray(exclude)?exclude:[exclude]).includes(a))return;a=a.parent;}const key=o.material.uuid+'|'+o.castShadow+'|'+o.receiveShadow;if(!buckets.has(key))buckets.set(key,{material:o.material,cast:o.castShadow,receive:o.receiveShadow,geos:[]});let g=o.geometry.clone();if(g.index)g=g.toNonIndexed();const transform=new THREE.Matrix4().multiplyMatrices(inverse,o.matrixWorld);g.applyMatrix4(transform);if(transform.determinant()<0){for(const attr of Object.values(g.attributes)){const a=attr.array,k=attr.itemSize;for(let i=0;i<attr.count;i+=3)for(let j=0;j<k;j++){const u=(i+1)*k+j,v=(i+2)*k+j,t=a[u];a[u]=a[v];a[v]=t;}}}buckets.get(key).geos.push(g);original.push(o);});for(const o of original){o.parent.remove(o);o.geometry.dispose();}for(const b of buckets.values()){const geometry=mergeGeometries(b.geos,false);b.geos.forEach(g=>g.dispose());if(!geometry)continue;const mesh=new THREE.Mesh(geometry,b.material);mesh.castShadow=b.cast;mesh.receiveShadow=b.receive;group.add(mesh);}}
@@ -480,7 +495,8 @@ batchStatic(arch,[...Object.values(layoutWalls).map(v=>v.group),studyDivider,chi
 for(const g of [studyDivider,childDoor,originalMasterDoor,redesignMasterDoor])batchStatic(g,doorLeaves);
 for(const g of doorLeaves)batchStatic(g);
 setDoorView(false);
-batchStatic(leftB,[masterBed,study,originalMaster,originalNorth,originalSouth,originalLoungeExtras,originalFitout,redesignFurnishings]);batchStatic(originalMaster);batchStatic(originalNorth);batchStatic(originalSouth);batchStatic(originalLoungeExtras);batchStatic(originalFitout);
+batchStatic(leftB,[masterBed,study,originalMaster,originalNorth,originalSouth,originalLoungeExtras,originalFitout,redesignFurnishings,...Object.values(conceptScenes).map(g=>g.group)]);batchStatic(originalMaster);batchStatic(originalNorth);batchStatic(originalSouth);batchStatic(originalLoungeExtras);batchStatic(originalFitout);
+for(const g of Object.values(conceptScenes)){batchStatic(g.group,[g.day,g.guest]);batchStatic(g.day);g.guest.visible=true;batchStatic(g.guest);g.guest.visible=guestMode;}
 batchStatic(rightB);batchStatic(leftA);batchStatic(rightA);batchStatic(common);
 batchStatic(redesignFurnishings,[expandedGaming.room]);
 for(const g of [gaming,expandedGaming]){batchStatic(g.room,[g.day,g.guest,g.chair,g.shade]);batchStatic(g.day);g.guest.visible=true;batchStatic(g.guest);g.guest.visible=guestMode;batchStatic(g.chair);batchStatic(g.shade);}
