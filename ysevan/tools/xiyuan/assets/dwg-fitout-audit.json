@@ -119,6 +119,40 @@
         646,
         1200
       ]
+    },
+    {
+      "name": "主卧原床（头朝图左）",
+      "handles": [
+        "4766F3"
+      ],
+      "layer": "A-家具",
+      "box": [
+        0.1,
+        8.915996,
+        2.25,
+        10.718742
+      ],
+      "sizeMM": [
+        2150,
+        1803
+      ]
+    },
+    {
+      "name": "南卧原床（头朝图左）",
+      "handles": [
+        "4766F0"
+      ],
+      "layer": "A-家具",
+      "box": [
+        3.5,
+        8.993303,
+        5.5,
+        10.496049
+      ],
+      "sizeMM": [
+        2000,
+        1503
+      ]
     }
   ],
   "northRoom": {
@@ -167,7 +201,7 @@
       ],
       "layer": "COLUMN",
       "thicknessMM": 200,
-      "note": "与建筑图叠加的COLUMN闭合轮廓重合；图例包含柱/剪力墙/构造柱。保留待结构专业确认，不仅凭图层名认定具体受力类别"
+      "note": "与建筑图叠加的COLUMN闭合轮廓重合；图例包含柱/剪力墙/构造柱。业主现转述原设计／结构工程师确认两处可拆，模型仅研究中段开口；图层不独立决定具体受力类别"
     },
     "balconyDivider": {
       "handles": [
@@ -177,8 +211,16 @@
       ],
       "layer": "WALL",
       "thicknessMM": 100,
-      "note": "与北侧纵墙证据不同；WALL图层不等于可拆许可。需核对阳台连接构造、立面与原设计，现模型保留"
+      "note": "与北侧纵墙证据不同；WALL图层不等于可拆许可。业主现转述专业确认可拆，模型研究中段开口；端部、上部和外窗保留"
     }
+  },
+  "orientation": {
+    "source": "用户确认下方大阳台为南；原DWG两床长边沿X、枕头在左",
+    "masterBedHandle": "4766F3",
+    "southBedHandle": "4766F0",
+    "heads": "plan left",
+    "feet": "plan right",
+    "notSolarAnalysis": true
   },
   "xrefPathsFound": [],
   "limitations": [

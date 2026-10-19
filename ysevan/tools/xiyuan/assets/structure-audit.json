@@ -780,15 +780,63 @@
     ]
   ],
   "checks": {
-    "removedFootprintM2": 0.24,
-    "removedKnownColumnM2": 0.0,
+    "removedFootprintM2": 0.9498,
+    "cadColumnLayerRemovedM2": 0.47999392,
+    "removedProtectedColumnOutsideOwnerSpanM2": 0.0,
     "outsideTargetChangedM2": 0.0,
     "wetZoneChangedM2": 0.0,
-    "northStructuralDividerPreserved": true,
-    "withdrawnNorthOpeningProtectedM2": 0.319995,
-    "balconyDividerPreserved": true,
+    "northEndReturnsPreserved": true,
+    "northMiddleOpened": true,
+    "balconyMiddleOpened": true,
     "refugeOpeningPreserved": true,
-    "addedDryClosureM2": 0.09
+    "addedDryPartitionM2": 0.43,
+    "originalMasterDoorPreserved": true,
+    "noSouthSuiteConnection": true
+  },
+  "originalChecks": {
+    "removedFootprintM2": 0.1698,
+    "cadColumnLayerRemovedM2": 0.0,
+    "removedProtectedColumnOutsideOwnerSpanM2": 0.0,
+    "outsideTargetChangedM2": 0.0,
+    "wetZoneChangedM2": 0.0,
+    "northEndReturnsPreserved": true,
+    "northMiddleOpened": false,
+    "balconyMiddleOpened": true,
+    "refugeOpeningPreserved": true,
+    "addedDryPartitionM2": 0.0,
+    "originalMasterDoorPreserved": true,
+    "noSouthSuiteConnection": true
+  },
+  "ownerReportedWallClearance": {
+    "date": "2026-10-19",
+    "unit": "左侧B户型",
+    "userStatements": [
+      "框出的两面墙没有拆可以拆，是我问过的",
+      "原设计单位／结构工程师"
+    ],
+    "basis": "业主转述已向原设计单位／结构工程师确认两处框选墙可拆；不是本模型从图层独立作出的结构结论。",
+    "writtenConfirmationReceived": false,
+    "exactEndAndOverheadScopeConfirmed": false,
+    "modelBoundary": "仅按框选墙体中段研究打通，保留墙端、原上部构件示意；不扩大到梁柱、外窗、湿区或管线。上部保留高度仅为示意，须按专业确认细化。",
+    "northVerticalOpeningBox": [
+      2.8,
+      3.25,
+      3.0,
+      5.65
+    ],
+    "northBalconyOpeningBox": [
+      0.1,
+      3.85,
+      1.8,
+      3.95
+    ],
+    "notCovered": [
+      "南侧干区隔墙东移",
+      "原儿童房门洞轻质封闭",
+      "梁柱和墙端拆除",
+      "水管改线"
+    ],
+    "notConstructionAuthorization": true
   },
   "evidence": [
     {

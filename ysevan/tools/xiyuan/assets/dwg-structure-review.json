@@ -1,0 +1,442 @@
+{
+  "date": "2026-10-19",
+  "source": "建发玺院6#-1.dwg",
+  "sha256": "87c258e615f533e6e89cd4e60507886ca0e199d280f68a480775ecf24f2a1a76",
+  "readOnly": true,
+  "notUploaded": true,
+  "scope": {
+    "uniqueEntitiesInModelAndAllBlocks": 57840,
+    "blockDefinitions": 1889,
+    "insertAttributesRead": 275,
+    "layouts": [
+      {
+        "name": "Model",
+        "paperSpaceTableId": "2"
+      },
+      {
+        "name": "布局1",
+        "paperSpaceTableId": "38111"
+      }
+    ],
+    "nonEmptyPaperSpaceBlocks": [],
+    "xrefPaths": []
+  },
+  "structuralTitlePattern": "结构平面|结构布置|墙柱配筋|墙身配筋|剪力墙布置|梁配筋|板配筋|结构设计总说明|结施",
+  "matchingStructuralTitles": [],
+  "architecturalTitles": [
+    {
+      "handle": "121",
+      "layer": "GROUND",
+      "text": "平面剖切线以上构筑物在本层平面图上的投影线",
+      "pos": [
+        2771699.6675747493,
+        -110794.81960709248
+      ]
+    },
+    {
+      "handle": "25A",
+      "layer": "PUB_TEXT",
+      "text": "总平面图",
+      "pos": [
+        2722335.6911967965,
+        -179877.39363016566
+      ]
+    },
+    {
+      "handle": "470963",
+      "layer": "TITLE_TEXT",
+      "text": "7#楼K~A轴立面图",
+      "pos": [
+        3034067.4164443407,
+        -405952.66488320834
+      ]
+    },
+    {
+      "handle": "470965",
+      "layer": "TITLE_TEXT",
+      "text": "1~25轴立面图",
+      "pos": [
+        3034041.1374114603,
+        -404115.1154993855
+      ]
+    },
+    {
+      "handle": "470E87",
+      "layer": "TITLE_TEXT",
+      "text": "6#楼K~A轴立面图",
+      "pos": [
+        3034067.4164443407,
+        -408163.1505024092
+      ]
+    },
+    {
+      "handle": "471061",
+      "layer": "TITLE_TEXT",
+      "text": "7#楼局部立面图",
+      "pos": [
+        3034042.9703141414,
+        -509330.7855949482
+      ]
+    },
+    {
+      "handle": "471063",
+      "layer": "TITLE_TEXT",
+      "text": "25~1轴立面图",
+      "pos": [
+        3034041.1374114603,
+        -507941.5126456419
+      ]
+    },
+    {
+      "handle": "471207",
+      "layer": "TITLE_TEXT",
+      "text": "6#楼A~K轴立面图",
+      "pos": [
+        3034004.9677686132,
+        -510577.22597695247
+      ]
+    },
+    {
+      "handle": "47124A",
+      "layer": "TITLE_TEXT",
+      "text": "6#楼K~A轴立面图",
+      "pos": [
+        6067385.320364374,
+        -683208.0898576439
+      ]
+    },
+    {
+      "handle": "47124B",
+      "layer": "TITLE_TEXT",
+      "text": "7#楼A~K轴立面图",
+      "pos": [
+        3034031.724273377,
+        -511972.09380495053
+      ]
+    },
+    {
+      "handle": "47140B",
+      "layer": "TITLE_TEXT",
+      "text": "6#楼1-1剖面图",
+      "pos": [
+        2907043.6029940075,
+        -635198.232511986
+      ]
+    },
+    {
+      "handle": "4715C0",
+      "layer": "TITLE_TEXT",
+      "text": "7#楼1-1剖面图",
+      "pos": [
+        2905163.827580506,
+        -635198.232511986
+      ]
+    },
+    {
+      "handle": "478EC7",
+      "layer": "TITLE_TEXT",
+      "text": "四层平面图",
+      "pos": [
+        2976342.801098842,
+        -127965.7935563912
+      ]
+    },
+    {
+      "handle": "47C6CC",
+      "layer": "AD-NAME-DRWN",
+      "text": "7#楼1-1剖面图",
+      "pos": [
+        2957602.9105886146,
+        -623566.8495451212
+      ]
+    },
+    {
+      "handle": "47C6EF",
+      "layer": "AD-NAME-DRWN",
+      "text": "轴立面图",
+      "pos": [
+        2942040.33838037,
+        -405037.9315717901
+      ]
+    },
+    {
+      "handle": "47C6F7",
+      "layer": "AD-NAME-DRWN",
+      "text": "轴立面图",
+      "pos": [
+        2940786.8556745322,
+        -501395.88392773806
+      ]
+    },
+    {
+      "handle": "47C74F",
+      "layer": "AD-NAME-DRWN",
+      "text": "轴立面图",
+      "pos": [
+        2979761.5196305127,
+        -411244.38953755936
+      ]
+    },
+    {
+      "handle": "47C758",
+      "layer": "AD-NAME-DRWN",
+      "text": "轴立面图",
+      "pos": [
+        3002388.787636944,
+        -515589.3665078607
+      ]
+    },
+    {
+      "handle": "47C844",
+      "layer": "AD-NAME-DRWN",
+      "text": "7#楼局部立面图",
+      "pos": [
+        2933675.847247901,
+        -515028.15327027516
+      ]
+    },
+    {
+      "handle": "47C940",
+      "layer": "AD-NAME-DRWN",
+      "text": "6#楼商业剖面图",
+      "pos": [
+        2968115.3455708167,
+        -514848.2382728869
+      ]
+    },
+    {
+      "handle": "47CA17",
+      "layer": "AD-NAME-DRWN",
+      "text": "轴立面图",
+      "pos": [
+        3000792.6708869184,
+        -501017.4206947188
+      ]
+    },
+    {
+      "handle": "47CA82",
+      "layer": "AD-NAME-DRWN",
+      "text": "轴立面图",
+      "pos": [
+        3001479.378544169,
+        -398324.215891897
+      ]
+    },
+    {
+      "handle": "47CACD",
+      "layer": "AD-NAME-DRWN",
+      "text": "6#楼1-1剖面图",
+      "pos": [
+        2915988.8259571902,
+        -623566.8495451212
+      ]
+    },
+    {
+      "handle": "47E22C",
+      "layer": "AD-NAME-DRWN",
+      "text": "四~二十二层平面图",
+      "pos": [
+        2934924.403772384,
+        -117933.5113555796
+      ]
+    }
+  ],
+  "wallObjectEvidence": [
+    {
+      "location": "北侧两房间竖墙",
+      "objects": [
+        {
+          "handle": "48100E",
+          "type": "LINE",
+          "layer": "COLUMN",
+          "lineType": "",
+          "visible": true
+        },
+        {
+          "handle": "48100F",
+          "type": "LINE",
+          "layer": "COLUMN",
+          "lineType": "",
+          "visible": true
+        },
+        {
+          "handle": "481010",
+          "type": "LINE",
+          "layer": "COLUMN",
+          "lineType": "",
+          "visible": true
+        },
+        {
+          "handle": "481011",
+          "type": "LINE",
+          "layer": "COLUMN",
+          "lineType": "",
+          "visible": true
+        },
+        {
+          "handle": "481012",
+          "type": "LINE",
+          "layer": "COLUMN",
+          "lineType": "",
+          "visible": true
+        },
+        {
+          "handle": "481013",
+          "type": "LINE",
+          "layer": "COLUMN",
+          "lineType": "",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "location": "儿童房与封闭阳台横墙",
+      "objects": [
+        {
+          "handle": "480E5F",
+          "type": "LINE",
+          "layer": "WALL",
+          "lineType": "",
+          "visible": true
+        },
+        {
+          "handle": "480E60",
+          "type": "LINE",
+          "layer": "WALL",
+          "lineType": "",
+          "visible": true
+        },
+        {
+          "handle": "480E61",
+          "type": "LINE",
+          "layer": "WALL",
+          "lineType": "",
+          "visible": true
+        },
+        {
+          "handle": "480E62",
+          "type": "LINE",
+          "layer": "WALL",
+          "lineType": "",
+          "visible": true
+        },
+        {
+          "handle": "480E63",
+          "type": "LINE",
+          "layer": "WALL",
+          "lineType": "",
+          "visible": true
+        },
+        {
+          "handle": "480E64",
+          "type": "LINE",
+          "layer": "WALL",
+          "lineType": "",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "location": "南侧两卧之间干区隔墙",
+      "objects": [
+        {
+          "handle": "480E83",
+          "type": "LINE",
+          "layer": "WALL",
+          "lineType": "DASH",
+          "visible": true
+        },
+        {
+          "handle": "480E84",
+          "type": "LINE",
+          "layer": "WALL",
+          "lineType": "DASH",
+          "visible": true
+        }
+      ]
+    }
+  ],
+  "drawingNotes": [
+    {
+      "handle": "4743B6",
+      "text": "23.虚线示意的门和内隔墙均结合二次装修由业主自理."
+    },
+    {
+      "handle": "4743A1",
+      "text": "1.除特殊注明外，柱截面尺寸详结构专业。"
+    },
+    {
+      "handle": "47439B",
+      "text": "2.各种设备布置,穿管孔,管道井及埋件等具体做法应同时对照各专业图纸,以免遗漏."
+    },
+    {
+      "handle": "47439A",
+      "text": "9.室内水管留待二次装修包砌。"
+    }
+  ],
+  "assessment": {
+    "northVertical": "DWG证据：200mm COLUMN闭合轮廓及SOLID填充仍保留。业主补充向原设计单位／结构工程师确认可拆；据此仅研究中段开口，保留墙端与上部构件。尚未收到书面范围，不冒充独立结构认证。",
+    "northBalcony": "DWG证据：100mm WALL实体墙。业主转述专业单位确认可拆后，模型研究墙体中段打通；不涉及外窗、端柱、上部构件或水管。",
+    "southDryPartition": "两边线均为DASH，图旁说明4743B6提到虚线内隔墙结合二装。可研究家具/干区分配，不据此认定施工可拆；图旁说明来自复用块，仍需核实适用范围。"
+  },
+  "orientation": {
+    "basis": "用户2026-10-19确认：下方大阳台为南",
+    "south": "plan +Z",
+    "bedHead": "plan left / -X",
+    "bedFoot": "plan right / +X",
+    "bedHandles": [
+      "4766F3",
+      "4766F0"
+    ],
+    "notSolarAnalysis": true
+  },
+  "limitations": [
+    "目前成功读取的模型、布局、全部块定义及属性中，未定位到本层对应的结构配筋页；这不证明源文件绝对没有。",
+    "LibreDWG直接转换有68号警告；图层、可见标志、块展开和几何重合不是结构鉴定。",
+    "存在66个SPATIAL_FILTER对象，当前渲染未完整还原所有剪裁/遮罩语义；所查叠加块478532未暴露关联字典，不能据此认证剪裁完整性。",
+    "参考图为四至二十二层；实际住宅层号仍未得到业主确认。",
+    "没有解析完整给排水专业管网；模型现有湿区、水点位置锁定，不代表隐蔽管道已查全。"
+  ],
+  "neededForDemolition": "6#楼适用楼层的结构平面/剪力墙布置、墙柱编号及配筋详图，与轴线对应并经原设计或有资质单位现场复核。",
+  "officialReferences": [
+    {
+      "title": "Autodesk LIST：对象属性与坐标",
+      "url": "https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-Core/files/GUID-88FFCF22-5F25-48D9-BD43-4F248EFFCE17.htm"
+    },
+    {
+      "title": "住建部 住宅室内装饰装修管理办法，第五条",
+      "url": "https://www.mohurd.gov.cn/gongkai/zhengce/gzk/art/2022/art_17337_763893.html"
+    }
+  ],
+  "ownerReportedClearance": {
+    "date": "2026-10-19",
+    "unit": "左侧B户型",
+    "userStatements": [
+      "框出的两面墙没有拆可以拆，是我问过的",
+      "原设计单位／结构工程师"
+    ],
+    "basis": "业主转述已向原设计单位／结构工程师确认两处框选墙可拆；不是本模型从图层独立作出的结构结论。",
+    "writtenConfirmationReceived": false,
+    "exactEndAndOverheadScopeConfirmed": false,
+    "modelBoundary": "仅按框选墙体中段研究打通，保留墙端、原上部构件示意；不扩大到梁柱、外窗、湿区或管线。上部保留高度仅为示意，须按专业确认细化。",
+    "northVerticalOpeningBox": [
+      2.8,
+      3.25,
+      3.0,
+      5.65
+    ],
+    "northBalconyOpeningBox": [
+      0.1,
+      3.85,
+      1.8,
+      3.95
+    ],
+    "notCovered": [
+      "南侧干区隔墙东移",
+      "原儿童房门洞轻质封闭",
+      "梁柱和墙端拆除",
+      "水管改线"
+    ],
+    "notConstructionAuthorization": true
+  }
+}
