@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-19",
+  "date": "2026-10-20",
   "source": "建发玺院6#-1.dwg",
   "sha256": "87c258e615f533e6e89cd4e60507886ca0e199d280f68a480775ecf24f2a1a76",
   "readOnly": true,
@@ -375,7 +375,7 @@
     }
   ],
   "assessment": {
-    "northVertical": "DWG证据：200mm COLUMN闭合轮廓及SOLID填充仍保留。业主补充向原设计单位／结构工程师确认可拆；据此仅研究中段开口，保留墙端与上部构件。尚未收到书面范围，不冒充独立结构认证。",
+    "northVertical": "最新纠正：业主明确儿童房与北卧之间为承重墙、不可拆，覆盖此前可拆转述。200mm COLUMN轮廓和SOLID填充证据保留；本墙完整锁定，不开洞、不削薄。旧三房撤回。",
     "northBalcony": "DWG证据：100mm WALL实体墙。业主转述专业单位确认可拆后，模型研究墙体中段打通；不涉及外窗、端柱、上部构件或水管。",
     "southDryPartition": "两边线均为DASH，图旁说明4743B6提到虚线内隔墙结合二装。可研究家具/干区分配，不据此认定施工可拆；图旁说明来自复用块，仍需核实适用范围。"
   },
@@ -409,16 +409,15 @@
     }
   ],
   "ownerReportedClearance": {
-    "date": "2026-10-19",
+    "date": "2026-10-20",
     "unit": "左侧B户型",
     "userStatements": [
-      "框出的两面墙没有拆可以拆，是我问过的",
-      "原设计单位／结构工程师"
+      "原本的dwg文件的儿童房和北卧室之间的墙壁是承重墙，不能敲开"
     ],
-    "basis": "业主转述已向原设计单位／结构工程师确认两处框选墙可拆；不是本模型从图层独立作出的结构结论。",
+    "basis": "最新业主确认覆盖此前北侧竖墙可拆转述；该墙按承重墙锁定保留，不开洞、不削薄、不迁移。",
     "writtenConfirmationReceived": false,
     "exactEndAndOverheadScopeConfirmed": false,
-    "modelBoundary": "仅按框选墙体中段研究打通，保留墙端、原上部构件示意；不扩大到梁柱、外窗、湿区或管线。上部保留高度仅为示意，须按专业确认细化。",
+    "modelBoundary": "完整恢复儿童房与北卧之间原墙、原儿童房门洞；旧三房整体撤回。阳台横墙假设未扩展。原水点与管线不动。",
     "northVerticalOpeningBox": [
       2.8,
       3.25,
@@ -437,6 +436,43 @@
       "梁柱和墙端拆除",
       "水管改线"
     ],
-    "notConstructionAuthorization": true
+    "notConstructionAuthorization": true,
+    "history": [
+      {
+        "date": "2026-10-19",
+        "unit": "左侧B户型",
+        "userStatements": [
+          "框出的两面墙没有拆可以拆，是我问过的",
+          "原设计单位／结构工程师"
+        ],
+        "basis": "业主转述已向原设计单位／结构工程师确认两处框选墙可拆；不是本模型从图层独立作出的结构结论。",
+        "writtenConfirmationReceived": false,
+        "exactEndAndOverheadScopeConfirmed": false,
+        "modelBoundary": "仅按框选墙体中段研究打通，保留墙端、原上部构件示意；不扩大到梁柱、外窗、湿区或管线。上部保留高度仅为示意，须按专业确认细化。",
+        "northVerticalOpeningBox": [
+          2.8,
+          3.25,
+          3.0,
+          5.65
+        ],
+        "northBalconyOpeningBox": [
+          0.1,
+          3.85,
+          1.8,
+          3.95
+        ],
+        "notCovered": [
+          "南侧干区隔墙东移",
+          "原儿童房门洞轻质封闭",
+          "梁柱和墙端拆除",
+          "水管改线"
+        ],
+        "notConstructionAuthorization": true
+      }
+    ],
+    "northVerticalRemovable": false,
+    "northVerticalLocked": true,
+    "redesignWithdrawn": true,
+    "northBalconyStatus": "此前单独可拆转述暂未被本次纠正撤回；仍是条件假设，不由黑白颜色推断可拆。"
   }
 }

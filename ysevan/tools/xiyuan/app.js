@@ -1,3 +1,4 @@
+import {resolveLayout,WITHDRAWAL_NOTICE} from './layout-policy.js';
 import {MASTER_ENTRIES,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT} from './door-layout.js';
 import {LAYOUTS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js';
 import {createDesignStudio} from './design-studio.js';
@@ -327,7 +328,7 @@ function prepare(modeNew){mode=modeNew;if(mode==='walk'&&innerWidth<701&&!compac
  updateScopeUI();invalidate(1800,true);
 }
 function changeMode(m){prepare(m);if(m==='dollhouse'){const c=focusedCenter();tween(overviewPos(),[c[0],.1,c[1]]);currentRoom='';}
- else if(m==='plan'){const c=focusedCenter();tween([c[0],focusUnit==='floor'?(innerWidth<700?100:62):29,c[1]],[c[0],0,c[1]-.01]);$('roomTitle').textContent='图纸里的每一寸';$('roomDesc').textContent=activeLayout==='redesign'?'北侧两小房合成宽卧，电竞移到南侧；橙色为墙体调整范围，青绿为拟建隔墙。北侧依据业主转述专业意见，南侧移墙另待核验。':'保留四间独立房间，电竞书房阳台墙体中段已按专业咨询前提打通；点击房间进入。';$('roomKicker').textContent='PLAN VIEW · 1:1';}
+ else if(m==='plan'){const c=focusedCenter();tween([c[0],focusUnit==='floor'?(innerWidth<700?100:62):29,c[1]],[c[0],0,c[1]-.01]);$('roomTitle').textContent='图纸里的每一寸';$('roomDesc').textContent=activeLayout==='redesign'?'北侧两小房合成宽卧，电竞移到南侧；橙色为墙体调整范围，青绿为拟建隔墙。北侧依据业主转述专业意见，南侧移墙另待核验。':'儿童房与北卧间承重墙完整保留。旧三房已撤回；本页四房仅保留阳台横墙中段的条件示意。';$('roomKicker').textContent='PLAN VIEW · 1:1';}
  else if(m==='building'){tween([120,95-floorElevation(floor),140],[20.9,40-floorElevation(floor),4.6],2);toast('楼栋为体量示意；高亮为当前选择的 B 户型');}
  else if(m==='walk'){placeWalker(...unitEntry[focusUnit==='floor'?'bl':focusUnit]);currentRoom='';updateRoom();$('viewport').focus({preventScroll:true});toast('拖动环顾，W A S D 或方向键行走；也可点右侧房间定位');}
  else if(m==='tour'){focusUnit='bl';activeUnit='bl';updateScopeUI();tourTime=0;tourPaused=false;lastTourPhase=-1;$('pauseTour').textContent='Ⅱ 暂停';controls.enabled=false;camera.fov=48;camera.updateProjectionMatrix();}
@@ -451,7 +452,7 @@ document.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>selectUnit(b.d
 const doorLeaves=[];arch.traverse(q=>{if(q.userData.doorLeaf)doorLeaves.push(q);});
 function setDoorView(show){doorView=show?'open':'hidden';for(const g of doorLeaves)g.visible=show;
  for(const id of ['doorsBtn','studioDoors','studyDoor']){const b=$(id);b.setAttribute('aria-pressed',String(show));if(id==='doorsBtn'){b.querySelector('small').textContent=show?'门扇开':'门扇藏';b.title=show?'收起门扇，清楚看房':'显示开启的门扇，检查开门方向';}else b.textContent=show?'收起门扇 · 清楚看房':'显示门扇 · 检查开启';}
- $('doorViewNote').textContent=show?'已显示开启门扇 · 开启方向示意，非门五金施工图':'看房模式：收起使用中的门叶；三房拟封旧儿童房门另标示';invalidate(650,true);
+ $('doorViewNote').textContent=show?'已显示开启门扇 · 开启方向示意，非门五金施工图':'看房模式：仅收起门叶供观看；原儿童房门洞保留，旧三房停用';invalidate(650,true);
 }
 for(const id of ['doorsBtn','studioDoors','studyDoor'])$(id).onclick=()=>{setDoorView(doorView!=='open');toast(doorView==='hidden'?'仅为看房收起门扇；实际房门、门洞和消防要求仍保留。':'正在查看开启门扇。门叶不作为行走碰撞，开启净距需施工深化。');};
 $('masterEntryView').onclick=()=>{focusUnit='bl';activeUnit='bl';rebuildShortcuts();prepare('walk');const v=ENTRY_VIEWS[activeLayout];placeWalker(v.pos,v.look);currentRoom='';updateRoom();$('roomTitle').textContent='主卧 · 进出与收纳';$('roomDesc').textContent=activeLayout==='redesign'?'经原主卧门进入，卫1原门不动；不加小门厅，不封旧门。只研究南侧干区隔墙的局部东移，避免吞掉整个次卧。':'保留原门位与DWG床向，南窗在床侧。长柜前仍只有约0.52米，应按实测选薄床架和柜门系统。';$('closeDesign').click();$('viewport').focus({preventScroll:true});invalidate(1000);};
@@ -459,13 +460,13 @@ $('guestToggle').onclick=()=>{guestMode=!guestMode;for(const g of [gaming,expand
 $('studyDeskView').onclick=()=>{placeWalker(...Object.values(activeStudyViews().desk));updateRoom();invalidate();};
 $('studyBedView').onclick=()=>{placeWalker(...Object.values(activeStudyViews().guest));updateRoom();invalidate();};
 const originalRoomRecords=Object.fromEntries(rooms.filter(r=>['master','south','north','child'].includes(r.id)).map(r=>[r.id,{...r}]));
-function applyLayout(id){const next=id==='redesign'?'redesign':'original',changed=next!==activeLayout;activeLayout=next;const alt=next==='redesign';layoutWalls.original.group.visible=!alt;layoutWalls.redesign.group.visible=alt;originalMaster.visible=false;originalNorth.visible=false;originalSouth.visible=false;originalLoungeExtras.visible=false;originalFitout.visible=!alt;originalMasterDoor.visible=true;redesignMasterDoor.visible=false;childDoor.visible=!alt;studyDivider.visible=false;study.visible=!alt;redesignFurnishings.visible=alt;layoutMarkup.visible=alt;restoreGlobalLighting();
+function applyLayout(id){const next=resolveLayout(id),changed=next!==activeLayout;activeLayout=next;const alt=next==='redesign';layoutWalls.original.group.visible=!alt;layoutWalls.redesign.group.visible=alt;originalMaster.visible=false;originalNorth.visible=false;originalSouth.visible=false;originalLoungeExtras.visible=false;originalFitout.visible=!alt;originalMasterDoor.visible=true;redesignMasterDoor.visible=false;childDoor.visible=!alt;studyDivider.visible=false;study.visible=!alt;redesignFurnishings.visible=alt;layoutMarkup.visible=alt;restoreGlobalLighting();
  for(const [key,value]of Object.entries(originalRoomRecords))Object.assign(rooms.find(r=>r.id===key),value);
  for(const [key,value]of Object.entries(OWNER_ROOMS[next]))Object.assign(rooms.find(r=>r.id===key),value);
  for(const p of pins){if(!p.roomId)continue;const r=rooms.find(r=>r.id===p.roomId);p.pos.set(r.x,.35,r.z);p.el.textContent=r.name;p.el.setAttribute('aria-label','进入'+unitNames[r.unit]+r.name);}
  miniWalls.replaceChildren();const plan=alt?redesignData:originalData;for(let i=0;i<plan.wallPolygons.length;i++)svgEl('path',{d:svgPath(plan.wallPolygons[i])+(plan.wallHoles[i]||[]).map(svgPath).join(''),fill:'#7c8b70','fill-rule':'evenodd'},miniWalls);
  if(alt){for(const p of redesignData.removedPolygons)svgEl('path',{d:svgPath(p),fill:'#cc8d4a'},miniWalls);for(const p of redesignData.addedPolygons||[])svgEl('path',{d:svgPath(p),fill:'#59958b'},miniWalls);}
- document.querySelectorAll('[data-layout]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.layout===next)));$('layoutSummary').textContent=LAYOUTS[next].summary;$('storageSummary').textContent=alt?'主卧衣柜：4.20米｜北侧宽卧：3.85米｜合计8.05米，展示柜另计':'主卧长柜：4.30米｜南卧：2.00米｜均深0.60米；北卧保留书桌';$('layoutWarning').textContent=LAYOUTS[next].warning;$('layoutFlag').textContent=LAYOUTS[next].name+(alt?' · 北侧打通':' · 阳台连通');$('layoutFlag').classList.toggle('conditional',alt);$('scaleNote').textContent=alt?'1 单位 = 1 米 · 北侧据专业咨询，南侧移墙待核验':'1 单位 = 1 米 · DWG尺度，阳台连通示意';
+ document.querySelectorAll('[data-layout]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.layout===next)));$('layoutSummary').textContent=LAYOUTS[next].summary;$('storageSummary').textContent=alt?'主卧衣柜：4.20米｜北侧宽卧：3.85米｜合计8.05米，展示柜另计':'主卧长柜：4.30米｜南卧：2.00米｜均深0.60米；北卧保留书桌';$('layoutWarning').textContent=LAYOUTS[next].warning;$('layoutFlag').textContent=LAYOUTS[next].name+(alt?' · 已撤回':' · 承重墙保留');$('layoutFlag').classList.toggle('conditional',alt);$('scaleNote').textContent=alt?'1 单位 = 1 米 · 北侧据专业咨询，南侧移墙待核验':'1 单位 = 1 米 · 北侧承重墙锁定保留';
  rebuildMasterBed();rebuildShortcuts();updateScopeUI();if(changed){currentRoom='';focusUnit='bl';activeUnit='bl';changeMode('plan');}invalidate(1500,true);
 }
 $('layoutPlanView').onclick=()=>{focusUnit='bl';selectUnit('bl');changeMode('plan');};

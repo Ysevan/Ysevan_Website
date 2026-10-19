@@ -1,0 +1,17 @@
+{
+  "version": "9-north-wall-locked",
+  "status": "comparison-withdrawn",
+  "reason": "北侧承重墙禁止打通，旧三房整体撤回；不再提供两套有效方案的尺寸比较。",
+  "availableLayouts": [
+    "original"
+  ],
+  "withdrawnLayouts": [
+    "redesign"
+  ],
+  "sourceHashes": {
+    "layout-data.js": "997801a38aaaf5da61545156f6a6b903f03b76e36fb43570c724dd4df5e3a29f",
+    "assets/layout-original.json": "9f0584f807c6581531c91d8049802eb130ef2db4ff8ba8570afe5ac2d48cef06",
+    "assets/layout-redesign.json": "37375c0b7b94d16951c16035e3a03d00b274cada36b625fd3ac8efd3a26dd3f2",
+    "assets/owner-wall-confirmation.json": "745eb14e2711b0007f64000387ed94a04483b9e39b49f9c9b47dca2f98cf542b"
+  }
+}

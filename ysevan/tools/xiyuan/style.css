@@ -49,3 +49,5 @@ body[data-mode=walk] .wordmark{background:#f8f7f1ed;border-radius:5px;padding:7p
 .gaming-color-row[hidden]{display:none!important}
 
 @media(max-width:700px){body[data-room="child"] #roomDesc{display:none}body[data-room="child"] #miniPanel:has(#minimap[hidden]){top:205px;width:166px}}
+
+.layout-buttons button:disabled{opacity:.65;cursor:not-allowed;background:#ece4d9;border-style:dashed}.layout-buttons button:disabled b{color:#963f35}
