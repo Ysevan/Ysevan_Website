@@ -2,7 +2,10 @@ import {resolveLayout} from './layout-policy.js?v=d3fe69be91';
 // Pure, validated design data. No CAD, DOM or storage side effects.
 export const DESIGN_KEY='xiyuan-design-studio-v1';
 export const COLOR_FIELDS=[['wall','墙面'],['oak','主要木色'],['floor','地面'],['linen','沙发 / 床品'],['olive','点缀软装'],['terracotta','第二点缀'],['stone','台面'],['rug','地毯']];
-export const LIGHTING={day:{label:'日间',color:'#fff2d2',sun:3.25,pos:[-5,15,22],hemi:2.1},warm:{label:'暖阳',color:'#ffdfad',sun:3.3,pos:[-15,8,24],hemi:1.9},soft:{label:'柔光',color:'#edf3f4',sun:1.25,pos:[12,20,5],hemi:2.6}};
+// Tuned for NeutralToneMapping (2026-10-21): living room, master bedroom, kitchen and whole-floor views stay within 3%
+// of the former ACES brightness. Sky light is neutral and dimmer, ground (bounce) light brighter; sun and fill are stronger.
+// Hemisphere ×1.2 after indoor sun shadows were fitted to the unit (app.js fitSun): sharper shadows leak less light indoors.
+export const LIGHTING={day:{label:'日间',color:'#fff4d8',sun:4.04,pos:[-5,15,22],hemi:2,sky:'#c7c7c7',ground:'#f8f4e8',fill:1.28,env:.24,exposure:1.149},warm:{label:'暖阳',color:'#ffe3ba',sun:4.1,pos:[-15,8,24],hemi:1.81,sky:'#c7c7c7',ground:'#f8f4e8',fill:1.28,env:.24,exposure:1.243},soft:{label:'柔光',color:'#fafbfc',sun:1.25,pos:[12,20,5],hemi:2.74,sky:'#c3c3c3',ground:'#f8f4e8',fill:.9,env:.31,exposure:1.035}};
 export const PRESETS={
  ji:{letter:'A',name:'全季式原木',tag:'温润 · 东方 · 留白',brief:'浅橡木、暖白与青灰，木纹地面搭配织物和小茶台。家具重秩序，空间保持温馨。',source:'https://www.aseantop.com/post/29903',sourceName:'全季5.0「晓山青」参考',home:{colors:{wall:'#f2eee4',oak:'#d0b896',floor:'#e1d1b6',linen:'#e8e2d5',olive:'#91a193',terracotta:'#b5a183',stone:'#dcd6c8',rug:'#c6c9bb'},floorFinish:'wood',lighting:'day',brightness:100}},
  soft:{letter:'B',name:'柔和极简',tag:'燕麦 · 暖白 · 低对比',brief:'米白、燕麦与浅石纹地面，淡化木色与装饰对比。轻盈安静，把质感留给织物和柔光。',source:'https://normcph.com/project/sandbjerg-residence/',sourceName:'Norm · Sandbjerg Residence 参考',home:{colors:{wall:'#f3f0e9',oak:'#c5baa8',floor:'#e4dcd0',linen:'#e4ded4',olive:'#b3b7a8',terracotta:'#ad9885',stone:'#e1ddd2',rug:'#d9d5cc'},floorFinish:'stone',lighting:'soft',brightness:100}},

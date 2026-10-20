@@ -109,7 +109,7 @@ export function createConceptRoom(id,plan,{box,materials:M}){
  B(cx,.50,cz+.17,.46,.42,.065,M.linen,group,.025);
  B(cx,.09,cz,.035,.31,.035,M.metal);
  for(const s of [-1,1]){B(cx+s*.16,.02,cz,.31,.025,.025,M.metal);B(cx,.02,cz+s*.16,.025,.025,.31,M.metal);}
- const accent=new THREE.PointLight('#ffe5b7',0,2.4,2);
+ const accent=new THREE.PointLight('#ffe5b7',0,2.4,2);accent.visible=false;
  accent.position.set(id==='balanced'?6.0:3.9,1.5,id==='central'?8.0:9.4);group.add(accent);
  function setMood(mood,preferences={}){
   screenMaterial.color.set(mood==='rest'?'#404a44':mood==='game'?'#82b7ae':'#9db0a4');

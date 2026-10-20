@@ -21,7 +21,7 @@ export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlan
  B(.95,.82,2.98,.40,.023,.28,device);B(.95,.79,2.98,.31,.03,.17,G.metal);
  const laptop=B(.95,.85,2.84,.40,.26,.017,device);laptop.rotation.x=-.12;
  const screenMaterial=()=>new THREE.MeshBasicMaterial({color:'white',toneMapped:false});
- const screens=[B(1.95,.977,2.791,.591,.334,.004,screenMaterial()),B(.95,.867,2.853,.37,.224,.004,screenMaterial())];screens.forEach(q=>q.castShadow=false);
+ const screens=[B(1.95,.977,2.791,.591,.334,.004,screenMaterial()),B(.95,.867,2.853,.37,.224,.004,screenMaterial())];screens.forEach(q=>{q.castShadow=false;q.geometry.setAttribute('uv',new THREE.BoxGeometry().getAttribute('uv'));});// wallpapers fill the face: 0–1 UVs, not box()'s metres
  function wallpaper(kind){const c=document.createElement('canvas');c.width=640;c.height=360;const ctx=c.getContext('2d'),g=ctx.createLinearGradient(0,0,640,360);g.addColorStop(0,'#6c7e72');g.addColorStop(1,'#bbae91');ctx.fillStyle=g;ctx.fillRect(0,0,640,360);ctx.fillStyle='#ded9c7';ctx.beginPath();ctx.arc(455,130,95,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f7f3e7';ctx.font='28px sans-serif';ctx.fillText(kind==='game'?'PLAY AT HOME':'HOME STUDIO',36,285);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;}
  const wallpapers={game:wallpaper('game'),focus:wallpaper('focus')};
  B(1.79,.765,3.105,.8,.006,.34,G.olive,work,.018);
@@ -49,7 +49,7 @@ export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlan
  function car(x,y,z,color){const cm=new THREE.MeshStandardMaterial({color,roughness:.5});B(x,y,z,.31,.065,.14,cm,collection,.025);B(x,y+.05,z,.17,.055,.125,device,collection,.018);for(const X of [x-.10,x+.10])for(const Z of [z-.073,z+.073]){const q=cyl(X,y-.015,Z,.033,.017,device,collection);q.rotation.x=Math.PI/2;}}
  car(.55,.54,5.64,'#9e7860');car(1.23,.54,5.64,'#8b9d94');car(.55,.94,5.64,'#c4b29a');car(1.23,.94,5.64,'#9c9eaf');
  for(const y of [1.30,1.68])for(const x of [.48,.93,1.38]){B(x,y,5.64,.10,.13,.09,G.olive,collection,.025);cyl(x,y+.13,5.64,.065,.10,G.linen,collection);}
- const accent=new THREE.PointLight('#ffe5b7',0,2.4,2);accent.position.set(.95,1.4,5.3);accent.castShadow=false;collection.add(accent);
+ const accent=new THREE.PointLight('#ffe5b7',0,2.4,2);accent.position.set(.95,1.4,5.3);accent.castShadow=false;accent.visible=false;collection.add(accent);
  if(south){work.position.set(3.1,0,4.95);chair.position.set(3.1,0,4.95);for(const g of [day,guest]){g.rotation.y=Math.PI/2;g.position.set(.1,0,11.5);}collection.rotation.y=Math.PI/2;collection.position.set(.6,0,10.35);shade.visible=false;}
  let lastScreen='';function setMood(id,preferences={}){const s=GAMING_MODES[id]||GAMING_MODES.focus;shade.visible=!south&&id==='rest';warm.color.set(s.primary).multiplyScalar((preferences.strength??45)/100);if(lastScreen!==s.screen){for(const q of screens){q.material.map=wallpapers[s.screen]||null;q.material.color.set(s.screen==='off'?'#343b37':'white');q.material.needsUpdate=true;}lastScreen=s.screen;}accent.color.set(s.primary);}
  // Do not mutate the shared home's material properties on traversing a room.

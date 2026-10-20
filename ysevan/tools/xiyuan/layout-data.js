@@ -18,6 +18,11 @@ export const BAY={opening:{x0:.8,x1:2.8,face:11.45,glass:12.105,sill:.5,head:2.3
 export const BAY_BOXES=[BAY.desk.niche,BAY.desk.knee,BAY.shelf.box];
 // Slim open side cabinet on the south-bedroom wardrobe's east end (scarves, bags), clear of the south door sweep.
 export const SOUTH_SIDE_CABINET={box:[5.5,7.55,5.65,8.15],height:2.76,levels:[.06,.5,.9,1.3,1.7,2.1]};
+// Owner-only bedroom decor per layout (2026-10-21); [x0,z0,x1,z1,y0,y1] in metres. Wall pieces sit on the main bed's headboard wall, centred on the bed:
+// the 8 mm timber wainscot behind the headboard and above the bed plinth (which runs to the wall), the art above it (cut with the walls above 1.28 m). The rug runs under a bed foot only, clear of desks, chairs, cabinets and door sweeps.
+// C (central, v13) puts the main bed in the south room with its head on the east wall, so the wall pieces face west there and the rug runs under its west foot.
+const MASTER_WALL={bed:'master',room:'master',head:'west',wainscot:[.1,8.54,.108,11.06,.32,1.17],art:[.1,9.3,.158,10.3,1.32,1.98]};
+export const ROOM_DECOR={original:{...MASTER_WALL,rug:{room:'south',box:[4.25,8.45,6.2,11.05],color:'#c6c6af'}},balanced:{...MASTER_WALL,rug:{room:'south',box:[4.94,9.25,5.94,11.25],color:'#c6c6af'}},family:{...MASTER_WALL,rug:{room:'south',box:[4.35,9.05,5.75,11.15],color:'#c6c6af'}},central:{bed:'southMaster',room:'south',head:'east',wainscot:[6.492,8.64,6.5,11.16,.32,1.17],art:[6.442,9.4,6.5,10.4,1.32,1.98],rug:{room:'south',box:[3.6,8.7,5.8,11.1],color:'#c6c6af'}}};
 export const layoutBoxes=id=>[...Object.values(ROOM_FURNITURE[id]),...WARDROBES[id].map(w=>w.box),...BAY_BOXES,...(id==='original'?[SOUTH_SIDE_CABINET.box]:[])];
 export const REDESIGN_VIEWS={desk:{pos:[5.7,1.62,8.9],look:[4.6,1.1,7.9]},guest:{pos:[5.7,1.62,11.1],look:[5.3,1.1,9.7]},master:{pos:[2.85,1.62,10.9],look:[1.4,1,9.5]}};
 export const NORTH_ROOM={name:'北卧 · 单人房',rect:[3,3.15,5.3,5.85],pos:[4.75,1.62,5.45],look:[3.9,1,3.95],desc:'DWG墙线间约2.30×2.70米，不含凸窗。1.20×2.00米床垫，薄床架1.26×2.08米；西侧1.20×0.60米书桌。床尾0.20米不作通道，东侧进出；尺寸非现场实测。'};
