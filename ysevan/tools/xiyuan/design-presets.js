@@ -1,4 +1,4 @@
-import {resolveLayout} from './layout-policy.js?v=53150a21a1';
+import {resolveLayout} from './layout-policy.js?v=d3fe69be91';
 // Pure, validated design data. No CAD, DOM or storage side effects.
 export const DESIGN_KEY='xiyuan-design-studio-v1';
 export const COLOR_FIELDS=[['wall','墙面'],['oak','主要木色'],['floor','地面'],['linen','沙发 / 床品'],['olive','点缀软装'],['terracotta','第二点缀'],['stone','台面'],['rug','地毯']];

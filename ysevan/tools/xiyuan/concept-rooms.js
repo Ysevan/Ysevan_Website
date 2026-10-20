@@ -20,18 +20,32 @@ export function createConceptRoom(id,plan,{box,materials:M}){
   B(cx+.30,.49,cz,.62,.02,md*.9,M.olive,parent,.01);
  }
  function desk(item){
-  const [x,z,X,Z]=item.box,longX=X-x>Z-z,g=new THREE.Group();g.position.set((x+X)/2,0,(z+Z)/2);g.rotation.y=longX?0:Math.PI/2;itemParent.add(g);
-  B(0,.72,0,2,.04,.7,M.oak,g,.015);
-  for(const u of [-.92,.92])for(const v of [-.26,.26])B(u,0,v,.035,.72,.035,M.metal,g);
-  B(.5,.78,-.20,.60,.36,.032,M.dark,g,.015);B(.5,.84,-.176,.56,.30,.004,screenMaterial,g);
-  B(.5,.73,-.20,.025,.08,.022,M.metal,g);
-  B(-.53,.78,-.12,.43,.025,.28,M.dark,g,.012);
-  const laptop=B(-.53,.81,-.25,.43,.27,.018,M.dark,g,.01);laptop.rotation.x=-.13;
-  B(-.53,.83,-.238,.40,.23,.003,screenMaterial,g);
-  B(.08,.76,.15,.41,.025,.16,M.dark,g,.013);B(.62,.76,.15,.09,.025,.13,M.white,g,.02);
+  const [x,z,X,Z]=item.box,longX=X-x>Z-z,length=Math.max(X-x,Z-z),depth=Math.min(X-x,Z-z),g=new THREE.Group();g.position.set((x+X)/2,0,(z+Z)/2);g.rotation.y=longX?0:Math.PI/2;itemParent.add(g);
+  B(0,.72,0,length,.04,depth,M.oak,g,.015);
+  for(const u of [-length/2+.08,length/2-.08])for(const v of [-depth/2+.09,depth/2-.09])B(u,0,v,.035,.72,.035,M.metal,g);
+  const monitor=length*.25,laptopX=-length*.25;
+  B(monitor,.78,-.18,.60,.36,.032,M.dark,g,.015);B(monitor,.84,-.156,.56,.30,.004,screenMaterial,g);
+  B(monitor,.73,-.18,.025,.08,.022,M.metal,g);
+  B(laptopX,.78,-.10,.43,.025,.28,M.dark,g,.012);
+  const laptop=B(laptopX,.81,-.22,.43,.27,.018,M.dark,g,.01);laptop.rotation.x=-.13;
+  B(laptopX,.83,-.208,.40,.23,.003,screenMaterial,g);
+  B(.06,.76,.14,.41,.025,.16,M.dark,g,.013);B(length/2-.19,.76,.14,.09,.025,.13,M.white,g,.02);
  }
  function collection(item){
-  const [x,z,X,Z]=item.box,cx=(x+X)/2,cz=(z+Z)/2,front=x>5?x+.012:X-.012;
+  const [x,z,X,Z]=item.box,cx=(x+X)/2,cz=(z+Z)/2;
+  if(X-x>Z-z){
+   const w=X-x,d=Z-z,front=z+.012;
+   B(cx,0,cz,w,.46,d,M.oak);B(cx,.46,cz,w,1.64,d,M.white);
+   for(const xx of [x+.015,X-.015])B(xx,.46,cz,.025,1.64,d,M.oak);
+   for(const y of [.47,.88,1.28,1.68,2.07])B(cx,y,cz,w-.05,.022,d,M.oak);
+   B(cx,.49,front,w-.05,1.54,.016,M.glass);
+   for(const yy of [.58,.99,1.39,1.79])for(const xx of [x+.38,X-.38]){
+    B(xx,yy,cz,.19,.055,.21,M.olive,itemParent,.02);B(xx,yy+.05,cz,.11,.045,.13,M.dark,itemParent,.016);
+   }
+   for(const xx of [x+.38,X-.38])B(xx,1.08,front+.003,.008,.15,.014,M.brass);
+   return;
+  }
+  const front=x>5?x+.012:X-.012;
   B(cx,0,cz,X-x,.46,Z-z,M.oak);
   B(cx,.46,cz,X-x,1.64,Z-z,M.white);
   for(const zz of [z+.015,Z-.015])B(cx,.46,zz,X-x,1.64,.025,M.oak);
@@ -60,14 +74,14 @@ export function createConceptRoom(id,plan,{box,materials:M}){
   else if(item.kind==='guest'){group.remove(part);sofa(item,guest,true);}
  }
  itemParent=group;
- const chairBox=id==='balanced'?[4.92,8.17,5.48,8.73]:[4.27,8.37,4.83,8.93];
+ const chairBox=plan.chairBox|| (id==='balanced'?[4.92,8.17,5.48,8.73]:[4.27,8.37,4.83,8.93]);
  const [x,z,X,Z]=chairBox,cx=(x+X)/2,cz=(z+Z)/2;
  B(cx,.40,cz,.48,.09,.46,M.olive,group,.045);
  B(cx,.50,cz+.17,.46,.42,.065,M.linen,group,.025);
  B(cx,.09,cz,.035,.31,.035,M.metal);
  for(const s of [-1,1]){B(cx+s*.16,.02,cz,.31,.025,.025,M.metal);B(cx,.02,cz+s*.16,.025,.025,.31,M.metal);}
  const accent=new THREE.PointLight('#ffe5b7',0,2.4,2);
- accent.position.set(id==='balanced'?6.0:3.9,1.5,9.4);group.add(accent);
+ accent.position.set(id==='balanced'?6.0:3.9,1.5,id==='central'?8.0:9.4);group.add(accent);
  function setMood(mood,preferences={}){
   screenMaterial.color.set(mood==='rest'?'#404a44':mood==='game'?'#82b7ae':'#9db0a4');
   accent.color.set(preferences.primary||'#ffe5b7');

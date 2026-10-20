@@ -1,0 +1,207 @@
+{
+  "version": "12-centralized-storage-master-gaming",
+  "created": "2026-10-21",
+  "sourceSHA256": "87c258e615f533e6e89cd4e60507886ca0e199d280f68a480775ecf24f2a1a76",
+  "wallSourceSHA256": "9f0584f807c6581531c91d8049802eb130ef2db4ff8ba8570afe5ac2d48cef06",
+  "northWallLocked": true,
+  "waterPointsUnchanged": true,
+  "newWallChanges": [],
+  "conditionalBalcony": "沿用原四房的封闭阳台横墙中段开口条件；未新增拆改。仅保留此前口头转述，不视为当前施工许可。梁、墙端、窗下墙、立面、水点不动；合法居住用途、保温、消防和现场高差需专项核验。不成立时本北卧布置需重做，不强塞落地。",
+  "layout": {
+    "name": "04 · C 集中收纳",
+    "program": "三卧＋南侧主卧兼电竞＋北东衣帽间",
+    "furniture": [
+      {
+        "id": "southMaster",
+        "name": "南侧主卧 1.8 米床",
+        "kind": "bed",
+        "box": [
+          3.5,
+          8.9,
+          5.68,
+          10.9
+        ],
+        "outerSize": [
+          2.18,
+          2
+        ],
+        "mattress": [
+          1.8,
+          2
+        ],
+        "head": "west"
+      },
+      {
+        "id": "formerMaster",
+        "name": "原主卧改普通卧室 1.5 米床",
+        "kind": "bed",
+        "box": [
+          0.1,
+          8.95,
+          2.28,
+          10.65
+        ],
+        "outerSize": [
+          2.18,
+          1.7
+        ],
+        "mattress": [
+          1.5,
+          2
+        ],
+        "head": "west"
+      },
+      {
+        "id": "northWest",
+        "name": "北西卧 1.5 米床",
+        "kind": "bed",
+        "box": [
+          0.12,
+          3.02,
+          2.2,
+          4.58
+        ],
+        "outerSize": [
+          2.08,
+          1.56
+        ],
+        "mattress": [
+          1.5,
+          2
+        ],
+        "head": "west"
+      },
+      {
+        "id": "gamingDesk",
+        "name": "主卧电竞桌",
+        "kind": "desk",
+        "box": [
+          3.5,
+          7.25,
+          4.15,
+          8.85
+        ],
+        "outerSize": [
+          0.65,
+          1.6
+        ],
+        "equipment": [
+          "ROG 笔记本",
+          "27寸显示器",
+          "夜魔X键盘",
+          "鼠标"
+        ]
+      },
+      {
+        "id": "collection",
+        "name": "盲盒与车模展示柜",
+        "kind": "display",
+        "box": [
+          0.1,
+          5.39,
+          1.6,
+          5.824
+        ],
+        "outerSize": [
+          1.5,
+          0.434
+        ],
+        "face": "north",
+        "height": 2.1
+      },
+      {
+        "id": "cloakWest",
+        "name": "衣帽间西侧衣柜",
+        "kind": "wardrobe",
+        "box": [
+          3,
+          3.2,
+          3.6,
+          5.8
+        ],
+        "outerSize": [
+          0.6,
+          2.6
+        ],
+        "length": 2.6,
+        "depth": 0.6,
+        "face": "east",
+        "height": 2.76,
+        "topBand": 0.5
+      },
+      {
+        "id": "cloakEast",
+        "name": "衣帽间东侧衣柜",
+        "kind": "wardrobe",
+        "box": [
+          4.7,
+          3.2,
+          5.3,
+          4.9
+        ],
+        "outerSize": [
+          0.6,
+          1.7
+        ],
+        "length": 1.7,
+        "depth": 0.6,
+        "face": "west",
+        "height": 2.76,
+        "topBand": 0.5
+      }
+    ],
+    "chairBox": [
+      4.22,
+      7.78,
+      4.78,
+      8.34
+    ]
+  },
+  "wardrobeTotalM": 4.3,
+  "priorWardrobeTotalM": 7,
+  "clothesCapacityCaution": "4.30米为柜体延米，不等于三间卧室所需衣物容量；比方案A少2.70米。高柜2.76米与0.50米顶柜须现场核验梁、风管。展示柜不计入衣柜。",
+  "roomAreasM2": {
+    "south": 12.67,
+    "formerMaster": 10.89,
+    "northWestConditional": 8.95,
+    "cloak": 6.21
+  },
+  "metrics": [
+    {
+      "id": "southMasterEast",
+      "label": "南侧主卧床尾至东墙",
+      "value": 0.82,
+      "unit": "m"
+    },
+    {
+      "id": "southMasterSouth",
+      "label": "南侧主卧南侧床边",
+      "value": 0.55,
+      "unit": "m"
+    },
+    {
+      "id": "secondarySides",
+      "label": "原主卧改普通卧室床侧",
+      "value": 0.8,
+      "unit": "m"
+    },
+    {
+      "id": "secondaryFoot",
+      "label": "原主卧改普通卧室床尾至原墙",
+      "value": 1.12,
+      "unit": "m"
+    },
+    {
+      "id": "northWestCabinet",
+      "label": "北西卧床边至展示柜",
+      "value": 0.81,
+      "unit": "m"
+    },
+    {
+      "id": "cloakAisle",
+      "label": "衣帽间双柜中间",
+      "value": 1.1,
+      "unit": "m"
+    }
+  ]
+}
