@@ -1,10 +1,10 @@
 import {resolveLayout,WITHDRAWAL_NOTICE} from './layout-policy.js?v=d3fe69be91';
 import {MASTER_ENTRIES,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT} from './door-layout.js?v=2fc6d7b048';
-import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js?v=8f9f3283af';
+import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js?v=f41b5854f9';
 import {createDesignStudio} from './design-studio.js?v=9924b02446';
-import {createConceptRoom} from './concept-rooms.js?v=9283ae1ad6';
+import {createConceptRoom} from './concept-rooms.js?v=5f2a428661';
 import {LIGHTING} from './design-presets.js?v=f0ac7e68d4';
-import {createGamingRoom} from './gaming-room.js?v=4ea0fe8603'; import {createBayWindow} from './bay-window.js?v=2b0e841252'; import {createSideCabinet} from './storage-fitout.js?v=ed30ab1fd6';
+import {createGamingRoom} from './gaming-room.js?v=4ea0fe8603'; import {createBayWindow} from './bay-window.js?v=571f487a00'; import {createSideCabinet} from './storage-fitout.js?v=4c48e2471e';
 import {createFittedWardrobe} from './fitted-wardrobe.js?v=ee30778e44';
 import {STUDY_COLLISIONS,STUDY_VIEWS,GAMING_MODES,studyBoxes} from './design-data.js?v=d56f16cb48';
 import {createNavigator,pointIn} from './navigation.js?v=3af6116843';
@@ -22,8 +22,9 @@ let data;
 try { data=await (await fetch('./assets/plan-data.json?v=976f9c6492')).json(); } catch(e){$('loading').hidden=true;$('error').hidden=false;throw e;}
 const redesignData=await (await fetch('./assets/layout-redesign.json?v=37375c0b7b')).json();
 const originalData=await (await fetch('./assets/layout-original.json?v=9f0584f807')).json();
+const centralWallData=await (await fetch('./assets/layout-central.json?v=9bd7fbcf59')).json();
 const conceptData=await (await fetch('./assets/balanced-concept.json?v=28d0ccb4d2')).json();
-const centralData=await (await fetch('./assets/central-concept.json?v=941d19cf33')).json();
+const centralData=await (await fetch('./assets/central-concept.json?v=ca41ba0942')).json();
 conceptData.layouts.central=centralData.layout;
 let activeLayout='original';const layoutBedWidths={original:1.8,redesign:1.8};
 const scene=new THREE.Scene(); scene.background=new THREE.Color('#e7e4db');
@@ -69,7 +70,7 @@ slab(footprint,-.18,.18,M.floor,house,floorHoles);
 box(7.675,.001,1.7,2.65,.012,3.4,M.tile);box(5.9,.002,4.55,1.5,.012,2.7,M.tile);box(.95,.002,7.02,1.9,.012,2.16,M.tile);box(6.95,.001,12.45,7.2,.012,1.8,M.tile);box(1.4,.002,3.1,2.8,.012,1.65,M.tile);
 const structuralPolys=data.wallPolygons.map((points,i)=>({points,holes:data.wallHoles[i]||[]}));
 const layoutWalls={};
-for(const [id,plan] of [['original',originalData],['redesign',redesignData]]){const group=new THREE.Group(),caps=new THREE.Group();arch.add(group);group.add(caps);layoutWalls[id]={group,caps};group.visible=id==='original';for(let i=0;i<plan.wallPolygons.length;i++){slab(plan.wallPolygons[i],0,2.78,M.wall,group,plan.wallHoles[i]||[]);slab(plan.wallPolygons[i],0,.008,M.cap,caps,plan.wallHoles[i]||[]);}caps.position.y=1.28;wallCaps.push(caps);}
+for(const [id,plan] of [['original',originalData],['redesign',redesignData],['central',centralWallData]]){const group=new THREE.Group(),caps=new THREE.Group();arch.add(group);group.add(caps);layoutWalls[id]={group,caps};group.visible=id==='original';for(let i=0;i<plan.wallPolygons.length;i++){slab(plan.wallPolygons[i],0,2.78,M.wall,group,plan.wallHoles[i]||[]);slab(plan.wallPolygons[i],0,.008,M.cap,caps,plan.wallHoles[i]||[]);}caps.position.y=1.28;wallCaps.push(caps);}
 // Preserve upper bands as placeholders, not verified beam dimensions.
 for(const id of ['original','redesign']){
  const g=layoutWalls[id].group;box(.95,2.30,3.9,1.7,.48,.1,M.wall,g);
@@ -101,6 +102,7 @@ const childDoor=doorway(2.25,5.9,.9);childDoor.scale.x=-1;configuredDoor(NORTH_E
 // The refuge doorset is retained at its original opening; not replaced with a decorative sliding door.
 configuredDoor(REFUGE_ENTRY);
 const southDoor=configuredDoor({x:6,z:7.1,width:.9,along:'x',swing:-1,mirror:true});doorway(5.85,4.9,.8);doorway(10.65,2,1.1,'z');
+const centralSouthDoor=configuredDoor({x:4.1,z:7.5,width:.9,along:'x',swing:-1,mirror:false});centralSouthDoor.visible=false;
 // Door frames always remain; leaves can be hidden for viewing, not physically removed.
 function slider(x,z,w){const g=new THREE.Group();detailTarget.add(g);const fm=mat('#626b5d',.4,{metalness:.25,clippingPlanes:[clipPlane]});box(x,2.3,z,w,.06,.12,fm,g);box(x-w/2,0,z,.04,2.3,.12,fm,g);box(x+w/2,0,z,.04,2.3,.12,fm,g);const leaf=new THREE.Group();leaf.userData.doorLeaf=true;g.add(leaf);box(x-w*.35,0,z,w*.28,2.3,.025,M.glass,leaf);box(x-w*.21,0,z,.025,2.3,.07,fm,leaf);archBox(x,2.36,z,w,.42,.18);return g;}
 slider(8.6,11.55,2.7);slider(4.75,11.55,1.8);const studyDivider=slider(1.4,3.9,2.7);
@@ -316,14 +318,14 @@ let mode='dollhouse',currentRoom='',yaw=0,pitch=0,keys={},drag=null,transition=n
 const EYE=1.62;
 function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').classList.remove('show'),3500);}
 const layoutNavigators={};
-for(const id of ['original','redesign','balanced','family','central'])layoutNavigators[id]=createNavigator({data:{...data,...(id==='redesign'?redesignData:originalData)},windows:winSegments,furniture:collisionBoxes.filter(b=>!ownerOldBoxRefs.includes(b)),furnitureEnabled:()=>allFurnishings.visible,dynamicBoxes:furn=>{
+for(const id of ['original','redesign','balanced','family','central'])layoutNavigators[id]=createNavigator({data:{...data,...(id==='redesign'?redesignData:id==='central'?centralWallData:originalData)},windows:winSegments.filter(s=>!(id==='central'&&Math.abs(s[1]-7.1)<.001&&Math.abs(s[3]-7.1)<.001&&s[0]>=5.5&&s[2]<=6.5)),furniture:collisionBoxes.filter(b=>!ownerOldBoxRefs.includes(b)),furnitureEnabled:()=>allFurnishings.visible,dynamicBoxes:furn=>{
  if(!furn)return [];
- if(['balanced','family','central'].includes(id))return [...ownerExtraCollisions,...BAY_BOXES,...conceptData.layouts[id].furniture.filter(q=>q.kind!=='guest'&&q.kind!=='sofa'||(guestMode?q.kind==='guest':q.kind==='sofa')).map(q=>q.box),conceptData.layouts[id].chairBox||(id==='balanced'?[4.92,8.17,5.48,8.73]:[4.27,8.37,4.83,8.93])];
+ if(['balanced','family','central'].includes(id))return [...ownerExtraCollisions,...BAY_BOXES,...conceptData.layouts[id].furniture.filter(q=>q.kind!=='guest'&&q.kind!=='sofa'||(guestMode?q.kind==='guest':q.kind==='sofa')).flatMap(q=>q.footprints||[q.box]),conceptData.layouts[id].chairBox||(id==='balanced'?[4.92,8.17,5.48,8.73]:[4.27,8.37,4.83,8.93])];
  const studyCollisions=studyBoxes(id);return [...ownerExtraCollisions,masterBox(id,layoutBedWidths[id]),...layoutBoxes(id),guestMode?studyCollisions.guest:studyCollisions.day,studyCollisions.desk,studyCollisions.storage,studyCollisions.display];
 }});
 const canWalk=(...args)=>layoutNavigators[activeLayout](...args);
 const activeGaming=()=>conceptScenes[activeLayout]||gaming;
-const conceptStudyViews={balanced:{desk:{pos:[5.65,1.62,8.95],look:[4.45,1.1,7.9]},guest:{pos:[5.55,1.62,10.65],look:[4.12,1.0,10.15]}},family:{desk:{pos:[5.05,1.62,8.75],look:[3.75,1.1,8.35]},guest:{pos:[5.05,1.62,10.35],look:[3.8,1.1,10.2]}},central:{desk:{pos:[5.35,1.62,8.15],look:[3.8,1.1,8.0]},guest:{pos:[5.9,1.62,9.7],look:[4.4,1.1,9.7]}}};
+const conceptStudyViews={balanced:{desk:{pos:[5.65,1.62,8.95],look:[4.45,1.1,7.9]},guest:{pos:[5.55,1.62,10.65],look:[4.12,1.0,10.15]}},family:{desk:{pos:[5.05,1.62,8.75],look:[3.75,1.1,8.35]},guest:{pos:[5.05,1.62,10.35],look:[3.8,1.1,10.2]}},central:{desk:{pos:[5.3,1.62,8.5],look:[5.95,1.1,7.35]},guest:{pos:[3.82,1.62,9.72],look:[5.7,1.1,9.7]}}};
 const activeStudyViews=()=>conceptStudyViews[activeLayout]||STUDY_VIEWS;
 
 function setViewOffset(){camera.clearViewOffset();if(['dollhouse','building'].includes(mode)){if(innerWidth>700)camera.setViewOffset(innerWidth,innerHeight,-innerWidth*.1,0,innerWidth,innerHeight);else camera.setViewOffset(innerWidth,innerHeight,0,-innerHeight*.08,innerWidth,innerHeight);}camera.updateProjectionMatrix();}
@@ -394,7 +396,7 @@ const TOUR=[
  {start:51,end:60,phase:5,title:'原来，家一直在这里。',text:'回到沙盘。也可以选择自由漫游，自己走遍每个房间。',a:[17,18,22],b:[23,24,29],la:[5.2,0,6.7],lb:[5.2,0,6.7],overview:true}
 ];
 function tourFrame(dt){if(!tourPaused)tourTime+=dt;if(tourTime>=60){changeMode('dollhouse');toast('导览结束，点击“自由漫游”继续探索');return;}
- let s=TOUR.find(s=>tourTime>=s.start&&tourTime<s.end)||TOUR[0];if(s.phase===4&&activeLayout==='central')s={...s,title:'南侧主卧，兼顾睡眠与电竞。',text:'1.8米床与1.6米桌都按实际占位放入；北东房集中衣柜，容量仍须核算。',a:[5.95,1.62,8.25],b:[5.95,1.62,10.9],la:[4.5,1,8.1],lb:[4.55,1,9.9]};else if(s.phase===4&&activeLayout!=='original')s={...s,title:'原墙不变，主卧床尾更松。',text:'1.8米床保留，床尾大长柜分配到别的房间；床尾至原墙1.12米。',a:[2.55,1.62,8.55],b:[2.55,1.62,10.9],la:[1.22,1,9.8],lb:[1.22,1,9.8]};const u=clamp((tourTime-s.start)/(s.end-s.start),0,1),k=ease(u);
+ let s=TOUR.find(s=>tourTime>=s.start&&tourTime<s.end)||TOUR[0];if(s.phase===4&&activeLayout==='central')s={...s,title:'两间 1.8 米床，南侧主卧兼电竞。',text:'条件移墙15厘米后，两边床尾各约0.97米；L形桌利用原门洞凹位，仍需设计单位核实。',a:[4.45,1.62,8.5],b:[5.2,1.62,10.9],la:[5.9,1,7.4],lb:[5.85,1,9.9]};else if(s.phase===4&&activeLayout!=='original')s={...s,title:'原墙不变，主卧床尾更松。',text:'1.8米床保留，床尾大长柜分配到别的房间；床尾至原墙1.12米。',a:[2.55,1.62,8.55],b:[2.55,1.62,10.9],la:[1.22,1,9.8],lb:[1.22,1,9.8]};const u=clamp((tourTime-s.start)/(s.end-s.start),0,1),k=ease(u);
  if(s.phase!==lastTourPhase){lastTourPhase=s.phase;$('tourNumber').textContent=String(s.phase+1).padStart(2,'0')+' / 06';$('tourTitle').textContent=s.title;$('tourText').textContent=s.text;roof.visible=!s.overview;stage.visible=!!s.overview;landscape.visible=!s.overview;scene.background.set(s.overview?'#e7e4db':'#d8e2d9');scene.fog=s.overview?null:new THREE.Fog('#d8e2d9',65,225);setArchitecturalCut(s.overview?1.28:2.79);camera.fov=s.overview?42:64;camera.updateProjectionMatrix();}
  camera.position.lerpVectors(V(...s.a),V(...s.b),k);const look=V(...s.la).lerp(V(...s.lb),k);camera.lookAt(look);
  let opacity=0;if([1,4,5].includes(s.phase)&&tourTime-s.start<.5)opacity=1-(tourTime-s.start)/.5;if([0,3,4].includes(s.phase)&&s.end-tourTime<.5)opacity=1-(s.end-tourTime)/.5;$('tourFade').style.opacity=String(opacity);
@@ -478,12 +480,12 @@ $('guestToggle').onclick=()=>{if(['family','central'].includes(activeLayout))ret
 $('studyDeskView').onclick=()=>{placeWalker(...Object.values(activeStudyViews().desk));updateRoom();invalidate();};
 $('studyBedView').onclick=()=>{placeWalker(...Object.values(activeStudyViews().guest));updateRoom();invalidate();};
 const originalRoomRecords=Object.fromEntries(rooms.filter(r=>['master','south','north','child'].includes(r.id)).map(r=>[r.id,{...r}]));
-function applyLayout(id){const next=resolveLayout(id),changed=next!==activeLayout;activeLayout=next;const original=next==='original';layoutWalls.original.group.visible=true;layoutWalls.redesign.group.visible=false;originalMaster.visible=false;originalNorth.visible=false;originalSouth.visible=false;originalLoungeExtras.visible=false;originalFitout.visible=original;originalMasterDoor.visible=true;redesignMasterDoor.visible=false;childDoor.visible=true;studyDivider.visible=false;study.visible=original;redesignFurnishings.visible=false;layoutMarkup.visible=false;for(const [key,g]of Object.entries(conceptScenes))g.group.visible=key===next;masterBed.visible=original;if(['family','central'].includes(next))setGuestMode(false);restoreGlobalLighting();
+function applyLayout(id){const next=resolveLayout(id),changed=next!==activeLayout;activeLayout=next;const original=next==='original';layoutWalls.original.group.visible=next!=='central';layoutWalls.central.group.visible=next==='central';layoutWalls.redesign.group.visible=false;southDoor.visible=next!=='central';centralSouthDoor.visible=next==='central';originalMaster.visible=false;originalNorth.visible=false;originalSouth.visible=false;originalLoungeExtras.visible=false;originalFitout.visible=original;originalMasterDoor.visible=true;redesignMasterDoor.visible=false;childDoor.visible=true;studyDivider.visible=false;study.visible=original;redesignFurnishings.visible=false;layoutMarkup.visible=false;for(const [key,g]of Object.entries(conceptScenes))g.group.visible=key===next;masterBed.visible=original;if(['family','central'].includes(next))setGuestMode(false);restoreGlobalLighting();
  for(const [key,value]of Object.entries(originalRoomRecords))Object.assign(rooms.find(r=>r.id===key),value);
  for(const [key,value]of Object.entries(original?OWNER_ROOMS.original:CONCEPT_ROOMS[next]))Object.assign(rooms.find(r=>r.id===key),value);
  for(const p of pins){if(!p.roomId)continue;const r=rooms.find(r=>r.id===p.roomId);p.pos.set(r.x,.35,r.z);p.el.textContent=r.name;p.el.setAttribute('aria-label','进入'+unitNames[r.unit]+r.name);}
- miniWalls.replaceChildren();for(let i=0;i<originalData.wallPolygons.length;i++)svgEl('path',{d:svgPath(originalData.wallPolygons[i])+(originalData.wallHoles[i]||[]).map(svgPath).join(''),fill:'#7c8b70','fill-rule':'evenodd'},miniWalls);
- document.querySelectorAll('[data-layout]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.layout===next)));$('layoutSummary').textContent=LAYOUTS[next].summary;$('storageSummary').textContent=original?'衣柜合计6.30米；北侧原书房另有展示柜':next==='balanced'?'衣柜合计7.00米：主卧1.10＋北西卧1.60＋衣帽间4.30':next==='family'?'衣柜合计6.50米：主卧1.10＋北西卧1.60＋小北卧1.20＋南侧2.60':'衣柜集中北东房：2.60＋1.70＝4.30米；比A少2.70米，收藏展示柜另计';$('layoutWarning').textContent=LAYOUTS[next].warning;$('layoutFlag').textContent=LAYOUTS[next].name+' · 承重墙保留';$('layoutFlag').classList.toggle('conditional',!original);$('scaleNote').textContent='1 单位 = 1 米 · 四套共用原墙体与水点';$('guestToggle').hidden=['family','central'].includes(next);$('studyBedView').hidden=['family','central'].includes(next);$('masterEntryView').textContent=next==='central'?'看南侧主卧与电脑位 ↗':'看主卧进出动线 ↗';syncGamingModeLabels();
+ const shownWalls=next==='central'?centralWallData:originalData;miniWalls.replaceChildren();for(let i=0;i<shownWalls.wallPolygons.length;i++)svgEl('path',{d:svgPath(shownWalls.wallPolygons[i])+(shownWalls.wallHoles[i]||[]).map(svgPath).join(''),fill:'#7c8b70','fill-rule':'evenodd'},miniWalls);
+ document.querySelectorAll('[data-layout]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.layout===next)));$('layoutSummary').textContent=LAYOUTS[next].summary;$('storageSummary').textContent=original?'衣柜合计6.30米；北侧原书房另有展示柜':next==='balanced'?'衣柜合计7.00米：主卧1.10＋北西卧1.60＋衣帽间4.30':next==='family'?'衣柜合计6.50米：主卧1.10＋北西卧1.60＋小北卧1.20＋南侧2.60':'衣柜集中北东房：2.60＋1.70＝4.30米；比A少2.70米，藏品改为桌上方展示墙';$('layoutWarning').textContent=LAYOUTS[next].warning;$('layoutFlag').textContent=LAYOUTS[next].name+' · 承重墙保留';$('layoutFlag').classList.toggle('conditional',!original);$('scaleNote').textContent=next==='central'?'1 单位 = 1 米 · C为条件移墙试摆，水点不动':'1 单位 = 1 米 · 原墙体与水点不变';$('guestToggle').hidden=['family','central'].includes(next);$('studyBedView').hidden=['family','central'].includes(next);$('masterEntryView').textContent=next==='central'?'看南侧主卧与L形电脑位 ↗':'看主卧进出动线 ↗';syncGamingModeLabels();
  rebuildMasterBed();rebuildShortcuts();updateScopeUI();if(changed){currentRoom='';focusUnit='bl';activeUnit='bl';if(mode==='walk'){prepare('walk');placeWalker(...unitEntry.bl);updateRoom();}else changeMode(mode==='plan'?'plan':'dollhouse');}invalidate(1500,true);
 }
 $('layoutPlanView').onclick=()=>{focusUnit='bl';selectUnit('bl');changeMode('plan');};
@@ -493,8 +495,8 @@ const studio=createDesignStudio({applyLayout,applyHome:applyHomeDesign,applyGami
 function batchStatic(group,exclude=null){group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert();const buckets=new Map(),original=[];group.traverse(o=>{if(!o.isMesh||!o.visible||Array.isArray(o.material))return;let a=o;while(a&&a!==group){if((Array.isArray(exclude)?exclude:[exclude]).includes(a))return;a=a.parent;}const key=o.material.uuid+'|'+o.castShadow+'|'+o.receiveShadow;if(!buckets.has(key))buckets.set(key,{material:o.material,cast:o.castShadow,receive:o.receiveShadow,geos:[]});let g=o.geometry.clone();if(g.index)g=g.toNonIndexed();const transform=new THREE.Matrix4().multiplyMatrices(inverse,o.matrixWorld);g.applyMatrix4(transform);if(transform.determinant()<0){for(const attr of Object.values(g.attributes)){const a=attr.array,k=attr.itemSize;for(let i=0;i<attr.count;i+=3)for(let j=0;j<k;j++){const u=(i+1)*k+j,v=(i+2)*k+j,t=a[u];a[u]=a[v];a[v]=t;}}}buckets.get(key).geos.push(g);original.push(o);});for(const o of original){o.parent.remove(o);o.geometry.dispose();}for(const b of buckets.values()){const geometry=mergeGeometries(b.geos,false);b.geos.forEach(g=>g.dispose());if(!geometry)continue;const mesh=new THREE.Mesh(geometry,b.material);mesh.castShadow=b.cast;mesh.receiveShadow=b.receive;group.add(mesh);}}
 // Merge the moving cut caps into a single draw call; preserve editable groups.
 for(const v of Object.values(layoutWalls)){batchStatic(v.caps);batchStatic(v.group,[v.caps]);}
-batchStatic(arch,[...Object.values(layoutWalls).map(v=>v.group),studyDivider,childDoor,originalMasterDoor,redesignMasterDoor,...doorLeaves]);
-for(const g of [studyDivider,childDoor,originalMasterDoor,redesignMasterDoor])batchStatic(g,doorLeaves);
+batchStatic(arch,[...Object.values(layoutWalls).map(v=>v.group),studyDivider,childDoor,originalMasterDoor,redesignMasterDoor,southDoor,centralSouthDoor,...doorLeaves]);
+for(const g of [studyDivider,childDoor,originalMasterDoor,redesignMasterDoor,southDoor,centralSouthDoor])batchStatic(g,doorLeaves);
 for(const g of doorLeaves)batchStatic(g);
 setDoorView(false);
 batchStatic(leftB,[masterBed,study,originalMaster,originalNorth,originalSouth,originalLoungeExtras,originalFitout,redesignFurnishings,...Object.values(conceptScenes).map(g=>g.group)]);batchStatic(originalMaster);batchStatic(originalNorth);batchStatic(originalSouth);batchStatic(originalLoungeExtras);batchStatic(originalFitout);

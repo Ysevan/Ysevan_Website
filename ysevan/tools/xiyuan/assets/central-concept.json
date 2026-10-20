@@ -1,53 +1,63 @@
 {
-  "version": "12-centralized-storage-master-gaming",
+  "version": "13-central-dual-queen-L-desk-conditional-shift",
   "created": "2026-10-21",
   "sourceSHA256": "87c258e615f533e6e89cd4e60507886ca0e199d280f68a480775ecf24f2a1a76",
   "wallSourceSHA256": "9f0584f807c6581531c91d8049802eb130ef2db4ff8ba8570afe5ac2d48cef06",
   "northWallLocked": true,
   "waterPointsUnchanged": true,
-  "newWallChanges": [],
+  "newWallChanges": [
+    {
+      "type": "conditional-15cm-dry-divider-shift",
+      "source": "layout-central.json",
+      "designerSignoffRequired": true
+    },
+    {
+      "type": "south-bedroom-door-relocation-and-old-door-infill",
+      "designerSignoffRequired": true
+    }
+  ],
   "conditionalBalcony": "沿用原四房的封闭阳台横墙中段开口条件；未新增拆改。仅保留此前口头转述，不视为当前施工许可。梁、墙端、窗下墙、立面、水点不动；合法居住用途、保温、消防和现场高差需专项核验。不成立时本北卧布置需重做，不强塞落地。",
   "layout": {
-    "name": "04 · C 集中收纳",
-    "program": "三卧＋南侧主卧兼电竞＋北东衣帽间",
+    "name": "04 · C 双大床＋L桌试摆",
+    "program": "三卧（南侧主卧兼电竞）＋北东衣帽间；两间南卧均1.8米床",
     "furniture": [
       {
         "id": "southMaster",
-        "name": "南侧主卧 1.8 米床",
+        "name": "南侧主卧 1.8×2 米床",
         "kind": "bed",
         "box": [
-          3.5,
+          4.32,
           8.9,
-          5.68,
+          6.5,
           10.9
         ],
         "outerSize": [
           2.18,
-          2
+          2.0
         ],
         "mattress": [
           1.8,
-          2
+          2.0
         ],
-        "head": "west"
+        "head": "east"
       },
       {
         "id": "formerMaster",
-        "name": "原主卧改普通卧室 1.5 米床",
+        "name": "原主卧改卧室 1.8×2 米床",
         "kind": "bed",
         "box": [
           0.1,
-          8.95,
+          8.8,
           2.28,
-          10.65
+          10.8
         ],
         "outerSize": [
           2.18,
-          1.7
+          2.0
         ],
         "mattress": [
-          1.5,
-          2
+          1.8,
+          2.0
         ],
         "head": "west"
       },
@@ -73,41 +83,43 @@
       },
       {
         "id": "gamingDesk",
-        "name": "主卧电竞桌",
-        "kind": "desk",
+        "name": "主卧 1.8 米 L 形电竞桌＋上方展示墙",
+        "kind": "deskL",
         "box": [
-          3.5,
-          7.25,
-          4.15,
-          8.85
+          4.65,
+          7.15,
+          6.45,
+          8.2
         ],
         "outerSize": [
-          0.65,
-          1.6
+          1.8,
+          1.05
         ],
         "equipment": [
           "ROG 笔记本",
           "27寸显示器",
           "夜魔X键盘",
           "鼠标"
-        ]
-      },
-      {
-        "id": "collection",
-        "name": "盲盒与车模展示柜",
-        "kind": "display",
-        "box": [
-          0.1,
-          5.39,
-          1.6,
-          5.824
         ],
-        "outerSize": [
-          1.5,
-          0.434
+        "footprints": [
+          [
+            4.65,
+            7.55,
+            5.55,
+            8.2
+          ],
+          [
+            5.55,
+            7.15,
+            6.45,
+            7.8
+          ]
         ],
-        "face": "north",
-        "height": 2.1
+        "displayWall": {
+          "depth": 0.22,
+          "aboveDesk": true,
+          "caution": "按车模实物与包装深度复核"
+        }
       },
       {
         "id": "cloakWest",
@@ -151,50 +163,50 @@
       }
     ],
     "chairBox": [
-      4.22,
-      7.78,
-      4.78,
-      8.34
+      5.6,
+      7.83,
+      6.16,
+      8.39
     ]
   },
   "wardrobeTotalM": 4.3,
   "priorWardrobeTotalM": 7,
-  "clothesCapacityCaution": "4.30米为柜体延米，不等于三间卧室所需衣物容量；比方案A少2.70米。高柜2.76米与0.50米顶柜须现场核验梁、风管。展示柜不计入衣柜。",
+  "clothesCapacityCaution": "衣柜延米仍为4.30米，比A少2.70米；桌上方展示墙不算衣柜。顶柜及梁风管需现场核验。",
   "roomAreasM2": {
-    "south": 12.67,
-    "formerMaster": 10.89,
+    "south": "约13.1（条件改墙后，非现场）",
+    "formerMaster": "约10.4（条件改墙后，非现场）",
     "northWestConditional": 8.95,
     "cloak": 6.21
   },
   "metrics": [
     {
-      "id": "southMasterEast",
-      "label": "南侧主卧床尾至东墙",
-      "value": 0.82,
+      "id": "southMasterFoot",
+      "label": "南主卧床尾至移后隔墙",
+      "value": 0.97,
+      "unit": "m"
+    },
+    {
+      "id": "formerMasterFoot",
+      "label": "原主卧床尾至移后隔墙",
+      "value": 0.97,
       "unit": "m"
     },
     {
       "id": "southMasterSouth",
-      "label": "南侧主卧南侧床边",
+      "label": "南主卧南侧床边",
       "value": 0.55,
       "unit": "m"
     },
     {
-      "id": "secondarySides",
-      "label": "原主卧改普通卧室床侧",
-      "value": 0.8,
+      "id": "formerMasterSides",
+      "label": "原主卧1.8米床南北两侧",
+      "value": 0.65,
       "unit": "m"
     },
     {
-      "id": "secondaryFoot",
-      "label": "原主卧改普通卧室床尾至原墙",
-      "value": 1.12,
-      "unit": "m"
-    },
-    {
-      "id": "northWestCabinet",
-      "label": "北西卧床边至展示柜",
-      "value": 0.81,
+      "id": "deskChairBed",
+      "label": "L桌椅背至南主卧床边",
+      "value": 0.51,
       "unit": "m"
     },
     {
