@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {GAMING_MODES} from './design-data.js';
+import {GAMING_MODES} from './design-data.js?v=d56f16cb48';
 // One laptop + one 27-inch display. Hardware cases are size allowances, not product CAD.
 export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlane,materials,south=false}){
  const room=new THREE.Group(),day=new THREE.Group(),guest=new THREE.Group(),chair=new THREE.Group(),shade=new THREE.Group();room.add(day,guest,chair,shade);guest.visible=false;

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createFittedWardrobe} from './fitted-wardrobe.js';
+import {createFittedWardrobe} from './fitted-wardrobe.js?v=ee30778e44';
 
 // All horizontal footprints come from balanced-concept.json, including frames and handles.
 // This module adds only removable furnishings; it never creates or edits architectural walls.

@@ -1,28 +1,28 @@
-import {resolveLayout,WITHDRAWAL_NOTICE} from './layout-policy.js';
-import {MASTER_ENTRIES,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT} from './door-layout.js';
-import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js';
-import {createDesignStudio} from './design-studio.js';
-import {createConceptRoom} from './concept-rooms.js';
-import {LIGHTING} from './design-presets.js';
-import {createGamingRoom} from './gaming-room.js'; import {createBayWindow} from './bay-window.js'; import {createSideCabinet} from './storage-fitout.js';
-import {createFittedWardrobe} from './fitted-wardrobe.js';
-import {STUDY_COLLISIONS,STUDY_VIEWS,GAMING_MODES,studyBoxes} from './design-data.js';
-import {createNavigator,pointIn} from './navigation.js';
+import {resolveLayout,WITHDRAWAL_NOTICE} from './layout-policy.js?v=53150a21a1';
+import {MASTER_ENTRIES,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT} from './door-layout.js?v=b083104c19';
+import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js?v=b53691f08c';
+import {createDesignStudio} from './design-studio.js?v=db263346f7';
+import {createConceptRoom} from './concept-rooms.js?v=2d1aa13536';
+import {LIGHTING} from './design-presets.js?v=e0a1403fad';
+import {createGamingRoom} from './gaming-room.js?v=4ea0fe8603'; import {createBayWindow} from './bay-window.js?v=847b1766a1'; import {createSideCabinet} from './storage-fitout.js?v=8c07da9568';
+import {createFittedWardrobe} from './fitted-wardrobe.js?v=ee30778e44';
+import {STUDY_COLLISIONS,STUDY_VIEWS,GAMING_MODES,studyBoxes} from './design-data.js?v=d56f16cb48';
+import {createNavigator,pointIn} from './navigation.js?v=3af6116843';
 import * as THREE from 'three';
-import {OrbitControls} from './vendor/OrbitControls.js';
-import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js';
-import {RoomEnvironment} from './vendor/RoomEnvironment.js';
-import {mergeGeometries} from './utils/BufferGeometryUtils.js';
+import {OrbitControls} from './vendor/OrbitControls.js?v=b97879c748';
+import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js?v=c1b7c9bd2c';
+import {RoomEnvironment} from './vendor/RoomEnvironment.js?v=c20f0b4677';
+import {mergeGeometries} from './utils/BufferGeometryUtils.js?v=fda7e946b8';
 
 const $=id=>document.getElementById(id);
 let dirtyUntil=performance.now()+1500;function invalidate(ms=400,shadow=false){dirtyUntil=Math.max(dirtyUntil,performance.now()+ms);if(shadow&&renderer)renderer.shadowMap.needsUpdate=true;}
 const V=(x,y,z)=>new THREE.Vector3(x,y,z);
 const clamp=THREE.MathUtils.clamp;
 let data;
-try { data=await (await fetch('./assets/plan-data.json')).json(); } catch(e){$('loading').hidden=true;$('error').hidden=false;throw e;}
-const redesignData=await (await fetch('./assets/layout-redesign.json')).json();
-const originalData=await (await fetch('./assets/layout-original.json')).json();
-const conceptData=await (await fetch('./assets/balanced-concept.json')).json();
+try { data=await (await fetch('./assets/plan-data.json?v=976f9c6492')).json(); } catch(e){$('loading').hidden=true;$('error').hidden=false;throw e;}
+const redesignData=await (await fetch('./assets/layout-redesign.json?v=37375c0b7b')).json();
+const originalData=await (await fetch('./assets/layout-original.json?v=9f0584f807')).json();
+const conceptData=await (await fetch('./assets/balanced-concept.json?v=28d0ccb4d2')).json();
 let activeLayout='original';const layoutBedWidths={original:1.8,redesign:1.8};
 const scene=new THREE.Scene(); scene.background=new THREE.Color('#e7e4db');
 let renderer;
@@ -410,7 +410,7 @@ document.querySelectorAll('[data-bed]').forEach(b=>b.onclick=()=>{if(activeLayou
 $('closeBed').onclick=()=>{$('bedPanel').hidden=true;document.body.classList.remove('bed-visible');};
 $('mapToggle').onclick=()=>{const h=$('minimap').hasAttribute('hidden');$('minimap').toggleAttribute('hidden',!h);$('roomShortcuts').hidden=!h;$('mapToggle').textContent=h?'−':'+';$('mapToggle').setAttribute('aria-label',h?'收起空间定位':'展开空间定位');};
 $('sourceBtn').onclick=()=>{$('sources').showModal();keys={};};$('closeSource').onclick=()=>$('sources').close();$('sources').addEventListener('click',e=>{if(e.target===$('sources')){const r=$('sources').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('sources').close();}});
-const sources={unit:['cad-unit.png','DWG 四～二十二层平面图 · 左侧 B 户型 · CAD 矢量重绘'],full:['cad-full.png','DWG 四～二十二层平面图 · 整层矢量重绘'],audit:['dwg-fitout-review.png','直接从DWG分层读取：墙线、衣柜、北卧床桌；图纸尺寸不等于现场完成面尺寸'],pdf:['source-plan.png','PDF仅供外观对照，不用于本轮墙体判断或尺寸测量'],levels:['cad-levels.png','DWG 楼层标高表 · 标准层层高 2.950 m'],section:['cad-section.png','DWG 6#楼1-1剖面局部 · 标准层 2,950 mm']};
+const sources={unit:['cad-unit.png?v=7f1b142156','DWG 四～二十二层平面图 · 左侧 B 户型 · CAD 矢量重绘'],full:['cad-full.png?v=36e2c28133','DWG 四～二十二层平面图 · 整层矢量重绘'],audit:['dwg-fitout-review.png?v=0b718e1072','直接从DWG分层读取：墙线、衣柜、北卧床桌；图纸尺寸不等于现场完成面尺寸'],pdf:['source-plan.png?v=0393167e76','PDF仅供外观对照，不用于本轮墙体判断或尺寸测量'],levels:['cad-levels.png?v=afc7c0d390','DWG 楼层标高表 · 标准层层高 2.950 m'],section:['cad-section.png?v=e57a5e4eda','DWG 6#楼1-1剖面局部 · 标准层 2,950 mm']};
 document.querySelectorAll('[data-source]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-source]').forEach(q=>q.classList.toggle('selected',q===b));const n=b.dataset.source;$('drawingArea').hidden=n==='notes';$('sourceNotes').hidden=n!=='notes';if(n!=='notes'){$('sourceImage').src='./assets/'+sources[n][0];$('sourceImage').alt=sources[n][1];$('sourceCaption').textContent=sources[n][1];}});
 const motionKeys=['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','ShiftLeft','ShiftRight'];
 window.addEventListener('keydown',e=>{if(e.target instanceof Element&&e.target.closest('input,textarea,select,[contenteditable="true"],[role=tablist]'))return;if($('sources').open||$('designGuide').open)return;if(e.code==='Escape'){if(mode==='walk'||mode==='tour')changeMode('dollhouse');return;}if(mode==='walk'&&motionKeys.includes(e.code)){e.preventDefault();keys[e.code]=true;}});window.addEventListener('keyup',e=>keys[e.code]=false);window.addEventListener('blur',()=>{keys={};drag=null;});

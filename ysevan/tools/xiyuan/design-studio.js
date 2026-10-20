@@ -1,5 +1,5 @@
-import {resolveLayout,isLayoutAvailable,WITHDRAWAL_NOTICE} from './layout-policy.js';
-import {DESIGN_KEY,PRESETS,COLOR_FIELDS,LIGHTING,DEFAULT_GAMING,presetHome,defaultDesign,normalizeDesign,cleanHome,cleanGaming,isCustomized,exportDesign,importDesign} from './design-presets.js';
+import {resolveLayout,isLayoutAvailable,WITHDRAWAL_NOTICE} from './layout-policy.js?v=53150a21a1';
+import {DESIGN_KEY,PRESETS,COLOR_FIELDS,LIGHTING,DEFAULT_GAMING,presetHome,defaultDesign,normalizeDesign,cleanHome,cleanGaming,isCustomized,exportDesign,importDesign} from './design-presets.js?v=e0a1403fad';
 export function createDesignStudio({applyHome,applyGaming,applyLayout,previewRoom,toast}){
  const $=id=>document.getElementById(id);let state=defaultDesign(),saveTimer;
  let storageOK=true;try{const raw=localStorage.getItem(DESIGN_KEY);if(raw)state=normalizeDesign(JSON.parse(raw));}catch{storageOK=false;}
