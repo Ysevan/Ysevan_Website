@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import {BAY} from './layout-data.js?v=a0e86353c3';
+import {BAY} from './layout-data.js?v=6090ec3284';
+import {cutFabric} from './detail-kit.js?v=95ac5fde41';
 // Master-bedroom bay window after the owner's reference video (2026-10-20), fitted to the DWG-derived room.
 // The sill and the wall under it are not cut: the desk rests on the sill, the shelf stands on the floor.
-export function createBayWindow({box,cyl,book,vase,materials:M,parent}){
+export function createBayWindow({box,cyl,book,vase,materials:M,parent,clipPlane}){
  const g=new THREE.Group();g.name='bay-window';parent.add(g);
  const warm=new THREE.MeshBasicMaterial({color:'#ffe5b7',toneMapped:false});
- const sheer=new THREE.MeshStandardMaterial({color:'#f6f3ec',roughness:.95,transparent:true,opacity:.42,depthWrite:false,side:THREE.DoubleSide});
+ const sheer=new THREE.MeshStandardMaterial({color:'#f6f3ec',roughness:.95,transparent:true,opacity:.42,depthWrite:false,side:THREE.DoubleSide,clippingPlanes:[clipPlane]});
  const mirror=new THREE.MeshStandardMaterial({color:'#dfe5e3',roughness:.08,metalness:.85});
  const B=(x0,y0,z0,x1,y1,z1,m,r=0)=>box((x0+x1)/2,y0,(z0+z1)/2,x1-x0,y1-y0,z1-z0,m,g,r);
  const {top,thick,niche,knee}=BAY.desk,lip=top-thick;
@@ -27,9 +28,10 @@ export function createBayWindow({box,cyl,book,vase,materials:M,parent}){
  vase((a0+a1)/2,BAY.shelf.levels[4]+.02,(b0+b1)/2,g);
  for(const y of [BAY.shelf.levels[1],BAY.shelf.levels[2]])box((a0+a1)/2,y+.02,(b0+b1)/2,.3,.14,.22,M.linen,g,.02);
  // Step 1: 0.18 m curtain box at the window head (bottom = head, never below it), sheer + fabric on two tracks.
- const c=BAY.curtain,[c0,c1,c2,c3]=c.box,drop=top+c.stopAboveDesk;
- B(c0,c.bottom,c1,c2,c.bottom+c.height,c3,M.white);
- for(const [x0,x1] of [[c0,c0+.3],[c2-.3,c2]])for(let i=0;i<5;i++)B(x0+i*.06,drop,c1+.03+(i%2)*.025,x0+i*.06+.06,c.bottom,c1+.06+(i%2)*.025,M.linen);
+ // Box and drapes hang above 1.28 m, so they are cut with the walls: both in the shared curtain fabric (a fabric pelmet, one draw with the curtains).
+ const c=BAY.curtain,[c0,c1,c2,c3]=c.box,drop=top+c.stopAboveDesk,fabric=cutFabric(M,clipPlane);
+ B(c0,c.bottom,c1,c2,c.bottom+c.height,c3,fabric);
+ for(const [x0,x1] of [[c0,c0+.3],[c2-.3,c2]])for(let i=0;i<5;i++)B(x0+i*.06,drop,c1+.03+(i%2)*.025,x0+i*.06+.06,c.bottom,c1+.06+(i%2)*.025,fabric);
  for(const [x0,x1] of [[c0,c0+.22],[c2-.22,c2]])B(x0,drop,c3-.05,x1,c.bottom,c3-.03,sheer).castShadow=false;
  return g;
 }

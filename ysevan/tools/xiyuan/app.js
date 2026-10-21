@@ -1,10 +1,10 @@
 import {resolveLayout,WITHDRAWAL_NOTICE} from './layout-policy.js?v=d3fe69be91';
-import {MASTER_ENTRIES,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT} from './door-layout.js?v=2fc6d7b048';
-import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,ROOM_DECOR,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js?v=a0e86353c3';
-import {createDesignStudio} from './design-studio.js?v=170e2aff20';
+import {MASTER_ENTRIES,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT,DOOR_VIEW_WALK,DOOR_OPEN} from './door-layout.js?v=af8b159c47'; import {createSky,eyeFov,crosses} from './scene-env.js?v=b921ffdb6b'; import {createWalkUI} from './walk-ui.js?v=a03e5f797f';
+import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,ROOM_DECOR,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js?v=6090ec3284';
+import {createDesignStudio} from './design-studio.js?v=8cb13f06e9';
 import {createConceptRoom} from './concept-rooms.js?v=d9e95d5f01';
-import {LIGHTING} from './design-presets.js?v=00ec6a7b47';
-import {createGamingRoom} from './gaming-room.js?v=b221c18984'; import {createBayWindow} from './bay-window.js?v=5eb9d1e72c'; import {createSideCabinet} from './storage-fitout.js?v=48ca684e5a';
+import {LIGHTING,OUTDOOR} from './design-presets.js?v=252e4d46b2';
+import {createGamingRoom} from './gaming-room.js?v=b221c18984'; import {createBayWindow} from './bay-window.js?v=83e9deb40f'; import {createSideCabinet} from './storage-fitout.js?v=9d6c989335';
 import {createFittedWardrobe} from './fitted-wardrobe.js?v=ee30778e44';
 import {STUDY_COLLISIONS,STUDY_VIEWS,GAMING_MODES,studyBoxes} from './design-data.js?v=d56f16cb48';
 import {createNavigator,pointIn} from './navigation.js?v=3af6116843';
@@ -14,7 +14,8 @@ import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js?v=c1b7c9bd2c';
 import {metricBoxUV,WALL_UV} from './metric-uv.js?v=02d3402860';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js?v=c20f0b4677';
 import {mergeGeometries} from './utils/BufferGeometryUtils.js?v=fda7e946b8';
-import {pickTier,probeRenderer,tierSettings,tierBudget,SOFT_ENV_SKY,SOFT_ENV_GROUND} from './render-tier.js?v=72c61885e6';
+import {pickTier,probeRenderer,tierSettings,tierBudget,SOFT_ENV_SKY,SOFT_ENV_GROUND,SUN_MAP} from './render-tier.js?v=72ed1d1d60';import {lightSpaceBounds,layoutFootprints,shadeMaterial,contactGeometry,wallAOGeometry} from './light-layer.js?v=83ced53b9a';
+import {leverGeo} from './detail-kit.js?v=95ac5fde41';import {createDetailLayer,doorReveal,windowSide} from './detail-layer.js?v=00ae146fbc';
 
 const $=id=>document.getElementById(id);
 let dirtyUntil=performance.now()+1500;function invalidate(ms=400,shadow=false){dirtyUntil=Math.max(dirtyUntil,performance.now()+ms);if(shadow&&renderer)renderer.shadowMap.needsUpdate=true;}
@@ -43,15 +44,21 @@ const pmrem=new THREE.PMREMGenerator(renderer);const roomEnv=new RoomEnvironment
 // and give only reflective finishes their own envMap (startup, below).
 scene.environment=renderTier==='soft'?null:envMap;
 const hemi=new THREE.HemisphereLight(LIGHTING.day.sky,LIGHTING.day.ground,LIGHTING.day.hemi);scene.add(hemi);
-const reflective=[],skyColor=new THREE.Color(LIGHTING.day.sky),groundColor=new THREE.Color(LIGHTING.day.ground);let ambient,homeLight=LIGHTING.day;
-function setAmbient(h,e){ambient={hemi:h,env:e};scene.environmentIntensity=e;for(const m of reflective)m.envMapIntensity=e;if(renderTier!=='soft'){hemi.intensity=h;hemi.color.copy(skyColor);hemi.groundColor.copy(groundColor);return;}
- hemi.intensity=1;hemi.color.copy(skyColor).multiplyScalar(h).addScalar(e*SOFT_ENV_SKY);hemi.groundColor.copy(groundColor).multiplyScalar(h).addScalar(e*SOFT_ENV_GROUND);}setAmbient(LIGHTING.day.hemi,LIGHTING.day.env);
-const sun=new THREE.DirectionalLight(LIGHTING.day.color,LIGHTING.day.sun);sun.position.set(-5,15,22);sun.target.position.set(4,0,7);sun.castShadow=true;sun.shadow.mapSize.setScalar(renderTier==='soft'?1024:2048);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=25;sun.shadow.camera.bottom=-25;sun.shadow.camera.near=.1;sun.shadow.camera.far=120;sun.shadow.bias=-.00025;sun.shadow.normalBias=.035;sun.shadow.radius=3;scene.add(sun,sun.target);
-// Sun shadows cover the whole floor (60×50 m) in the overviews; inside a unit only a 20 m square around it, so a shadow texel is
-// about 2 cm instead of 6 (1 cm with the 2048 map off the software tier). The lighting preset only sets the sun's direction.
+const reflective=[],skyColor=new THREE.Color(LIGHTING.day.sky),groundColor=new THREE.Color(LIGHTING.day.ground);let ambient,homeLight=LIGHTING.day,indoor=OUTDOOR;
+// ambient keeps the preset's values; indoors (walking, tour rooms) the lighting preset's indoor factors scale sky, ground and environment on the way out.
+function setAmbient(h,e){ambient={hemi:h,env:e};e*=indoor.env;scene.environmentIntensity=e;for(const m of reflective)m.envMapIntensity=e;if(renderTier!=='soft'){hemi.intensity=h;hemi.color.copy(skyColor).multiplyScalar(indoor.sky);hemi.groundColor.copy(groundColor).multiplyScalar(indoor.ground);return;}
+ hemi.intensity=1;hemi.color.copy(skyColor).multiplyScalar(h*indoor.sky).addScalar(e*SOFT_ENV_SKY);hemi.groundColor.copy(groundColor).multiplyScalar(h*indoor.ground).addScalar(e*SOFT_ENV_GROUND);}setAmbient(LIGHTING.day.hemi,LIGHTING.day.env);
+const sun=new THREE.DirectionalLight(LIGHTING.day.color,LIGHTING.day.sun);sun.position.set(-5,15,22);sun.target.position.set(4,0,7);sun.castShadow=true;sun.shadow.mapSize.setScalar(SUN_MAP[renderTier]);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=25;sun.shadow.camera.bottom=-25;sun.shadow.camera.near=.1;sun.shadow.camera.far=120;sun.shadow.bias=-.00025;sun.shadow.normalBias=.035;sun.shadow.radius=3;scene.add(sun,sun.target);
+// Sun shadows cover the whole floor (60×50 m) in the overviews. Inside a unit (walking, tour rooms) the roof casts, so sun only
+// comes in through the openings, and the shadow frame is fitted to that unit's outline as the sun sees it: B is about 16 × 13 m
+// with the day sun, 0.8 × 0.6 cm per texel with the 2048 map. The lighting preset only sets the sun's direction.
 const SUN_HOME=V(4,0,7),sunDir=V(-9,15,15);let sunFit='',sunVersion=0;
-function fitSun(){const inside=mode==='walk'||(mode==='tour'&&!TOUR.find(s=>tourTime>=s.start&&tourTime<s.end)?.overview),c=inside?unitCenters[activeUnit]:null,key=(c?activeUnit:'floor')+'|'+sunVersion;if(key===sunFit)return;sunFit=key;const s=sun.shadow.camera,h=activeUnit==='common'?13:10;sun.target.position.copy(c?V(c[0],0,c[1]):SUN_HOME);sun.position.copy(sun.target.position).add(sunDir);if(c){s.left=s.bottom=-h;s.right=s.top=h;}else{s.left=-30;s.right=30;s.top=25;s.bottom=-25;}s.updateProjectionMatrix();sun.target.updateMatrixWorld();renderer.shadowMap.needsUpdate=true;}
-const fill=new THREE.DirectionalLight('#e2edf2',LIGHTING.day.fill);fill.position.set(15,10,-10);scene.add(fill);
+const unitOutline=id=>{if(id==='bl')return unitBFootprint;if(id==='br')return unitBFootprint.map(([x,z])=>[41.8-x,z]);const [x0,z0,x1,z1]=furnishingZones.find(q=>q.id===id).bounds;return [[x0,z0],[x1,z0],[x1,z1],[x0,z1]];};
+function fitSun(){const inside=mode==='walk'||(mode==='tour'&&!TOUR.find(s=>tourTime>=s.start&&tourTime<s.end)?.overview),c=inside?unitCenters[activeUnit]:null,key=(c?activeUnit:'floor')+'|'+sunVersion;if(key===sunFit)return;sunFit=key;const s=sun.shadow.camera;sun.target.position.copy(c?V(c[0],0,c[1]):SUN_HOME);sun.position.copy(sun.target.position).add(sunDir);if(c)Object.assign(s,lightSpaceBounds(sun.position,sun.target.position,unitOutline(activeUnit)));else{s.left=-30;s.right=30;s.top=25;s.bottom=-25;}s.updateProjectionMatrix();sun.target.updateMatrixWorld();setIndoor(!!c);renderer.shadowMap.needsUpdate=true;}
+const fill=new THREE.DirectionalLight('#e2edf2',LIGHTING.day.fill);fill.position.set(15,10,-10);scene.add(fill);const fillColor=fill.color.clone();
+// Under the roof the sun only comes in through the openings; the preset's indoor factors re-balance the unshadowed light
+// (mostly more bounce from below) so the rooms stay as bright as before (design-presets.js).
+const aoCeilings=[];function setIndoor(on){indoor=on?homeLight.indoor:OUTDOOR;for(const q of aoCeilings)q.visible=on;fill.color.copy(fillColor).multiplyScalar(indoor.fill);setAmbient(ambient.hemi,ambient.env);}
 let furniture=new THREE.Group();
 const allFurnishings=new THREE.Group();
 const house=new THREE.Group(), arch=new THREE.Group(), roof=new THREE.Group(), annotations=new THREE.Group(), stage=new THREE.Group(), building=new THREE.Group(),landscape=new THREE.Group();
@@ -93,23 +100,36 @@ for(const id of ['original','redesign']){
 const layoutMarkup=new THREE.Group();house.add(layoutMarkup);layoutMarkup.visible=false;
 for(const poly of redesignData.removedPolygons)slab(poly,.025,.015,mat('#cc8d4a',.8),layoutMarkup);
 for(const poly of redesignData.addedPolygons||[])slab(poly,.026,.016,mat('#59958b',.8),layoutMarkup);
-slab(footprint,2.78,.17,M.white,roof,floorHoles).castShadow=false;roof.visible=false;
+// The roof casts: it is only shown (and so only in the shadow map) when walking or in the tour's rooms.
+slab(footprint,2.78,.17,M.white,roof,floorHoles);roof.visible=false;
 function archBox(x,y,z,w,h,d,m=M.wall){return box(x,y,z,w,h,d,m,detailTarget);}
+// Every doorway / slider / window records its spec for detail-layer.js (skirting gaps, thresholds, stops, sills).
+const doorSpecs=[],windowSpecs=[];
 // Windows: PC2018, PC1218, PC0718a, PC1214b, PC2718a and west-side openings.
 function windowWall(a,b,bottom,height,segments=3,base=true){const [x1,z1]=a,[x2,z2]=b,dx=x2-x1,dz=z2-z1,L=Math.hypot(dx,dz),rotation=-Math.atan2(dz,dx);const g=new THREE.Group();g.position.set((x1+x2)/2,0,(z1+z2)/2);g.rotation.y=rotation;detailTarget.add(g);
  if(base){box(0,0,0,L,bottom,.16,M.wall,g);box(0,bottom+height,0,L,Math.max(.01,2.78-bottom-height),.16,M.wall,g);}
- const fmat=mat('#596559',.45,{metalness:.25,clippingPlanes:[clipPlane]});
- box(0,bottom,0,L,.045,.09,fmat,g);box(0,bottom+height-.045,0,L,.045,.09,fmat,g);
- for(let i=0;i<=segments;i++)box(-L/2+L*i/segments,bottom,0,.035,height,.09,fmat,g);
+ const fmat=mat('#596559',.45,{metalness:.25,clippingPlanes:[clipPlane]}),side=windowSide(a,b,footprint);windowSpecs.push({a,b,bottom,height,base,side,target:detailTarget});
+ // Frame 60 mm, mullions 50 mm, 100 mm deep. In the B units the first pane, if 0.6 m or wider, opens: its own 40 mm sash proud on the room side, handle at mid-height.
+ box(0,bottom,0,L,.06,.1,fmat,g);box(0,bottom+height-.06,0,L,.06,.1,fmat,g);
+ for(let i=0;i<=segments;i++)box(-L/2+L*i/segments,bottom,0,.05,height,.1,fmat,g);
  const q=box(0,bottom+.02,0,L-.03,height-.04,.018,M.glass,g);q.castShadow=false;
+ const pane=L/segments;if(pane>=.6&&detailTarget===bDetails){const u0=-L/2+.025,u1=u0+pane-.05,y0=bottom+.06,y1=bottom+height-.06,v=side*.035,hy=bottom+height*.5;
+  for(const y of [y0,y1-.04])box((u0+u1)/2,y,v,u1-u0,.04,.06,fmat,g);for(const u of [u0+.02,u1-.02])box(u,y0,v,.04,y1-y0,.06,fmat,g);
+  box(u1-.02,hy-.04,side*.071,.028,.08,.012,fmat,g);box(u1-.02,hy-.13,side*.087,.018,.12,.02,fmat,g);}
  winSegments.push([x1,z1,x2,z2]);return g;}
 windowWall([.4,2.45],[2.4,2.45],.5,1.8,2);windowWall([3.95,2.45],[5.2,2.45],.5,1.8,2);windowWall([5.45,2.45],[6.15,2.45],.5,1.8,1);windowWall([7.1,.15],[8.3,.15],.9,1.4,2);
 windowWall([.7,12.15],[2.8,12.15],.5,1.8,3);windowWall([.7,11.6],[.7,12.15],.5,1.8,1);windowWall([2.85,11.6],[2.85,12.15],.5,1.8,1);
 windowWall([0,5.95],[0,6.75],.9,1.4,1);windowWall([0,8.05],[0,9.15],.65,1.65,1);
 // Bay-window seats are low, not full-height walls.
 box(1.78,0,11.9,2.15,.48,.5,M.stone);box(4.56,0,2.73,1.25,.48,.48,M.stone);box(5.8,0,2.73,.7,.48,.48,M.stone);
-function doorway(x,z,width,along='x',swing=1){const g=new THREE.Group();g.position.set(x,0,z);if(along==='z')g.rotation.y=Math.PI/2;detailTarget.add(g);const fm=mat('#a79274',.68,{clippingPlanes:[clipPlane]});box(-width/2-.025,0,0,.05,2.3,.14,fm,g);box(width/2+.025,0,0,.05,2.3,.14,fm,g);box(0,2.3,0,width+.1,.08,.14,fm,g);box(0,2.38,0,width+.1,.4,.14,M.wall,g);
- const hinge=new THREE.Group();hinge.userData.doorLeaf=true;hinge.position.x=-width/2;hinge.rotation.y=swing*Math.PI*.47;g.add(hinge);const dm=mat('#b7a282',.72,{clippingPlanes:[clipPlane]});box(width/2,0,0,width,2.27,.038,dm,hinge);box(width-.11,1.02,.035,.105,.015,.026,M.brass,hinge);return g;}
+function doorway(x,z,width,along='x',swing=1){const g=new THREE.Group();g.position.set(x,0,z);if(along==='z')g.rotation.y=Math.PI/2;detailTarget.add(g);const fm=mat('#a79274',.68,{clippingPlanes:[clipPlane]});
+ // Lining as deep as the CAD wall (at least 0.14 m, 5 mm proud), posts 3 mm proud of the jambs (no face coplanar with a wall),
+ // 65 mm casings on both wall faces; all in the cut frame finish.
+ const {t,c}=doorReveal([originalData,centralWallData],x,z,width,along),d=Math.max(.14,t+.01),f=Math.max(t/2,.07)+.012-t/2;doorSpecs.push({x,z,w:width,along,swing,t,c,g,target:detailTarget,kind:'door'});
+ box(-width/2-.0235,0,c,.053,2.3,d,fm,g);box(width/2+.0235,0,c,.053,2.3,d,fm,g);box(0,2.3,c,width+.1,.08,d,fm,g);box(0,2.38,c,width+.1,.4,d,M.wall,g);
+ for(const s of [-1,1]){const v=c+s*(t/2+f/2);for(const u of [-1,1])box(u*(width/2+.0375),0,v,.065,2.37,f,fm,g);box(0,2.305,v,width+.14,.065,f,fm,g);}
+ // Leaf clears the 16 mm threshold stone; lever handles with square roses on both faces.
+ const hinge=new THREE.Group();hinge.userData.doorLeaf=true;hinge.position.x=-width/2;hinge.rotation.y=swing*Math.PI*.47;g.add(hinge);const dm=mat('#b7a282',.72,{clippingPlanes:[clipPlane]});box(width/2,.02,0,width,2.25,.038,dm,hinge);const lever=new THREE.Mesh(leverGeo(width),M.brass);lever.castShadow=true;hinge.add(lever);return g;}
 function configuredDoor(d){const g=doorway(d.x,d.z,d.width,d.along,d.swing);if(d.mirror)g.scale.x=-1;return g;}
 const childDoor=doorway(2.25,5.9,.9);childDoor.scale.x=-1;configuredDoor(NORTH_ENTRY);const originalMasterDoor=configuredDoor(MASTER_ENTRIES.original);
 // The refuge doorset is retained at its original opening; not replaced with a decorative sliding door.
@@ -117,14 +137,15 @@ configuredDoor(REFUGE_ENTRY);
 const southDoor=configuredDoor({x:6,z:7.1,width:.9,along:'x',swing:-1,mirror:true});doorway(5.85,4.9,.8);doorway(10.65,2,1.1,'z');
 const centralSouthDoor=configuredDoor({x:4.1,z:7.5,width:.9,along:'x',swing:-1,mirror:false});centralSouthDoor.visible=false;
 // Door frames always remain; leaves can be hidden for viewing, not physically removed.
-function slider(x,z,w){const g=new THREE.Group();detailTarget.add(g);const fm=mat('#626b5d',.4,{metalness:.25,clippingPlanes:[clipPlane]});box(x,2.3,z,w,.06,.12,fm,g);box(x-w/2,0,z,.04,2.3,.12,fm,g);box(x+w/2,0,z,.04,2.3,.12,fm,g);const leaf=new THREE.Group();leaf.userData.doorLeaf=true;g.add(leaf);box(x-w*.35,0,z,w*.28,2.3,.025,M.glass,leaf);box(x-w*.21,0,z,.025,2.3,.07,fm,leaf);archBox(x,2.36,z,w,.42,.18);return g;}
+function slider(x,z,w){const g=new THREE.Group();detailTarget.add(g);const fm=mat('#626b5d',.4,{metalness:.25,clippingPlanes:[clipPlane]});box(x,2.3,z,w,.06,.12,fm,g);box(x-w/2,0,z,.04,2.3,.12,fm,g);box(x+w/2,0,z,.04,2.3,.12,fm,g);const leaf=new THREE.Group();leaf.userData.doorLeaf=true;g.add(leaf);box(x-w*.35,0,z,w*.28,2.3,.025,M.glass,leaf);box(x-w*.21,0,z,.025,2.3,.07,fm,leaf);archBox(x,2.36,z,w,.42,.18);
+ for(const s of [-1,1])box(x-w*.21,.85,z+s*.047,.016,.34,.024,fm,leaf);const {t,c}=doorReveal([originalData,centralWallData],x,z,w,'x');doorSpecs.push({x,z,w,along:'x',swing:0,t,c,g,target:detailTarget,kind:'slider'});return g;}
 slider(8.6,11.55,2.7);slider(4.75,11.55,1.8);const studyDivider=slider(1.4,3.9,2.7);
 // Balcony balustrade and columns; no fabricated outside view.
 function rail(a,b){const [x1,z1]=a,[x2,z2]=b;const L=Math.hypot(x2-x1,z2-z1);rod([x1,1.1,z1],[x2,1.1,z2],.025,M.metal,detailTarget);for(let d=0;d<=L;d+=.16){const t=d/L;rod([x1+(x2-x1)*t,.08,z1+(z2-z1)*t],[x1+(x2-x1)*t,1.08,z1+(z2-z1)*t],.012,M.metal,detailTarget);}winSegments.push([x1,z1,x2,z2]);}
 rail([3.4,13.35],[10.5,13.35]);rail([3.4,11.75],[3.4,13.35]);
-// Contact shadows under large furniture keep the scale readable without heavy post-processing.
-const sc=document.createElement('canvas');sc.width=sc.height=128;const sctx=sc.getContext('2d');const sg=sctx.createRadialGradient(64,64,10,64,64,64);sg.addColorStop(0,'rgba(38,45,31,.22)');sg.addColorStop(1,'rgba(38,45,31,0)');sctx.fillStyle=sg;sctx.fillRect(0,0,128,128);const shadowTex=new THREE.CanvasTexture(sc);const contactMaterial=new THREE.MeshBasicMaterial({map:shadowTex,transparent:true,depthWrite:false});
-function contact(x,z,w,d,parent=furniture){const q=new THREE.Mesh(new THREE.PlaneGeometry(w,d),contactMaterial);q.rotation.x=-Math.PI/2;q.position.set(x,.018,z);parent.add(q);}
+// Contact shadows: every furniture footprint gets an eased patch (light-layer.js); one geometry per group, so after batchStatic
+// each group adds at most one draw call. The same unlit material draws the fake AO along the walls (cut with them).
+const shadeMat=shadeMaterial(clipPlane);function contacts(boxes,parent){const q=new THREE.Mesh(contactGeometry(boxes),shadeMat);parent.add(q);return q;}
 const rugMaterials=new Set();
 function rug(x,z,w,d,color='#c4c7b5'){const m=mat(color,.98,{map:fabrictex});rugMaterials.add(m);const q=round(x,.017,z,w,.018,d,m,furniture,.04);q.receiveShadow=true;for(let i=0;i<10;i++){const line=box(x-w/2+.08+i*.024,.038,z,.009,.002,d-.08,mat('#eeeee4',1),furniture);}}
 function plant(x,z,h=1,parent=furniture){const pot=mat('#c4ba9f',.88);cyl(x,0,z,.22,h*.25,pot,parent,.26);const rng=seeded(Math.round((x+z)*100));for(let i=0;i<9;i++){const a=i*2.4;const hh=h*(.46+rng()*.52),rx=Math.cos(a)*(.14+rng()*.21),rz=Math.sin(a)*(.14+rng()*.21);rod([x,.2,z],[x+rx,hh,z+rz],.012,M.dark,parent);const leaf=sphere(x+rx,hh,z+rz,.16,.045,.29,mat(i%2?'#6b8055':'#859569',.95),parent);leaf.rotation.set(.2,a,.4);}}
@@ -134,17 +155,17 @@ function book(x,y,z,color='#b1b69f',parent=furniture){box(x,y,z,.25,.035,.17,mat
 let oakCut=null;function art(x,y,z,w,h,rotation=0,cut=false){const c=cut?{clippingPlanes:[clipPlane]}:{};if(cut&&!oakCut){oakCut=M.oak.clone();oakCut.clippingPlanes=[clipPlane];oakCut.color=M.oak.color;}const g=new THREE.Group();g.position.set(x,y,z);g.rotation.y=rotation;furniture.add(g);box(0,0,0,w,h,.035,cut?oakCut:M.oak,g);box(0,.035,.025,w-.07,h-.07,.012,mat('#ebe8db',.78,c),g);const a=cyl(0,.1,0,.01,.01,M.oak);furniture.remove(a);for(let i=0;i<3;i++){const q=new THREE.Mesh(new THREE.CircleGeometry(w*(.12+i*.03),24),new THREE.MeshBasicMaterial({color:['#657158','#c5ac80','#9d7d5b'][i],...c}));q.position.set((i-1)*w*.2,h*(.3+i*.17),.036+i*.002);g.add(q);}return g;}
 function chair(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;furniture.add(g);round(0,.43,0,.45,.07,.43,M.linen,g,.05);round(0,.53,.19,.44,.36,.055,M.oak,g,.025);for(let a of [-1,1])for(let b of [-1,1])rod([a*.17,0,b*.16],[a*.15,.46,b*.14],.023,M.walnut,g);}
 // Living room, placed to match the furniture orientation in the CAD plan.
-rug(8.45,9.25,2.95,3.25,'#c3c8b9');contact(7.36,9.05,1.5,3.3);
+rug(8.45,9.25,2.95,3.25,'#c3c8b9');
 round(7.3,.10,9.05,.98,.29,2.62,M.linen);round(6.9,.38,9.05,.17,.55,2.65,M.linen);round(7.3,.33,7.8,1,.42,.16,M.linen);round(7.3,.33,10.3,1,.42,.16,M.linen);
 for(let i=0;i<3;i++){round(7.38,.39,8.19+i*.83,.72,.18,.77,M.linen);const p=round(7.08,.55,8.17+i*.85,.23,.34,.48,i===1?M.terracotta:M.olive);p.rotation.z=.16;}
 const loungeExtrasStart=new Set(furniture.children);
 round(8.55,.1,7.65,1.65,.25,.8,M.linen);round(8.55,.38,7.32,1.65,.46,.14,M.linen);round(8.55,.36,7.68,1.5,.14,.59,M.linen);round(8.24,.52,7.5,.46,.28,.18,M.olive);
 cyl(8.8,.29,9.38,.55,.045,M.stone);cyl(8.8,.04,9.38,.21,.26,M.walnut);cyl(9.25,.36,9.08,.32,.04,M.walnut);cyl(9.25,.04,9.08,.12,.32,M.walnut);vase(8.84,.34,9.38);book(8.59,.34,9.25);
 const originalLoungeExtras=new THREE.Group();for(const q of [...furniture.children])if(!loungeExtrasStart.has(q))originalLoungeExtras.add(q);furniture.add(originalLoungeExtras);
-round(10.17,.11,9.05,.43,.34,2.55,M.oak);box(10.43,.72,9.05,.035,1.08,1.9,mat('#1d2827',.21),furniture);box(10.405,.77,9.05,.006,.96,1.78,mat('#313f3b',.23),furniture);art(6.82,1.35,9.1,1.5,.82,Math.PI/2);plant(9.98,11,1.45);cyl(7.18,.0,10.82,.22,.42,M.walnut);vase(7.18,.42,10.82);
+round(10.17,.11,9.05,.43,.34,2.55,M.oak);box(10.43,.72,9.05,.035,1.08,1.9,mat('#1d2827',.21,{clippingPlanes:[clipPlane]}),furniture);box(10.405,.77,9.05,.006,.96,1.78,mat('#313f3b',.23,{clippingPlanes:[clipPlane]}),furniture);art(6.82,1.35,9.1,1.5,.82,Math.PI/2,true);plant(9.98,10.72,1.45);cyl(7.18,.0,10.82,.22,.42,M.walnut);vase(7.18,.42,10.82);
 collide(6.82,7.72,7.82,10.38);collide(7.7,7.2,9.4,8.03);collide(9.95,7.75,10.4,10.35);collide(8.33,8.86,9.3,9.9);
 // Dining area and pendant cluster.
-contact(8.03,4.62,2.55,2.35);round(8.05,.72,4.6,1.75,.07,.86,M.oak);for(let a of [-1,1])for(let b of [-1,1])box(8.05+a*.65,0,4.6+b*.3,.06,.72,.06,M.walnut,furniture);for(let x of [7.45,8.05,8.65]){chair(x,3.85,0);chair(x,5.36,Math.PI);}vase(8.0,.79,4.6);for(let x of [7.5,8.55])cyl(x,.795,4.62,.12,.015,M.white);collide(7.12,4.1,8.97,5.08);
+round(8.05,.72,4.6,1.75,.07,.86,M.oak);for(let a of [-1,1])for(let b of [-1,1])box(8.05+a*.65,0,4.6+b*.3,.06,.72,.06,M.walnut,furniture);for(let x of [7.45,8.05,8.65]){chair(x,3.85,0);chair(x,5.36,Math.PI);}vase(8.0,.79,4.6);for(let x of [7.5,8.55])cyl(x,.795,4.62,.12,.015,M.white);collide(7.12,4.1,8.97,5.08);
 const lamps=new THREE.Group();roof.add(lamps);for(let i=0;i<3;i++){rod([7.45+i*.6,2.78,4.6],[7.45+i*.6,2.1+i*.08,4.6],.006,M.dark,lamps);sphere(7.45+i*.6,2.05+i*.08,4.6,.17,.12,.17,M.white,lamps);}const diningLight=new THREE.PointLight('#ffe3b1',3,4,2);diningLight.position.set(8,2.3,4.6);roof.add(diningLight);
 // Kitchen: sink, cabinets, hob, tall fridge.
 round(6.91,0,1.67,.6,.86,2.7,M.oak);round(7.61,0,.59,1.85,.86,.58,M.oak);box(6.91,.86,1.67,.66,.035,2.7,M.stone,furniture);box(7.61,.86,.59,1.85,.035,.64,M.stone,furniture);box(6.6,.91,1.65,.035,.48,2.55,mat('#d2d3be'),furniture);box(6.9,.902,1.55,.49,.012,.62,mat('#25312a',.3),furniture);for(let z of [1.37,1.72])cyl(6.92,.915,z,.12,.015,M.metal);
@@ -153,7 +174,7 @@ round(8.48,0,2.65,.62,1.94,.63,mat('#a9b2a3',.4));box(8.145,1.1,2.65,.017,.02,.5
 // Entry bench and slim storage, without shrinking the entry passage.
 round(10.25,0,3.6,.42,.9,1.1,M.oak);vase(10.25,.9,3.64);collide(10.03,3.06,10.5,4.16);
 // Bedroom furniture. The master bed can be measured and resized.
-function bed(cx,cz,width,length=2,rot=0,master=false){const g=new THREE.Group();g.position.set(cx,0,cz);g.rotation.y=rot;furniture.add(g);round(0,.13,0,width+.12,.19,length+.12,M.oak,g,.04);round(0,.32,0,width,.2,length,M.white,g,.08);round(0,.51,.18,width-.02,.055,length-.4,M.linen,g,.05);round(0,.16,-length/2-(master?.055:.06),width+.2,.92,master?.11:.12,M.olive,g,.06);for(let x of [-width*.25,width*.25]){const q=round(x,.52,-length*.32,width*.43,.1,.39,M.linen,g,.07);q.rotation.x=.09;}round(0,.57,length*.29,width,.025,.5,M.terracotta,g,.03);if(!master)contact(cx,cz,width+1,length+1);return g;}
+function bed(cx,cz,width,length=2,rot=0,master=false){const g=new THREE.Group();g.position.set(cx,0,cz);g.rotation.y=rot;furniture.add(g);round(0,.13,0,width+.12,.19,length+.12,M.oak,g,.04);round(0,.32,0,width,.2,length,M.white,g,.08);round(0,.51,.18,width-.02,.055,length-.4,M.linen,g,.05);round(0,.16,-length/2-(master?.055:.06),width+.2,.92,master?.11:.12,M.olive,g,.06);for(let x of [-width*.25,width*.25]){const q=round(x,.52,-length*.32,width*.43,.1,.39,M.linen,g,.07);q.rotation.x=.09;}round(0,.57,length*.29,width,.025,.5,M.terracotta,g,.03);if(master)contacts([[-width/2-.1,-length/2-.11,width/2+.1,length/2+.06]],g);return g;}
 const masterStart=new Set(furniture.children);
 let masterBed=bed(1.22,9.95,1.8,2,Math.PI/2,true);
 // Width is along the CAD bedroom's long side; foot lies toward the wardrobe.
@@ -204,7 +225,7 @@ const originalFitout=new THREE.Group(),redesignFurnishings=new THREE.Group();lef
 const expandedGaming=createGamingRoom({box,cyl,rod,woodTexture:woodtex,fabricTexture:fabrictex,clipPlane,materials:M,south:true});redesignFurnishings.add(expandedGaming.room);
 function fittedWardrobe(spec){return createFittedWardrobe(spec,{box,materials:M,parent:furniture});}
 // Owner bedroom decor (ROOM_DECOR) is built into each layout's own fit-out, so applyLayout shows exactly one set; the master headboard stands 1 cm off the wall, in front of the wainscot.
-function roomDecor(id){const d=ROOM_DECOR[id];if(!d)return;const [a,b,A,B,y,Y]=d.wainscot;box((a+A)/2,y,(b+B)/2,A-a,Y-y,B-b,M.oak,furniture);const [p,q,P,Q,u,U]=d.art,e=d.head==='east';art(e?P-.0175:p+.0175,u,(q+Q)/2,Q-q,U-u,e?-Math.PI/2:Math.PI/2,true);const [r,t,R,T]=d.rug.box;rug((r+R)/2,(t+T)/2,R-r,T-t,d.rug.color);}
+function roomDecor(id){const D=ROOM_DECOR[id];if(!D)return;for(const d of [D,...(D.also||[])]){const [a,b,A,B,y,Y]=d.wainscot;box((a+A)/2,y,(b+B)/2,A-a,Y-y,B-b,M.oak,furniture);const [p,q,P,Q,u,U]=d.art,e=d.head==='east';art(e?P-.0175:p+.0175,u,(q+Q)/2,Q-q,U-u,e?-Math.PI/2:Math.PI/2,true);}const [r,t,R,T]=D.rug.box;rug((r+R)/2,(t+T)/2,R-r,T-t,D.rug.color);}
 for(const id of ['original','redesign']){furniture=id==='original'?originalFitout:redesignFurnishings;
  for(const w of WARDROBES[id])fittedWardrobe(w);
  // Compact north-bedroom bed: a 1.2 × 2.0 mattress with an independently sized
@@ -212,7 +233,7 @@ for(const id of ['original','redesign']){furniture=id==='original'?originalFitou
  const nbSpec=id==='original'?NORTH_BED:NORTHWEST_BED;const nb=new THREE.Group();nb.position.set(nbSpec.cx,0,nbSpec.cz);nb.rotation.y=nbSpec.rotation;furniture.add(nb);
  round(0,.08,0,nbSpec.width+.06,.22,2.08,M.oak,nb,.02);round(0,.30,0,nbSpec.width,.18,2,M.white,nb,.03);
  box(0,.12,-1.02,nbSpec.width+.06,.70,.04,M.oak,nb);round(0,.49,.16,nbSpec.width-.02,.04,1.66,M.linen,nb,.03);round(0,.49,-.66,.72,.1,.38,M.linen,nb,.04);
- box(0,.535,.62,nbSpec.width-.02,.015,.42,M.terracotta,nb);contact(nbSpec.cx,nbSpec.cz,2.2,1.45);
+ box(0,.535,.62,nbSpec.width-.02,.015,.42,M.terracotta,nb);
  if(id==='original'){
  const nd=NORTH_DESK,[x0,z0,x1,z1]=nd.box,cx=(x0+x1)/2,cz=(z0+z1)/2;
  round(cx,nd.height-.04,cz,x1-x0,.04,z1-z0,M.oak);for(const z of [z0+.045,z1-.045])box(cx,0,z,.54,nd.height-.04,.035,M.oak,furniture);
@@ -235,7 +256,7 @@ const conceptScenes=Object.fromEntries(['balanced','family','central'].map(id=>{
 }));
 furniture=leftB;
 // Same master bed and bay in every layout, so the bay joinery sits outside the per-layout fit-outs.
-createBayWindow({box,cyl,book,vase,materials:M,parent:leftB});
+createBayWindow({box,cyl,book,vase,materials:M,parent:leftB,clipPlane});
 const ownerOldBoxRefs=OWNER_REPLACED_BOXES.map(b=>collisionBoxes.find(q=>q.every((v,i)=>v===b[i])));
 // A units: three bedrooms, living/dining and two bathrooms, not copies of B.
 const leftA=new THREE.Group();allFurnishings.add(leftA);furniture=leftA;
@@ -269,14 +290,17 @@ for(const mirror of [false,true]){const X=x=>mirror?41.8-x:x;
  windowWall([X(14.45),-1.2],[X(14.45),.5],.6,1.7,2);windowWall([X(9.8),-4.2],[X(11.3),-4.2],.7,1.6,2);
 }
 rail([14.6,1.0],[27.2,1.0]);rail([14.6,2.6],[27.2,2.6]);detailTarget=bDetails;
+// Hard finish (detail-layer.js): skirting, thresholds, door stops and sills per wall set, ceiling downlights, owner's curtains.
+const details=createDetailLayer({mat,M,clipPlane,footprint,floorHoles,wallSets:{original:originalData,central:centralWallData},groups:{original:layoutWalls.original.group,central:layoutWalls.central.group},doors:doorSpecs,windows:windowSpecs,mirrored:[bDetails,aDetails],hidden:[studyDivider],roof,owner:leftB,layouts:{original:originalFitout,...Object.fromEntries(Object.entries(conceptScenes).map(([k,v])=>[k,v.group]))}});
 const furnishingZones=[{id:'bl',group:leftB,bounds:[-.1,.1,10.75,13.45]},{id:'al',group:leftA,bounds:[11.4,3.15,20.9,15.15]},{id:'ar',group:rightA,bounds:[20.9,3.15,30.4,15.15]},{id:'br',group:rightB,bounds:[31.05,.1,41.9,13.45]},{id:'common',group:common,bounds:[8.85,-4.3,32.95,3.15]}];
 
 // Whole-floor display plinth, outside the real apartment dimensions.
 round(20.9,-.7,5.55,45,.38,22.6,M.stone,stage,.15);
 const ground=new THREE.Mesh(new THREE.PlaneGeometry(600,600),mat('#e7e4db',1));ground.rotation.x=-Math.PI/2;ground.position.y=-.79;ground.receiveShadow=true;stage.add(ground);
 const grid=new THREE.GridHelper(80,80,'#c7cebc','#dce0d3');grid.position.set(5.2,-.785,6.85);grid.material.transparent=true;grid.material.opacity=.32;stage.add(grid);
-// Sparse abstract landscape: intentionally no neighbouring buildings or river.
-const land=new THREE.Mesh(new THREE.PlaneGeometry(500,500),mat('#b7c1a4',1));land.rotation.x=-Math.PI/2;landscape.add(land);
+// Abstract landscape and outlook (scene-env.js): generic massing on a far ring, not real neighbouring buildings or a river view.
+// The land runs past the far plane, so wherever it shows it fogs out before its edge.
+const land=new THREE.Mesh(new THREE.CircleGeometry(900,48),mat('#b7c1a4',1));land.rotation.x=-Math.PI/2;land.position.set(20.9,0,5.5);landscape.add(land);const sky=createSky({center:[20.9,5.5]});landscape.add(sky);
 const lrng=seeded(480);for(let i=0;i<28;i++){const x=(lrng()-.5)*180,z=20+lrng()*120;const h=3+lrng()*5;const g=new THREE.Group();g.position.set(x,0,z);landscape.add(g);cyl(0,0,0,.12,h*.4,M.walnut,g);sphere(0,h*.65,0,h*.35,h*.5,h*.35,mat('#8d9e77'),g);}
 const unusedOldBuildingFootprint=[[-.1,2.35],[6.35,2.35],[6.35,0],[8.9,0],[8.9,-6.4],[13.75,-6.4],[13.75,-.6],[28.05,-.6],[28.05,-6.4],[32.9,-6.4],[32.9,0],[35.45,0],[35.45,2.35],[41.9,2.35],[41.9,11.65],[35.2,11.65],[35.2,13.45],[31.15,13.45],[31.15,15.25],[10.65,15.25],[10.65,13.45],[6.6,13.45],[6.6,11.65],[-.1,11.65]];
 const buildingFootprint=footprint;
@@ -344,12 +368,17 @@ const activeGaming=()=>conceptScenes[activeLayout]||gaming;
 const conceptStudyViews={balanced:{desk:{pos:[5.65,1.62,8.95],look:[4.45,1.1,7.9]},guest:{pos:[5.55,1.62,10.65],look:[4.12,1.0,10.15]}},family:{desk:{pos:[5.05,1.62,8.75],look:[3.75,1.1,8.35]},guest:{pos:[5.05,1.62,10.35],look:[3.8,1.1,10.2]}},central:{desk:{pos:[5.3,1.62,8.5],look:[5.95,1.1,7.35]},guest:{pos:[3.82,1.62,9.72],look:[5.7,1.1,9.7]}}};
 const activeStudyViews=()=>conceptStudyViews[activeLayout]||STUDY_VIEWS;
 
+// Software tier: three draws a transparent DoubleSide material twice (back faces, then front); one pass for the glass saves ~2% of a
+// living-room frame there and changes at most 7/255 on the pixels seen through two panes.
+if(renderTier==='soft')M.glass.forceSinglePass=true;
+// Eye-level fov follows the aspect ratio (scene-env.js eyeFov); overviews keep their fixed vertical fov.
+const walkUI=createWalkUI({canvas:renderer.domElement,toggle:$('uiToggle'),viewport:$('viewport')});let fovBase=[42,false];function setFov(v,eye=false){fovBase=[v,eye];camera.fov=eye?eyeFov(v,camera.aspect,renderTier):v;}
 function setViewOffset(){camera.clearViewOffset();if(['dollhouse','building'].includes(mode)){if(innerWidth>700)camera.setViewOffset(innerWidth,innerHeight,-innerWidth*.1,0,innerWidth,innerHeight);else camera.setViewOffset(innerWidth,innerHeight,0,-innerHeight*.08,innerWidth,innerHeight);}camera.updateProjectionMatrix();}
 function setArchitecturalCut(h){clipPlane.constant=h;wallCaps.forEach(q=>{q.position.y=h;q.visible=h<2.77;});}
 function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
 function tween(pos,target,seconds=1.4){transition={start:performance.now(),duration:seconds*1000,from:camera.position.clone(),to:V(...pos),tf:controls.target.clone(),tt:V(...target)};}
 function overviewPos(){return frameForFocus();}
-function prepare(modeNew){mode=modeNew;if(mode==='walk'&&innerWidth<701&&!compactMapSet){$('minimap').setAttribute('hidden','');$('roomShortcuts').hidden=true;$('mapToggle').textContent='+';$('mapToggle').setAttribute('aria-label','展开空间定位');compactMapSet=true;}document.body.dataset.mode=mode;keys={};transition=null;
+function prepare(modeNew){mode=modeNew;if(mode==='walk'&&innerWidth<701&&!compactMapSet){$('minimap').setAttribute('hidden','');$('roomShortcuts').hidden=true;$('mapToggle').textContent='+';$('mapToggle').setAttribute('aria-label','展开空间定位');compactMapSet=true;}document.body.dataset.mode=mode;walkUI.setMode(mode);keys={};transition=null;
  $('intro').hidden=mode!=='dollhouse';$('roomLabel').hidden=!['walk','plan'].includes(mode);$('miniPanel').hidden=!['walk','tour'].includes(mode);$('bedPanel').hidden=true;document.body.classList.remove('bed-visible');$('walkHint').hidden=mode!=='walk';$('touchPad').hidden=mode!=='walk';$('crosshair').hidden=mode!=='walk';$('studyControls').hidden=true;$('tourCaption').hidden=mode!=='tour';$('floorPanel').hidden=mode!=='building';
  document.querySelectorAll('[data-mode]').forEach(b=>{if(b.tagName==='BUTTON'){b.classList.toggle('active',b.dataset.mode===mode);b.setAttribute('aria-pressed',String(b.dataset.mode===mode));}});
  controls.enabled=!['walk','tour'].includes(mode);controls.enableRotate=mode!=='plan';controls.enablePan=true;controls.maxDistance=mode==='building'?220:110;controls.minDistance=mode==='building'?30:8;
@@ -358,14 +387,14 @@ function prepare(modeNew){mode=modeNew;if(mode==='walk'&&innerWidth<701&&!compac
  scene.background.set(['walk','building'].includes(mode)?'#d8e2d9':'#e7e4db');scene.fog=mode==='building'?new THREE.Fog('#d8e2d9',240,600):mode==='walk'?new THREE.Fog('#d8e2d9',65,225):null;
  annotations.visible=$('measureBtn').getAttribute('aria-pressed')==='true'&&mode!=='building';bedDimension.visible=false;
  $('orientation').hidden=['walk','tour','building'].includes(mode);$('navHint').textContent=mode==='plan'?'拖动平移 / 滚轮缩放':mode==='walk'?'拖动环顾 / W A S D 行走':mode==='tour'?'自动导览 · 可暂停':'拖动旋转 / 滚轮缩放';
- $('tourFade').style.opacity='0';camera.fov=mode==='walk'?64:42;setViewOffset();updateFloor();
- updateScopeUI();invalidate(1800,true);
+ $('tourFade').style.opacity='0';setFov(mode==='walk'?64:42,mode==='walk');setViewOffset();updateFloor();
+ updateScopeUI();if(['walk','tour'].includes(mode))setDoorView(walkDoorView!=='hidden',walkDoorView);else setDoorView(doorView!=='hidden');invalidate(1800,true);
 }
 function changeMode(m){prepare(m);if(m==='dollhouse'){const c=focusedCenter();tween(overviewPos(),[c[0],.1,c[1]]);currentRoom='';}
  else if(m==='plan'){const c=focusedCenter();tween([c[0],focusUnit==='floor'?(innerWidth<700?100:62):29,c[1]],[c[0],0,c[1]-.01]);$('roomTitle').textContent='图纸里的每一寸';$('roomDesc').textContent=activeLayout==='original'?'原四房家具摆位；北侧承重墙、门洞和原水点保留。':LAYOUTS[activeLayout].summary+'墙体与原四房完全相同。';$('roomKicker').textContent='PLAN VIEW · 1:1';}
  else if(m==='building'){tween([120,95-floorElevation(floor),140],[20.9,40-floorElevation(floor),4.6],2);toast('楼栋为体量示意；高亮为当前选择的 B 户型');}
  else if(m==='walk'){placeWalker(...unitEntry[focusUnit==='floor'?'bl':focusUnit]);currentRoom='';updateRoom();$('viewport').focus({preventScroll:true});toast('拖动环顾，W A S D 或方向键行走；也可点右侧房间定位');}
- else if(m==='tour'){focusUnit='bl';activeUnit='bl';updateScopeUI();tourTime=0;tourPaused=false;lastTourPhase=-1;$('pauseTour').textContent='Ⅱ 暂停';controls.enabled=false;camera.fov=48;camera.updateProjectionMatrix();}
+ else if(m==='tour'){focusUnit='bl';activeUnit='bl';updateScopeUI();tourTime=0;tourPaused=false;lastTourPhase=-1;$('pauseTour').textContent='Ⅱ 暂停';controls.enabled=false;setFov(48);camera.updateProjectionMatrix();}
 }
 function placeWalker(pos,look){camera.position.set(...pos);camera.rotation.order='YXZ';camera.lookAt(...look);yaw=camera.rotation.y;pitch=camera.rotation.x;}
 function goRoom(id,immediate=false){const room=rooms.find(r=>r.id===id);if(!room)return;activeUnit=room.unit;focusUnit=room.unit;rebuildShortcuts();if(mode!=='walk')prepare('walk');transition=null;const p=room.pos;
@@ -413,7 +442,7 @@ const TOUR=[
 ];
 function tourFrame(dt){if(!tourPaused)tourTime+=dt;if(tourTime>=60){changeMode('dollhouse');toast('导览结束，点击“自由漫游”继续探索');return;}
  let s=TOUR.find(s=>tourTime>=s.start&&tourTime<s.end)||TOUR[0];if(s.phase===4&&activeLayout==='central')s={...s,title:'两间 1.8 米床，南侧主卧兼电竞。',text:'条件移墙15厘米后，两边床尾各约0.97米；一字桌靠北墙连续布置，仍需设计单位核实。',a:[4.45,1.62,8.5],b:[5.2,1.62,10.9],la:[5.9,1,7.4],lb:[5.85,1,9.9]};else if(s.phase===4&&activeLayout!=='original')s={...s,title:'原墙不变，主卧床尾更松。',text:'1.8米床保留，床尾大长柜分配到别的房间；床尾至原墙1.12米。',a:[2.55,1.62,8.55],b:[2.55,1.62,10.9],la:[1.22,1,9.8],lb:[1.22,1,9.8]};const u=clamp((tourTime-s.start)/(s.end-s.start),0,1),k=ease(u);
- if(s.phase!==lastTourPhase){lastTourPhase=s.phase;$('tourNumber').textContent=String(s.phase+1).padStart(2,'0')+' / 06';$('tourTitle').textContent=s.title;$('tourText').textContent=s.text;roof.visible=!s.overview;stage.visible=!!s.overview;landscape.visible=!s.overview;scene.background.set(s.overview?'#e7e4db':'#d8e2d9');scene.fog=s.overview?null:new THREE.Fog('#d8e2d9',65,225);setArchitecturalCut(s.overview?1.28:2.79);camera.fov=s.overview?42:64;camera.updateProjectionMatrix();}
+ if(s.phase!==lastTourPhase){lastTourPhase=s.phase;$('tourNumber').textContent=String(s.phase+1).padStart(2,'0')+' / 06';$('tourTitle').textContent=s.title;$('tourText').textContent=s.text;roof.visible=!s.overview;stage.visible=!!s.overview;landscape.visible=!s.overview;scene.background.set(s.overview?'#e7e4db':'#d8e2d9');scene.fog=s.overview?null:new THREE.Fog('#d8e2d9',65,225);setArchitecturalCut(s.overview?1.28:2.79);setFov(s.overview?42:64,!s.overview);camera.updateProjectionMatrix();}
  camera.position.lerpVectors(V(...s.a),V(...s.b),k);const look=V(...s.la).lerp(V(...s.lb),k);camera.lookAt(look);
  let opacity=0;if([1,4,5].includes(s.phase)&&tourTime-s.start<.5)opacity=1-(tourTime-s.start)/.5;if([0,3,4].includes(s.phase)&&s.end-tourTime<.5)opacity=1-(s.end-tourTime)/.5;$('tourFade').style.opacity=String(opacity);
  $('tourProgress').style.width=(tourTime/60*100)+'%';}
@@ -441,9 +470,10 @@ function walkFrame(dt){let f=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.Arro
  const count=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.045));for(let i=0;i<count;i++){if(canWalk(camera.position.x+dx/count,camera.position.z))camera.position.x+=dx/count;if(canWalk(camera.position.x,camera.position.z+dz/count))camera.position.z+=dz/count;}}
  camera.position.y=EYE;updateRoom();}
 function updateMini(){dot.setAttribute('cx',camera.position.x.toFixed(2));dot.setAttribute('cy',camera.position.z.toFixed(2));const dir=V(0,0,-1).applyQuaternion(camera.quaternion);const angle=Math.atan2(-dir.x,-dir.z)*180/Math.PI;viewCone.setAttribute('transform',`translate(${camera.position.x} ${camera.position.z}) rotate(${-angle})`);}
-function updatePins(){for(const p of pins){if(p.el.hidden)continue;const q=p.pos.clone().project(camera);p.el.style.left=(q.x*.5+.5)*innerWidth+'px';p.el.style.top=(-q.y*.5+.5)*innerHeight+'px';p.el.style.opacity=q.z>1||q.z<0?'0':'1';}}
+// The camera may have moved since the last render (tween, walk step): refresh its matrices before projecting.
+function updatePins(){camera.updateMatrixWorld();for(const p of pins){if(p.el.hidden)continue;const q=p.pos.clone().project(camera);p.el.style.left=(q.x*.5+.5)*innerWidth+'px';p.el.style.top=(-q.y*.5+.5)*innerHeight+'px';p.el.style.opacity=q.z>1||q.z<0?'0':'1';}}
 const qualityConfigs={auto:{label:'自动'},smooth:{label:'流畅'},fine:{label:'精细'}};
-function resizeRenderer(){if(mode==='walk'&&innerWidth<701&&!compactMapSet){$('minimap').hidden=true;$('roomShortcuts').hidden=true;$('mapToggle').textContent='+';$('mapToggle').setAttribute('aria-label','展开空间定位');compactMapSet=true;}ratios=tierSettings(renderTier,quality,devicePixelRatio,innerWidth*innerHeight,pixelBudget);sizeDirty=true;camera.aspect=innerWidth/innerHeight;setViewOffset();invalidate(900,true);}
+function resizeRenderer(){if(mode==='walk'&&innerWidth<701&&!compactMapSet){$('minimap').hidden=true;$('roomShortcuts').hidden=true;$('mapToggle').textContent='+';$('mapToggle').setAttribute('aria-label','展开空间定位');compactMapSet=true;}ratios=tierSettings(renderTier,quality,devicePixelRatio,innerWidth*innerHeight,pixelBudget);sizeDirty=true;camera.aspect=innerWidth/innerHeight;setFov(...fovBase);setViewOffset();invalidate(900,true);}
 // Resizing clears the drawing buffer, so the canvas only changes size inside animate(), right before a render.
 function setRatio(r){if(sizeDirty){renderer.setPixelRatio(r);renderer.setSize(innerWidth,innerHeight);sizeDirty=false;}else if(r!==renderer.getPixelRatio())renderer.setPixelRatio(r);}
 function renderStats(){$('renderStats').textContent=`${renderer.domElement.width} × ${renderer.domElement.height}${hiRes?' · 静止高清':''} · ${renderer.info.render.calls} 次绘制 · ${Math.round(renderer.info.render.triangles/1000)}k 三角面`;}
@@ -453,10 +483,10 @@ document.addEventListener('click',()=>invalidate(700,true));document.addEventLis
 let last=performance.now(),lastDraw=0,frame=0,fpsFrames=0,fpsSince=performance.now(),lastUi=0,slowWindows=0;let quality='auto',pixelBudget=tierBudget(renderTier,'auto'),targetFPS=60;
 function animate(now){requestAnimationFrame(animate);if(document.hidden){last=now;return;}const frameInterval=1000/targetFPS,elapsed=now-lastDraw;if(elapsed<frameInterval-.5)return;const dt=Math.min((now-last)/1000,.06);last=now;lastDraw=now-Math.max(0,elapsed%frameInterval);
  const moving=mode==='walk'&&Object.values(keys).some(Boolean),touring=mode==='tour'&&!tourPaused;
- if(touring)tourFrame(dt);else if(moving)walkFrame(dt);else if(transition){const u=clamp((now-transition.start)/transition.duration,0,1),e=ease(u);camera.position.lerpVectors(transition.from,transition.to,e);controls.target.lerpVectors(transition.tf,transition.tt,e);controls.update();if(u===1)transition=null;}else if(!['walk','tour'].includes(mode)&&now<dirtyUntil)controls.update();
+ if(touring)tourFrame(dt);else if(moving)walkFrame(dt);else if(transition){const u=clamp((now-transition.start)/transition.duration,0,1),e=ease(u);camera.position.lerpVectors(transition.from,transition.to,e);controls.target.lerpVectors(transition.tf,transition.tt,e);controls.update();if(u===1){transition=null;invalidate(1);}}else if(!['walk','tour'].includes(mode)&&now<dirtyUntil)controls.update();
  const active=moving||touring||!!transition||now<dirtyUntil;
  // Settled for 250 ms: draw one sharper frame. Any activity drops back to the moving ratio in the same callback.
- if(!active){if(!idleAt)idleAt=now;if(!hiRes&&now-idleAt>250&&ratios.still>ratios.move+.01){setRatio(ratios.still);hiRes=true;renderer.render(scene,camera);renderStats();}if(now-lastUi>1000){$('fpsLabel').textContent='静止省电';lastUi=now;}fpsFrames=0;fpsSince=now;return;}
+ if(!active){if(!idleAt){idleAt=now;updatePins();}if(!hiRes&&now-idleAt>250&&ratios.still>ratios.move+.01){setRatio(ratios.still);hiRes=true;renderer.render(scene,camera);renderStats();}if(now-lastUi>1000){$('fpsLabel').textContent='静止省电';lastUi=now;}fpsFrames=0;fpsSince=now;return;}
  idleAt=0;if(hiRes||sizeDirty){hiRes=false;setRatio(ratios.move);}
  updateZones();updateGamingLighting();fitSun();if(now-lastUi>90){updatePins();if(['walk','tour'].includes(mode))updateMini();lastUi=now;}renderer.render(scene,camera);fpsFrames++;
  if(now-fpsSince>2000){const fps=Math.round(fpsFrames*1000/(now-fpsSince));$('fpsLabel').textContent=fps+' FPS · '+qualityConfigs[quality].label;renderStats();if(((quality==='auto'&&fps<40)||(renderTier==='phone'&&fps<30))&&(moving||touring)){slowWindows++;if(slowWindows>=2&&ratios.move>ratios.floor+.01){pixelBudget=Math.round(innerWidth*innerHeight*ratios.move**2*.8);resizeRenderer();slowWindows=0;toast('已自动降低三维分辨率，优先保持操作流畅');}}else slowWindows=0;fpsFrames=0;fpsSince=now;}
@@ -472,7 +502,8 @@ let lightSnapshot=null,roomLightKey='';
 // slot, so the point-light count, and with it every compiled shader, stays the same on entering the gaming room.
 function setAccent(g,v){g.accent.intensity=v;g.accent.visible=v>0;if(v>0)diningLight.visible=false;}
 // Rest / soft-light mood in the gaming room, as fractions of the current home lighting (exposure without the brightness slider).
-const REST={hemi:.45,sun:.085,fill:.38,env:.78};
+// ×0.93 in round 2: the indoor factors lift the bounce light, and the desk views keep their round-1 brightness.
+const REST={hemi:.42,sun:.079,fill:.353,env:.725};
 function restoreGlobalLighting(){if(lightSnapshot){setAmbient(lightSnapshot.hemi,lightSnapshot.env);sun.intensity=lightSnapshot.sun;fill.intensity=lightSnapshot.fill;renderer.toneMappingExposure=lightSnapshot.exposure;lightSnapshot=null;}for(const g of [gaming,expandedGaming,...Object.values(conceptScenes)])setAccent(g,0);diningLight.visible=true;roomLightKey='';}
 function updateGamingLighting(){const c=camera.position,inRoom=mode==='walk'&&allFurnishings.visible&&(activeLayout==='original'?(c.x>.1&&c.x<2.8&&c.z>2.5&&c.z<5.85):(c.x>3.5&&c.x<6.5&&c.z>7.15&&c.z<11.45));const key=inRoom?gamingMode:'';if(key===roomLightKey)return;
  restoreGlobalLighting();const gaming=activeGaming();roomLightKey=key;if(!key){renderer.shadowMap.needsUpdate=true;return;}
@@ -495,11 +526,18 @@ $('guideBtn').onclick=()=>{$('designGuide').showModal();keys={};};$('closeGuide'
 $('qualitySelect').onchange=e=>{applyQuality(e.target.value);toast(e.target.value==='smooth'?'流畅模式：减少三维像素与阴影，文字界面保持清晰':'画质已切换，静止时仍会停止重复绘制');};
 document.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>selectUnit(b.dataset.unit));
 const doorLeaves=[];arch.traverse(q=>{if(q.userData.doorLeaf)doorLeaves.push(q);});
-function setDoorView(show){doorView=show?'open':'hidden';for(const g of doorLeaves)g.visible=show;
- for(const id of ['doorsBtn','studioDoors','studyDoor']){const b=$(id);b.setAttribute('aria-pressed',String(show));if(id==='doorsBtn'){b.querySelector('small').textContent=show?'门扇开':'门扇藏';b.title=show?'收起门扇，清楚看房':'显示开启的门扇，检查开门方向';}else b.textContent=show?'收起门扇 · 清楚看房':'显示门扇 · 检查开启';}
- $('doorViewNote').textContent=show?'已显示开启门扇 · 开启方向示意，非门五金施工图':'看房模式：仅收起门叶供观看；原儿童房门洞与北侧承重墙保留';invalidate(650,true);
+// Overviews keep their own door view (hidden unless toggled). Walk and tour open on DOOR_VIEW_WALK: hinged leaves half open, sliding
+// leaves stowed as before; switching doors back on there shows every leaf ('all'). Angles are set on the hinge, so doorway() is
+// untouched; a hinged leaf that would cross a default view (room, unit entry, study and entry views) at 45° opens fully instead.
+// Leaves never block walking either way.
+let walkDoorView=DOOR_VIEW_WALK;const leafSwing=g=>g.userData.swing??=g.rotation.y/(Math.PI*DOOR_OPEN.open);
+function defaultViews(){return [...rooms.map(r=>[r.pos,r.look]),...Object.values(unitEntry),...Object.values(activeStudyViews()).map(v=>[v.pos,v.look]),[ENTRY_VIEWS[activeLayout]?.pos,ENTRY_VIEWS[activeLayout]?.look]].filter(v=>v[0]&&v[1]);}
+function setDoorView(show,want){const eye=['walk','tour'].includes(mode),state=!show?'hidden':eye?(want==='all'?'all':'half'):'open';if(eye)walkDoorView=state;else doorView=state;const views=eye&&show?defaultViews():[];
+ for(const g of doorLeaves){const swing=leafSwing(g);g.visible=show&&(swing!==0||state!=='half');if(!g.visible||!swing)continue;g.rotation.y=swing*Math.PI*(eye?DOOR_OPEN.half:DOOR_OPEN.open);if(views.length){g.updateWorldMatrix(true,true);if(views.some(([p,q])=>crosses(g,p,q)))g.rotation.y=swing*Math.PI*DOOR_OPEN.open;}}
+ for(const id of ['doorsBtn','studioDoors','studyDoor']){const b=$(id);b.setAttribute('aria-pressed',String(show));if(id==='doorsBtn'){b.querySelector('small').textContent=show?(eye?'门半开':'门扇开'):'门扇藏';b.title=show?'收起门扇，清楚看房':eye?'显示全部门扇（含推拉门）':'显示开启的门扇，检查开门方向';}else b.textContent=show?'收起门扇 · 清楚看房':eye?'显示门扇 · 含推拉门':'显示门扇 · 检查开启';}
+ $('doorViewNote').textContent=show?(state==='half'?'漫游与导览默认铰链门半开约45°、推拉门收起 · ':state==='all'?'已显示全部门扇（铰链门半开约45°） · ':'已显示开启门扇 · ')+'门叶不参与行走碰撞；开启方向示意，非门五金施工图':'看房模式：仅收起门叶供观看；原儿童房门洞与北侧承重墙保留';invalidate(650,true);
 }
-for(const id of ['doorsBtn','studioDoors','studyDoor'])$(id).onclick=()=>{setDoorView(doorView!=='open');toast(doorView==='hidden'?'仅为看房收起门扇；实际房门、门洞和消防要求仍保留。':'正在查看开启门扇。门叶不作为行走碰撞，开启净距需施工深化。');};
+for(const id of ['doorsBtn','studioDoors','studyDoor'])$(id).onclick=()=>{const eye=['walk','tour'].includes(mode),on=(eye?walkDoorView:doorView)==='hidden';setDoorView(on,'all');toast(!on?'仅为看房收起门扇；实际房门、门洞和消防要求仍保留。':(eye?'铰链门半开约45°，推拉门一并显示':'正在查看开启门扇')+'。门叶不作为行走碰撞，开启净距需施工深化。');};
 $('masterEntryView').onclick=()=>{if(activeLayout==='central'){goRoom('south');$('closeDesign').click();return;}focusUnit='bl';activeUnit='bl';rebuildShortcuts();prepare('walk');const v=ENTRY_VIEWS[activeLayout];placeWalker(v.pos,v.look);currentRoom='';updateRoom();$('roomTitle').textContent='主卧 · 进出与收纳';$('roomDesc').textContent=activeLayout==='original'?'保留原门位与DWG床向，南窗在侧面；床尾至4.30米长柜约0.52米。':'原主卧门和床向保留；移走床尾长柜后留1.12米，床架尺寸仍为2.18×2.00米。';$('closeDesign').click();$('viewport').focus({preventScroll:true});invalidate(1000);};
 function setGuestMode(on){guestMode=on;for(const g of [gaming,expandedGaming,...Object.values(conceptScenes)]){g.guest.visible=on;g.day.visible=!on;}studyChair.position.z=on?-.15:-.05;expandedGaming.chair.position.z=4.95+(on?-.15:-.05);$('guestToggle').textContent=on?'收起客床':'展开客床';$('guestToggle').setAttribute('aria-pressed',String(on));}
 $('guestToggle').onclick=()=>{if(['family','central'].includes(activeLayout))return;setGuestMode(!guestMode);setGamingMode(guestMode?'rest':'game');placeWalker(...Object.values(activeStudyViews().guest));updateRoom();invalidate(600,true);};
@@ -517,6 +555,13 @@ function applyLayout(id){const next=resolveLayout(id),changed=next!==activeLayou
 $('layoutPlanView').onclick=()=>{focusUnit='bl';selectUnit('bl');changeMode('plan');};
 const studio=createDesignStudio({applyLayout,applyHome:applyHomeDesign,applyGaming:renderGamingPreferences,previewRoom:id=>{goRoom(id==='master'&&activeLayout==='central'?'south':id==='child'&&activeLayout!=='original'?'south':id);if(innerWidth<701)$('closeDesign').click();},toast});
 
+// Contact shadows by group: the owner's shared furniture (not the pieces the layouts replace), the neighbours' full original sets
+// (the mirrored units are built in their own unmirrored frame), each layout's fit-out. Fake AO along each wall set's faces,
+// its ceiling bands as their own mesh (own material, so batchStatic keeps it apart; clone() copies the cut plane, so it is
+// shared again) that setIndoor() only shows under the roof.
+// Software rasterisers skip the wall bands (fill-bound: +3–5% a frame in the entry and bathroom); contact shadows stay.
+{const same=(a,b)=>a.every((v,i)=>Math.abs(v-b[i])<1e-6),gone=[...OWNER_REPLACED_BOXES,...oldChildCollisions];contacts([...bCollisions.filter(b=>!gone.some(q=>same(b,q))),...ownerExtraCollisions,...BAY_BOXES],leftB);contacts(bCollisions,rightB);contacts(aCollisions,leftA);contacts(aCollisions,rightA);contacts(layoutFootprints('original'),originalFitout);for(const [id,g] of Object.entries(conceptScenes))contacts(layoutFootprints(id,conceptData.layouts[id]),g.group);
+ const ceilMat=shadeMat.clone();ceilMat.clippingPlanes=[clipPlane];for(const [id,plan] of [['original',originalData],['central',centralWallData]]){const ao=wallAOGeometry(plan,{footprint,floorHoles,windows:winSegments}),top=new THREE.Mesh(ao.ceiling,ceilMat);top.visible=indoor!==OUTDOOR;aoCeilings.push(top);if(renderTier!=='soft')layoutWalls[id].group.add(new THREE.Mesh(ao.foot,shadeMat),top);}}
 // Batch static architectural meshes without changing their metre-scale transforms.
 function batchStatic(group,exclude=null){group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert();const buckets=new Map(),original=[];group.traverse(o=>{if(!o.isMesh||!o.visible||Array.isArray(o.material))return;let a=o;while(a&&a!==group){if((Array.isArray(exclude)?exclude:[exclude]).includes(a))return;a=a.parent;}const key=o.material.uuid+'|'+o.castShadow+'|'+o.receiveShadow;if(!buckets.has(key))buckets.set(key,{material:o.material,cast:o.castShadow,receive:o.receiveShadow,geos:[]});let g=o.geometry.clone();if(g.index)g=g.toNonIndexed();const transform=new THREE.Matrix4().multiplyMatrices(inverse,o.matrixWorld);g.applyMatrix4(transform);if(transform.determinant()<0){for(const attr of Object.values(g.attributes)){const a=attr.array,k=attr.itemSize;for(let i=0;i<attr.count;i+=3)for(let j=0;j<k;j++){const u=(i+1)*k+j,v=(i+2)*k+j,t=a[u];a[u]=a[v];a[v]=t;}}}buckets.get(key).geos.push(g);original.push(o);});for(const o of original){o.parent.remove(o);o.geometry.dispose();}for(const b of buckets.values()){const geometry=mergeGeometries(b.geos,false);b.geos.forEach(g=>g.dispose());if(!geometry)continue;const mesh=new THREE.Mesh(geometry,b.material);mesh.castShadow=b.cast;mesh.receiveShadow=b.receive;group.add(mesh);}}
 // Merge the moving cut caps into a single draw call; preserve editable groups.
@@ -530,7 +575,8 @@ for(const g of Object.values(conceptScenes)){batchStatic(g.group,[g.day,g.guest]
 batchStatic(rightB);batchStatic(leftA);batchStatic(rightA);batchStatic(common);
 batchStatic(redesignFurnishings,[expandedGaming.room]);
 for(const g of [gaming,expandedGaming]){batchStatic(g.room,[g.day,g.guest,g.chair,g.shade]);batchStatic(g.day);g.guest.visible=true;batchStatic(g.guest);g.guest.visible=guestMode;batchStatic(g.chair);batchStatic(g.shade);}
-batchStatic(roof);batchStatic(stage);batchStatic(building);batchStatic(landscape);
+batchStatic(roof);batchStatic(stage);batchStatic(building);batchStatic(landscape,sky);
+details.fixtures();
 let savedQuality='auto';try{savedQuality=localStorage.getItem('xiyuan-quality-v2')||'auto';}catch{}if(!qualityConfigs[savedQuality])savedQuality='auto';
 if(renderTier==='soft')scene.traverse(o=>{for(const m of o.isMesh?[].concat(o.material):[])if(m.isMeshStandardMaterial&&(m.metalness>0||m.roughness<.3)&&!reflective.includes(m)){m.envMap=envMap;m.envMapIntensity=ambient.env;m.needsUpdate=true;reflective.push(m);}});
 camera.position.set(...overviewPos());const c=focusedCenter();controls.target.set(c[0],.1,c[1]);controls.update();prepare('dollhouse');applyQuality(savedQuality);requestAnimationFrame(animate);

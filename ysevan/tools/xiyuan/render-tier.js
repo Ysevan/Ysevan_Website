@@ -10,6 +10,10 @@ const BUDGETS={soft:{auto:1400000,smooth:900000,fine:3000000},gpu:{auto:8000000,
 export const SOFT_FLOOR_BUDGET=720000;
 // Soft tier has no scene environment: per unit of environmentIntensity, white light added to the hemisphere sky and ground.
 export const SOFT_ENV_SKY=4.5,SOFT_ENV_GROUND=2;
+// Sun shadow map edge per tier (texels). Inside a unit the frame is about 16 × 13 m (app.js fitSun), so 0.8 cm per texel at
+// 2048 and 1.1 cm at 1536. SwiftShader 2040 (M5 Pro): one shadow re-render in B costs about 7 / 10 / 20 ms at 1024 / 1536 / 2048
+// (only when the unit, layout or furniture changes), plain frames are the same at all three; GPUs and phones redo it in 0.3 ms.
+export const SUN_MAP={phone:2048,gpu:2048,soft:1536};
 
 export function pickTier({renderer='',coarse=false,shortSide=Infinity}={}){
  if(SOFT_RENDERER.test(renderer))return 'soft';
