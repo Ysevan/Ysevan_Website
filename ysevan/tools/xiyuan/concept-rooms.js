@@ -31,30 +31,13 @@ export function createConceptRoom(id,plan,{box,materials:M}){
   const laptop=B(laptopX,.81,-.22,.43,.27,.018,M.dark,g,.01);laptop.rotation.x=-.13;
   B(laptopX,.83,-.208,.40,.23,.003,screenMaterial,g);
   B(.06,.76,.14,.41,.025,.16,M.dark,g,.013);B(length/2-.19,.76,.14,.09,.025,.13,M.white,g,.02);
- }
- function deskL(item){
-  // Two adjoining 0.90 m desktop leaves use the former entry recess. The
-  // 1.80 m span is not misrepresented as one straight 1.80 m worktop.
-  const [left,right]=item.footprints;
-  for(const [x,z,X,Z] of [left,right]){
-   B((x+X)/2,.72,(z+Z)/2,X-x,.04,Z-z,M.oak,itemParent,.014);
-   for(const xx of [x+.06,X-.06])B(xx,0,Z-.07,.035,.72,.035,M.metal,itemParent);
-  }
-  B(5.96,.78,7.36,.60,.36,.032,M.dark,itemParent,.012);
-  B(5.96,.84,7.382,.56,.30,.004,screenMaterial,itemParent);
-  B(5.96,.73,7.36,.025,.08,.022,M.metal,itemParent);
-  B(5.10,.78,7.78,.43,.025,.28,M.dark,itemParent,.012);
-  const laptop=B(5.10,.81,7.65,.43,.27,.018,M.dark,itemParent,.01);
-  laptop.rotation.x=-.13;
-  B(5.96,.76,7.66,.41,.025,.16,M.dark,itemParent,.012);
-  B(6.32,.76,7.65,.09,.025,.13,M.white,itemParent,.02);
-  // Shallow display shelves are elevated above the desk, not floor cupboards.
-  for(const [x,z,w] of [[5.10,7.66,.84],[6.00,7.26,.84]]){
+  if(item.displayWall){
+   // One continuous shelf line above the single worktop; no floor cabinet in the aisle.
    for(const y of [1.37,1.83]){
-    B(x,y,z,w,.024,.19,M.oak,itemParent,.006);
-    for(const dx of [-.26,0,.26]){
-     B(x+dx,y+.025,z,.13,.065,.12,M.olive,itemParent,.01);
-     B(x+dx,y+.09,z,.08,.055,.09,M.dark,itemParent,.008);
+    B(0,y,-.20,length-.08,.024,.19,M.oak,g,.006);
+    for(const u of [-.61,-.37,-.13,.13,.37,.61]){
+     B(u,y+.025,-.20,.12,.065,.12,M.olive,g,.01);
+     B(u,y+.09,-.20,.08,.055,.09,M.dark,g,.008);
     }
    }
   }
@@ -97,7 +80,6 @@ export function createConceptRoom(id,plan,{box,materials:M}){
   if(item.kind==='bed')bed(item);
   else if(item.kind==='wardrobe')createFittedWardrobe(item,{box,materials:M,parent:part});
   else if(item.kind==='desk')desk(item);
-  else if(item.kind==='deskL')deskL(item);
   else if(item.kind==='display')collection(item);
   else if(item.kind==='sofa'){group.remove(part);sofa(item,day,false);}
   else if(item.kind==='guest'){group.remove(part);sofa(item,guest,true);}

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {BAY} from './layout-data.js?v=31a9b7692b';
+import {BAY} from './layout-data.js?v=a0e86353c3';
 // Master-bedroom bay window after the owner's reference video (2026-10-20), fitted to the DWG-derived room.
 // The sill and the wall under it are not cut: the desk rests on the sill, the shelf stands on the floor.
 export function createBayWindow({box,cyl,book,vase,materials:M,parent}){

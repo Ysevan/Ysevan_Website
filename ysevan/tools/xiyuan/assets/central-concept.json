@@ -1,5 +1,5 @@
 {
-  "version": "13-central-dual-queen-L-desk-conditional-shift",
+  "version": "14-central-dual-queen-straight-desk-conditional-shift",
   "created": "2026-10-21",
   "sourceSHA256": "87c258e615f533e6e89cd4e60507886ca0e199d280f68a480775ecf24f2a1a76",
   "wallSourceSHA256": "9f0584f807c6581531c91d8049802eb130ef2db4ff8ba8570afe5ac2d48cef06",
@@ -18,7 +18,7 @@
   ],
   "conditionalBalcony": "沿用原四房的封闭阳台横墙中段开口条件；未新增拆改。仅保留此前口头转述，不视为当前施工许可。梁、墙端、窗下墙、立面、水点不动；合法居住用途、保温、消防和现场高差需专项核验。不成立时本北卧布置需重做，不强塞落地。",
   "layout": {
-    "name": "04 · C 双大床＋L桌试摆",
+    "name": "04 · C 双大床＋一字桌试摆",
     "program": "三卧（南侧主卧兼电竞）＋北东衣帽间；两间南卧均1.8米床",
     "furniture": [
       {
@@ -83,37 +83,23 @@
       },
       {
         "id": "gamingDesk",
-        "name": "主卧 1.8 米 L 形电竞桌＋上方展示墙",
-        "kind": "deskL",
+        "name": "南主卧 1.80×0.65 米一字电竞桌＋上方展示墙",
+        "kind": "desk",
         "box": [
           4.65,
           7.15,
           6.45,
-          8.2
+          7.8
         ],
         "outerSize": [
           1.8,
-          1.05
+          0.65
         ],
         "equipment": [
           "ROG 笔记本",
           "27寸显示器",
           "夜魔X键盘",
           "鼠标"
-        ],
-        "footprints": [
-          [
-            4.65,
-            7.55,
-            5.55,
-            8.2
-          ],
-          [
-            5.55,
-            7.15,
-            6.45,
-            7.8
-          ]
         ],
         "displayWall": {
           "depth": 0.22,
@@ -163,10 +149,10 @@
       }
     ],
     "chairBox": [
-      5.6,
-      7.83,
-      6.16,
-      8.39
+      5.27,
+      7.81,
+      5.83,
+      8.37
     ]
   },
   "wardrobeTotalM": 4.3,
@@ -204,9 +190,15 @@
       "unit": "m"
     },
     {
+      "id": "straightDesk",
+      "label": "南主卧一字桌净台面（方案外廓）",
+      "value": 1.8,
+      "unit": "m"
+    },
+    {
       "id": "deskChairBed",
-      "label": "L桌椅背至南主卧床边",
-      "value": 0.51,
+      "label": "一字桌椅背至南主卧床边",
+      "value": 0.53,
       "unit": "m"
     },
     {
