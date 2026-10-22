@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {GAMING_MODES} from './design-data.js?v=d56f16cb48';
+import {GAMING_MODES} from './design-data.js?v=5eede9ed23';
 // One laptop + one 27-inch display. Hardware cases are size allowances, not product CAD.
 export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlane,materials,south=false}){
  const room=new THREE.Group(),day=new THREE.Group(),guest=new THREE.Group(),chair=new THREE.Group(),shade=new THREE.Group();room.add(day,guest,chair,shade);guest.visible=false;
@@ -9,8 +9,9 @@ export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlan
  const B=(x,y,z,w,h,d,m=G.oak,g=target,r=0)=>box(x,y,z,w,h,d,m,g,r);
  const strip=(x,y,z,w,h,d)=>{const q=B(x,y,z,w,h,d,warm);q.castShadow=false;return q;};
  // No dark floor overlay or opaque wall panel. Materials follow the whole-home palette.
- if(!south)B(1.4,2.28,2.52,2.04,.065,.065,G.white);
- B(1.4,.51,2.515,1.96,1.77,.015,G.linen,shade);
+ // Roller-blind box and blind hang above the 1.28 m cut: cut with the walls (material-kit.js cut twins).
+ if(!south)B(1.4,2.28,2.52,2.04,.065,.065,G.whiteCut||G.white);
+ B(1.4,.51,2.515,1.96,1.77,.015,G.linenCut||G.linen,shade);
  // 2.0 × 0.70 m desk, worktop 0.76 m; cable tray is accessible from below.
  B(1.4,.73,2.95,2,.03,.7);for(const x of [.48,2.32])B(x,0,2.94,.045,.73,.55,G.metal);
  B(1.4,.59,2.69,1.65,.05,.12,G.metal);B(.56,0,2.92,.30,.63,.53,G.white);
@@ -33,22 +34,30 @@ export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlan
  B(cx,.43,cz,.49,.08,.46,G.olive,chair,.05);B(cx,.52,cz+.18,.45,.52,.06,G.linen,chair,.04);
  for(const x of [cx-.26,cx+.26])B(x,.63,cz+.03,.035,.035,.24,G.metal,chair);
  cyl(cx,.08,cz,.035,.35,G.metal,chair);for(let i=0;i<5;i++){const a=i*Math.PI*2/5;rod([cx,.1,cz],[cx+Math.cos(a)*.28,.045,cz+Math.sin(a)*.28],.015,G.metal,chair);}
+ if(!south){
+ day.position.z=.20;
+ B(1.70,.12,4.675,.70,.27,.65,G.oak,day,.035);B(1.70,.39,4.68,.64,.12,.56,G.linen,day,.04);B(1.70,.36,4.40,.70,.48,.10,G.olive,day,.03);
+ for(const x of [1.38,2.02])B(x,.49,4.68,.06,.18,.55,G.linen,day,.02);
+ }else{
  // Occasional sleeper; 1.90 × 1.20 m, east passage remains about 0.68 m.
  B(1.15,.12,4.45,1.94,.27,.86,G.oak,day,.04);B(1.15,.39,4.48,1.86,.16,.72,G.linen,day,.06);B(1.15,.3,4.08,1.94,.65,.14,G.olive,day,.04);
  for(const x of [.25,2.05])B(x,.49,4.5,.12,.2,.68,G.linen,day,.04);
  B(1.15,.14,4.62,1.94,.20,1.24,G.oak,guest,.04);B(1.15,.34,4.62,1.90,.18,1.20,G.white,guest,.05);B(1.15,.3,4.08,1.94,.65,.14,G.olive,guest,.04);B(.47,.53,4.62,.34,.1,.85,G.linen,guest,.04);B(1.8,.53,4.62,.45,.03,1.2,G.olive,guest);
+ }
  target=collection;
  // 1.50 W × 0.40 D × 2.10 H display cabinet: sliding glass above closed storage.
  // Recheck actual car lengths, shelf loads and anti-tip anchors on site.
- B(.95,0,5.65,1.5,.48,.4,G.oak);B(.95,.48,5.827,1.5,1.62,.035,G.white);
- for(const x of [.215,1.685])B(x,.48,5.65,.03,1.62,.4,G.oak);
- for(const y of [.48,.88,1.26,1.64,2.07]){B(.95,y,5.65,1.5,.025,.4,G.oak);strip(.95,y-.012,5.77,1.4,.007,.008);}
+ // Carcass and shelves in the preset's cabinet finish, handles in the preset's style (material-kit.js), like the wardrobes.
+ const C=G.door||G.oak;B(.95,0,5.65,1.5,.48,.4,C);B(.95,.48,5.827,1.5,1.62,.035,G.white);
+ for(const x of [.215,1.685])B(x,.48,5.65,.03,1.62,.4,C);
+ for(const y of [.48,.88,1.26,1.64,2.07]){B(.95,y,5.65,1.5,.025,.4,C);strip(.95,y-.012,5.77,1.4,.007,.008);}
  const glass=new THREE.MeshStandardMaterial({color:'#f5f1e8',roughness:.15,transparent:true,opacity:.13,depthWrite:false,clippingPlanes:[clipPlane]});
- for(const x of [.58,1.32]){const q=B(x,.52,5.437,.73,1.52,.008,glass);q.castShadow=false;B(x-.33,1.14,5.422,.012,.22,.012,G.brass);}
+ for(const x of [.58,1.32]){const q=B(x,.52,5.437,.73,1.52,.008,glass);q.castShadow=false;B(x-.33,1.14,5.422,.012,.22,.012,G.handleBar||G.brass);B(x-.33,1.235,5.422,.03,.03,.012,G.handleKnob||G.brass);B(x-.33,1.08,5.426,.014,.34,.004,G.handlePull||G.brass);}
  // Neutral toy silhouettes indicate display capacity without inventing the user's collection.
  function car(x,y,z,color){const cm=new THREE.MeshStandardMaterial({color,roughness:.5});B(x,y,z,.31,.065,.14,cm,collection,.025);B(x,y+.05,z,.17,.055,.125,device,collection,.018);for(const X of [x-.10,x+.10])for(const Z of [z-.073,z+.073]){const q=cyl(X,y-.015,Z,.033,.017,device,collection);q.rotation.x=Math.PI/2;}}
  car(.55,.54,5.64,'#9e7860');car(1.23,.54,5.64,'#8b9d94');car(.55,.94,5.64,'#c4b29a');car(1.23,.94,5.64,'#9c9eaf');
  for(const y of [1.30,1.68])for(const x of [.48,.93,1.38]){B(x,y,5.64,.10,.13,.09,G.olive,collection,.025);cyl(x,y+.13,5.64,.065,.10,G.linen,collection);}
+ if(!south){collection.scale.x=.6;collection.position.x=.70;collection.scale.z=.92;collection.position.z=.46728;}
  const accent=new THREE.PointLight('#ffe5b7',0,2.4,2);accent.position.set(.95,1.4,5.3);accent.castShadow=false;accent.visible=false;collection.add(accent);
  if(south){work.position.set(3.1,0,4.95);chair.position.set(3.1,0,4.95);for(const g of [day,guest]){g.rotation.y=Math.PI/2;g.position.set(.1,0,11.5);}collection.rotation.y=Math.PI/2;collection.position.set(.6,0,10.35);shade.visible=false;}
  let lastScreen='';function setMood(id,preferences={}){const s=GAMING_MODES[id]||GAMING_MODES.focus;shade.visible=!south&&id==='rest';warm.color.set(s.primary).multiplyScalar((preferences.strength??45)/100);if(lastScreen!==s.screen){for(const q of screens){q.material.map=wallpapers[s.screen]||null;q.material.color.set(s.screen==='off'?'#343b37':'white');q.material.needsUpdate=true;}lastScreen=s.screen;}accent.color.set(s.primary);}

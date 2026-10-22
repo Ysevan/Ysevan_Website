@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {pointIn} from './navigation.js?v=3af6116843';
-import {layoutBoxes,BAY_BOXES} from './layout-data.js?v=6090ec3284';
-import {STUDY_COLLISIONS} from './design-data.js?v=d56f16cb48';
+import {layoutBoxes,BAY_BOXES} from './layout-data.js?v=9f6123dbed';
+import {STUDY_COLLISIONS} from './design-data.js?v=5eede9ed23';
 
 // Round 2 light layer: the sun-shadow fit for a unit, contact shadows under furniture and fake ambient occlusion along
 // the walls. Shading is vertex-alpha geometry drawn with one unlit material that writes no depth, built as whole geometries

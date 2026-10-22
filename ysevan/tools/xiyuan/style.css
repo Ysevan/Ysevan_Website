@@ -183,3 +183,6 @@ body.ui-small-bed #bedPanel{padding-top:36px}
 #designGuide .dialog-head{height:52px;padding:10px 18px}.guide-body{height:calc(100% - 52px);padding:16px 24px}.guide-lead h2{font-size:24px}
 @media(pointer:coarse) and (max-height:500px) and (orientation:landscape) and (max-width:700px){body{--top-h:92px}.unit-nav{top:calc(var(--st) + 46px);left:50%}}
 }
+
+/* v15: long dimensional notes and studio controls must not cover one another (desktop heights only; landscape phones have their own layout). */
+@media(min-width:701px) and (min-height:501px){body[data-mode=walk] #studyControls{top:auto;bottom:142px}body[data-mode=walk]:has(#studyControls:not([hidden])) .room-label{max-height:calc(100vh - 510px);overflow:auto}body[data-mode=walk]:has(#studyControls:not([hidden])) #touchPad{left:auto;right:90px;bottom:150px}}

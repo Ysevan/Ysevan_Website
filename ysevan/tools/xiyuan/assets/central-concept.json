@@ -1,6 +1,6 @@
 {
-  "version": "14-central-dual-queen-straight-desk-conditional-shift",
-  "created": "2026-10-21",
+  "version": "15-checked-straight-east-desk",
+  "created": "2026-10-23",
   "sourceSHA256": "87c258e615f533e6e89cd4e60507886ca0e199d280f68a480775ecf24f2a1a76",
   "wallSourceSHA256": "9f0584f807c6581531c91d8049802eb130ef2db4ff8ba8570afe5ac2d48cef06",
   "northWallLocked": true,
@@ -18,7 +18,7 @@
   ],
   "conditionalBalcony": "沿用原四房的封闭阳台横墙中段开口条件；未新增拆改。仅保留此前口头转述，不视为当前施工许可。梁、墙端、窗下墙、立面、水点不动；合法居住用途、保温、消防和现场高差需专项核验。不成立时本北卧布置需重做，不强塞落地。",
   "layout": {
-    "name": "04 · C 双大床＋一字桌试摆",
+    "name": "04 · C 集中收纳＋主卧电竞",
     "program": "三卧（南侧主卧兼电竞）＋北东衣帽间；两间南卧均1.8米床",
     "furniture": [
       {
@@ -26,20 +26,21 @@
         "name": "南侧主卧 1.8×2 米床",
         "kind": "bed",
         "box": [
-          4.32,
-          8.9,
+          4.38,
+          9.07,
           6.5,
-          10.9
+          10.95
         ],
         "outerSize": [
-          2.18,
-          2.0
+          2.12,
+          1.88
         ],
         "mattress": [
           1.8,
           2.0
         ],
-        "head": "east"
+        "head": "east",
+        "slimFrame": true
       },
       {
         "id": "formerMaster",
@@ -47,19 +48,20 @@
         "kind": "bed",
         "box": [
           0.1,
-          8.8,
-          2.28,
-          10.8
+          8.86,
+          2.22,
+          10.74
         ],
         "outerSize": [
-          2.18,
-          2.0
+          2.12,
+          1.88
         ],
         "mattress": [
           1.8,
           2.0
         ],
-        "head": "west"
+        "head": "west",
+        "slimFrame": true
       },
       {
         "id": "northWest",
@@ -83,13 +85,13 @@
       },
       {
         "id": "gamingDesk",
-        "name": "南主卧 1.80×0.65 米一字电竞桌＋上方展示墙",
+        "name": "东墙 1.80×0.65米一字电竞桌＋防尘展示柜",
         "kind": "desk",
         "box": [
-          4.65,
-          7.15,
-          6.45,
-          7.8
+          5.82,
+          7.17,
+          6.47,
+          8.97
         ],
         "outerSize": [
           1.8,
@@ -104,8 +106,10 @@
         "displayWall": {
           "depth": 0.22,
           "aboveDesk": true,
-          "caution": "按车模实物与包装深度复核"
-        }
+          "closed": true,
+          "caution": "柜底1.42m；车模含防尘盒尺寸须实物复核，固定不破坏承重结构及管线"
+        },
+        "face": "west"
       },
       {
         "id": "cloakWest",
@@ -149,11 +153,12 @@
       }
     ],
     "chairBox": [
-      5.27,
-      7.81,
-      5.83,
-      8.37
-    ]
+      5.22,
+      7.84,
+      5.78,
+      8.4
+    ],
+    "chairRotation": -1.5707963267948966
   },
   "wardrobeTotalM": 4.3,
   "priorWardrobeTotalM": 7,
@@ -167,38 +172,50 @@
   "metrics": [
     {
       "id": "southMasterFoot",
-      "label": "南主卧床尾至移后隔墙",
-      "value": 0.97,
+      "label": "南主卧床尾至现方案隔墙",
+      "value": 1.03,
       "unit": "m"
     },
     {
       "id": "formerMasterFoot",
-      "label": "原主卧床尾至移后隔墙",
-      "value": 0.97,
+      "label": "原主卧床尾至现方案隔墙",
+      "value": 1.03,
       "unit": "m"
     },
     {
       "id": "southMasterSouth",
-      "label": "南主卧南侧床边",
-      "value": 0.55,
+      "label": "南主卧床侧至阳台门线（窗帘另扣）",
+      "value": 0.5,
       "unit": "m"
     },
     {
       "id": "formerMasterSides",
-      "label": "原主卧1.8米床南北两侧",
-      "value": 0.65,
+      "label": "原主卧北侧／南侧各",
+      "value": 0.71,
       "unit": "m"
     },
     {
       "id": "straightDesk",
-      "label": "南主卧一字桌净台面（方案外廓）",
+      "label": "东墙完整一字桌长",
       "value": 1.8,
       "unit": "m"
     },
     {
+      "id": "deskDepth",
+      "label": "一字桌深",
+      "value": 0.65,
+      "unit": "m"
+    },
+    {
       "id": "deskChairBed",
-      "label": "一字桌椅背至南主卧床边",
-      "value": 0.53,
+      "label": "椅子南侧至床北沿",
+      "value": 0.67,
+      "unit": "m"
+    },
+    {
+      "id": "deskChairRear",
+      "label": "椅背至西侧隔墙截面",
+      "value": 1.87,
       "unit": "m"
     },
     {
@@ -207,5 +224,6 @@
       "value": 1.1,
       "unit": "m"
     }
-  ]
+  ],
+  "dimensionBasis": "两床床垫1.80×2.00m，床架外廓2.12×1.88m；展示、椅子、柜门及整段墙多边形校核；非现场竣工尺寸。沿用既有条件移墙15cm，不新增拆改。"
 }

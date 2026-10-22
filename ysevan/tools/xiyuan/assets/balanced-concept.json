@@ -14,12 +14,12 @@
   "conditionalBalcony": "沿用原四房的封闭阳台横墙中段开口条件；未新增拆改。仅保留此前口头转述，不视为当前施工许可。梁、墙端、窗下墙、立面、水点不动；合法居住用途、保温、消防和现场高差需专项核验。不成立时本北卧布置需重做，不强塞落地。",
   "layouts": {
     "original": {
-      "name": "01 · 原四房",
-      "program": "三常住卧室＋北侧电竞书房（可临住）",
+      "name": "01 · 原四房优化",
+      "program": "三卧＋独立电竞书房；不设临时客床",
       "furniture": [
         {
           "id": "master",
-          "name": "主卧",
+          "name": "原主卧",
           "box": [
             0.09999999999999987,
             8.8,
@@ -29,17 +29,17 @@
           "kind": "bed",
           "mattress": [
             1.8,
-            2.0
+            2
           ],
           "head": "west",
           "outerSize": [
             2.18,
-            2.0
+            2
           ]
         },
         {
           "id": "north",
-          "name": "北侧小卧室",
+          "name": "北卧",
           "box": [
             3.02,
             3.17,
@@ -49,7 +49,7 @@
           "kind": "bed",
           "mattress": [
             1.2,
-            2.0
+            2
           ],
           "head": "west",
           "outerSize": [
@@ -59,7 +59,7 @@
         },
         {
           "id": "south",
-          "name": "南侧次卧",
+          "name": "南卧",
           "box": [
             3.5,
             8.9,
@@ -78,21 +78,6 @@
           ]
         },
         {
-          "id": "northDesk",
-          "name": "北卧书桌",
-          "box": [
-            3.02,
-            4.5,
-            3.62,
-            5.7
-          ],
-          "kind": "desk",
-          "outerSize": [
-            0.6,
-            1.2
-          ]
-        },
-        {
           "id": "studyDesk",
           "name": "电竞桌",
           "box": [
@@ -103,76 +88,58 @@
           ],
           "kind": "desk",
           "outerSize": [
-            2.0,
+            2,
             0.7
           ]
         },
         {
           "id": "collection",
-          "name": "盲盒 / 车模展示柜",
+          "name": "展示柜",
           "box": [
-            0.2,
-            5.416,
-            1.7,
+            0.82,
+            5.45,
+            1.72,
             5.85
           ],
           "kind": "display",
           "outerSize": [
-            1.5,
-            0.434
+            0.9,
+            0.4
           ]
         },
         {
           "id": "sofa",
-          "name": "日常沙发",
+          "name": "阅读椅",
           "box": [
-            0.18,
-            4,
-            2.12,
-            4.89
+            1.35,
+            4.55,
+            2.05,
+            5.2
           ],
           "kind": "sofa",
           "outerSize": [
-            1.94,
-            0.89
-          ]
-        },
-        {
-          "id": "guest",
-          "name": "展开客床",
-          "box": [
-            0.18,
-            4,
-            2.12,
-            5.24
-          ],
-          "kind": "guest",
-          "mattress": [
-            1.2,
-            1.9
-          ],
-          "head": "west",
-          "outerSize": [
-            1.94,
-            1.24
+            0.7,
+            0.65
           ]
         },
         {
           "id": "wardrobe0",
-          "name": "主卧长衣柜",
+          "name": "主卧常用衣柜",
           "box": [
             2.8,
             7.15,
             3.4,
-            11.45
+            8.25
           ],
           "kind": "wardrobe",
-          "length": 4.3,
-          "depth": 0.6,
           "face": "west",
+          "length": 1.1,
+          "depth": 0.6,
+          "height": 2.76,
+          "topBand": 0.5,
           "outerSize": [
             0.6,
-            4.3
+            1.1
           ]
         },
         {
@@ -185,12 +152,54 @@
             8.15
           ],
           "kind": "wardrobe",
+          "face": "south",
           "length": 2,
           "depth": 0.6,
-          "face": "south",
+          "height": 2.76,
+          "topBand": 0.5,
           "outerSize": [
-            2.0,
+            2,
             0.6
+          ]
+        },
+        {
+          "id": "wardrobe2",
+          "name": "北卧衣柜",
+          "box": [
+            3.02,
+            4.5,
+            3.62,
+            5.7
+          ],
+          "kind": "wardrobe",
+          "face": "east",
+          "length": 1.2,
+          "depth": 0.6,
+          "height": 2.76,
+          "topBand": 0.5,
+          "outerSize": [
+            0.6,
+            1.2
+          ]
+        },
+        {
+          "id": "wardrobe3",
+          "name": "书房家庭长柜",
+          "box": [
+            0.12,
+            3.95,
+            0.72,
+            5.75
+          ],
+          "kind": "wardrobe",
+          "face": "east",
+          "length": 1.8,
+          "depth": 0.6,
+          "height": 2.76,
+          "topBand": 0.5,
+          "outerSize": [
+            0.6,
+            1.8
           ]
         }
       ]
@@ -216,7 +225,7 @@
           "head": "west",
           "outerSize": [
             2.18,
-            2.0
+            2
           ]
         },
         {
@@ -250,7 +259,7 @@
           ],
           "kind": "desk",
           "outerSize": [
-            2.0,
+            2,
             0.7
           ]
         },
@@ -399,7 +408,7 @@
           "head": "west",
           "outerSize": [
             2.18,
-            2.0
+            2
           ]
         },
         {
@@ -454,7 +463,7 @@
           "kind": "desk",
           "outerSize": [
             0.7,
-            2.0
+            2
           ]
         },
         {
@@ -599,406 +608,6 @@
   ],
   "metrics": [
     {
-      "layout": "original",
-      "id": "master.x",
-      "label": "主卧外廓",
-      "a": [
-        0.09999999999999987,
-        8.8
-      ],
-      "b": [
-        2.2800000000000002,
-        8.8
-      ],
-      "metres": 2.18,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "master.z",
-      "label": "主卧外廓",
-      "a": [
-        0.09999999999999987,
-        8.8
-      ],
-      "b": [
-        0.09999999999999987,
-        10.8
-      ],
-      "metres": 2.0,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "north.x",
-      "label": "北侧小卧室外廓",
-      "a": [
-        3.02,
-        3.17
-      ],
-      "b": [
-        5.1,
-        3.17
-      ],
-      "metres": 2.08,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "north.z",
-      "label": "北侧小卧室外廓",
-      "a": [
-        3.02,
-        3.17
-      ],
-      "b": [
-        3.02,
-        4.43
-      ],
-      "metres": 1.26,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "south.x",
-      "label": "南侧次卧外廓",
-      "a": [
-        3.5,
-        8.9
-      ],
-      "b": [
-        5.68,
-        8.9
-      ],
-      "metres": 2.18,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "south.z",
-      "label": "南侧次卧外廓",
-      "a": [
-        3.5,
-        8.9
-      ],
-      "b": [
-        3.5,
-        10.6
-      ],
-      "metres": 1.7,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "northDesk.x",
-      "label": "北卧书桌外廓",
-      "a": [
-        3.02,
-        4.5
-      ],
-      "b": [
-        3.62,
-        4.5
-      ],
-      "metres": 0.6,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "northDesk.z",
-      "label": "北卧书桌外廓",
-      "a": [
-        3.02,
-        4.5
-      ],
-      "b": [
-        3.02,
-        5.7
-      ],
-      "metres": 1.2,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "studyDesk.x",
-      "label": "电竞桌外廓",
-      "a": [
-        0.4,
-        2.6
-      ],
-      "b": [
-        2.4,
-        2.6
-      ],
-      "metres": 2.0,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "studyDesk.z",
-      "label": "电竞桌外廓",
-      "a": [
-        0.4,
-        2.6
-      ],
-      "b": [
-        0.4,
-        3.3
-      ],
-      "metres": 0.7,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "collection.x",
-      "label": "盲盒 / 车模展示柜外廓",
-      "a": [
-        0.2,
-        5.416
-      ],
-      "b": [
-        1.7,
-        5.416
-      ],
-      "metres": 1.5,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "collection.z",
-      "label": "盲盒 / 车模展示柜外廓",
-      "a": [
-        0.2,
-        5.416
-      ],
-      "b": [
-        0.2,
-        5.85
-      ],
-      "metres": 0.434,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "sofa.x",
-      "label": "日常沙发外廓",
-      "a": [
-        0.18,
-        4
-      ],
-      "b": [
-        2.12,
-        4
-      ],
-      "metres": 1.94,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "sofa.z",
-      "label": "日常沙发外廓",
-      "a": [
-        0.18,
-        4
-      ],
-      "b": [
-        0.18,
-        4.89
-      ],
-      "metres": 0.89,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "guest.x",
-      "label": "展开客床外廓",
-      "a": [
-        0.18,
-        4
-      ],
-      "b": [
-        2.12,
-        4
-      ],
-      "metres": 1.94,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "guest.z",
-      "label": "展开客床外廓",
-      "a": [
-        0.18,
-        4
-      ],
-      "b": [
-        0.18,
-        5.24
-      ],
-      "metres": 1.24,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "wardrobe0.x",
-      "label": "主卧长衣柜外廓",
-      "a": [
-        2.8,
-        7.15
-      ],
-      "b": [
-        3.4,
-        7.15
-      ],
-      "metres": 0.6,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "wardrobe0.z",
-      "label": "主卧长衣柜外廓",
-      "a": [
-        2.8,
-        7.15
-      ],
-      "b": [
-        2.8,
-        11.45
-      ],
-      "metres": 4.3,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "wardrobe1.x",
-      "label": "南卧衣柜外廓",
-      "a": [
-        3.5,
-        7.55
-      ],
-      "b": [
-        5.5,
-        7.55
-      ],
-      "metres": 2.0,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "wardrobe1.z",
-      "label": "南卧衣柜外廓",
-      "a": [
-        3.5,
-        7.55
-      ],
-      "b": [
-        3.5,
-        8.15
-      ],
-      "metres": 0.6,
-      "category": "furniture",
-      "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
-    },
-    {
-      "layout": "original",
-      "id": "hall",
-      "label": "中央过道",
-      "a": [
-        3.2,
-        5.95
-      ],
-      "b": [
-        3.2,
-        7.05
-      ],
-      "metres": 1.1,
-      "category": "clearance",
-      "note": "原墙面间截面，门叶开启另核；不借公共过道扩大房间"
-    },
-    {
-      "layout": "original",
-      "id": "masterNorth",
-      "label": "主卧床侧",
-      "a": [
-        1.2,
-        8.15
-      ],
-      "b": [
-        1.2,
-        8.8
-      ],
-      "metres": 0.65,
-      "category": "clearance",
-      "note": ""
-    },
-    {
-      "layout": "original",
-      "id": "masterSouth",
-      "label": "主卧床侧",
-      "a": [
-        1.2,
-        10.8
-      ],
-      "b": [
-        1.2,
-        11.45
-      ],
-      "metres": 0.65,
-      "category": "clearance",
-      "note": ""
-    },
-    {
-      "layout": "original",
-      "id": "masterDoor",
-      "label": "原主卧门洞",
-      "a": [
-        1.85,
-        7.1
-      ],
-      "b": [
-        2.75,
-        7.1
-      ],
-      "metres": 0.9,
-      "category": "opening",
-      "note": "名义门洞，不是安装后净通行宽度"
-    },
-    {
-      "layout": "original",
-      "id": "northDoor",
-      "label": "原北卧门洞",
-      "a": [
-        4.3,
-        5.9
-      ],
-      "b": [
-        5.2,
-        5.9
-      ],
-      "metres": 0.9,
-      "category": "opening",
-      "note": "门洞与开启方向保留"
-    },
-    {
       "layout": "balanced",
       "id": "master.x",
       "label": "主卧外廓",
@@ -1026,7 +635,7 @@
         0.09999999999999987,
         10.8
       ],
-      "metres": 2.0,
+      "metres": 2,
       "category": "furniture",
       "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
     },
@@ -1074,7 +683,7 @@
         5.5,
         7.55
       ],
-      "metres": 2.0,
+      "metres": 2,
       "category": "furniture",
       "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
     },
@@ -1426,7 +1035,7 @@
         0.09999999999999987,
         10.8
       ],
-      "metres": 2.0,
+      "metres": 2,
       "category": "furniture",
       "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
     },
@@ -1522,7 +1131,7 @@
         3.5,
         9.6
       ],
-      "metres": 2.0,
+      "metres": 2,
       "category": "furniture",
       "note": "实际占位含床架；展示柜含把手，衣柜为含门板的总深度"
     },
@@ -1767,22 +1376,6 @@
       "note": "门洞与开启方向保留"
     },
     {
-      "layout": "original",
-      "id": "masterFoot",
-      "label": "主卧床尾至柜",
-      "a": [
-        2.28,
-        9.8
-      ],
-      "b": [
-        2.8,
-        9.8
-      ],
-      "metres": 0.52,
-      "category": "clearance",
-      "note": "明显偏紧；未因移门就虚称为宽敞通道"
-    },
-    {
       "layout": "balanced",
       "id": "masterFoot",
       "label": "主卧床尾至原墙",
@@ -1797,102 +1390,6 @@
       "metres": 1.12,
       "category": "clearance",
       "note": "移走床尾长柜所得，不是房间外墙或隔墙外移"
-    },
-    {
-      "layout": "original",
-      "id": "northFoot",
-      "label": "北卧床尾缝隙",
-      "a": [
-        5.1,
-        3.8
-      ],
-      "b": [
-        5.3,
-        3.8
-      ],
-      "metres": 0.2,
-      "category": "clearance",
-      "note": "不是通道，不计为可供人行走的空间"
-    },
-    {
-      "layout": "original",
-      "id": "northRoute",
-      "label": "北卧椅旁截面",
-      "a": [
-        4.25,
-        5.08
-      ],
-      "b": [
-        5.3,
-        5.08
-      ],
-      "metres": 1.05,
-      "category": "clearance",
-      "note": "含0.48×0.48椅子占位后的东侧通路"
-    },
-    {
-      "layout": "original",
-      "id": "southFoot",
-      "label": "南卧床尾",
-      "a": [
-        5.68,
-        9.7
-      ],
-      "b": [
-        6.5,
-        9.7
-      ],
-      "metres": 0.82,
-      "category": "clearance",
-      "note": ""
-    },
-    {
-      "layout": "original",
-      "id": "southWardrobe",
-      "label": "南卧床侧至柜",
-      "a": [
-        4.5,
-        8.15
-      ],
-      "b": [
-        4.5,
-        8.9
-      ],
-      "metres": 0.75,
-      "category": "clearance",
-      "note": ""
-    },
-    {
-      "layout": "original",
-      "id": "guestFront",
-      "label": "展开客床至展示柜",
-      "a": [
-        1,
-        5.24
-      ],
-      "b": [
-        1,
-        5.416
-      ],
-      "metres": 0.176,
-      "category": "clearance",
-      "note": "仅为柜前缝隙，不能走人；使用客床时不能正常取柜"
-    },
-    {
-      "layout": "original",
-      "id": "guestSide",
-      "label": "原书房客床侧通路",
-      "a": [
-        2.12,
-        4.7
-      ],
-      "b": [
-        2.8,
-        4.7
-      ],
-      "metres": 0.68,
-      "category": "clearance",
-      "note": ""
     },
     {
       "layout": "balanced",
@@ -2018,7 +1515,7 @@
         6.5,
         7.9
       ],
-      "metres": 1.0,
+      "metres": 1,
       "category": "clearance",
       "note": "是桌旁截面；入户门洞名义900不是1米"
     },
@@ -2165,11 +1662,187 @@
       "metres": 1.966,
       "category": "clearance",
       "note": "两柜相对位置截面，已计展示柜把手"
+    },
+    {
+      "layout": "original",
+      "id": "optimized0",
+      "label": "床尾 1.12m",
+      "a": [
+        2.28,
+        9.8
+      ],
+      "b": [
+        3.4,
+        9.8
+      ],
+      "metres": 1.12,
+      "category": "clearance",
+      "note": "当前01优化布局，床架/柜体外廓；非现场实测"
+    },
+    {
+      "layout": "original",
+      "id": "optimized1",
+      "label": "床侧 0.65m",
+      "a": [
+        1.1,
+        8.15
+      ],
+      "b": [
+        1.1,
+        8.8
+      ],
+      "metres": 0.65,
+      "category": "clearance",
+      "note": "当前01优化布局，床架/柜体外廓；非现场实测"
+    },
+    {
+      "layout": "original",
+      "id": "optimized2",
+      "label": "南卧床尾 0.82m",
+      "a": [
+        5.68,
+        10
+      ],
+      "b": [
+        6.5,
+        10
+      ],
+      "metres": 0.82,
+      "category": "clearance",
+      "note": "当前01优化布局，床架/柜体外廓；非现场实测"
+    },
+    {
+      "layout": "original",
+      "id": "optimized3",
+      "label": "柜前 0.75m",
+      "a": [
+        4.3,
+        8.15
+      ],
+      "b": [
+        4.3,
+        8.9
+      ],
+      "metres": 0.75,
+      "category": "clearance",
+      "note": "当前01优化布局，床架/柜体外廓；非现场实测"
+    },
+    {
+      "layout": "original",
+      "id": "optimized4",
+      "label": "北卧柜前 1.68m",
+      "a": [
+        3.62,
+        5.1
+      ],
+      "b": [
+        5.3,
+        5.1
+      ],
+      "metres": 1.68,
+      "category": "clearance",
+      "note": "当前01优化布局，床架/柜体外廓；非现场实测"
+    },
+    {
+      "layout": "original",
+      "id": "optimized5",
+      "label": "书房通路 0.75m",
+      "a": [
+        2.05,
+        4.7
+      ],
+      "b": [
+        2.8,
+        4.7
+      ],
+      "metres": 0.75,
+      "category": "clearance",
+      "note": "当前01优化布局，床架/柜体外廓；非现场实测"
+    },
+    {
+      "layout": "original",
+      "id": "masterFoot",
+      "label": "主卧床尾至原墙",
+      "a": [
+        2.28,
+        9.8
+      ],
+      "b": [
+        3.4,
+        9.8
+      ],
+      "metres": 1.12,
+      "category": "clearance",
+      "note": "方案尺寸"
+    },
+    {
+      "layout": "original",
+      "id": "northFoot",
+      "label": "北卧床尾缝隙（非通道）",
+      "a": [
+        5.1,
+        3.8
+      ],
+      "b": [
+        5.3,
+        3.8
+      ],
+      "metres": 0.2,
+      "category": "clearance",
+      "note": "方案尺寸"
+    },
+    {
+      "layout": "original",
+      "id": "northRoute",
+      "label": "北卧柜前",
+      "a": [
+        3.62,
+        5.08
+      ],
+      "b": [
+        5.3,
+        5.08
+      ],
+      "metres": 1.68,
+      "category": "clearance",
+      "note": "方案尺寸"
+    },
+    {
+      "layout": "original",
+      "id": "southFoot",
+      "label": "南卧床尾",
+      "a": [
+        5.68,
+        9.7
+      ],
+      "b": [
+        6.5,
+        9.7
+      ],
+      "metres": 0.82,
+      "category": "clearance",
+      "note": "方案尺寸"
+    },
+    {
+      "layout": "original",
+      "id": "southWardrobe",
+      "label": "南卧柜前",
+      "a": [
+        4.5,
+        8.15
+      ],
+      "b": [
+        4.5,
+        8.9
+      ],
+      "metres": 0.75,
+      "category": "clearance",
+      "note": "方案尺寸"
     }
   ],
   "wardrobeTotals": {
-    "original": 6.3,
-    "balanced": 7.0,
+    "original": 6.1,
+    "balanced": 7,
     "family": 6.5
   },
   "checks": {
@@ -2184,13 +1857,8 @@
     "original.guest": {
       "wallOverlaps": 0,
       "furnitureOverlaps": 0,
-      "doorSweepCollisions": 5,
-      "doorCollisionPairs": [
-        [
-          "儿童房门",
-          "guest"
-        ]
-      ],
+      "doorSweepCollisions": 0,
+      "doorCollisionPairs": [],
       "doorsChecked": 4,
       "anglesPerDoor": 91
     },
