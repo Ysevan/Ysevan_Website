@@ -1,5 +1,5 @@
 import {resolveLayout,WITHDRAWAL_NOTICE} from './layout-policy.js?v=d3fe69be91';
-import {MASTER_ENTRIES,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT,DOOR_VIEW_WALK,DOOR_OPEN} from './door-layout.js?v=af8b159c47'; import {createSky,eyeFov,crosses} from './scene-env.js?v=b921ffdb6b'; import {createWalkUI} from './walk-ui.js?v=a03e5f797f';
+import {MASTER_ENTRIES,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT,DOOR_VIEW_WALK,DOOR_OPEN} from './door-layout.js?v=af8b159c47'; import {createSky,eyeFov,crosses} from './scene-env.js?v=b921ffdb6b'; import {createPanels,createLandscape} from './ui-panels.js?v=ea5002819f';
 import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,ROOM_DECOR,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js?v=6090ec3284';
 import {createDesignStudio} from './design-studio.js?v=8cb13f06e9';
 import {createConceptRoom} from './concept-rooms.js?v=d9e95d5f01';
@@ -8,6 +8,7 @@ import {createGamingRoom} from './gaming-room.js?v=b221c18984'; import {createBa
 import {createFittedWardrobe} from './fitted-wardrobe.js?v=ee30778e44';
 import {STUDY_COLLISIONS,STUDY_VIEWS,GAMING_MODES,studyBoxes} from './design-data.js?v=d56f16cb48';
 import {createNavigator,pointIn} from './navigation.js?v=3af6116843';
+import {createTouchWalk} from './touch-walk.js?v=c90b65fc68';
 import * as THREE from 'three';
 import {OrbitControls} from './vendor/OrbitControls.js?v=b97879c748';
 import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js?v=c1b7c9bd2c';
@@ -353,7 +354,7 @@ const unitCenters={bl:[5.2,6.7],al:[15.8,9],ar:[26,9],br:[36.6,6.7],common:[20.9
 const unitEntry={bl:[[9.6,1.62,2.15],[9.2,1.4,6]],al:[[11.9,1.62,4.6],[13,1.3,7.5]],ar:[[29.9,1.62,4.6],[28.8,1.3,7.5]],br:[[32.2,1.62,2.15],[32.6,1.4,6]],common:[[12.6,1.62,-.25],[14.5,1.4,1.8]]};
 
 for(const [id,r] of Object.entries(OWNER_ROOMS.original))Object.assign(rooms.find(q=>q.id===id),r);Object.assign(rooms.find(q=>q.id==='north'),NORTH_ROOM);
-let focusUnit='floor',activeUnit='bl',compactMapSet=false;
+let focusUnit='floor',activeUnit='bl';
 let mode='dollhouse',currentRoom='',yaw=0,pitch=0,keys={},drag=null,transition=null,bedWidth=1.5,lightMode=0,floor=4,tourTime=0,tourPaused=false,lastTourPhase=-1;
 const EYE=1.62;
 function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').classList.remove('show'),3500);}
@@ -372,14 +373,16 @@ const activeStudyViews=()=>conceptStudyViews[activeLayout]||STUDY_VIEWS;
 // living-room frame there and changes at most 7/255 on the pixels seen through two panes.
 if(renderTier==='soft')M.glass.forceSinglePass=true;
 // Eye-level fov follows the aspect ratio (scene-env.js eyeFov); overviews keep their fixed vertical fov.
-const walkUI=createWalkUI({canvas:renderer.domElement,toggle:$('uiToggle'),viewport:$('viewport')});let fovBase=[42,false];function setFov(v,eye=false){fovBase=[v,eye];camera.fov=eye?eyeFov(v,camera.aspect,renderTier):v;}
+const ui=createPanels({canvas:renderer.domElement,viewport:$('viewport'),toggle:$('uiToggle'),dock:$('uiDock'),chips:$('uiChips')});createLandscape({button:$('landBtn'),exit:$('exitFsBtn'),hint:$('rotateHint')});let fovBase=[42,false];function setFov(v,eye=false){fovBase=[v,eye];camera.fov=eye?eyeFov(v,camera.aspect,renderTier):v;}
+// Head turn shared by the mouse drag and the phone's right-thumb drag; touch-walk.js is the phone's walking stick (left thumb).
+const turn=(dx,dy)=>{yaw-=dx*.004;pitch=clamp(pitch-dy*.003,-1.05,1.05);camera.rotation.set(pitch,yaw,0,'YXZ');invalidate(200);},touchWalk=createTouchWalk({canvas:renderer.domElement,pad:$('touchPad'),look:turn});
 function setViewOffset(){camera.clearViewOffset();if(['dollhouse','building'].includes(mode)){if(innerWidth>700)camera.setViewOffset(innerWidth,innerHeight,-innerWidth*.1,0,innerWidth,innerHeight);else camera.setViewOffset(innerWidth,innerHeight,0,-innerHeight*.08,innerWidth,innerHeight);}camera.updateProjectionMatrix();}
 function setArchitecturalCut(h){clipPlane.constant=h;wallCaps.forEach(q=>{q.position.y=h;q.visible=h<2.77;});}
 function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
 function tween(pos,target,seconds=1.4){transition={start:performance.now(),duration:seconds*1000,from:camera.position.clone(),to:V(...pos),tf:controls.target.clone(),tt:V(...target)};}
 function overviewPos(){return frameForFocus();}
-function prepare(modeNew){mode=modeNew;if(mode==='walk'&&innerWidth<701&&!compactMapSet){$('minimap').setAttribute('hidden','');$('roomShortcuts').hidden=true;$('mapToggle').textContent='+';$('mapToggle').setAttribute('aria-label','展开空间定位');compactMapSet=true;}document.body.dataset.mode=mode;walkUI.setMode(mode);keys={};transition=null;
- $('intro').hidden=mode!=='dollhouse';$('roomLabel').hidden=!['walk','plan'].includes(mode);$('miniPanel').hidden=!['walk','tour'].includes(mode);$('bedPanel').hidden=true;document.body.classList.remove('bed-visible');$('walkHint').hidden=mode!=='walk';$('touchPad').hidden=mode!=='walk';$('crosshair').hidden=mode!=='walk';$('studyControls').hidden=true;$('tourCaption').hidden=mode!=='tour';$('floorPanel').hidden=mode!=='building';
+function prepare(modeNew){mode=modeNew;document.body.dataset.mode=mode;ui.setMode(mode);keys={};transition=null;
+ $('intro').hidden=mode!=='dollhouse';$('roomLabel').hidden=!['walk','plan'].includes(mode);$('miniPanel').hidden=!['walk','tour'].includes(mode);$('bedPanel').hidden=true;document.body.classList.remove('bed-visible');$('walkHint').hidden=mode!=='walk';touchWalk.setMode(mode);$('crosshair').hidden=mode!=='walk';$('studyControls').hidden=true;$('tourCaption').hidden=mode!=='tour';$('floorPanel').hidden=mode!=='building';
  document.querySelectorAll('[data-mode]').forEach(b=>{if(b.tagName==='BUTTON'){b.classList.toggle('active',b.dataset.mode===mode);b.setAttribute('aria-pressed',String(b.dataset.mode===mode));}});
  controls.enabled=!['walk','tour'].includes(mode);controls.enableRotate=mode!=='plan';controls.enablePan=true;controls.maxDistance=mode==='building'?220:110;controls.minDistance=mode==='building'?30:8;
  roof.visible=mode==='walk';stage.visible=!['walk','tour','building'].includes(mode);landscape.visible=['walk','building'].includes(mode);building.visible=mode==='building';activeFloor.visible=mode==='building';house.visible=mode!=='building';
@@ -456,16 +459,14 @@ function rebuildMasterBed(){if(activeLayout!=='original'){masterBed.visible=fals
 function syncBedDimensions(){const concept=activeLayout!=='original',c=concept?{sides:[.65,.65],foot:1.12,label:'床架尾至原墙',caution:'床架外廓2.18×2.00米；床尾增宽来自移走长柜，其他衣物放在别的房间。阳台与门五金条件还需现场核验。'}:masterClearance('original',bedWidth);document.querySelectorAll('[data-bed]').forEach(b=>{b.disabled=concept||Number(b.dataset.bed)===2;b.title=concept?'新布局床位已按平面固定建模':b.disabled?'本轮不推荐2米床，优先保留通道':'';const on=Number(b.dataset.bed)===bedWidth;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});$('bedDims').textContent=bedWidth.toFixed(2)+' × 2.00 m';$('bedSide').textContent=c.sides.map(n=>n.toFixed(2)).join(' / ')+' m';$('bedFootLabel').textContent=c.label;$('bedFoot').textContent=c.foot.toFixed(2)+' m';$('bedCaution').textContent=c.caution;}
 document.querySelectorAll('[data-bed]').forEach(b=>b.onclick=()=>{if(activeLayout!=='original')return;layoutBedWidths.original=Number(b.dataset.bed);rebuildMasterBed();invalidate(700,true);if(mode==='walk'&&!canWalk(camera.position.x,camera.position.z,.12))goRoom('master');toast('已按床架外廓更新通道尺寸；家具仍需现场实测');});
 
-$('closeBed').onclick=()=>{$('bedPanel').hidden=true;document.body.classList.remove('bed-visible');};
-$('mapToggle').onclick=()=>{const h=$('minimap').hasAttribute('hidden');$('minimap').toggleAttribute('hidden',!h);$('roomShortcuts').hidden=!h;$('mapToggle').textContent=h?'−':'+';$('mapToggle').setAttribute('aria-label',h?'收起空间定位':'展开空间定位');};
 $('sourceBtn').onclick=()=>{$('sources').showModal();keys={};};$('closeSource').onclick=()=>$('sources').close();$('sources').addEventListener('click',e=>{if(e.target===$('sources')){const r=$('sources').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('sources').close();}});
 const sources={unit:['cad-unit.png?v=7f1b142156','DWG 四～二十二层平面图 · 左侧 B 户型 · CAD 矢量重绘'],full:['cad-full.png?v=36e2c28133','DWG 四～二十二层平面图 · 整层矢量重绘'],audit:['dwg-fitout-review.png?v=0b718e1072','直接从DWG分层读取：墙线、衣柜、北卧床桌；图纸尺寸不等于现场完成面尺寸'],pdf:['source-plan.png?v=0393167e76','PDF仅供外观对照，不用于本轮墙体判断或尺寸测量'],levels:['cad-levels.png?v=afc7c0d390','DWG 楼层标高表 · 标准层层高 2.950 m'],section:['cad-section.png?v=e57a5e4eda','DWG 6#楼1-1剖面局部 · 标准层 2,950 mm']};
 document.querySelectorAll('[data-source]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-source]').forEach(q=>q.classList.toggle('selected',q===b));const n=b.dataset.source;$('drawingArea').hidden=n==='notes';$('sourceNotes').hidden=n!=='notes';if(n!=='notes'){$('sourceImage').src='./assets/'+sources[n][0];$('sourceImage').alt=sources[n][1];$('sourceCaption').textContent=sources[n][1];}});
 const motionKeys=['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','ShiftLeft','ShiftRight'];
 window.addEventListener('keydown',e=>{if(e.target instanceof Element&&e.target.closest('input,textarea,select,[contenteditable="true"],[role=tablist]'))return;if($('sources').open||$('designGuide').open)return;if(e.code==='Escape'){if(mode==='walk'||mode==='tour')changeMode('dollhouse');return;}if(mode==='walk'&&motionKeys.includes(e.code)){e.preventDefault();keys[e.code]=true;}});window.addEventListener('keyup',e=>keys[e.code]=false);window.addEventListener('blur',()=>{keys={};drag=null;});
-renderer.domElement.addEventListener('pointerdown',e=>{if(mode!=='walk')return;drag={x:e.clientX,y:e.clientY,id:e.pointerId};renderer.domElement.setPointerCapture(e.pointerId);$('viewport').focus({preventScroll:true});});renderer.domElement.addEventListener('pointermove',e=>{if(mode!=='walk'||!drag)return;yaw-=(e.clientX-drag.x)*.004;pitch=clamp(pitch-(e.clientY-drag.y)*.003,-1.05,1.05);camera.rotation.set(pitch,yaw,0,'YXZ');drag.x=e.clientX;drag.y=e.clientY;invalidate(200);});renderer.domElement.addEventListener('pointerup',()=>drag=null);renderer.domElement.addEventListener('pointercancel',()=>drag=null);
+renderer.domElement.addEventListener('pointerdown',e=>{if(mode!=='walk')return;$('viewport').focus({preventScroll:true});if(touchWalk.owns(e))return;drag={x:e.clientX,y:e.clientY,id:e.pointerId};renderer.domElement.setPointerCapture(e.pointerId);});renderer.domElement.addEventListener('pointermove',e=>{if(mode!=='walk'||e.pointerId!==drag?.id)return;turn(e.clientX-drag.x,e.clientY-drag.y);drag.x=e.clientX;drag.y=e.clientY;});for(const type of ['pointerup','pointercancel'])renderer.domElement.addEventListener(type,e=>{if(e.pointerId===drag?.id)drag=null;});
 const moveMapping={forward:'KeyW',back:'KeyS',left:'KeyA',right:'KeyD'};document.querySelectorAll('[data-move]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys[moveMapping[b.dataset.move]]=true;};b.onpointerup=b.onpointercancel=()=>{keys[moveMapping[b.dataset.move]]=false;};});
-function walkFrame(dt){let f=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0),s=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0);if(f||s){const len=Math.hypot(f,s);f/=len;s/=len;const speed=(keys.ShiftLeft||keys.ShiftRight?2.5:1.45)*dt;let dx=(-Math.sin(yaw)*f+Math.cos(yaw)*s)*speed,dz=(-Math.cos(yaw)*f-Math.sin(yaw)*s)*speed;
+function walkFrame(dt){let f=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0),s=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0);if(f||s){const len=Math.hypot(f,s);f/=len;s/=len;}else({f,s}=touchWalk.vector(dt));if(f||s){const speed=(keys.ShiftLeft||keys.ShiftRight?2.5:1.45)*dt;let dx=(-Math.sin(yaw)*f+Math.cos(yaw)*s)*speed,dz=(-Math.cos(yaw)*f-Math.sin(yaw)*s)*speed;
  // Axis-separated collision response, sub-stepped to prevent tunnelling.
  const count=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.045));for(let i=0;i<count;i++){if(canWalk(camera.position.x+dx/count,camera.position.z))camera.position.x+=dx/count;if(canWalk(camera.position.x,camera.position.z+dz/count))camera.position.z+=dz/count;}}
  camera.position.y=EYE;updateRoom();}
@@ -473,7 +474,7 @@ function updateMini(){dot.setAttribute('cx',camera.position.x.toFixed(2));dot.se
 // The camera may have moved since the last render (tween, walk step): refresh its matrices before projecting.
 function updatePins(){camera.updateMatrixWorld();for(const p of pins){if(p.el.hidden)continue;const q=p.pos.clone().project(camera);p.el.style.left=(q.x*.5+.5)*innerWidth+'px';p.el.style.top=(-q.y*.5+.5)*innerHeight+'px';p.el.style.opacity=q.z>1||q.z<0?'0':'1';}}
 const qualityConfigs={auto:{label:'自动'},smooth:{label:'流畅'},fine:{label:'精细'}};
-function resizeRenderer(){if(mode==='walk'&&innerWidth<701&&!compactMapSet){$('minimap').hidden=true;$('roomShortcuts').hidden=true;$('mapToggle').textContent='+';$('mapToggle').setAttribute('aria-label','展开空间定位');compactMapSet=true;}ratios=tierSettings(renderTier,quality,devicePixelRatio,innerWidth*innerHeight,pixelBudget);sizeDirty=true;camera.aspect=innerWidth/innerHeight;setFov(...fovBase);setViewOffset();invalidate(900,true);}
+function resizeRenderer(){ratios=tierSettings(renderTier,quality,devicePixelRatio,innerWidth*innerHeight,pixelBudget);sizeDirty=true;camera.aspect=innerWidth/innerHeight;setFov(...fovBase);setViewOffset();invalidate(900,true);}
 // Resizing clears the drawing buffer, so the canvas only changes size inside animate(), right before a render.
 function setRatio(r){if(sizeDirty){renderer.setPixelRatio(r);renderer.setSize(innerWidth,innerHeight);sizeDirty=false;}else if(r!==renderer.getPixelRatio())renderer.setPixelRatio(r);}
 function renderStats(){$('renderStats').textContent=`${renderer.domElement.width} × ${renderer.domElement.height}${hiRes?' · 静止高清':''} · ${renderer.info.render.calls} 次绘制 · ${Math.round(renderer.info.render.triangles/1000)}k 三角面`;}
@@ -482,7 +483,7 @@ window.addEventListener('resize',resizeRenderer);controls.addEventListener('chan
 document.addEventListener('click',()=>invalidate(700,true));document.addEventListener('visibilitychange',()=>{keys={};drag=null;last=performance.now();invalidate(700);});
 let last=performance.now(),lastDraw=0,frame=0,fpsFrames=0,fpsSince=performance.now(),lastUi=0,slowWindows=0;let quality='auto',pixelBudget=tierBudget(renderTier,'auto'),targetFPS=60;
 function animate(now){requestAnimationFrame(animate);if(document.hidden){last=now;return;}const frameInterval=1000/targetFPS,elapsed=now-lastDraw;if(elapsed<frameInterval-.5)return;const dt=Math.min((now-last)/1000,.06);last=now;lastDraw=now-Math.max(0,elapsed%frameInterval);
- const moving=mode==='walk'&&Object.values(keys).some(Boolean),touring=mode==='tour'&&!tourPaused;
+ const moving=mode==='walk'&&(Object.values(keys).some(Boolean)||touchWalk.moving),touring=mode==='tour'&&!tourPaused;
  if(touring)tourFrame(dt);else if(moving)walkFrame(dt);else if(transition){const u=clamp((now-transition.start)/transition.duration,0,1),e=ease(u);camera.position.lerpVectors(transition.from,transition.to,e);controls.target.lerpVectors(transition.tf,transition.tt,e);controls.update();if(u===1){transition=null;invalidate(1);}}else if(!['walk','tour'].includes(mode)&&now<dirtyUntil)controls.update();
  const active=moving||touring||!!transition||now<dirtyUntil;
  // Settled for 250 ms: draw one sharper frame. Any activity drops back to the moving ratio in the same callback.
@@ -521,7 +522,7 @@ function setGamingMode(id){studio.setGaming({mode:id});}
 $('designBtn').onclick=()=>{const open=$('designPanel').hidden;$('designPanel').hidden=!open;document.body.classList.toggle('design-open',open);$('designBtn').setAttribute('aria-expanded',String(open));if(open){keys={};if(focusUnit!=='bl')selectUnit('bl');$('designPanel').scrollTop=0;}};
 $('closeDesign').onclick=()=>{$('designPanel').hidden=true;document.body.classList.remove('design-open');$('designBtn').setAttribute('aria-expanded','false');};
 document.querySelectorAll('[data-gaming]').forEach(b=>b.onclick=()=>setGamingMode(b.dataset.gaming));
-$('studyPreview').onclick=()=>{goRoom(activeLayout==='original'?'child':'south');if(innerWidth<701)$('closeDesign').click();};
+$('studyPreview').onclick=()=>{goRoom(activeLayout==='original'?'child':'south');if(ui.phone)$('closeDesign').click();};
 $('guideBtn').onclick=()=>{$('designGuide').showModal();keys={};};$('closeGuide').onclick=()=>$('designGuide').close();
 $('qualitySelect').onchange=e=>{applyQuality(e.target.value);toast(e.target.value==='smooth'?'流畅模式：减少三维像素与阴影，文字界面保持清晰':'画质已切换，静止时仍会停止重复绘制');};
 document.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>selectUnit(b.dataset.unit));
@@ -553,7 +554,7 @@ function applyLayout(id){const next=resolveLayout(id),changed=next!==activeLayou
  rebuildMasterBed();rebuildShortcuts();updateScopeUI();if(changed){currentRoom='';focusUnit='bl';activeUnit='bl';if(mode==='walk'){prepare('walk');placeWalker(...unitEntry.bl);updateRoom();}else changeMode(mode==='plan'?'plan':'dollhouse');}invalidate(1500,true);
 }
 $('layoutPlanView').onclick=()=>{focusUnit='bl';selectUnit('bl');changeMode('plan');};
-const studio=createDesignStudio({applyLayout,applyHome:applyHomeDesign,applyGaming:renderGamingPreferences,previewRoom:id=>{goRoom(id==='master'&&activeLayout==='central'?'south':id==='child'&&activeLayout!=='original'?'south':id);if(innerWidth<701)$('closeDesign').click();},toast});
+const studio=createDesignStudio({applyLayout,applyHome:applyHomeDesign,applyGaming:renderGamingPreferences,previewRoom:id=>{goRoom(id==='master'&&activeLayout==='central'?'south':id==='child'&&activeLayout!=='original'?'south':id);if(ui.phone)$('closeDesign').click();},toast});
 
 // Contact shadows by group: the owner's shared furniture (not the pieces the layouts replace), the neighbours' full original sets
 // (the mirrored units are built in their own unmirrored frame), each layout's fit-out. Fake AO along each wall set's faces,
