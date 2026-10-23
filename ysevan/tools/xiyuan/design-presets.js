@@ -9,7 +9,11 @@ export const COLOR_FIELDS=[['wall','墙面'],['oak','主要木色'],['floor','�
 // and ground (bounce) colours, the environment and the fill so the seven standard views stay within about 3% of their
 // brightness before the roof cast (desk 2040 and phone 417, four presets; calibrated 2026-10-22). Outside: OUTDOOR.
 export const OUTDOOR={sky:1,ground:1,env:1,fill:1};
-export const LIGHTING={day:{label:'日间',color:'#fff4d8',sun:4.04,pos:[-5,15,22],hemi:2,sky:'#c7c7c7',ground:'#f8f4e8',fill:1.28,env:.24,exposure:1.149,indoor:{sky:1,ground:1.74,env:1,fill:.82}},warm:{label:'暖阳',color:'#ffe3ba',sun:4.1,pos:[-15,8,24],hemi:1.81,sky:'#c7c7c7',ground:'#f8f4e8',fill:1.28,env:.24,exposure:1.243,indoor:{sky:.97,ground:1.41,env:.85,fill:1}},soft:{label:'柔光',color:'#fafbfc',sun:1.25,pos:[12,20,5],hemi:2.74,sky:'#c3c3c3',ground:'#f8f4e8',fill:.9,env:.31,exposure:1.035,indoor:{sky:1,ground:1,env:1.07,fill:2.14}}};
+// lamps (round 4, GPU tier only, room-lights.js): intensities (cd) of the entry's and the gaming desks' room lamps. Under the
+// day and warm suns they lift those views back into the other rooms' band of brightness relative to before the roof cast (the
+// roof took more from the entry and C's desk under the day sun than under the low warm one). Soft light lost next to nothing to
+// the roof: there they are ordinary room lamps, adding about 1% like the other rooms'. Desk 2040, calibrated 2026-10-24.
+export const LIGHTING={day:{label:'日间',color:'#fff4d8',sun:4.04,pos:[-5,15,22],hemi:2,sky:'#c7c7c7',ground:'#f8f4e8',fill:1.28,env:.24,exposure:1.149,indoor:{sky:1,ground:1.74,env:1,fill:.82},lamps:{entry:6,desk:{original:1.1,balanced:6,family:1,central:3.3}}},warm:{label:'暖阳',color:'#ffe3ba',sun:4.1,pos:[-15,8,24],hemi:1.81,sky:'#c7c7c7',ground:'#f8f4e8',fill:1.28,env:.24,exposure:1.243,indoor:{sky:.97,ground:1.41,env:.85,fill:1},lamps:{entry:1.3,desk:{original:1.1,balanced:.8,family:.8,central:.4}}},soft:{label:'柔光',color:'#fafbfc',sun:1.25,pos:[12,20,5],hemi:2.74,sky:'#c3c3c3',ground:'#f8f4e8',fill:.9,env:.31,exposure:1.035,indoor:{sky:1,ground:1,env:1.07,fill:2.14},lamps:{entry:.4,desk:{original:1,balanced:2,family:1.5,central:.5}}}};
 // detail: each preset's finishes beyond the home's colours (walls, floor lay, cabinet doors, handles, window frames), applied
 // by material-kit.js. Not part of the home: not saved, exported or adjustable, so saved designs and imports are unchanged.
 export const PRESETS={

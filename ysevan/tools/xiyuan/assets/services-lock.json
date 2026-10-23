@@ -1,6 +1,9 @@
 {
   "note": "保留本轮前模型既有厨卫/阳台水点与原图标识；不是完整机电竣工管网，也未测量隐蔽支管。禁止随户型切换移动。",
   "source": "用户提供的建发玺院6#-1.dwg / 建发玺院6#.pdf",
+  "revisions": [
+    "2026-10-24 屋主批准改锁定段：内侧卫生间马桶朝向、内侧卫生间补砖（铺装在锁定段外）、原厨房白吊柜与挡水板和两处淋浴杆花洒剖切、洗手盆龙头朝 CAD 靠的墙；水点坐标未变，登记在 assets/water-points.json（scripts/check-wetfix.mjs 断言）。kitchen、bathrooms 两段哈希按新代码重算，laundry 未改。"
+  ],
   "protectedRegions": [
     [
       0,
@@ -31,12 +34,12 @@
     "kitchen": {
       "start": "// Kitchen:",
       "end": "// Entry bench",
-      "sha256": "a477e570233b6c38dd441e2c704502bc9c58dc0af6b42048d45abe0dd49e986f"
+      "sha256": "fd205538cdb856a8ad2272b87336350d9512fc7b701a508daf8b730268480bb1"
     },
     "bathrooms": {
       "start": "// Bathrooms",
       "end": "// Outdoor",
-      "sha256": "3536a6b213a97e85d707203f5b30e0d06f96e10095b3be025a1cb116f327bc1d"
+      "sha256": "a41687988c9749294558087370ff9333a39f2c7cd146a5b1d7e426434c2d169f"
     },
     "laundry": {
       "start": "cyl(5.3,.64,12.48",

@@ -12,7 +12,7 @@ const MX=41.8,mirrorBox=([a,b,c,d])=>[MX-c,b,MX-a,d],inBox=(x,z,[a,b,c,d])=>x>=a
 // Unit interiors, and paved or wet floors: app.js paving boxes and commonTile (lobbies, bridge), the bath rooms with the inner
 // bath's window bay, and the A units' bathrooms (no paving box there).
 const UNITS=[[-.1,.1,10.75,13.45],[10.75,3.15,20.9,15.15]];
-const WET=[[6.35,0,9,3.4],[5.15,3.2,6.65,5.9],[0,5.94,1.9,8.1],[3.35,11.55,10.55,13.35],[0,2.275,2.8,3.925],[5.3,3.15,7,5.95],[.1,5.95,1.8,8.05],[5.3,2.45,6.4,3.2],
+const WET=[[6.35,0,9,3.4],[5.4,3.15,7,5.95],[5.4,2.55,6.35,3.15],[0,5.94,1.9,8.1],[3.35,11.55,10.55,13.35],[0,2.275,2.8,3.925],[5.3,3.15,7,5.95],[.1,5.95,1.8,8.05],[5.3,2.45,6.4,3.2],
  [8.95,-2.3,14.45,1],[10.75,1.15,11.35,3.25],[14.55,1.1,27.25,2.5],[12.45,3.2,14.95,5.4],[14.65,5.6,16.4,8.4],[18.5,5.6,20.8,8.5],[10.35,13.55,17.25,15.05]];
 // Fixed bay-window seats (app.js, below the window walls): no skirting or sill in front of them.
 const SEATS=[[.705,11.65,2.855,12.15],[3.935,2.49,5.185,2.97],[5.45,2.49,6.15,2.97]];

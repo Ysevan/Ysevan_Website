@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 // Finishes (scene detail round 3): procedural maps made in plain JS (the same pixels in the browser and in the node checks, no
 // canvas), each preset's finish detail (design-presets.js PRESETS[id].detail: walls, floor, cabinets, handles, window frames;
-// never stored in the user's home) and the bevel grades box()/round() use.
+// never stored in the user's home) and the bevel grades box()/round() use. Round 4 (GPU tier only): normal maps from height
+// fields made in the same pixel loops (seams, bevels, grout, arrises, threads, a faint grain), so relief and colour line up.
 
 // Bevels. Casework finishes take 1–1.5 cm edges and upholstery 4–8 cm, whatever a call asks for; cushion fabrics default to
 // 5 cm; untagged finishes keep the call's radius and round()'s default is the cabinet edge. RoundedBoxGeometry segments: 2 on
@@ -17,6 +18,15 @@ export const MAPS={wood:{px:1024,tile:1.2,strips:8},fabric:{px:512,tile:.25,thre
  outdoor:{px:1024,tile:[.3,.6],grout:.003},wall:{px:512,tile:2.4}};
 export const MEAN={wood:[.554,.4374,.3196],tile:[.7929,.7545,.6598],fabric:[.794,.7554,.6606],outdoor:[.47,.445,.39]};
 export const DETAIL_PARTS=['wall','floor','cabinet','handle','window'];
+// Relief, heights in mm (GPU tier only). Wood floors: seams `seam` deep, a rounded shoulder `shoulder` mm wide dropping `bevel`
+// towards them, late-wood bands `grain` × their darkening lower (open grain, light). Tiles: grout `joint` below the face, the
+// 1-pixel arris `arris`. Fabric: each visible thread a dome `thread` high across it, arching ±20 % along it, thicker by `slub` ×
+// the colour's slub. scale: the material's normalScale. Tuned 2026-10-24 on desk 2040 and laptop 2552 close-ups: joints and
+// shoulders read under the fill and sun, faces stay clean, brightness of the seven standard views unchanged (≤ 0.1 %).
+export const RELIEF={wood:{seam:1.2,bevel:.9,shoulder:3,grain:1.2,scale:1.2},tile:{joint:1.2,arris:.4,scale:.8},fabric:{thread:.6,slub:.5,scale:1}};
+// Height of a seam and its rounded shoulder at e pixels (or metres) in from a board edge: seam below e0, then rising over w
+// (the colour map's micro-bevel or `shoulder` mm, whichever is wider) to the face.
+const groove=(e,e0,w)=>e<e0?-RELIEF.wood.seam:e<e0+w?-RELIEF.wood.bevel*((e0+w-e)/w)**2:0;
 export const ENUMS={wall:['limewash','plaster','eggshell','matte'],floor:['straight','herringbone'],door:['framed','slab'],grain:['wood','plain'],handle:['bar','knob','hidden'],tone:['oak','honey','walnut','pale']};
 
 // --- pixels -------------------------------------------------------------------------------------------------------------
@@ -55,7 +65,7 @@ function ring(B,a,b,w){let u=a*B.ip+w+B.ph;u+=.3*LOW[((u*97+B.s53)|0)&4095];cons
 // Pattern L with a per-pixel hue shift h (red ×(1+h), blue ×(1−hb·h)) to an sRGB map whose mean linear colour is `mean`
 // (null: keep L, ≤ 1, as grey), plus a roughness map derived from it at half size: darker (pores, joints, grout) is rougher.
 // The roughness map peaks at 1; meanRough is its mean, so a material roughness of base / meanRough keeps the average at base.
-function finish(px,L,hue,mean,{rBase=.94,rGain=.4,hb=1}={}){
+function finish(px,L,hue,mean,{rBase=.94,rGain=.4,hb=1,height=null,scale=1}={}){
  const n=px*px,data=new Uint8Array(n*4);let sr=0,sg=0,sb=0;
  for(let i=0;i<n;i++){const l=L[i],h=hue?hue[i]:0;sr+=l*(1+h);sg+=l;sb+=l*(1-hb*h);}
  const mL=sg/n,kr=mean?mean[0]*n/sr:1,kg=mean?mean[1]*n/sg:1,kb=mean?mean[2]*n/sb:1;
@@ -63,8 +73,16 @@ function finish(px,L,hue,mean,{rBase=.94,rGain=.4,hb=1}={}){
  const r=px>>1,R=new Float32Array(r*r),im=1/mL;let mx=0;
  for(let y=0;y<r;y++)for(let x=0;x<r;x++){const i=y*2*px+x*2,l=(L[i]+L[i+1]+L[i+px]+L[i+px+1])*.25*im,v=Math.min(1,Math.max(.5,rBase+rGain*(1-l)));R[y*r+x]=v;if(v>mx)mx=v;}
  const rough=new Uint8Array(r*r*2);let mR=0;for(let i=0;i<R.length;i++){const v=Math.round(R[i]/mx*255);rough[i*2]=rough[i*2+1]=v;mR+=v;}
- return {data,px,rough,rx:r,meanRough:mR/255/R.length,meanL:mL};
+ return {data,px,rough,rx:r,meanRough:mR/255/R.length,meanL:mL,...(height?{height,normalScale:scale}:{})};
 }
+
+// Tangent-space normal map (RGBA, linear) from a periodic height field H (mm) on px×px pixels of pu × pv mm: Sobel gradient,
+// n = normalize(−∂h/∂u, −∂h/∂v, 1). Rows run along +v (DataTexture, no flip), as the colour map's. Flat is (128, 128, 255).
+export function normalPixels(H,px,pu,pv){const out=new Uint8Array(px*px*4),ku=1/(8*pu),kv=1/(8*pv);
+ for(let y=0;y<px;y++){const a=((y+px-1)%px)*px,b=y*px,c=((y+1)%px)*px;
+  for(let x=0;x<px;x++){const l=(x+px-1)%px,r=(x+1)%px,gx=(H[a+r]+2*H[b+r]+H[c+r]-H[a+l]-2*H[b+l]-H[c+l])*ku,gy=(H[c+l]+2*H[c+x]+H[c+r]-H[a+l]-2*H[a+x]-H[a+r])*kv;
+   const k=1/Math.sqrt(gx*gx+gy*gy+1),j=(b+x)*4;out[j]=Math.round((1-gx*k)*127.5);out[j+1]=Math.round((1-gy*k)*127.5);out[j+2]=Math.round((1+k)*127.5);out[j+3]=255;}}
+ return out;}
 
 // Veneer: `strips` boards across (0.15 m), grain along v, the whole tile long: seamless both ways.
 export function woodPixels(px=1024){const S=MAPS.wood.strips,L=new Float32Array(px*px),hue=new Float32Array(px*px),cw=px/S,sc=1024/px;
@@ -75,47 +93,48 @@ const TONES={oak:{tone:.12,hue:.05,contrast:.15},honey:{tone:.1,hue:.08,contrast
 
 // Wood floor, straight lay: about 1.2 m of boards across the map, two board lengths along it, joints staggered per column;
 // 1.2 mm seams and a 1.5 mm micro-bevel. size: the map's extent in metres (repeat = 1 / size).
-export function plankPixels(px,{plank=.15,length=.9,tone='oak'}={}){
- const cols=Math.max(3,Math.round(1.2/plank)),L=new Float32Array(px*px),hue=new Float32Array(px*px),cw=px/cols,sh=px/2,T=TONES[tone]||TONES.oak,mm=px/(cols*plank)/1000,sc=1024/px;
- const seam=Math.max(1,Math.round(1.2*mm)),bev=seam+Math.max(1,Math.round(1.5*mm)),tn=tone.length;
+export function plankPixels(px,{plank=.15,length=.9,tone='oak',relief=false}={}){
+ const cols=Math.max(3,Math.round(1.2/plank)),L=new Float32Array(px*px),Hh=relief?new Float32Array(px*px):null,hue=new Float32Array(px*px),cw=px/cols,sh=px/2,T=TONES[tone]||TONES.oak,mm=px/(cols*plank)/1000,sc=1024/px;
+ const seam=Math.max(1,Math.round(1.2*mm)),bev=seam+Math.max(1,Math.round(1.5*mm)),tn=tone.length,sw=Math.max(bev-seam,RELIEF.wood.shoulder*mm);
  for(let c=0;c<cols;c++){const x0=Math.round(c*cw),x1=Math.round((c+1)*cw),wd=x1-x0,off=(hash(c*41+7)*sh)|0;
   const boards=[0,1].map(s=>{const id=c*2+s+1;return {B:board(id*3+tn,(4+hash(id*11)*3.5)/sc,T.contrast*(.8+.4*hash(id*5))),tone:1+(hash(id*53+tn)-.5)*T.tone,h:(hash(id*29+tn)-.5)*T.hue};});
   for(let y=0;y<px;y++){const yy=(y+off)%px,s=(yy/sh)|0,b=yy-s*sh,P=boards[s],w=sweep(P.B,yy*sc),eb=Math.min(b,sh-1-b),o=y*px;
-   for(let x=x0;x<x1;x++){const a=x-x0,e=Math.min(a,wd-1-a,eb);L[o+x]=P.tone*ring(P.B,a,yy*sc,w)*(e<seam?.45:e<bev?.93:1);hue[o+x]=P.h;}}}
- return {...finish(px,L,hue,MEAN.wood,{rBase:.92,rGain:.5,hb:1.4}),size:[cols*plank,2*length],seamPx:seam};}
+   for(let x=x0;x<x1;x++){const a=x-x0,e=Math.min(a,wd-1-a,eb),rv=ring(P.B,a,yy*sc,w);L[o+x]=P.tone*rv*(e<seam?.45:e<bev?.93:1);hue[o+x]=P.h;if(Hh)Hh[o+x]=groove(e+.5,seam,sw)+RELIEF.wood.grain*(rv-1);}}}
+ return {...finish(px,L,hue,MEAN.wood,{rBase:.92,rGain:.5,hb:1.4,height:Hh,scale:RELIEF.wood.scale}),size:[cols*plank,2*length],seamPx:seam};}
 
 // Herringbone (人字拼), boards w × l (l = k·w) at ±45° to the walls. In the board frame s = (x+y)/√2, t = (y−x)/√2 the pattern
 // repeats under (w, w) and (l, −l): w√2 along the room's y, l√2 along x. The map holds 2 × 2k repeats (2l√2 square).
-export function herringbonePixels(px,{plank=.1,length=.6,tone='honey'}={}){
- const k=Math.round(length/plank),w=plank,l=k*w,size=2*l*Math.SQRT2,m=size/px,im=1/m,L=new Float32Array(px*px),hue=new Float32Array(px*px),T=TONES[tone]||TONES.honey;
- const seam=Math.max(.0012,m),bev=seam+.0015,r2=Math.SQRT1_2,per=2*k,tn=tone.length,boards=[],iw=1/w,iL=1/(l*Math.SQRT2);let miss=0;
+export function herringbonePixels(px,{plank=.1,length=.6,tone='honey',relief=false}={}){
+ const k=Math.round(length/plank),w=plank,l=k*w,size=2*l*Math.SQRT2,m=size/px,im=1/m,L=new Float32Array(px*px),Hh=relief?new Float32Array(px*px):null,hue=new Float32Array(px*px),T=TONES[tone]||TONES.honey;
+ const seam=Math.max(.0012,m),bev=seam+.0015,sw=Math.max(bev-seam,RELIEF.wood.shoulder/1000),r2=Math.SQRT1_2,per=2*k,tn=tone.length,boards=[],iw=1/w,iL=1/(l*Math.SQRT2);let miss=0;
  for(let id=1;id<=4*per;id++)boards[id-1]={B:board(id*3+tn,(4+hash(id*11)*3)*.00117*im,T.contrast*(.8+.4*hash(id*5))),tone:1+(hash(id*53+tn)-.5)*T.tone,h:(hash(id*29+tn)-.5)*T.hue};
  for(let y=0;y<px;y++)for(let x=0;x<px;x++){const X=(x+.5)*m,Y=(y+.5)*m,s=(X+Y)*r2,t=(Y-X)*r2,b0=Math.floor(X*iL),i=y*px+x;let V=-1,A=0,B=0,across=0,along=0;
   for(let b=b0-1;b<=b0+1&&V<0;b++){
    // Horizontal board: 0 ≤ s−Aw−Bl ≤ l, 0 ≤ t−Aw+Bl ≤ w. Vertical board: l ≤ s−Aw−Bl ≤ l+w, w−l ≤ t−Aw+Bl ≤ w.
    let a=Math.floor((t+b*l)*iw),rs=s-a*w-b*l,rt=t-a*w+b*l;if(rs>=-1e-9&&rs<=l+1e-9){V=0;A=a;B=b;across=rt;along=rs;continue;}
    a=Math.floor((s-b*l-l)*iw);rs=s-a*w-b*l;rt=t-a*w+b*l;if(rt>=w-l-1e-9&&rt<=w+1e-9){V=1;A=a;B=b;across=rs-l;along=rt-(w-l);}}
-  if(V<0){miss++;L[i]=.45;continue;}
+  if(V<0){miss++;L[i]=.45;if(Hh)Hh[i]=-RELIEF.wood.seam;continue;}
   const P=boards[V+2*(((A%per)+per)%per+per*(B&1))],e=Math.min(across,w-across,along,l-along),b=along*im;
-  L[i]=P.tone*ring(P.B,across*im,b,sweep(P.B,b))*(e<seam?.45:e<bev?.93:1);hue[i]=P.h;}
- return {...finish(px,L,hue,MEAN.wood,{rBase:.92,rGain:.5,hb:1.4}),size:[size,size],miss};}
+  const rv=ring(P.B,across*im,b,sweep(P.B,b));L[i]=P.tone*rv*(e<seam?.45:e<bev?.93:1);hue[i]=P.h;if(Hh)Hh[i]=groove(e,seam,sw)+RELIEF.wood.grain*(rv-1);}
+ return {...finish(px,L,hue,MEAN.wood,{rBase:.92,rGain:.5,hb:1.4,height:Hh,scale:RELIEF.wood.scale}),size:[size,size],miss};}
 
 // Tiles: nx × ny tiles of tw × th m with `grout` joints (a whole number of pixels, at least 1), rows offset by `bond` of a tile;
 // per-tile tone, a faint cloud, speckle, a 1-pixel arris. size: extent in metres; groutPx: joint width in pixels.
-export function tilePixels(px,{tw=.6,th=tw,nx=2,ny=2,grout=.002,bond=0,mean=MEAN.tile,cloud=.025,speck=.02,tone=.04,seed=3}={}){
- const W=nx*tw,H=ny*th,tx=px/nx,ty=px/ny,gx=Math.max(1,Math.round(grout/(W/px))),gy=Math.max(1,Math.round(grout/(H/px))),L=new Float32Array(px*px),C=upsample(fbm(256,4,4,seed,.55),256,px),sh=Math.round(bond*tx);
+export function tilePixels(px,{tw=.6,th=tw,nx=2,ny=2,grout=.002,bond=0,mean=MEAN.tile,cloud=.025,speck=.02,tone=.04,seed=3,relief=false}={}){
+ const W=nx*tw,H=ny*th,tx=px/nx,ty=px/ny,gx=Math.max(1,Math.round(grout/(W/px))),gy=Math.max(1,Math.round(grout/(H/px))),L=new Float32Array(px*px),Hh=relief?new Float32Array(px*px):null,C=upsample(fbm(256,4,4,seed,.55),256,px),sh=Math.round(bond*tx);
  // Per position across a tile: 0 face, 1 arris, 2 joint.
  const kind=(t,g)=>{const a=new Uint8Array(t),lo=Math.ceil(g/2),hi=t-Math.floor(g/2);for(let p=0;p<t;p++)a[p]=p<lo||p>=hi?2:p<lo+1||p>=hi-1?1:0;return a;},KX=kind(tx,gx),KY=kind(ty,gy);
  for(let y=0;y<px;y++){const row=(y/ty)|0,ky=KY[y-row*ty],o=y*px;for(let x=0;x<px;x++){const X=((x-row*sh)%px+px)%px,col=(X/tx)|0,kx=KX[X-col*tx],i=o+x;
-  if(kx===2||ky===2){L[i]=.58+.04*(h3(x,y,seed)-.5);continue;}
-  L[i]=(1+(hash((row*nx+col+1)*61+seed)-.5)*tone)*(1+cloud*C[i])*(1+speck*(h3(x,y,seed+9)-.5))*(kx||ky?.96:1);}}
- return {...finish(px,L,null,mean,{rBase:.9,rGain:1.2}),size:[W,H],groutPx:[gx,gy]};}
+  if(kx===2||ky===2){L[i]=.58+.04*(h3(x,y,seed)-.5);if(Hh)Hh[i]=-RELIEF.tile.joint;continue;}
+  L[i]=(1+(hash((row*nx+col+1)*61+seed)-.5)*tone)*(1+cloud*C[i])*(1+speck*(h3(x,y,seed+9)-.5))*(kx||ky?.96:1);if(Hh&&(kx||ky))Hh[i]=-RELIEF.tile.arris;}}
+ return {...finish(px,L,null,mean,{rBase:.9,rGain:1.2,height:Hh,scale:RELIEF.tile.scale}),size:[W,H],groutPx:[gx,gy]};}
 
 // Plain weave, 2 mm threads: over/under shading across each thread, slub (tone drifting along the thread), heathered threads.
-export function fabricPixels(px=512){const t=Math.max(2,Math.round(MAPS.fabric.thread/(MAPS.fabric.tile/px))),L=new Float32Array(px*px),hue=new Float32Array(px*px);
+export function fabricPixels(px=512,{relief=false}={}){const t=Math.max(2,Math.round(MAPS.fabric.thread/(MAPS.fabric.tile/px))),L=new Float32Array(px*px),hue=new Float32Array(px*px),Hh=relief?new Float32Array(px*px):null;
  for(let y=0;y<px;y++)for(let x=0;x<px;x++){const i=y*px+x,cx=(x/t)|0,cy=(y/t)|0,over=(cx+cy)&1,fa=((over?x:y)%t+.5)/t,th=over?cx:cy+1e4,along=over?y:x;
-  L[i]=(1-.32*(2*fa-1)**2)*(1+.07*wave(along*8192/px+hash(th*97)*4096)+.05*(hash(th*13)-.5))*(over?1:.94);hue[i]=(hash(th*7)-.5)*.05;}
- return {...finish(px,L,hue,MEAN.fabric,{rBase:.97,rGain:.15}),threadPx:t};}
+  const sl=wave(along*8192/px+hash(th*97)*4096);L[i]=(1-.32*(2*fa-1)**2)*(1+.07*sl+.05*(hash(th*13)-.5))*(over?1:.94);hue[i]=(hash(th*7)-.5)*.05;
+  if(Hh){const fb=(along%t+.5)/t;Hh[i]=RELIEF.fabric.thread*(1-(2*fa-1)**2)*(.8+.2*(1-(2*fb-1)**2))*(1+RELIEF.fabric.slub*sl);}}
+ return {...finish(px,L,hue,MEAN.fabric,{rBase:.97,rGain:.15,height:Hh,scale:RELIEF.fabric.scale}),threadPx:t};}
 
 // Wall paint: limewash (cloudy, brushed), plaster (trowel patches), eggshell (fine orange peel), matte (fine grain). L ≤ 1 around
 // white; apply() divides the wall colour by its mean, so walls keep the home's wall colour on average.
@@ -133,26 +152,31 @@ function dataTex(data,w,{srgb=true,aniso=1,rg=false}={}){const t=new THREE.DataT
 export const textureBytes=t=>t?.image?Math.round(t.image.width*t.image.height*(t.format===THREE.RGFormat?2:4)*4/3):0;
 
 // tier: render-tier.js. Software rasterisers (fill-bound) get 512² wood and tile maps, no roughness maps and plain walls; the
-// fabric is 512² everywhere (2 mm threads need 4 pixels).
+// fabric is 512² everywhere (2 mm threads need 4 pixels). Normal maps (wood floors, wet-room, stone and balcony tiles, fabric;
+// the size of their colour map) only on GPUs: phones and software rasterisers never compute or carry them.
 export function createFinishes({tier='gpu',maxAniso=1}={}){
- const soft=tier==='soft',px=soft?512:1024,aniso=Math.max(1,Math.min(8,maxAniso)),roughMaps=!soft,wallMaps=!soft,made=new Map();
- const pack=(r,size)=>{const map=dataTex(r.data,r.px,{aniso});map.repeat.set(1/size[0],1/size[1]);let rough=null;
-  if(roughMaps){rough=dataTex(r.rough,r.rx,{srgb:false,aniso,rg:true});rough.repeat.copy(map.repeat);}return {map,rough,meanL:r.meanL,meanRough:rough?r.meanRough:1,size,info:r};};
+ const soft=tier==='soft',px=soft?512:1024,aniso=Math.max(1,Math.min(8,maxAniso)),roughMaps=!soft,wallMaps=!soft,normals=tier==='gpu',made=new Map();
+ const pack=(r,size)=>{const map=dataTex(r.data,r.px,{aniso});map.repeat.set(1/size[0],1/size[1]);let rough=null,normal=null;
+  if(roughMaps){rough=dataTex(r.rough,r.rx,{srgb:false,aniso,rg:true});rough.repeat.copy(map.repeat);}
+  if(normals&&r.height){normal=dataTex(normalPixels(r.height,r.px,size[0]/r.px*1000,size[1]/r.px*1000),r.px,{srgb:false,aniso});normal.repeat.copy(map.repeat);delete r.height;}
+  return {map,rough,normal,normalScale:normal?r.normalScale:0,meanL:r.meanL,meanRough:rough?r.meanRough:1,size,info:r};};
  const once=(key,fn)=>{if(!made.has(key))made.set(key,fn());return made.get(key);};
- const wood=pack(woodPixels(px),[MAPS.wood.tile,MAPS.wood.tile]),fabric=pack(fabricPixels(MAPS.fabric.px),[MAPS.fabric.tile,MAPS.fabric.tile]);
+ const wood=pack(woodPixels(px),[MAPS.wood.tile,MAPS.wood.tile]),fabric=pack(fabricPixels(MAPS.fabric.px,{relief:normals}),[MAPS.fabric.tile,MAPS.fabric.tile]);
  // Fabrics are matte throughout: no roughness map (and no extra texture fetch).
  fabric.rough?.dispose();fabric.rough=null;fabric.meanRough=1;
- const tileMap=pack(tilePixels(px,{tw:MAPS.tile.tile,grout:MAPS.tile.grout}),[2*MAPS.tile.tile,2*MAPS.tile.tile]);
- const outdoor=pack(tilePixels(px,{tw:MAPS.outdoor.tile[0],th:MAPS.outdoor.tile[1],nx:4,ny:2,grout:MAPS.outdoor.grout,bond:.5,mean:MEAN.outdoor,cloud:.04,speck:.16,tone:.08,seed:7}),[4*MAPS.outdoor.tile[0],2*MAPS.outdoor.tile[1]]);
+ const tileMap=pack(tilePixels(px,{tw:MAPS.tile.tile,grout:MAPS.tile.grout,relief:normals}),[2*MAPS.tile.tile,2*MAPS.tile.tile]);
+ const outdoor=pack(tilePixels(px,{tw:MAPS.outdoor.tile[0],th:MAPS.outdoor.tile[1],nx:4,ny:2,grout:MAPS.outdoor.grout,bond:.5,mean:MEAN.outdoor,cloud:.04,speck:.16,tone:.08,seed:7,relief:normals}),[4*MAPS.outdoor.tile[0],2*MAPS.outdoor.tile[1]]);
  // Floors and walls follow the preset: the one shown is kept, one replaced is freed (and made again if chosen again).
- const floorOf=(finishName,f={})=>finishName==='stone'?once('stone|'+(f.tile||.8),()=>{const r=tilePixels(px,{tw:f.tile||.8,grout:MAPS.tile.grout,cloud:.035,tone:.03,seed:5});return pack(r,r.size);})
-  :once(['wood',f.pattern,f.plank,f.length,f.tone].join('|'),()=>{const r=(f.pattern==='herringbone'?herringbonePixels:plankPixels)(px,f);return pack(r,r.size);});
+ const floorOf=(finishName,f={})=>finishName==='stone'?once('stone|'+(f.tile||.8),()=>{const r=tilePixels(px,{tw:f.tile||.8,grout:MAPS.tile.grout,cloud:.035,tone:.03,seed:5,relief:normals});return pack(r,r.size);})
+  :once(['wood',f.pattern,f.plank,f.length,f.tone].join('|'),()=>{const r=(f.pattern==='herringbone'?herringbonePixels:plankPixels)(px,normals?{...f,relief:true}:f);return pack(r,r.size);});
  const wallOf=w=>wallMaps?once('wall|'+w.finish,()=>pack(paintPixels(MAPS.wall.px,w.finish),[MAPS.wall.tile,MAPS.wall.tile])):null;
  const fixed=[wood,fabric,tileMap,outdoor],state={detail:null};
- const setMap=(m,t,base)=>{const map=t?.map||null,rough=t?.rough||null;if(m.map!==map||m.roughnessMap!==rough){m.map=map;m.roughnessMap=rough;m.needsUpdate=true;}m.roughness=Math.min(1,base/(t?.meanRough||1));};
+ const setMap=(m,t,base)=>{const map=t?.map||null,rough=t?.rough||null;if(m.map!==map||m.roughnessMap!==rough){m.map=map;m.roughnessMap=rough;m.needsUpdate=true;}m.roughness=Math.min(1,base/(t?.meanRough||1));if(normals)setRelief(m,t);};
+ // GPU tier: the finish's normal map (or none) with its normalScale. Never called on phones or software rasterisers.
+ const setRelief=(m,t)=>{const n=t?.normal||null;if(m.normalMap!==n){m.normalMap=n;m.needsUpdate=true;}if(n)m.normalScale.set(t.normalScale,t.normalScale);};
  // Called right after app.js builds M: maps on the shared finishes, bevel classes, and the materials the presets switch.
  function extend(M,{mat,clipPlane}){
-  setMap(M.oak,wood,.6);setMap(M.tile,tileMap,.8);
+  setMap(M.oak,wood,.6);setMap(M.tile,tileMap,.8);if(normals)for(const k of ['linen','olive'])setRelief(M[k],fabric);
   for(const k of ['oak','walnut'])M[k].userData.bevel='cabinet';M.linen.userData.bevel='soft';for(const k of ['olive','terracotta'])M[k].userData.bevel='cushion';
   // Cabinet fronts and carcasses (wardrobes, side cabinet, display cabinets); framed doors' stiles and rails (shown only for
   // framed doors); one material per handle style, only the preset's style visible (batchStatic merges by material, so a
@@ -166,7 +190,7 @@ export function createFinishes({tier='gpu',maxAniso=1}={}){
   // Cut twins for wall-hung pieces above 1.28 m (cut with the walls, like app.js art()): the same colour object, so palettes and
   // presets still apply; apply() keeps the door twin's map in step.
   const twin=m=>{const c=m.clone();c.color=m.color;c.clippingPlanes=[clipPlane];return c;};
-  for(const k of ['door','white','olive','dark','linen','brass'])M[k+'Cut']=twin(M[k]);
+  for(const k of ['door','white','olive','dark','linen','brass','metal'])M[k+'Cut']=twin(M[k]);
   return M;
  }
  // After the home's colours are on M (app.js applyHomeDesign): the preset's floor and wall maps, cabinet doors, handles, frames.
@@ -181,9 +205,15 @@ export function createFinishes({tier='gpu',maxAniso=1}={}){
   M.doorFrame.visible=detail.cabinet.door==='framed';
   for(const [style,m] of [['bar',M.handleBar],['knob',M.handleKnob],['hidden',M.handlePull]])m.visible=detail.handle.style===style;
   M.handleBar.color.set(detail.handle.color);M.frame.color.set(detail.window.frame);
-  for(const [k,v] of made)if(v!==floor&&v!==paint){v.map.dispose();v.rough?.dispose();made.delete(k);}
+  for(const [k,v] of made)if(v!==floor&&v!==paint){v.map.dispose();v.rough?.dispose();v.normal?.dispose();made.delete(k);}
  }
- const textures=()=>[...fixed,...made.values()].flatMap(t=>[t.map,t.rough]).filter(Boolean);
- return {woodtex:wood.map,fabrictex:fabric.map,tiletex:tileMap.map,maps:{wood,fabric,tile:tileMap,outdoor},extend,apply,floorOf,wallOf,textures,
-  stats:()=>({tier,px,roughMaps,wallMaps,textures:textures().length,bytes:textures().reduce((s,t)=>s+textureBytes(t),0)})};
+ // GPU tier, once the scene is built (app.js): every standard material drawn with one of these maps takes its normal map too
+ // (rugs and the wet-room tile twins are made outside M). apply() keeps M.floor in step when the preset changes. Returns the
+ // number of materials changed; 0 and nothing touched on phones and software rasterisers.
+ function relief(root){if(!normals)return 0;const by=new Map([...fixed,...made.values()].filter(t=>t.normal).map(t=>[t.map,t]));let n=0;
+  root.traverse(o=>{for(const m of o.isMesh?[].concat(o.material):[])if(m&&'normalMap' in m&&by.has(m.map)){const t=by.get(m.map);if(m.normalMap!==t.normal)n++;setRelief(m,t);}});return n;}
+ const textures=()=>[...fixed,...made.values()].flatMap(t=>[t.map,t.rough,t.normal]).filter(Boolean);
+ const normalTextures=()=>[...fixed,...made.values()].map(t=>t.normal).filter(Boolean);
+ return {woodtex:wood.map,fabrictex:fabric.map,tiletex:tileMap.map,maps:{wood,fabric,tile:tileMap,outdoor},extend,apply,relief,floorOf,wallOf,textures,
+  stats:()=>({tier,px,roughMaps,wallMaps,normals,textures:textures().length,bytes:textures().reduce((s,t)=>s+textureBytes(t),0),normalMaps:normalTextures().length,normalBytes:normalTextures().reduce((s,t)=>s+textureBytes(t),0)})};
 }

@@ -1,0 +1,135 @@
+{
+ "note": "屋主户型（左 B）全部用水点，从 dist/app.js 锁定段（services-lock.json）和 dist/wet-rooms.js 实际建出的场景里取；平面米（x 向东、z 向南），0.1 mm。洗手盆记盆的位置，龙头随盆朝 CAD 靠的那面墙，不另记。2026-10-24 屋主批准改锁定段（马桶朝向、补砖、剖切、龙头朝向），条件是水点一个不挪；check-wetfix.mjs 断言场景里的水点等于这里登记的值。",
+ "source": "scripts/export-water-points.mjs",
+ "count": 16,
+ "points": [
+  {
+   "id": "bath1.basin",
+   "kind": "basin",
+   "room": "bath1",
+   "x": 0.43,
+   "z": 7.55,
+   "from": "app.js basin(0.43, 7.55, …)"
+  },
+  {
+   "id": "bath1.drain1",
+   "kind": "drain",
+   "room": "bath1",
+   "x": 0.5,
+   "z": 6.25,
+   "from": "wet-rooms.js BATHS bath1.drains[0]"
+  },
+  {
+   "id": "bath1.drain2",
+   "kind": "drain",
+   "room": "bath1",
+   "x": 0.4,
+   "z": 7.08,
+   "from": "wet-rooms.js BATHS bath1.drains[1]"
+  },
+  {
+   "id": "bath1.shower",
+   "kind": "shower",
+   "room": "bath1",
+   "x": 0.25,
+   "z": 6.08,
+   "from": "app.js bathrooms segment: vertical metal riser"
+  },
+  {
+   "id": "bath1.showerHead",
+   "kind": "showerHead",
+   "room": "bath1",
+   "x": 0.25,
+   "z": 6.2,
+   "from": "app.js bathrooms segment: flat metal disc over 1.8 m"
+  },
+  {
+   "id": "bath1.toilet",
+   "kind": "toilet",
+   "room": "bath1",
+   "x": 1.37,
+   "z": 6.35,
+   "from": "app.js toilet(1.37, 6.35, …)"
+  },
+  {
+   "id": "bath2.basin",
+   "kind": "basin",
+   "room": "bath2",
+   "x": 6.68,
+   "z": 5.37,
+   "from": "app.js basin(6.68, 5.37, …)"
+  },
+  {
+   "id": "bath2.drain1",
+   "kind": "drain",
+   "room": "bath2",
+   "x": 6.55,
+   "z": 3.45,
+   "from": "wet-rooms.js BATHS bath2.drains[0]"
+  },
+  {
+   "id": "bath2.drain2",
+   "kind": "drain",
+   "room": "bath2",
+   "x": 6.95,
+   "z": 4.8,
+   "from": "wet-rooms.js BATHS bath2.drains[1]"
+  },
+  {
+   "id": "bath2.shower",
+   "kind": "shower",
+   "room": "bath2",
+   "x": 6.83,
+   "z": 3.38,
+   "from": "app.js bathrooms segment: vertical metal riser"
+  },
+  {
+   "id": "bath2.showerHead",
+   "kind": "showerHead",
+   "room": "bath2",
+   "x": 6.73,
+   "z": 3.38,
+   "from": "app.js bathrooms segment: flat metal disc over 1.8 m"
+  },
+  {
+   "id": "bath2.toilet",
+   "kind": "toilet",
+   "room": "bath2",
+   "x": 6.6,
+   "z": 4.48,
+   "from": "app.js toilet(6.6, 4.48, …)"
+  },
+  {
+   "id": "kitchen.faucet",
+   "kind": "faucet",
+   "room": "kitchen",
+   "x": 7.65,
+   "z": 0.36,
+   "from": "app.js kitchen segment: vertical metal rod"
+  },
+  {
+   "id": "kitchen.sink",
+   "kind": "sink",
+   "room": "kitchen",
+   "x": 7.6,
+   "z": 0.59,
+   "from": "app.js kitchen segment: metal bowl at 0.90 m"
+  },
+  {
+   "id": "kitchen.stack",
+   "kind": "drain-stack",
+   "room": "kitchen",
+   "x": 6.635,
+   "z": 0.38,
+   "from": "wet-rooms.js KITCHEN.pipe (CAD wD2)"
+  },
+  {
+   "id": "laundry.cabinet",
+   "kind": "laundry",
+   "room": "balcony",
+   "x": 9.45,
+   "z": 12.43,
+   "from": "app.js laundry segment: white floor cabinet"
+  }
+ ]
+}
