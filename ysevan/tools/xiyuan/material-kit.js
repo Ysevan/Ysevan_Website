@@ -190,7 +190,7 @@ export function createFinishes({tier='gpu',maxAniso=1}={}){
   // Cut twins for wall-hung pieces above 1.28 m (cut with the walls, like app.js art()): the same colour object, so palettes and
   // presets still apply; apply() keeps the door twin's map in step.
   const twin=m=>{const c=m.clone();c.color=m.color;c.clippingPlanes=[clipPlane];return c;};
-  for(const k of ['door','white','olive','dark','linen','brass','metal'])M[k+'Cut']=twin(M[k]);
+  for(const k of ['door','white','olive','dark','linen','brass','metal','handleBar','handleKnob','handlePull'])M[k+'Cut']=twin(M[k]);
   return M;
  }
  // After the home's colours are on M (app.js applyHomeDesign): the preset's floor and wall maps, cabinet doors, handles, frames.
@@ -204,6 +204,7 @@ export function createFinishes({tier='gpu',maxAniso=1}={}){
   for(const m of [M.door,M.doorFrame,M.doorCut])if(m)setMap(m,grained?wood:null,grained?.6:.5);
   M.doorFrame.visible=detail.cabinet.door==='framed';
   for(const [style,m] of [['bar',M.handleBar],['knob',M.handleKnob],['hidden',M.handlePull]])m.visible=detail.handle.style===style;
+  for(const k of ['handleBar','handleKnob','handlePull'])M[k+'Cut'].visible=M[k].visible;
   M.handleBar.color.set(detail.handle.color);M.frame.color.set(detail.window.frame);
   for(const [k,v] of made)if(v!==floor&&v!==paint){v.map.dispose();v.rough?.dispose();v.normal?.dispose();made.delete(k);}
  }

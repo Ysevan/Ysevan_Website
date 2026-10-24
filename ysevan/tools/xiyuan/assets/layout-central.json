@@ -3,7 +3,41 @@
   "conditional": true,
   "source": "DWG-derived layout-original.json",
   "notConstructionDrawing": true,
-  "note": "15cm dry divider shift + new south bedroom door + former door infill; original designer to verify ends, beam, services, permits.",
+  "note": "15cm dry divider shift + north wall aligned to former-door orange line + left 900mm door; conditional study, original designer to verify ends, beam, services, permits.",
+  "dividerAlignment": {
+    "originalFacesX": [
+      3.4,
+      3.5
+    ],
+    "proposedFacesX": [
+      3.25,
+      3.35
+    ],
+    "straightRunZ": [
+      7.05,
+      11.45
+    ],
+    "sourceHandles": [
+      "480E3D",
+      "480E3E",
+      "480E83",
+      "480E84"
+    ]
+  },
+  "northWallAlignment": {
+    "selection": "orange",
+    "confirmedOn": "2026-10-25",
+    "facesZ": [
+      7.05,
+      7.15
+    ],
+    "doorX": [
+      3.65,
+      4.55
+    ],
+    "oldRecessDepthM": 0.4,
+    "hallWallToWallM": 1.1
+  },
   "wallPolygons": [
     [
       [
@@ -3771,32 +3805,8 @@
     ],
     [
       [
-        6.45,
-        7.05
-      ],
-      [
-        5.55,
-        7.05
-      ],
-      [
         5.4,
-        7.05
-      ],
-      [
-        5.4,
-        7.45
-      ],
-      [
-        4.55,
-        7.45
-      ],
-      [
-        4.55,
-        7.55
-      ],
-      [
-        5.5,
-        7.55
+        7.15
       ],
       [
         5.5,
@@ -3813,47 +3823,31 @@
       [
         6.45,
         7.05
+      ],
+      [
+        5.55,
+        7.05
+      ],
+      [
+        5.4,
+        7.05
+      ],
+      [
+        4.55,
+        7.05
+      ],
+      [
+        4.55,
+        7.15
+      ],
+      [
+        5.4,
+        7.15
       ]
     ],
     [
       [
-        2.75,
-        7.15
-      ],
-      [
-        3.4,
-        7.15
-      ],
-      [
-        3.4,
-        7.45
-      ],
-      [
-        3.4,
-        7.7
-      ],
-      [
         3.25,
-        7.7
-      ],
-      [
-        3.25,
-        7.8
-      ],
-      [
-        3.25,
-        11.1
-      ],
-      [
-        3.25,
-        11.2
-      ],
-      [
-        3.4,
-        11.2
-      ],
-      [
-        3.4,
         11.45
       ],
       [
@@ -3909,55 +3903,31 @@
         11.45
       ],
       [
-        3.5,
-        11.2
-      ],
-      [
-        3.5,
-        11.1
-      ],
-      [
         3.4,
-        11.1
+        11.45
       ],
       [
         3.35,
-        11.1
+        11.45
       ],
       [
         3.35,
-        7.8
-      ],
-      [
-        3.4,
-        7.8
-      ],
-      [
-        3.5,
-        7.8
-      ],
-      [
-        3.5,
-        7.7
-      ],
-      [
-        3.5,
-        7.55
+        7.15
       ],
       [
         3.65,
-        7.55
+        7.15
       ],
       [
         3.65,
-        7.45
+        7.05
       ],
       [
-        3.5,
-        7.45
+        3.35,
+        7.05
       ],
       [
-        3.5,
+        3.25,
         7.05
       ],
       [
@@ -3967,6 +3937,14 @@
       [
         2.75,
         7.15
+      ],
+      [
+        3.25,
+        7.15
+      ],
+      [
+        3.25,
+        11.45
       ]
     ]
   ],
@@ -4278,10 +4256,6 @@
       [
         [
           3.0,
-          12.25
-        ],
-        [
-          3.0,
           12.15
         ],
         [
@@ -4303,14 +4277,19 @@
         [
           3.0,
           12.25
+        ],
+        [
+          3.0,
+          12.15
         ]
       ]
     ]
   ],
   "checks": {
     "structuralFootprintChangedM2": 0.0,
-    "changedWallM2": 0.87,
+    "changedWallM2": 1.28,
     "wetZoneChangedM2": 0,
-    "dividerShiftM": 0.15
+    "dividerShiftM": 0.15,
+    "northWallTowardHallM": 0.4
   }
 }

@@ -1061,16 +1061,16 @@
     {
       "layout": "original",
       "id": "optimized0",
-      "label": "床尾 1.12m",
+      "label": "床尾 0.52m（偏窄）",
       "a": [
         2.28,
         9.8
       ],
       "b": [
-        3.4,
+        2.8,
         9.8
       ],
-      "metres": 1.12,
+      "metres": 0.52,
       "category": "clearance",
       "note": "当前01优化布局，床架/柜体外廓；非现场实测"
     },
@@ -1093,80 +1093,80 @@
     {
       "layout": "original",
       "id": "optimized2",
-      "label": "南卧床尾 0.82m",
+      "label": "南卧床尾 0.84m",
       "a": [
-        5.68,
-        10
+        5.5,
+        10.61
       ],
       "b": [
-        6.5,
-        10
+        5.5,
+        11.45
       ],
-      "metres": 0.82,
+      "metres": 0.84,
       "category": "clearance",
       "note": "当前01优化布局，床架/柜体外廓；非现场实测"
     },
     {
       "layout": "original",
       "id": "optimized3",
-      "label": "柜前 0.75m",
+      "label": "南卧柜前 0.65m",
       "a": [
-        4.3,
-        8.15
+        4.1,
+        9.8
       ],
       "b": [
-        4.3,
-        8.9
+        4.75,
+        9.8
       ],
-      "metres": 0.75,
+      "metres": 0.65,
       "category": "clearance",
       "note": "当前01优化布局，床架/柜体外廓；非现场实测"
     },
     {
       "layout": "original",
       "id": "optimized4",
-      "label": "北卧柜前 1.68m",
+      "label": "北卧椅后 1.05m",
       "a": [
-        3.62,
+        4.25,
         5.1
       ],
       "b": [
         5.3,
         5.1
       ],
-      "metres": 1.68,
+      "metres": 1.05,
       "category": "clearance",
       "note": "当前01优化布局，床架/柜体外廓；非现场实测"
     },
     {
       "layout": "original",
       "id": "optimized5",
-      "label": "书房通路 0.75m",
+      "label": "书房展开后通路 1.44m",
       "a": [
-        2.05,
-        4.7
+        1.36,
+        5.3
       ],
       "b": [
         2.8,
-        4.7
+        5.3
       ],
-      "metres": 0.75,
+      "metres": 1.44,
       "category": "clearance",
       "note": "当前01优化布局，床架/柜体外廓；非现场实测"
     },
     {
       "layout": "original",
       "id": "masterFoot",
-      "label": "主卧床尾至原墙",
+      "label": "主卧床尾至整排衣柜",
       "a": [
         2.28,
         9.8
       ],
       "b": [
-        3.4,
+        2.8,
         9.8
       ],
-      "metres": 1.12,
+      "metres": 0.52,
       "category": "clearance",
       "note": "方案尺寸"
     },
@@ -1189,16 +1189,16 @@
     {
       "layout": "original",
       "id": "northRoute",
-      "label": "北卧柜前",
+      "label": "北卧椅后",
       "a": [
-        3.62,
+        4.25,
         5.08
       ],
       "b": [
         5.3,
         5.08
       ],
-      "metres": 1.68,
+      "metres": 1.05,
       "category": "clearance",
       "note": "方案尺寸"
     },
@@ -1207,14 +1207,14 @@
       "id": "southFoot",
       "label": "南卧床尾",
       "a": [
-        5.68,
-        9.7
+        5.5,
+        10.61
       ],
       "b": [
-        6.5,
-        9.7
+        5.5,
+        11.45
       ],
-      "metres": 0.82,
+      "metres": 0.84,
       "category": "clearance",
       "note": "方案尺寸"
     },
@@ -1223,14 +1223,14 @@
       "id": "southWardrobe",
       "label": "南卧柜前",
       "a": [
-        4.5,
-        8.15
+        4.1,
+        9.8
       ],
       "b": [
-        4.5,
-        8.9
+        4.75,
+        9.8
       ],
-      "metres": 0.75,
+      "metres": 0.65,
       "category": "clearance",
       "note": "方案尺寸"
     }

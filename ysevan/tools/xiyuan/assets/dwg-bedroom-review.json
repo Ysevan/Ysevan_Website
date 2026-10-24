@@ -1,0 +1,222 @@
+{
+  "source": {
+    "source": "建发玺院6#-1.dwg",
+    "sha256": "87c258e615f533e6e89cd4e60507886ca0e199d280f68a480775ecf24f2a1a76",
+    "bytes": 2746074,
+    "readAt": "2026-10-23T17:14:39.622Z",
+    "reader": "@mlightcad/libredwg-web",
+    "stats": {
+      "unknownEntityCount": 0
+    }
+  },
+  "basis": "fresh DWG parse; transformed INSERT 4784E5; no PDF/screenshot measurement",
+  "masterWardrobe": {
+    "box": [
+      2.8,
+      7.15,
+      3.4,
+      11.45
+    ],
+    "lengthM": 4.3,
+    "depthM": 0.6,
+    "handles": [
+      "480E15",
+      "480E16",
+      "480E17"
+    ],
+    "layer": "A-家具"
+  },
+  "masterDoor": {
+    "insert": "480E8D",
+    "leafHandle": "472BBB",
+    "hinge": [
+      2.75,
+      7.1
+    ],
+    "opening": [
+      1.85,
+      2.75
+    ],
+    "leafTip": [
+      2.75,
+      7.9775
+    ],
+    "opens": "south",
+    "hingeSide": "east",
+    "nominalWidthM": 0.9,
+    "sourceLeafLengthM": 0.8775,
+    "hingeToCabinetFaceM": 0.05
+  },
+  "southNorthWall": {
+    "stepDepthM": 0.4,
+    "walls": [
+      {
+        "handle": "480E2F",
+        "refs": [
+          "4784E5"
+        ],
+        "type": "LINE",
+        "layer": "WALL",
+        "points": [
+          [
+            3.5,
+            7.45
+          ],
+          [
+            5.4,
+            7.45
+          ]
+        ]
+      },
+      {
+        "handle": "480E30",
+        "refs": [
+          "4784E5"
+        ],
+        "type": "LINE",
+        "layer": "WALL",
+        "points": [
+          [
+            3.5,
+            7.55
+          ],
+          [
+            5.5,
+            7.55
+          ]
+        ]
+      },
+      {
+        "handle": "480E37",
+        "refs": [
+          "4784E5"
+        ],
+        "type": "LINE",
+        "layer": "WALL",
+        "points": [
+          [
+            5.5,
+            7.15
+          ],
+          [
+            5.55,
+            7.15
+          ]
+        ]
+      },
+      {
+        "handle": "480E39",
+        "refs": [
+          "4784E5"
+        ],
+        "type": "LINE",
+        "layer": "WALL",
+        "points": [
+          [
+            5.55,
+            7.05
+          ],
+          [
+            5.4,
+            7.05
+          ]
+        ]
+      },
+      {
+        "handle": "480E3D",
+        "refs": [
+          "4784E5"
+        ],
+        "type": "LINE",
+        "layer": "WALL",
+        "points": [
+          [
+            3.4,
+            7.45
+          ],
+          [
+            3.4,
+            7.15
+          ]
+        ]
+      },
+      {
+        "handle": "480E3E",
+        "refs": [
+          "4784E5"
+        ],
+        "type": "LINE",
+        "layer": "WALL",
+        "points": [
+          [
+            3.5,
+            7.45
+          ],
+          [
+            3.5,
+            7.05
+          ]
+        ]
+      },
+      {
+        "handle": "480E3F",
+        "refs": [
+          "4784E5"
+        ],
+        "type": "LINE",
+        "layer": "WALL",
+        "points": [
+          [
+            5.4,
+            7.45
+          ],
+          [
+            5.4,
+            7.05
+          ]
+        ]
+      },
+      {
+        "handle": "480E40",
+        "refs": [
+          "4784E5"
+        ],
+        "type": "LINE",
+        "layer": "WALL",
+        "points": [
+          [
+            5.5,
+            7.55
+          ],
+          [
+            5.5,
+            7.15
+          ]
+        ]
+      }
+    ],
+    "isOblique": false,
+    "note": "原WALL墙线存在400mm退进；不是截图透视或倾斜墙。04原门洞封口和新开门是另行提出的条件改造，不是DWG原设计。"
+  },
+  "controls": [
+    {
+      "handle": "480CDA",
+      "nativeMM": 600.0000000000001,
+      "measuredMM": 600.0
+    },
+    {
+      "handle": "480CE9",
+      "nativeMM": 2700,
+      "measuredMM": 2700.0
+    },
+    {
+      "handle": "480D14",
+      "nativeMM": 1800.0005488414317,
+      "measuredMM": 1800.0005488414317
+    }
+  ],
+  "limitations": [
+    "解析器报告68号警告，未独立完成结构专业对应；该局部所列对象已逐一核对。",
+    "本报告不说明凹位用途，不凭WALL图层判断可拆；未更改DWG或承重、水点。"
+  ]
+}

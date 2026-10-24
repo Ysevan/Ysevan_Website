@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {pointIn} from './navigation.js?v=3af6116843';
-import {layoutBoxes,BAY_BOXES} from './layout-data.js?v=9f6123dbed';
-import {STUDY_COLLISIONS} from './design-data.js?v=5eede9ed23';
+import {layoutBoxes,BAY_BOXES} from './layout-data.js?v=e4f2bd0850';
+import {STUDY_COLLISIONS} from './design-data.js?v=0d48267e23';
 
 // Round 2 light layer: the sun-shadow fit for a unit, contact shadows under furniture and fake ambient occlusion along
 // the walls. Shading is vertex-alpha geometry drawn with one unlit material that writes no depth, built as whole geometries
@@ -21,7 +21,7 @@ export function lightSpaceBounds(eye,target,outline,{y0=0,y1=2.78,margin=.6}={})
 // and carries its own patch (app.js bed()); the bay joinery is the same in every layout and sits outside the fit-outs.
 // Concept layouts: every item of the layout's JSON except the opened guest bed, which shares the sofa's base.
 export function layoutFootprints(id,concept){
- if(id==='original'){const S=STUDY_COLLISIONS;return [...layoutBoxes('original').filter(b=>!BAY_BOXES.includes(b)),S.desk,S.storage,S.display,S.day];}
+ if(id==='original'){const S=STUDY_COLLISIONS;return [...layoutBoxes('original').filter(b=>!BAY_BOXES.includes(b)),S.desk,S.storage,S.day];}
  return [...concept.furniture.filter(q=>q.kind!=='guest').flatMap(q=>q.footprints||[q.box]),...(concept.chairBox?[concept.chairBox]:[])];
 }
 

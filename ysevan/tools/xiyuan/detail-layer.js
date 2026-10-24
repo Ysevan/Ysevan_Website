@@ -58,10 +58,10 @@ const SW=[[10.35,1.3,1.2,'z'],[3.0,1.3,7.05,'-z'],[1.8,1.3,6.15,'x'],[4.1,1.3,5.
 const LIVING=[[10.55,.58,7.95,'-x'],[10.55,.58,10.15,'-x'],[6.7,.3,7.55,'x'],[6.7,.3,10.55,'x'],[6.6175,1.12,2.55,'x'],[6.6175,1.12,.75,'x']];
 const MASTER=[[.108,.55,8.67,'x'],[.108,.55,10.93,'x']];
 export const FIXTURES={
- original:[...SW,[5.5,1.3,7.35,'x'],...LIVING,...MASTER,[3.5,.55,8.75,'x'],[3.5,.55,10.75,'x'],[2.8,.9,2.95,'-x'],[3.0,.87,5.5,'x']],
+ original:[...SW,[5.5,1.3,7.35,'x'],...LIVING,...MASTER,[6.5,.55,8.25,'-x'],[6.5,.55,10.85,'-x'],[2.8,.9,2.95,'-x'],[3.0,.87,5.5,'x']],
  balanced:[...SW,[5.5,1.3,7.35,'x'],...LIVING,...MASTER,[5.4,.9,7.55,'z']],
  family:[...SW,[5.5,1.3,7.35,'x'],...LIVING,...MASTER,[3.5,.9,9.45,'x']],
- central:[...SW,[4.8,1.3,7.45,'-z'],...LIVING,...MASTER,[6.492,.55,8.75,'-x'],[6.492,.55,11.05,'-x'],[6.38,.9,7.15,'z']]
+ central:[...SW,[4.8,1.3,7.05,'-z'],...LIVING,...MASTER,[6.492,.55,8.75,'-x'],[6.492,.55,11.05,'-x'],[6.38,.9,7.15,'z']]
 };
 // Owner's ceiling: downlights in living, dining, entry, corridor and bedrooms (none over a pillow), a cove line round the living room.
 export const DOWNLIGHTS=[[7.25,7.75],[7.25,9.25],[7.25,10.75],[10,7.75],[10,9.25],[10,10.75],[9.9,3.75],[9.9,5.3],[7.65,6.4],[9.15,6.4],[9.75,1.75],[9.75,2.65],
@@ -123,7 +123,7 @@ export function createDetailLayer({mat,M,clipPlane,footprint,floorHoles,wallSets
  const lights=mesh(merge(glow),D.glow,{receive:false});lights.name='downlights';roof.add(lights);
  // Curtains: owner's unit only (added after the right-hand B unit was cloned); one mesh per stack, batchStatic() merges them.
  const drape=(list,parent)=>{for(const [a,b,y0,y1] of list){const q=mesh(curtainGeo(a,b,y0,y1),D.curtain,{cast:true});q.name='curtain';parent.add(q);}};
- drape(CURTAINS.all,owner);for(const id of ['balanced','family','central'])if(layouts[id])drape(CURTAINS.northWest,layouts[id]);
+ drape(CURTAINS.all.filter((q,i)=>i!==2&&i!==3),owner);for(const [id,g] of Object.entries(layouts))drape(id==='original'?[[[6.45,11.39],[6.15,11.39],.02,2.77],[[6.15,11.39],[5.85,11.39],.02,2.77]]:[CURTAINS.all[2],CURTAINS.all[3]],g);for(const id of ['balanced','family','central'])if(layouts[id])drape(CURTAINS.northWest,layouts[id]);
  // Switches and sockets: one InstancedMesh per layout fit-out (only the active one is visible). Call after batchStatic(), which would flatten instances.
  out.fixtures=()=>{const geo=fixtureGeo(),R={x:Math.PI/2,'-x':-Math.PI/2,z:0,'-z':Math.PI},m=new THREE.Matrix4(),q=new THREE.Quaternion(),one=new THREE.Vector3(1,1,1);
   for(const [id,list] of Object.entries(FIXTURES)){if(!layouts[id])continue;const im=new THREE.InstancedMesh(geo,D.fixture,list.length);im.name='switches-sockets';im.receiveShadow=true;

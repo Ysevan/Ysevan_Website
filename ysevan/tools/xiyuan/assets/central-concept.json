@@ -1,5 +1,5 @@
 {
-  "version": "15-checked-straight-east-desk",
+  "version": "18-two-straight-walls-and-continuous-nw-floor",
   "created": "2026-10-23",
   "sourceSHA256": "87c258e615f533e6e89cd4e60507886ca0e199d280f68a480775ecf24f2a1a76",
   "wallSourceSHA256": "9f0584f807c6581531c91d8049802eb130ef2db4ff8ba8570afe5ac2d48cef06",
@@ -14,6 +14,31 @@
     {
       "type": "south-bedroom-door-relocation-and-old-door-infill",
       "designerSignoffRequired": true
+    },
+    {
+      "type": "north-wall-aligned-to-orange-former-door-line",
+      "facesZ": [
+        7.05,
+        7.15
+      ],
+      "doorX": [
+        3.65,
+        4.55
+      ],
+      "designerSignoffRequired": true,
+      "ownerSelection": "橙色（2026-10-25）"
+    },
+    {
+      "type": "full-straight-divider-ends",
+      "facesX": [
+        3.25,
+        3.35
+      ],
+      "runZ": [
+        7.05,
+        11.45
+      ],
+      "note": "Remove artificial v13 return jogs; whole 150mm translation remains conditional."
     }
   ],
   "conditionalBalcony": "沿用原四房的封闭阳台横墙中段开口条件；未新增拆改。仅保留此前口头转述，不视为当前施工许可。梁、墙端、窗下墙、立面、水点不动；合法居住用途、保温、消防和现场高差需专项核验。不成立时本北卧布置需重做，不强塞落地。",
@@ -164,7 +189,7 @@
   "priorWardrobeTotalM": 7,
   "clothesCapacityCaution": "衣柜延米仍为4.30米，比A少2.70米；桌上方展示墙不算衣柜。顶柜及梁风管需现场核验。",
   "roomAreasM2": {
-    "south": "约13.1（条件改墙后，非现场）",
+    "south": "本轮北墙对齐后未作建筑面积认定，以图上净距为准",
     "formerMaster": "约10.4（条件改墙后，非现场）",
     "northWestConditional": 8.95,
     "cloak": 6.21
@@ -223,7 +248,20 @@
       "label": "衣帽间双柜中间",
       "value": 1.1,
       "unit": "m"
+    },
+    {
+      "id": "hallClear",
+      "label": "北墙外过道墙面间",
+      "value": 1.1,
+      "unit": "m"
+    },
+    {
+      "id": "southDoorOpening",
+      "label": "左侧新门洞（非成品净宽）",
+      "value": 0.9,
+      "unit": "m"
     }
   ],
-  "dimensionBasis": "两床床垫1.80×2.00m，床架外廓2.12×1.88m；展示、椅子、柜门及整段墙多边形校核；非现场竣工尺寸。沿用既有条件移墙15cm，不新增拆改。"
+  "dimensionBasis": "床垫、床架和桌椅尺寸不变。北墙按橙色原封门线拉齐，左侧门洞0.90m（非门扇成品净宽），门外墙面间1.10m；图上尺寸不含饰面误差。既有15cm干隔墙平移及本轮40cm北墙拉齐均为条件研究，非施工许可。",
+  "updated": "2026-10-25"
 }
