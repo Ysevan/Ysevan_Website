@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {SOUTH_SIDE_CABINET} from './layout-data.js?v=e4f2bd0850';
+import {SOUTH_SIDE_CABINET} from './layout-data.js?v=177b5128ed';
 // Slim open side cabinet from the owner's reference videos (2026-10-20): scarves and bags by the bedroom door.
 export function createSideCabinet({box,materials:M,parent}){
  const g=new THREE.Group();g.name='south-side-cabinet';parent.add(g);

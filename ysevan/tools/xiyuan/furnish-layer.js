@@ -188,7 +188,7 @@ function seed(n){let a=n>>>0;return()=>{a=(a*1664525+1013904223)>>>0;return a/42
 const NW={room:'child',rug:[.5,4.64,1.75,5.2],print:[.1,1.36,3.8,.7,.5,1,0,1],sconces:[[.1,.98,2.92,1,0],[.1,.98,4.68,1,0]]};
 const MASTER={room:'master',rug:[1.75,8.6,3.2,11.0],sconces:[[.1085,1.0,9.18,1,0],[.1085,1.0,10.42,1,0]]};
 export const BEDROOMS={
- original:[{room:'south',print:[6.5,1.55,9.75,.9,.6,-1,0,0],sconces:[[6.5,.98,8.25,-1,0],[6.5,.98,10.85,-1,0]]},
+ original:[{room:'south',print:[3.5,1.55,9.8,.9,.6,1,0,0],sconces:[[3.5,.98,8.65,1,0],[3.5,.98,10.95,1,0]]},
   {room:'north',rug:[4.28,4.5,5.22,4.95],print:[3.0,1.3,3.8,.6,.45,1,0,2],sconces:[[3.0,1.0,4.25,1,0]]}],
  balanced:[MASTER,NW],
  family:[MASTER,NW,{room:'north',rug:[3.65,4.5,5.22,4.95],print:[3.0,1.3,3.8,.6,.45,1,0,3],sconces:[[3.0,1.0,4.25,1,0]]}],

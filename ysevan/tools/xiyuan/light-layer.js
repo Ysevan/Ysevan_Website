@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {pointIn} from './navigation.js?v=3af6116843';
-import {layoutBoxes,BAY_BOXES} from './layout-data.js?v=e4f2bd0850';
+import {layoutBoxes,BAY_BOXES} from './layout-data.js?v=177b5128ed';
 import {STUDY_COLLISIONS} from './design-data.js?v=0d48267e23';
 
 // Round 2 light layer: the sun-shadow fit for a unit, contact shadows under furniture and fake ambient occlusion along

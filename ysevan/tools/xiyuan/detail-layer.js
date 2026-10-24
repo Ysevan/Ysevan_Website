@@ -123,7 +123,7 @@ export function createDetailLayer({mat,M,clipPlane,footprint,floorHoles,wallSets
  const lights=mesh(merge(glow),D.glow,{receive:false});lights.name='downlights';roof.add(lights);
  // Curtains: owner's unit only (added after the right-hand B unit was cloned); one mesh per stack, batchStatic() merges them.
  const drape=(list,parent)=>{for(const [a,b,y0,y1] of list){const q=mesh(curtainGeo(a,b,y0,y1),D.curtain,{cast:true});q.name='curtain';parent.add(q);}};
- drape(CURTAINS.all.filter((q,i)=>i!==2&&i!==3),owner);for(const [id,g] of Object.entries(layouts))drape(id==='original'?[[[6.45,11.39],[6.15,11.39],.02,2.77],[[6.15,11.39],[5.85,11.39],.02,2.77]]:[CURTAINS.all[2],CURTAINS.all[3]],g);for(const id of ['balanced','family','central'])if(layouts[id])drape(CURTAINS.northWest,layouts[id]);
+ drape(CURTAINS.all.filter((q,i)=>i!==2&&i!==3),owner);for(const [id,g] of Object.entries(layouts))drape([CURTAINS.all[2],CURTAINS.all[3]],g);for(const id of ['balanced','family','central'])if(layouts[id])drape(CURTAINS.northWest,layouts[id]);
  // Switches and sockets: one InstancedMesh per layout fit-out (only the active one is visible). Call after batchStatic(), which would flatten instances.
  out.fixtures=()=>{const geo=fixtureGeo(),R={x:Math.PI/2,'-x':-Math.PI/2,z:0,'-z':Math.PI},m=new THREE.Matrix4(),q=new THREE.Quaternion(),one=new THREE.Vector3(1,1,1);
   for(const [id,list] of Object.entries(FIXTURES)){if(!layouts[id])continue;const im=new THREE.InstancedMesh(geo,D.fixture,list.length);im.name='switches-sockets';im.receiveShadow=true;
