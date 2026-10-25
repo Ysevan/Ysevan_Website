@@ -1,12 +1,13 @@
+import {createLivingBalcony,LEGACY_LIVING_BOXES} from './living-balcony.js?v=3cc6ecc8d3';
 import {FITOUT_DIMENSIONS} from './fitout-dimensions.js?v=40ecd197db';
 import {resolveLayout,WITHDRAWAL_NOTICE} from './layout-policy.js?v=d3fe69be91';
 import {MASTER_ENTRIES,CENTRAL_ENTRY,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT,DOOR_VIEW_WALK,DOOR_OPEN} from './door-layout.js?v=dbf9e8b9fa'; import {createSky,eyeFov,crosses} from './scene-env.js?v=b921ffdb6b'; import {createPanels,createLandscape} from './ui-panels.js?v=ea5002819f';
 import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,bayBoxesForLayout,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,ROOM_DECOR,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js?v=177b5128ed';
 import {createDesignStudio} from './design-studio.js?v=b4a1425ed7';
-import {createConceptRoom} from './concept-rooms.js?v=7cadb53259';
+import {createConceptRoom} from './concept-rooms.js?v=2c689347a0';
 import {LIGHTING,OUTDOOR} from './design-presets.js?v=0154371027';
 import {createGamingRoom} from './gaming-room.js?v=63b9f2b6d6'; import {createBayWindow} from './bay-window.js?v=c3e426e534'; import {createSideCabinet} from './storage-fitout.js?v=4c5573f604';
-import {createOwnerMasterBed} from './owner-master-bed.js?v=90d9c45c87';
+import {createOwnerMasterBed} from './owner-master-bed.js?v=f9e70db44c';
 import {createFittedWardrobe} from './fitted-wardrobe.js?v=3c06a47c42';
 import {STUDY_COLLISIONS,STUDY_VIEWS,GAMING_MODES,studyBoxes,studyWalkBoxes} from './design-data.js?v=0d48267e23';
 import {createNavigator,pointIn} from './navigation.js?v=3af6116843';
@@ -21,7 +22,7 @@ import {pickTier,probeRenderer,tierSettings,tierBudget,SOFT_ENV_SKY,SOFT_ENV_GRO
 import {leverGeo} from './detail-kit.js?v=95ac5fde41';import {createDetailLayer,doorReveal,windowSide} from './detail-layer.js?v=590ca89d63';
 import {BEVEL,bevel,bevelSegments,createFinishes} from './material-kit.js?v=f605101d42';
 import {createWetRooms} from './wet-rooms.js?v=f51fc87429';
-import {createFurnishing,bedding,COFFEE} from './furnish-layer.js?v=d5456750f0';
+import {createFurnishing,bedding,COFFEE} from './furnish-layer.js?v=e90d2fee72';
 import {createRoomLights,ownerRoomAt} from './room-lights.js?v=af40d3a7b9';
 
 const $=id=>document.getElementById(id);
@@ -161,9 +162,10 @@ function vase(x,y,z,parent=furniture){cyl(x,y,z,.09,.19,M.terracotta,parent,.045
 function book(x,y,z,color='#b1b69f',parent=furniture){box(x,y,z,.25,.035,.17,mat(color),parent,.006);}
 // cut: hung above 1.28 m, so every part is cut with the walls; the frame keeps sharing oak's colour across presets.
 let oakCut=null;function art(x,y,z,w,h,rotation=0,cut=false){const c=cut?{clippingPlanes:[clipPlane]}:{};if(cut&&!oakCut){oakCut=M.oak.clone();oakCut.clippingPlanes=[clipPlane];oakCut.color=M.oak.color;}const g=new THREE.Group();g.position.set(x,y,z);g.rotation.y=rotation;furniture.add(g);box(0,0,0,w,h,.035,cut?oakCut:M.oak,g);box(0,.035,.025,w-.07,h-.07,.012,mat('#ebe8db',.78,c),g);const a=cyl(0,.1,0,.01,.01,M.oak);furniture.remove(a);for(let i=0;i<3;i++){const q=new THREE.Mesh(new THREE.CircleGeometry(w*(.12+i*.03),24),new THREE.MeshBasicMaterial({color:['#657158','#c5ac80','#9d7d5b'][i],...c}));q.position.set((i-1)*w*.2,h*(.3+i*.17),.036+i*.002);g.add(q);}return g;}
-function chair(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;furniture.add(g);round(0,.43,0,.45,.07,.43,M.linen,g,.05);round(0,.53,.19,.44,.36,.055,M.oak,g,.025);for(let a of [-1,1])for(let b of [-1,1])rod([a*.17,0,b*.16],[a*.15,.46,b*.14],.023,M.walnut,g);}
+function chair(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;furniture.add(g);round(0,.43,0,.45,.07,.43,M.linen,g,.05);round(0,.53,.19,.44,.36,.055,M.oak,g,.025);for(let a of [-1,1])for(let b of [-1,1])rod([a*.17,0,b*.16],[a*.15,.46,b*.14],.023,M.walnut,g);return g;}
 // Soft furnishings and accessories (furnish-layer.js): cushions, throw, made beds, lamps, prints, entry joinery, balcony rack.
 const furnish=createFurnishing({box,cyl,rod,mat,M,clipPlane,rug,vase,contacts,oakCut:()=>oakCut,soft:renderTier==='soft'});
+const livingStart=new Set(furniture.children);
 // Living room, placed to match the furniture orientation in the CAD plan.
 rug(8.45,9.25,2.95,3.25,'#c3c8b9');
 round(7.3,.10,9.05,.98,.29,2.62,M.linen);round(6.9,.38,9.05,.17,.55,2.65,M.linen);round(7.3,.33,7.8,1,.42,.16,M.linen);round(7.3,.33,10.3,1,.42,.16,M.linen);
@@ -174,6 +176,7 @@ cyl(8.8,.29,9.38,.55,.045,M.stone);cyl(8.8,.04,9.38,.21,.26,M.walnut);cyl(9.25,.
 const originalLoungeExtras=new THREE.Group();for(const q of [...furniture.children])if(!loungeExtrasStart.has(q))originalLoungeExtras.add(q);furniture.add(originalLoungeExtras);
 round(10.17,.11,9.05,.43,.34,2.55,M.oak);box(10.43,.72,9.05,.035,1.08,1.9,mat('#1d2827',.21,{clippingPlanes:[clipPlane]}),furniture);box(10.405,.77,9.05,.006,.96,1.78,mat('#313f3b',.23,{clippingPlanes:[clipPlane]}),furniture);art(6.82,1.35,9.1,1.5,.82,Math.PI/2,true);plant(9.98,10.72,1.45);cyl(7.18,.0,10.82,.22,.42,M.walnut);vase(7.18,.42,10.82);
 collide(6.82,7.72,7.82,10.38);collide(7.7,7.2,9.4,8.03);collide(9.95,7.75,10.4,10.35);collide(8.33,8.86,9.3,9.9);
+const oldLivingMeshes=[...furniture.children].filter(q=>!livingStart.has(q));
 // Dining area and pendant cluster.
 round(8.05,.72,4.6,1.75,.07,.86,M.oak);for(let a of [-1,1])for(let b of [-1,1])box(8.05+a*.65,0,4.6+b*.3,.06,.72,.06,M.walnut,furniture);for(let x of [7.45,8.05,8.65]){chair(x,3.85,Math.PI);chair(x,5.36,0);}vase(8.0,.79,4.6);for(let x of [7.5,8.55])cyl(x,.795,4.62,.12,.015,M.white);collide(7.12,4.1,8.97,5.08);
 const lamps=new THREE.Group();roof.add(lamps);for(let i=0;i<3;i++){rod([7.45+i*.6,2.78,4.6],[7.45+i*.6,2.1+i*.08,4.6],.006,M.dark,lamps);sphere(7.45+i*.6,2.05+i*.08,4.6,.17,.12,.17,M.white,lamps);}const diningLight=new THREE.PointLight('#ffe3b1',3,4,2);diningLight.position.set(8,2.3,4.6);roof.add(diningLight);
@@ -209,8 +212,10 @@ function basin(x,z,w=.65,rot=0){const g=new THREE.Group();g.position.set(x,0,z);
 toilet(1.37,6.35);basin(.43,7.55,.5,Math.PI/2);box(.78,.01,6.49,.018,2,.92,M.glass,furniture);rod([.25,1.2,6.08],[.25,2.1,6.08],.012,M.metalCut);cyl(.25,2.08,6.2,.085,.02,M.metalCut);
 toilet(6.6,4.48,-Math.PI/2);basin(6.68,5.37,.5,-Math.PI/2);box(6.05,.01,3.99,1.5,2,.018,M.glass,furniture);rod([6.83,1.25,3.38],[6.83,2.05,3.38],.012,M.metalCut);cyl(6.73,2.03,3.38,.085,.02,M.metalCut);collide(6.4,5.09,6.97,5.65);collide(.15,7.3,.73,7.8);
 // Outdoor seating is removable with the furnishing layer.
+const balconyStart=new Set(furniture.children);
 cyl(5.3,.64,12.48,.39,.04,M.stone);cyl(5.3,0,12.48,.15,.64,M.metal);chair(4.55,12.5,-Math.PI/2);chair(5.95,12.5,Math.PI/2);vase(5.3,.68,12.48);plant(9.82,12.97,1.35);plant(3.8,12.95,.8);round(9.45,0,12.43,.65,.88,1.38,M.white);box(9.45,.88,12.43,.67,.035,1.4,M.stone,furniture);collide(9.1,11.72,9.8,13.15);
 // Enclosed balcony retained for the proposed study, not filled with permanent joinery yet.
+const oldBalconyMeshes=[...furniture.children].filter(q=>!balconyStart.has(q));
 // The two B units mirror one another; A units use their own CAD walls and layout.
 const leftB=furniture, bCollisions=collisionBoxes.map(b=>b.slice()),bWindows=winSegments.map(a=>a.slice());
 const mirrorBox=b=>[41.8-b[2],b[1],41.8-b[0],b[3]];
@@ -231,6 +236,11 @@ studyChair.position.z=.05;studyDivider.visible=false;let doorView=DOOR_VIEW_DEFA
 // Owner's restrained timber detail remains; both entry/dining cabinets and their decor are removed in every layout.
 box(6.78,.15,9.05,.028,.94,2.7,M.oak,leftB);
 const ownerExtraCollisions=[];
+// Remove ONLY owner furniture after cloning the opposite B unit. Locked wet geometry above is unchanged.
+for(const q of [...oldLivingMeshes,...oldBalconyMeshes])leftB.remove(q);
+for(let i=collisionBoxes.length-1;i>=0;i--)if(LEGACY_LIVING_BOXES.some(b=>b.every((v,k)=>Math.abs(v-collisionBoxes[i][k])<1e-8)))collisionBoxes.splice(i,1);
+const ownerLiving=createLivingBalcony({parent:leftB,box,round,cyl,rod,M,clipPlane,furnish,rug,art,chair});
+ownerExtraCollisions.push(...ownerLiving.boxes);
 // Coffee table with its tray, cup and books, the same in every layout (owner only; collision and contact patch per layout).
 furnish.table(leftB);
 const originalFitout=new THREE.Group(),redesignFurnishings=new THREE.Group();leftB.add(originalFitout,redesignFurnishings);redesignFurnishings.visible=false;
@@ -334,14 +344,14 @@ for(const [id,list] of Object.entries(FITOUT_DIMENSIONS)){
 }
 function syncFitoutDimensions(){for(const [id,g] of Object.entries(fitoutDimensions))g.visible=mode==='plan'&&focusUnit==='bl'&&activeLayout===id;}
 const rooms=[
- {id:'living',name:'客厅',x:8.65,z:9.2,pos:[9.65,1.62,8.5],look:[7.4,1.25,9.05],desc:'CAD 两侧墙面间距约 3.85 m；家具为可隐藏的示意摆位。',rect:[6.7,7.05,10.55,11.45]},
+ {id:'living',name:'客厅',x:8.65,z:9.2,pos:[8.3,1.62,8.0],look:[10.35,1.25,9.05],desc:'2.35米直排沙发；3.10×0.40米电视收纳墙，电视嵌入留空。茶几东侧通道0.99米；东南角柜式空调为机型占位。',rect:[6.7,7.05,10.55,11.45]},
  {id:'dining',name:'餐厅',x:8.15,z:4.6,pos:[9.5,1.62,5.7],look:[8.03,1.25,4.6],desc:'厨房、餐厅、客厅相连；沿通道走向阳台。',rect:[7.2,3.15,10.55,7.05]},
  {id:'master',name:'主卧',x:1.55,z:9.9,pos:[2.48,1.62,8.6],look:[1.1,1.1,9.95],desc:'切换 1.5 / 1.8 / 2.0 m 床垫，对照床尾与两侧的留白。',rect:[.1,8.05,3.4,11.45]},
  {id:'south',name:'卧室 · 阳台侧',x:4.85,z:9.9,pos:[6.02,1.62,8.4],look:[4.5,1.2,9.7],desc:'按图纸保留独立房间，以及通向阳台的推拉门。',rect:[3.4,7.05,6.45,11.45]},
  {id:'north',name:'卧室 · 内侧',x:4.2,z:4.5,pos:[4.85,1.62,5.4],look:[4.0,1.2,3.9],desc:'卧室、书桌与凸窗按图纸关系布置，软装仅供体验。',rect:[3,3.15,5.2,5.85]},
  {id:'child',name:'儿童房',x:1.4,z:4.8,pos:[2.3,1.62,5.5],look:[1.1,1,4.5],desc:'保留图纸中的儿童房与封闭阳台，不合并扩大空间。',rect:[.1,3.95,2.8,5.85]},
  {id:'kitchen',name:'厨房',x:7.7,z:1.7,pos:[7.8,1.62,2.1],look:[7.35,1.1,.6],desc:'厨房位置和边界取自 CAD；橱柜与电器为设计示意。',rect:[6.55,.3,8.8,3.15]},
- {id:'balcony',name:'阳台',x:7.4,z:12.5,pos:[8.4,1.62,12.4],look:[6.0,1.3,13.4],desc:'从客厅走到室外。窗外为抽象场景，非真实楼栋或江景。',rect:[3.4,11.65,10.55,13.35]},
+ {id:'balcony',name:'阳台',x:7.4,z:12.5,pos:[6.6,1.62,12.05],look:[8.65,1.0,12.75],desc:'西侧洗烘并排：1.40×0.75米连续台面；东侧两人茶桌0.80×0.55米，北侧通道0.85米。西侧接口由屋主确认，具体接管现场核；东侧接口保留检修。',rect:[3.4,11.65,10.55,13.35]},
  {id:'bath1',name:'卫生间 · 避难间',x:1,z:6.8,pos:[1.25,1.62,7.45],look:[.7,1.1,6.35],desc:'按原图保留卫生间及避难间用途，不改动墙体。',rect:[.1,5.95,1.8,8.05]},
  {id:'bath2',name:'卫生间 · 内侧',x:5.85,z:4.4,pos:[5.85,1.62,5.35],look:[6.4,1.25,4.3],desc:'干区与湿区的位置来自图纸；洁具高度与材质为示意。',rect:[5.3,3.15,7,5.85]}
 ];
@@ -360,6 +370,8 @@ const aRooms=[
 ].map(r=>({...r,desc:'A户型按本层CAD墙线复建；家具与装饰为示意，不属于你家装修范围。'}));
 const mirrorRoom=(r,prefix,unit)=>({...r,id:prefix+r.id,unit,x:41.8-r.x,pos:[41.8-r.pos[0],r.pos[1],r.pos[2]],look:[41.8-r.look[0],r.look[1],r.look[2]],rect:mirrorBox(r.rect)});
 const originalBRooms=rooms.slice();rooms.push(...originalBRooms.map(r=>mirrorRoom(r,'br_','br')));
+Object.assign(rooms.find(r=>r.id==='br_living'),{pos:[32.15,1.62,8.5],look:[34.4,1.25,9.05],desc:'右侧B户型保留原示意客厅，未套用业主小沙发和电视收纳墙。'});
+Object.assign(rooms.find(r=>r.id==='br_balcony'),{pos:[33.4,1.62,12.4],look:[35.8,1.3,13.4],desc:'右侧B户型保留原阳台示意家具，未套用业主洗烘和茶区。'});
 Object.assign(rooms.find(r=>r.id==='br_child'),{name:'儿童房',pos:[39.5,1.62,5.5],look:[40.7,1,4.5],desc:'右侧B户型维持原儿童房布局，未套用你的电竞房改造。'});
 rooms.push(...aRooms.map(r=>({...r,id:'al_'+r.id,unit:'al'})),...aRooms.map(r=>mirrorRoom(r,'ar_','ar')));
 rooms.push(
@@ -587,7 +599,7 @@ const studio=createDesignStudio({applyLayout,applyHome:applyHomeDesign,applyGami
 // its ceiling bands as their own mesh (own material, so batchStatic keeps it apart; clone() copies the cut plane, so it is
 // shared again) that setIndoor() only shows under the roof.
 // Software rasterisers skip the wall bands (fill-bound: +3–5% a frame in the entry and bathroom); contact shadows stay.
-{const same=(a,b)=>a.every((v,i)=>Math.abs(v-b[i])<1e-6),gone=[...OWNER_REPLACED_BOXES,...oldChildCollisions,entryCabinetFootprint];contacts([...bCollisions.filter(b=>!gone.some(q=>same(b,q))),...ownerExtraCollisions],leftB);contacts(bCollisions,rightB);contacts(aCollisions,leftA);contacts(aCollisions,rightA);contacts(layoutFootprints('original'),originalFitout);for(const [id,g] of Object.entries(conceptScenes))contacts(layoutFootprints(id,conceptData.layouts[id]),g.group);
+{const same=(a,b)=>a.every((v,i)=>Math.abs(v-b[i])<1e-6),gone=[...OWNER_REPLACED_BOXES,...oldChildCollisions,entryCabinetFootprint,...LEGACY_LIVING_BOXES];contacts([...bCollisions.filter(b=>!gone.some(q=>same(b,q))),...ownerExtraCollisions],leftB);contacts(bCollisions,rightB);contacts(aCollisions,leftA);contacts(aCollisions,rightA);contacts(layoutFootprints('original'),originalFitout);for(const [id,g] of Object.entries(conceptScenes))contacts(layoutFootprints(id,conceptData.layouts[id]),g.group);
  const ceilMat=shadeMat.clone();ceilMat.clippingPlanes=[clipPlane];for(const [id,plan] of [['original',originalData],['central',centralWallData]]){const ao=wallAOGeometry(plan,{footprint,floorHoles,windows:winSegments}),top=new THREE.Mesh(ao.ceiling,ceilMat);top.visible=indoor!==OUTDOOR;aoCeilings.push(top);if(renderTier!=='soft')layoutWalls[id].group.add(new THREE.Mesh(ao.foot,shadeMat),top);}}
 // Batch static architectural meshes without changing their metre-scale transforms.
 function batchStatic(group,exclude=null){group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert();const buckets=new Map(),original=[];group.traverse(o=>{if(!o.isMesh||!o.visible||Array.isArray(o.material))return;let a=o;while(a&&a!==group){if((Array.isArray(exclude)?exclude:[exclude]).includes(a))return;a=a.parent;}const key=o.material.uuid+'|'+o.castShadow+'|'+o.receiveShadow;if(!buckets.has(key))buckets.set(key,{material:o.material,cast:o.castShadow,receive:o.receiveShadow,geos:[]});let g=o.geometry.clone();if(g.index)g=g.toNonIndexed();const transform=new THREE.Matrix4().multiplyMatrices(inverse,o.matrixWorld);g.applyMatrix4(transform);if(transform.determinant()<0){for(const attr of Object.values(g.attributes)){const a=attr.array,k=attr.itemSize;for(let i=0;i<attr.count;i+=3)for(let j=0;j<k;j++){const u=(i+1)*k+j,v=(i+2)*k+j,t=a[u];a[u]=a[v];a[v]=t;}}}buckets.get(key).geos.push(g);original.push(o);});for(const o of original){o.parent.remove(o);o.geometry.dispose();}for(const b of buckets.values()){const geometry=mergeGeometries(b.geos,false);b.geos.forEach(g=>g.dispose());if(!geometry)continue;const mesh=new THREE.Mesh(geometry,b.material);mesh.castShadow=b.cast;mesh.receiveShadow=b.receive;group.add(mesh);}}

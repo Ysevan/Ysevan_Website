@@ -118,8 +118,8 @@ export function createFurnishing({box,cyl,rod,mat,M,clipPlane,rug,vase,contacts,
     const q=new THREE.Mesh(leafGeo(),mat(tones[i%tones.length],.95));q.position.set(...base);q.rotation.set(-pitch,Math.atan2(dx,dz),0,'YXZ');q.scale.setScalar(len);q.castShadow=true;q.receiveShadow=true;q.name='leaf';parent.add(q);}},
   // Owner's living room (both B units: built before the right-hand unit is cloned): puffy cushions against the back, a throw
   // over the south arm, a floor lamp at the north arm.
-  sofa(parent){
-   for(let i=0;i<3;i++)cushion(parent,{x:7.12,z:8.17+i*.85,seat:.57,back:6.985,dir:1,m:i===1?M.terracotta:M.olive,lean:.32,yaw:(i-1)*.07});
+  sofa(parent,{compact=false}={}){
+   for(let i=0;i<3;i++)cushion(parent,{x:7.12,z:compact?8.50+i*.68:8.17+i*.85,seat:.57,back:6.985,dir:1,m:i===1?M.terracotta:M.olive,lean:.32,yaw:(i-1)*.07});
    // Arm 6.8–7.8 × 10.22–10.38, top 0.75, 5 cm round: from the seat cushion, up the arm's inner face, over it and down the outside.
    const p=path([[9.95,.578],[10.164,.579],{arc:[10.164,.629,.05,-Math.PI/2,0]},[10.214,.7],{arc:[10.27,.7,.056,Math.PI,Math.PI/2]},[10.33,.756],{arc:[10.33,.7,.056,Math.PI/2,0]},[10.386,.66],[10.386,.4]]);
    const g=cloth(steps(7.25,7.75,7),p.marks.filter((_,i,a)=>i%2===0||i===a.length-1),(a,b)=>{const [u,y]=p.at(b),hang=Math.max(0,.7-y)/.3,out=u>10.3?1:0;return [a+.012*Math.sin(b*7)*hang,y-.035*hang*Math.sin(a*9)**2*out,u+out*.014*hang*Math.sin(a*17)];});

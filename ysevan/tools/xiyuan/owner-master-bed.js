@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {bedding} from './furnish-layer.js?v=d5456750f0';
+import {bedding} from './furnish-layer.js?v=e90d2fee72';
 // Removable platform bed. The mattress remains 1.80 x 2.00; outer frame 1.88 x 2.10.
 export function createOwnerMasterBed({cx,cz,width,length=2,rotation},{box,materials:M,parent}){
  const g=new THREE.Group();g.name='owner-master-slim-bed';g.position.set(cx,0,cz);g.rotation.y=rotation;parent.add(g);
