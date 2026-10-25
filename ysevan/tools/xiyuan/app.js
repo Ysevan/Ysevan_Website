@@ -3,10 +3,10 @@ import {resolveLayout,WITHDRAWAL_NOTICE} from './layout-policy.js?v=d3fe69be91';
 import {MASTER_ENTRIES,CENTRAL_ENTRY,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT,DOOR_VIEW_WALK,DOOR_OPEN} from './door-layout.js?v=dbf9e8b9fa'; import {createSky,eyeFov,crosses} from './scene-env.js?v=b921ffdb6b'; import {createPanels,createLandscape} from './ui-panels.js?v=ea5002819f';
 import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,bayBoxesForLayout,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,ROOM_DECOR,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js?v=177b5128ed';
 import {createDesignStudio} from './design-studio.js?v=b4a1425ed7';
-import {createConceptRoom} from './concept-rooms.js?v=9da56a226b';
+import {createConceptRoom} from './concept-rooms.js?v=7cadb53259';
 import {LIGHTING,OUTDOOR} from './design-presets.js?v=0154371027';
 import {createGamingRoom} from './gaming-room.js?v=63b9f2b6d6'; import {createBayWindow} from './bay-window.js?v=c3e426e534'; import {createSideCabinet} from './storage-fitout.js?v=4c5573f604';
-import {createOwnerMasterBed} from './owner-master-bed.js?v=6975ff4600';
+import {createOwnerMasterBed} from './owner-master-bed.js?v=90d9c45c87';
 import {createFittedWardrobe} from './fitted-wardrobe.js?v=3c06a47c42';
 import {STUDY_COLLISIONS,STUDY_VIEWS,GAMING_MODES,studyBoxes,studyWalkBoxes} from './design-data.js?v=0d48267e23';
 import {createNavigator,pointIn} from './navigation.js?v=3af6116843';
@@ -21,7 +21,7 @@ import {pickTier,probeRenderer,tierSettings,tierBudget,SOFT_ENV_SKY,SOFT_ENV_GRO
 import {leverGeo} from './detail-kit.js?v=95ac5fde41';import {createDetailLayer,doorReveal,windowSide} from './detail-layer.js?v=590ca89d63';
 import {BEVEL,bevel,bevelSegments,createFinishes} from './material-kit.js?v=f605101d42';
 import {createWetRooms} from './wet-rooms.js?v=f51fc87429';
-import {createFurnishing,bedding,COFFEE} from './furnish-layer.js?v=07d95e76b4';
+import {createFurnishing,bedding,COFFEE} from './furnish-layer.js?v=d5456750f0';
 import {createRoomLights,ownerRoomAt} from './room-lights.js?v=af40d3a7b9';
 
 const $=id=>document.getElementById(id);
@@ -175,14 +175,14 @@ const originalLoungeExtras=new THREE.Group();for(const q of [...furniture.childr
 round(10.17,.11,9.05,.43,.34,2.55,M.oak);box(10.43,.72,9.05,.035,1.08,1.9,mat('#1d2827',.21,{clippingPlanes:[clipPlane]}),furniture);box(10.405,.77,9.05,.006,.96,1.78,mat('#313f3b',.23,{clippingPlanes:[clipPlane]}),furniture);art(6.82,1.35,9.1,1.5,.82,Math.PI/2,true);plant(9.98,10.72,1.45);cyl(7.18,.0,10.82,.22,.42,M.walnut);vase(7.18,.42,10.82);
 collide(6.82,7.72,7.82,10.38);collide(7.7,7.2,9.4,8.03);collide(9.95,7.75,10.4,10.35);collide(8.33,8.86,9.3,9.9);
 // Dining area and pendant cluster.
-round(8.05,.72,4.6,1.75,.07,.86,M.oak);for(let a of [-1,1])for(let b of [-1,1])box(8.05+a*.65,0,4.6+b*.3,.06,.72,.06,M.walnut,furniture);for(let x of [7.45,8.05,8.65]){chair(x,3.85,0);chair(x,5.36,Math.PI);}vase(8.0,.79,4.6);for(let x of [7.5,8.55])cyl(x,.795,4.62,.12,.015,M.white);collide(7.12,4.1,8.97,5.08);
+round(8.05,.72,4.6,1.75,.07,.86,M.oak);for(let a of [-1,1])for(let b of [-1,1])box(8.05+a*.65,0,4.6+b*.3,.06,.72,.06,M.walnut,furniture);for(let x of [7.45,8.05,8.65]){chair(x,3.85,Math.PI);chair(x,5.36,0);}vase(8.0,.79,4.6);for(let x of [7.5,8.55])cyl(x,.795,4.62,.12,.015,M.white);collide(7.12,4.1,8.97,5.08);
 const lamps=new THREE.Group();roof.add(lamps);for(let i=0;i<3;i++){rod([7.45+i*.6,2.78,4.6],[7.45+i*.6,2.1+i*.08,4.6],.006,M.dark,lamps);sphere(7.45+i*.6,2.05+i*.08,4.6,.17,.12,.17,M.white,lamps);}const diningLight=new THREE.PointLight('#ffe3b1',3,4,2);diningLight.position.set(8,2.3,4.6);roof.add(diningLight);
 // Kitchen: sink, cabinets, hob, tall fridge.
 round(6.91,0,1.67,.6,.86,2.7,M.oak);round(7.61,0,.59,1.85,.86,.58,M.oak);box(6.91,.86,1.67,.66,.035,2.7,M.stone,furniture);box(7.61,.86,.59,1.85,.035,.64,M.stone,furniture);box(6.6,.91,1.65,.035,.48,2.55,mat('#d2d3be',.78,{clippingPlanes:[clipPlane]}),furniture);box(6.9,.902,1.55,.49,.012,.62,mat('#25312a',.3),furniture);for(let z of [1.37,1.72])cyl(6.92,.915,z,.12,.015,M.metal);
 box(7.6,.9,.59,.66,.02,.42,M.metal,furniture,.05);box(7.6,.918,.59,.53,.01,.3,mat('#82908c'),furniture,.06);rod([7.65,.91,.36],[7.65,1.18,.36],.016,M.metal);rod([7.65,1.18,.36],[7.65,1.18,.58],.016,M.metal);
 round(8.48,0,2.65,.62,1.94,.63,mat('#a9b2a3',.4));box(8.145,1.1,2.65,.017,.02,.57,M.dark,furniture);round(6.73,1.51,2.32,.26,.76,1.14,M.whiteCut);for(let z of [.6,1.2,1.9,2.6])box(7.224,.65,z,.016,.04,.18,M.brass,furniture);collide(6.57,.2,7.24,3.08);collide(7.25,.25,8.68,.91);collide(8.17,2.33,8.79,2.98);
 // Entry bench and slim storage, without shrinking the entry passage.
-furnish.entry(furniture);vase(10.25,.955,3.64);collide(10.03,3.06,10.5,4.16);furnish.smartLock(doorSpecs.find(d=>d.x===10.65&&d.z===2).g);
+const entryCabinet=furnish.entry(furniture);vase(10.25,.955,3.64,entryCabinet);const entryCabinetFootprint=[10.03,3.06,10.5,4.16];collide(...entryCabinetFootprint);furnish.smartLock(doorSpecs.find(d=>d.x===10.65&&d.z===2).g);
 // Bedroom furniture. The master bed can be measured and resized.
 function bed(cx,cz,width,length=2,rot=0,master=false){if(master){const g=createOwnerMasterBed({cx,cz,width,length,rotation:rot},{box,materials:M,parent:furniture});contacts([[-width/2-.04,-length/2-.05,width/2+.04,length/2+.05]],g);return g;}const g=new THREE.Group();g.position.set(cx,0,cz);g.rotation.y=rot;furniture.add(g);round(0,.13,0,width+.12,.19,length+.12,M.oak,g,.04);round(0,.32,0,width,.2,length,M.white,g,.08);round(0,.16,-length/2-(master?.055:.06),width+.2,.92,master?.11:.12,M.olive,g,.06);bedding(g,{width,length,top:.52,M});if(master)contacts([[-width/2-.1,-length/2-.11,width/2+.1,length/2+.06]],g);return g;}
 const masterStart=new Set(furniture.children);
@@ -218,6 +218,8 @@ const mirrorSegment=b=>[41.8-b[0],b[1],41.8-b[2],b[3]];
 const rightB=leftB.clone(true);rightB.position.x=41.8;rightB.scale.x=-1;allFurnishings.add(rightB);
 const rightBDetails=bDetails.clone(true);rightBDetails.position.x=41.8;rightBDetails.scale.x=-1;arch.add(rightBDetails);
 collisionBoxes.push(...bCollisions.map(mirrorBox),mirrorBox([.16,9.0,2.28,10.9]));winSegments.push(...bWindows.map(mirrorSegment));
+// Remove only the owner's cabinet after cloning: every owner layout shares this clear entry.
+leftB.remove(entryCabinet);const entryCabinetCollision=collisionBoxes.findIndex(b=>b.every((v,i)=>v===entryCabinetFootprint[i]));if(entryCabinetCollision>=0)collisionBoxes.splice(entryCabinetCollision,1);
 // The moved bedroom door is owner-only; neighbours retain their original entries.
 const redesignMasterDoor=new THREE.Group(); // Entry already exists as southDoor; do not duplicate its frame.
 // Change only the owner's old children's room into the requested office/guest room.
@@ -226,11 +228,9 @@ const gaming=createGamingRoom({box,cyl,rod,woodTexture:woodtex,fabricTexture:fab
 const study=gaming.room,studyDay=gaming.day,studyGuest=gaming.guest,studyChair=gaming.chair;leftB.add(study);furnish.desk(study,{cx:1.4,cz:2.95,rot:0,length:2,depth:.7,top:.76});
 const studyCollisions=STUDY_COLLISIONS;
 studyChair.position.z=.05;studyDivider.visible=false;let doorView=DOOR_VIEW_DEFAULT,guestMode=false,gamingMode='focus';
-// Selected A: restrained timber detailing and a tea cabinet, only in the owner's B unit.
+// Owner's restrained timber detail remains; both entry/dining cabinets and their decor are removed in every layout.
 box(6.78,.15,9.05,.028,.94,2.7,M.oak,leftB);
-box(10.04,.04,5.25,.43,.84,1.5,M.oak,leftB,.02);box(10.04,.88,5.25,.45,.025,1.52,M.stone,leftB);
-box(10.04,.915,5.2,.31,.018,.57,M.walnut,leftB,.02);cyl(10.02,.933,5.04,.065,.12,M.white,leftB);cyl(10.02,.933,5.36,.06,.08,M.white,leftB);vase(10.04,.91,5.75,leftB);
-const ownerExtraCollisions=[[9.825,4.5,10.255,6.0]];
+const ownerExtraCollisions=[];
 // Coffee table with its tray, cup and books, the same in every layout (owner only; collision and contact patch per layout).
 furnish.table(leftB);
 const originalFitout=new THREE.Group(),redesignFurnishings=new THREE.Group();leftB.add(originalFitout,redesignFurnishings);redesignFurnishings.visible=false;
@@ -587,7 +587,7 @@ const studio=createDesignStudio({applyLayout,applyHome:applyHomeDesign,applyGami
 // its ceiling bands as their own mesh (own material, so batchStatic keeps it apart; clone() copies the cut plane, so it is
 // shared again) that setIndoor() only shows under the roof.
 // Software rasterisers skip the wall bands (fill-bound: +3–5% a frame in the entry and bathroom); contact shadows stay.
-{const same=(a,b)=>a.every((v,i)=>Math.abs(v-b[i])<1e-6),gone=[...OWNER_REPLACED_BOXES,...oldChildCollisions];contacts([...bCollisions.filter(b=>!gone.some(q=>same(b,q))),...ownerExtraCollisions],leftB);contacts(bCollisions,rightB);contacts(aCollisions,leftA);contacts(aCollisions,rightA);contacts(layoutFootprints('original'),originalFitout);for(const [id,g] of Object.entries(conceptScenes))contacts(layoutFootprints(id,conceptData.layouts[id]),g.group);
+{const same=(a,b)=>a.every((v,i)=>Math.abs(v-b[i])<1e-6),gone=[...OWNER_REPLACED_BOXES,...oldChildCollisions,entryCabinetFootprint];contacts([...bCollisions.filter(b=>!gone.some(q=>same(b,q))),...ownerExtraCollisions],leftB);contacts(bCollisions,rightB);contacts(aCollisions,leftA);contacts(aCollisions,rightA);contacts(layoutFootprints('original'),originalFitout);for(const [id,g] of Object.entries(conceptScenes))contacts(layoutFootprints(id,conceptData.layouts[id]),g.group);
  const ceilMat=shadeMat.clone();ceilMat.clippingPlanes=[clipPlane];for(const [id,plan] of [['original',originalData],['central',centralWallData]]){const ao=wallAOGeometry(plan,{footprint,floorHoles,windows:winSegments}),top=new THREE.Mesh(ao.ceiling,ceilMat);top.visible=indoor!==OUTDOOR;aoCeilings.push(top);if(renderTier!=='soft')layoutWalls[id].group.add(new THREE.Mesh(ao.foot,shadeMat),top);}}
 // Batch static architectural meshes without changing their metre-scale transforms.
 function batchStatic(group,exclude=null){group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert();const buckets=new Map(),original=[];group.traverse(o=>{if(!o.isMesh||!o.visible||Array.isArray(o.material))return;let a=o;while(a&&a!==group){if((Array.isArray(exclude)?exclude:[exclude]).includes(a))return;a=a.parent;}const key=o.material.uuid+'|'+o.castShadow+'|'+o.receiveShadow;if(!buckets.has(key))buckets.set(key,{material:o.material,cast:o.castShadow,receive:o.receiveShadow,geos:[]});let g=o.geometry.clone();if(g.index)g=g.toNonIndexed();const transform=new THREE.Matrix4().multiplyMatrices(inverse,o.matrixWorld);g.applyMatrix4(transform);if(transform.determinant()<0){for(const attr of Object.values(g.attributes)){const a=attr.array,k=attr.itemSize;for(let i=0;i<attr.count;i+=3)for(let j=0;j<k;j++){const u=(i+1)*k+j,v=(i+2)*k+j,t=a[u];a[u]=a[v];a[v]=t;}}}buckets.get(key).geos.push(g);original.push(o);});for(const o of original){o.parent.remove(o);o.geometry.dispose();}for(const b of buckets.values()){const geometry=mergeGeometries(b.geos,false);b.geos.forEach(g=>g.dispose());if(!geometry)continue;const mesh=new THREE.Mesh(geometry,b.material);mesh.castShadow=b.cast;mesh.receiveShadow=b.receive;group.add(mesh);}}

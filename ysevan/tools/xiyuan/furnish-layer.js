@@ -129,15 +129,17 @@ export function createFurnishing({box,cyl,rod,mat,M,clipPlane,rug,vase,contacts,
   // the light it throws on the floor; a long mirror on the north wall (clear of the door and not facing it), a polished hook rail
   // with a bag by the door, a mat inside it (below the leaf) and the downlights' light on the floor.
   entry(parent){
-   box(10.3475,.15,3.605,.395,.78,1.09,M.oak,parent,.01);box(10.3375,.93,3.605,.415,.025,1.1,M.stone,parent);
-   for(const z of [3.335,3.875]){box(10.14,.165,z,.018,.745,.533,M.white,parent,.006);box(10.124,.62,z+(z<3.6?.21:-.21),.014,.16,.016,M.brass,parent);}
-   unlit(box(10.17,.142,3.605,.012,.006,1.04,glow,parent));
+   // Keep the cabinet, its LED patch and decor detachable from the shared entry fixtures.
+   const cabinet=new THREE.Group();cabinet.name='entry-shoe-cabinet';parent.add(cabinet);
+   box(10.3475,.15,3.605,.395,.78,1.09,M.oak,cabinet,.01);box(10.3375,.93,3.605,.415,.025,1.1,M.stone,cabinet);
+   for(const z of [3.335,3.875]){box(10.14,.165,z,.018,.745,.533,M.white,cabinet,.006);box(10.124,.62,z+(z<3.6?.21:-.21),.014,.16,.016,M.brass,cabinet);}
+   unlit(box(10.17,.142,3.605,.012,.006,1.04,glow,cabinet));
    box(9.29,.3,1.208,.62,1.56,.016,mirror(),parent);box(9.29,.33,1.219,.56,1.5,.006,mirror(),parent).name='mirror';
    box(8.958,1.58,1.85,.016,.07,.62,mirror(),parent);for(let i=0;i<4;i++){const z=1.61+i*.16;box(8.995,1.6,z,.058,.022,.022,mirror(),parent);box(9.019,1.6,z,.01,.045,.026,mirror(),parent);}
    const bag=cutFabric(M,clipPlane);box(9.03,1.42,1.77,.012,.2,.022,bag,parent);box(9.061,1.08,1.77,.07,.34,.36,bag,parent,.012);
    box(10.09,0,2.0,.68,.011,.86,M.walnut,parent,.004).name='doormat';
    // The LED's and the downlights' patches (not on the software tier: blended fill for a small gain at desktop size).
-   if(!soft){pool(parent,10.2,.002,3.6,.7,1.5,.06);pool(parent,9.75,.002,1.75,1.3,1.1,.06);pool(parent,9.75,.002,2.65,1.3,1.1,.06);}},
+   if(!soft){pool(cabinet,10.2,.002,3.6,.7,1.5,.06);pool(parent,9.75,.002,1.75,1.3,1.1,.06);pool(parent,9.75,.002,2.65,1.3,1.1,.06);}return cabinet;},
   // Smart lock on an entry leaf (doorway()'s hinge group): a tall body on each face at the latch edge, around the lever; keypad
   // outside, thumb-turn inside. Brass and shadow flags like the lever, so the leaf still batches to its two meshes.
   smartLock(door){const hinge=door.children.find(c=>c.userData.doorLeaf),x=hinge.children[0].geometry.parameters.width-.075;
