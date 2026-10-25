@@ -7,8 +7,8 @@
   "start_url": "/ysevan/tools/travel/",
   "scope": "/ysevan/tools/travel/",
   "display": "standalone",
-  "background_color": "#f5f6f8",
-  "theme_color": "#315747",
+  "background_color": "#F4F5F9",
+  "theme_color": "#F4F5F9",
   "icons": [
     {
       "src": "/ysevan/tools/travel/icon-192.png",

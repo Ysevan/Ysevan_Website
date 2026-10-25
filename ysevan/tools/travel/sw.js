@@ -1,6 +1,6 @@
 /* Build substitutes this exact list. Only public application assets belong here. */
-const CACHE = 'travel-shell-f3840b1977480f1e';
-const ASSETS = ["/ysevan/tools/travel/","/ysevan/tools/travel/index.html","/ysevan/tools/travel/manifest.webmanifest","/ysevan/tools/travel/icon.svg","/ysevan/tools/travel/icon-192.png","/ysevan/tools/travel/icon-512.png","/ysevan/tools/travel/apple-touch-icon.png","/ysevan/tools/travel/assets/index-Dsaxq85i.css","/ysevan/tools/travel/assets/index-myS8Q_19.js"];
+const CACHE = 'travel-shell-4fb0554fa48879db';
+const ASSETS = ["/ysevan/tools/travel/","/ysevan/tools/travel/index.html","/ysevan/tools/travel/manifest.webmanifest","/ysevan/tools/travel/icon.svg","/ysevan/tools/travel/icon-192.png","/ysevan/tools/travel/icon-512.png","/ysevan/tools/travel/apple-touch-icon.png","/ysevan/tools/travel/assets/index-TdmMnj4a.css","/ysevan/tools/travel/assets/index-DYxlBBF6.js"];
 const BASE = "/ysevan/tools/travel/";
 const allowed = new Set(ASSETS);
 self.addEventListener('install', (event) => {
