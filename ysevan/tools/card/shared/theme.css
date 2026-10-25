@@ -8,22 +8,28 @@
  * 对比度按 SPEC §5d 两条路验收（公式法压最不利光晕角 + 像素法逐元素取底色众数，任一条不过即不过）。card 自测后在统一值上再压深（§5c 允许并要求记录）：
  *   次级文字浅色 .76 → **.89**（.76 在裸光晕上最低只有 3.52：hero 副标题、页脚这类不在玻璃上的文字直接压 blob）；深色 .62 → **.64**（.62 实测 4.47）。
  *   三级 --label3 只用于 chevron 与「/」分隔，**不承载文字**：页脚与滑块两端说明原本用它（实测 2.01 / 2.56），已改回 --label2。
- *   chip 与 btn-tint 的底从半透明 --accent-soft 改 **实色 --accent-chip**（浅 = 强调色兑 10% 进白，深 = 兑 18% 进 #17181C）：半透明底会把光晕与卡光晕吃进来，实测低到 2.99。
+ *   次按钮 btn-tint 的软底是 **实色 --accent-tint**（半透明 --accent-soft 会把光晕与卡光晕吃进来，实测低到 2.99）。名字与六色浅深取值 2026-10-25 起照抄刷刷 3.14.2
+ *   （界面统一，屋主 10-24「按建议来」：家族有分歧的一律跟刷刷）；此前 card 自己兑的那套（浅 = 强调色兑 10% 进白）浅一档、叫 --accent-chip，已作废。
+ *   chip 只放不能点的标签（编号、辑名），一律灰：SPEC §2a 强调色只留给能点的东西。
  *   浅色粉的文字档 #D30F45 压最亮光晕角的玻璃只有 4.34，本地压到 **#C90D41**（4.71）。
- * --fill 一律实色（半透明 fill 会把光晕吃进来，压在上面的文字对比度不可预测）：浅色 = 底 #F4F5F9 与 ink #1C1C1E 兑 11% = #DCDDE1，深色 = 底 #0B0C10 与 ink #F2F2F7 兑 20% = #393A3E。
+ * --fill 一律实色（半透明 fill 会把光晕吃进来，压在上面的文字对比度不可预测）：浅色 = 白与 ink #1C1C1E 兑 11% = #E6E6E6，深色 = 底 #0B0C10 与 ink #F2F2F7 兑 20% = #393A3E，
+ *   与刷刷、SPEC 共用值相同（2026-10-25 前浅色是拿底 #F4F5F9 兑的 #DCDDE1，出处不明，界面统一时对齐）。
+ * 深色 --accent-2 照刷刷那套（绿 #B4EC70 靛 #C97BFF 橙 #FFD426 粉 #FFA0A8 青 #70D7F7，蓝不变 #64D2FF），此前沿用浅色值；悬停只压暗不位移，同刷刷。
  */
 :root{color-scheme:light;
-  --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",-apple-system,BlinkMacSystemFont,sans-serif;
+  /* 正文字族照刷刷：系统 UI 在前（Mac / iPhone 上西文、数字、箭头与「·」由 SF 出字，中文落到苹方；Windows 前三个都取不到，一律微软雅黑）。
+     2026-10-25 界面统一前是中文在前（小屋规格 A.1），刷刷那条原是 SPEC §5e 登记的偏离，界面统一改成家族一律跟刷刷。 */
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
   /* 数字字体（SPEC §3a，取值照抄）：苹方在 Chrome 里不认 tabular-nums，写了也照样跳（12.5px 下「1111」20.5、「0000」30.0）。
      凡写 font-variant-numeric:tabular-nums 的规则，同一块必须加 font-family:var(--font-num)；元素里的中文仍落到后面的中文字族。 */
   --font-num:BlinkMacSystemFont,-apple-system,"Segoe UI",system-ui,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
   --bg:#F4F5F9;--label:#1C1C1E;--label2:rgba(60,60,67,.89);--label3:rgba(60,60,67,.32);
-  --glass:rgba(255,255,255,.62);--glass-strong:rgba(255,255,255,.78);--glass-edge:rgba(255,255,255,.9);--sep:rgba(60,60,67,.12);--fill:#DCDDE1;
+  --glass:rgba(255,255,255,.62);--glass-strong:rgba(255,255,255,.78);--glass-edge:rgba(255,255,255,.9);--sep:rgba(60,60,67,.12);--fill:#E6E6E6;
   --green:#34C759;--red:#FF3B30;--orange:#FF9500;--indigo:#5856D6;--pink:#FF2D55;--teal:#30B0C7;
   --stage-1:#0F1128;--stage-2:#1B1740;--stage-3:#0B0C1E;
   --stage:radial-gradient(50% 45% at 50% 55%,color-mix(in srgb,var(--accent) 45%,transparent),transparent 70%),linear-gradient(160deg,var(--stage-1),color-mix(in srgb,var(--accent) 18%,var(--stage-2)) 55%,var(--stage-3));
   --btn-a:var(--accent);--btn-b:var(--accent-2);--btn-fg:#FFFFFF;
-  --r:calc(18 * var(--u));--r-sm:calc(12 * var(--u));--shadow:0 10px 30px rgba(20,30,60,.08),inset 0 1px 0 var(--glass-edge);--shadow-sm:0 2px 8px rgba(20,30,60,.08);
+  --r:calc(18 * var(--u));--r-sm:calc(12 * var(--u));--shadow:0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(20,30,60,.08),inset 0 1px 0 var(--glass-edge);--shadow-sm:0 2px 8px rgba(20,30,60,.08);
   /* 自适应（SPEC §4 大屏，2026-09-23 二改「按比例放大、构图不变」）：1440 及以下沿用原 clamp，数值不变；>1440 一切尺寸以 1440 为基准乘 vw/1440，
      1.45 封顶（2088px 视口起不再涨）。--k 是夹住的视口宽，--u 是 1px × 缩放比（≤1440 恒为 1px）；组件里的固定像素一律写 calc(N * var(--u))，不用 CSS zoom。
      内容宽不设上限（--page-max:none，控制室 2026-09-23 裁定「填满」）：多出的宽度只由舞台 / 信息栏按现有比例吸收，不加列、不改字号。 */
@@ -36,19 +42,19 @@ html[data-mode="dark"],html[data-mode="auto"].m-dark{color-scheme:dark;
   --glass:rgba(40,42,52,.55);--glass-strong:rgba(44,46,58,.72);--glass-edge:rgba(255,255,255,.12);--sep:rgba(84,84,88,.5);--fill:#393A3E;
   --green:#30D158;--red:#FF453A;--orange:#FF9F0A;--indigo:#5E5CE6;--pink:#FF375F;--teal:#40C8E0;
   --stage-1:#0A0B1E;--stage-2:#141030;--stage-3:#070812;
-  --shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px 0 var(--glass-edge);--shadow-sm:0 2px 8px rgba(0,0,0,.3)}
-html[data-accent="blue"]{--accent-chip:#E6F2FF;--accent:#007AFF;--accent-2:#5AC8FA;--accent-soft:rgba(0,122,255,.13);--accent-text:#0040DD;--blob1:rgba(90,200,250,.55);--blob2:rgba(255,214,170,.55);--blob3:rgba(175,160,255,.45)}
-html[data-accent="green"]{--accent-chip:#EBF9EE;--accent:#34C759;--accent-2:#A8E063;--accent-soft:rgba(52,199,89,.15);--accent-text:#1F7A36;--blob1:rgba(52,199,89,.4);--blob2:rgba(255,214,170,.55);--blob3:rgba(48,176,199,.35)}
-:root,html[data-accent="indigo"]{--accent-chip:#EEEEFB;--accent:#5856D6;--accent-2:#BF5AF2;--accent-soft:rgba(88,86,214,.15);--accent-text:#3634A3;--blob1:rgba(88,86,214,.4);--blob2:rgba(255,45,85,.25);--blob3:rgba(175,160,255,.45)}
-html[data-accent="orange"]{--accent-chip:#FFF4E6;--accent:#FF9500;--accent-2:#FFD60A;--accent-soft:rgba(255,149,0,.16);--accent-text:#C93400;--blob1:rgba(255,149,0,.4);--blob2:rgba(255,214,170,.55);--blob3:rgba(255,59,48,.25)}
-html[data-accent="pink"]{--accent-chip:#FFEAEE;--accent:#FF2D55;--accent-2:#FF9AA2;--accent-soft:rgba(255,45,85,.14);--accent-text:#C90D41;--blob1:rgba(255,45,85,.35);--blob2:rgba(255,214,170,.55);--blob3:rgba(191,90,242,.3)}
-html[data-accent="teal"]{--accent-chip:#EAF7F9;--accent:#30B0C7;--accent-2:#64D2FF;--accent-soft:rgba(48,176,199,.15);--accent-text:#0071A4;--blob1:rgba(48,176,199,.45);--blob2:rgba(52,199,89,.3);--blob3:rgba(175,160,255,.45)}
-html[data-mode="dark"][data-accent="blue"],html[data-mode="auto"][data-accent="blue"].m-dark{--accent-chip:#152B45;--accent:#0A84FF;--accent-2:#64D2FF;--accent-soft:rgba(10,132,255,.2);--accent-text:#409CFF;--blob1:rgba(10,132,255,.35);--blob2:rgba(255,159,10,.22);--blob3:rgba(94,92,230,.35)}
-html[data-mode="dark"][data-accent="green"],html[data-mode="auto"][data-accent="green"].m-dark{--accent-chip:#1C3927;--accent:#30D158;--accent-2:#A8E063;--accent-soft:rgba(48,209,88,.2);--accent-text:#30DB5B;--blob1:rgba(48,209,88,.28);--blob2:rgba(255,159,10,.18);--blob3:rgba(64,200,224,.25)}
-html[data-mode="dark"][data-accent="indigo"],html[data-mode="auto"][data-accent="indigo"].m-dark{--accent-chip:#242440;--accent:#5E5CE6;--accent-2:#BF5AF2;--accent-soft:rgba(94,92,230,.22);--accent-text:#8E8BFF;--blob1:rgba(94,92,230,.35);--blob2:rgba(255,55,95,.18);--blob3:rgba(191,90,242,.25)}
-html[data-mode="dark"][data-accent="orange"],html[data-mode="auto"][data-accent="orange"].m-dark{--accent-chip:#413019;--accent:#FF9F0A;--accent-2:#FFD60A;--accent-soft:rgba(255,159,10,.2);--accent-text:#FFB340;--blob1:rgba(255,159,10,.3);--blob2:rgba(255,69,58,.18);--blob3:rgba(94,92,230,.25)}
-html[data-mode="dark"][data-accent="pink"],html[data-mode="auto"][data-accent="pink"].m-dark{--accent-chip:#411E28;--accent:#FF375F;--accent-2:#FF9AA2;--accent-soft:rgba(255,55,95,.2);--accent-text:#FF6482;--blob1:rgba(255,55,95,.3);--blob2:rgba(255,159,10,.18);--blob3:rgba(191,90,242,.25)}
-html[data-mode="dark"][data-accent="teal"],html[data-mode="auto"][data-accent="teal"].m-dark{--accent-chip:#1E383F;--accent:#40C8E0;--accent-2:#64D2FF;--accent-soft:rgba(64,200,224,.2);--accent-text:#5AC8F5;--blob1:rgba(64,200,224,.3);--blob2:rgba(48,209,88,.2);--blob3:rgba(94,92,230,.25)}
+  --shadow:0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(0,0,0,.35),inset 0 1px 0 var(--glass-edge);--shadow-sm:0 2px 8px rgba(0,0,0,.3)}
+html[data-accent="blue"]{--accent-tint:#C7E2FF;--accent:#007AFF;--accent-2:#5AC8FA;--accent-soft:rgba(0,122,255,.13);--accent-text:#0040DD;--blob1:rgba(90,200,250,.55);--blob2:rgba(255,214,170,.55);--blob3:rgba(175,160,255,.45)}
+html[data-accent="green"]{--accent-tint:#D8F4DF;--accent:#34C759;--accent-2:#A8E063;--accent-soft:rgba(52,199,89,.15);--accent-text:#1F7A36;--blob1:rgba(52,199,89,.4);--blob2:rgba(255,214,170,.55);--blob3:rgba(48,176,199,.35)}
+:root,html[data-accent="indigo"]{--accent-tint:#DADAF6;--accent:#5856D6;--accent-2:#BF5AF2;--accent-soft:rgba(88,86,214,.15);--accent-text:#3634A3;--blob1:rgba(88,86,214,.4);--blob2:rgba(255,45,85,.25);--blob3:rgba(175,160,255,.45)}
+html[data-accent="orange"]{--accent-tint:#FFEDD4;--accent:#FF9500;--accent-2:#FFD60A;--accent-soft:rgba(255,149,0,.16);--accent-text:#C93400;--blob1:rgba(255,149,0,.4);--blob2:rgba(255,214,170,.55);--blob3:rgba(255,59,48,.25)}
+html[data-accent="pink"]{--accent-tint:#FFEAEE;--accent:#FF2D55;--accent-2:#FF9AA2;--accent-soft:rgba(255,45,85,.14);--accent-text:#C90D41;--blob1:rgba(255,45,85,.35);--blob2:rgba(255,214,170,.55);--blob3:rgba(191,90,242,.3)}
+html[data-accent="teal"]{--accent-tint:#DCF2F5;--accent:#30B0C7;--accent-2:#64D2FF;--accent-soft:rgba(48,176,199,.15);--accent-text:#0071A4;--blob1:rgba(48,176,199,.45);--blob2:rgba(52,199,89,.3);--blob3:rgba(175,160,255,.45)}
+html[data-mode="dark"][data-accent="blue"],html[data-mode="auto"][data-accent="blue"].m-dark{--accent-tint:#142B47;--accent:#0A84FF;--accent-2:#64D2FF;--accent-soft:rgba(10,132,255,.2);--accent-text:#409CFF;--blob1:rgba(10,132,255,.35);--blob2:rgba(255,159,10,.22);--blob3:rgba(94,92,230,.35)}
+html[data-mode="dark"][data-accent="green"],html[data-mode="auto"][data-accent="green"].m-dark{--accent-tint:#1E502F;--accent:#30D158;--accent-2:#B4EC70;--accent-soft:rgba(48,209,88,.2);--accent-text:#30DB5B;--blob1:rgba(48,209,88,.28);--blob2:rgba(255,159,10,.18);--blob3:rgba(64,200,224,.25)}
+html[data-mode="dark"][data-accent="indigo"],html[data-mode="auto"][data-accent="indigo"].m-dark{--accent-tint:#252648;--accent:#5E5CE6;--accent-2:#C97BFF;--accent-soft:rgba(94,92,230,.2);--accent-text:#8E8BFF;--blob1:rgba(94,92,230,.35);--blob2:rgba(255,55,95,.18);--blob3:rgba(191,90,242,.25)}
+html[data-mode="dark"][data-accent="orange"],html[data-mode="auto"][data-accent="orange"].m-dark{--accent-tint:#5C4118;--accent:#FF9F0A;--accent-2:#FFD426;--accent-soft:rgba(255,159,10,.2);--accent-text:#FFB340;--blob1:rgba(255,159,10,.3);--blob2:rgba(255,69,58,.18);--blob3:rgba(94,92,230,.25)}
+html[data-mode="dark"][data-accent="pink"],html[data-mode="auto"][data-accent="pink"].m-dark{--accent-tint:#451E2B;--accent:#FF375F;--accent-2:#FFA0A8;--accent-soft:rgba(255,55,95,.2);--accent-text:#FF6482;--blob1:rgba(255,55,95,.3);--blob2:rgba(255,159,10,.18);--blob3:rgba(191,90,242,.25)}
+html[data-mode="dark"][data-accent="teal"],html[data-mode="auto"][data-accent="teal"].m-dark{--accent-tint:#224954;--accent:#40C8E0;--accent-2:#70D7F7;--accent-soft:rgba(64,200,224,.2);--accent-text:#5AC8F5;--blob1:rgba(64,200,224,.3);--blob2:rgba(48,209,88,.2);--blob3:rgba(94,92,230,.25)}
 
 @media (min-width:1441px){:root{--fs-title:calc(34.16 * var(--u));--fs-h2:calc(21.2 * var(--u));--fs-body:calc(15.32 * var(--u));--fs-small:calc(13.16 * var(--u));--gap:calc(14.4 * var(--u));--pad:calc(18.4 * var(--u));--page-x:calc(28.8 * var(--u));--page-y:calc(28 * var(--u))}}
 *{box-sizing:border-box}
@@ -59,6 +65,9 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
   radial-gradient(38vw 38vw at 12% 8%,var(--blob1),transparent 60%),
   radial-gradient(34vw 34vw at 92% 18%,var(--blob2),transparent 60%),
   radial-gradient(40vw 40vw at 70% 100%,var(--blob3),transparent 60%);filter:blur(10px)}
+/* 标题例外（控制室 2026-10-25 定方案 B）：正文跟刷刷系统 UI 在前，但卡名是纯中文，「潮梦·汐音」里的「·」由 SF 出字只剩一半宽、两个名字挤在一起；
+   标题换回中文在前，「·」由苹方出全宽，保住原来的样子。只管画廊与卡页的大标题，别处的「·」两边带空格，SF 的窄点反而利落。 */
+h1,.globe-title{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",-apple-system,BlinkMacSystemFont,sans-serif}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
@@ -80,32 +89,37 @@ svg.icon,.icon svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:non
 .brand-text{min-width:0}.brand-text b{display:block;font-size:calc(17 * var(--u));line-height:1.2;white-space:nowrap}.brand-text span{display:block;font-size:calc(12 * var(--u));color:var(--label2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* 主题控件：分段（浅 / 深 / 自动）+ 六色点 */
 .theme-controls{display:flex;align-items:center;gap:calc(12 * var(--u))}
-.seg{display:flex;background:var(--fill);border-radius:calc(10 * var(--u));padding:2px}
-.seg button{border:0;background:transparent;padding:calc(5 * var(--u)) calc(11 * var(--u));border-radius:calc(8 * var(--u));color:var(--label);font-size:calc(13 * var(--u));cursor:pointer;white-space:nowrap}
-.seg button[aria-checked="true"]{background:var(--glass-strong);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg{display:flex;background:var(--fill);border-radius:calc(10 * var(--u));padding:calc(2 * var(--u))}
+.seg button{border:0;background:transparent;padding:calc(5 * var(--u)) calc(11 * var(--u));border-radius:calc(8 * var(--u));color:var(--label);font-size:calc(12 * var(--u));cursor:pointer;white-space:nowrap;transition:background-color .15s,color .15s}
+.seg button:hover{color:var(--accent-text)}
+.seg button[aria-checked="true"]{background:var(--glass-strong);color:var(--label);font-weight:600;box-shadow:0 1px calc(3 * var(--u)) rgba(0,0,0,.12)}
 .accents{display:flex;gap:calc(8 * var(--u));align-items:center}
-.accent-dot{position:relative;width:calc(18 * var(--u));height:calc(18 * var(--u));padding:0;border:0;border-radius:50%;background:var(--dot);cursor:pointer;transition:transform .15s}
-.accent-dot:hover{transform:scale(1.15)}
-.accent-dot[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg),0 0 0 calc(4 * var(--u)) var(--accent)}
+.accent-dot{position:relative;width:calc(18 * var(--u));height:calc(18 * var(--u));padding:0;border:0;border-radius:50%;background:var(--dot);cursor:pointer;transition:box-shadow .15s}
+.accent-dot[aria-pressed="true"]{box-shadow:0 0 0 calc(2 * var(--u)) var(--bg),0 0 0 calc(4 * var(--u)) var(--accent)}
 .accent-name{position:absolute;top:calc(100% + calc(8 * var(--u)));left:50%;transform:translateX(-50%);padding:3px calc(8 * var(--u));border-radius:calc(7 * var(--u));background:var(--label);color:var(--bg);font-size:calc(12 * var(--u));white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
 .accent-dot:hover .accent-name,.accent-dot:focus-visible .accent-name{opacity:1}
-.theme-toggle{display:none;width:calc(36 * var(--u));height:calc(36 * var(--u));padding:0;border:0;border-radius:calc(10 * var(--u));background:var(--fill);color:var(--label);cursor:pointer;place-items:center}
-.theme-toggle svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-/* 按钮三级 */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:calc(6 * var(--u));height:calc(40 * var(--u));padding:0 calc(18 * var(--u));border:0;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--btn-a),var(--btn-b));color:var(--btn-fg);text-shadow:0 1px 2px rgba(0,0,0,.25);font-size:calc(15 * var(--u));font-weight:600;cursor:pointer;box-shadow:0 calc(8 * var(--u)) calc(18 * var(--u)) var(--accent-soft);transition:transform .15s,box-shadow .15s;white-space:nowrap}
-.btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(0)}
-.btn-tint{background:var(--accent-chip);color:var(--accent-text);box-shadow:none}
-.btn-glass{background:var(--glass);color:var(--label);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(calc(20 * var(--u)));backdrop-filter:blur(calc(20 * var(--u)))}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.icon-btn{width:calc(40 * var(--u));height:calc(40 * var(--u));padding:0;border:0;border-radius:50%;background:var(--glass);color:var(--label);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(calc(20 * var(--u)));backdrop-filter:blur(calc(20 * var(--u)));display:inline-grid;place-items:center;cursor:pointer;transition:transform .15s}
-.icon-btn:hover{transform:translateY(-1px);color:var(--accent-text)}.icon-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.icon-btn svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* 按钮与图标按钮照刷刷 3.14.2（2026-10-25 界面统一）：高 38×u、左右 16×u、字号跟正文（手机 13px）、图标 17×u 线宽 1.9；
+   悬停不位移——主按钮在渐变上叠一层 14% 黑（白字对比度只会变好），次按钮加投影，图标按钮换软底与强调色字。
+   按钮里的 SVG 一律线条：不写 fill:none 的话 path 按默认黑色实心画（「打开这张卡」的箭头曾因此画成一个黑三角）。 */
+.theme-toggle,.icon-btn{width:calc(38 * var(--u));height:calc(38 * var(--u));padding:0;border:0;border-radius:var(--r-sm);background:var(--fill);color:var(--label2);place-items:center;cursor:pointer;flex:none;transition:background-color .15s,color .15s}
+.theme-toggle{display:none}.icon-btn{display:inline-grid}
+.theme-toggle:hover,.icon-btn:hover:not(:disabled){color:var(--accent-text);background:var(--accent-tint)}
+.icon-btn:disabled{opacity:.45;cursor:not-allowed}
+.theme-toggle svg,.icon-btn svg{width:calc(19 * var(--u));height:calc(19 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* 按钮三级：主（渐变白字）/ 次 btn-tint（实色软底 + 强调色字，不带文字阴影）/ 玻璃 btn-glass */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:calc(7 * var(--u));min-height:calc(38 * var(--u));padding:0 calc(16 * var(--u));border:0;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--btn-a),var(--btn-b));color:var(--btn-fg);text-shadow:0 1px calc(2 * var(--u)) rgba(0,0,0,.25);font-size:var(--fs-body);font-weight:600;cursor:pointer;box-shadow:0 calc(8 * var(--u)) calc(18 * var(--u)) var(--accent-soft);transition:background-color .15s,color .15s,box-shadow .15s;white-space:nowrap}
+.btn svg{width:calc(17 * var(--u));height:calc(17 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.btn:not(.btn-tint):not(.btn-glass):hover:not(:disabled){background-image:linear-gradient(rgba(0,0,0,.14),rgba(0,0,0,.14)),linear-gradient(135deg,var(--btn-a),var(--btn-b))}
+.btn-tint{background:var(--accent-tint);color:var(--accent-text);text-shadow:none;box-shadow:none}
+.btn-tint:hover:not(:disabled){box-shadow:var(--shadow)}
+.btn-glass{background:var(--glass);color:var(--label);text-shadow:none;box-shadow:var(--shadow);-webkit-backdrop-filter:blur(calc(20 * var(--u)));backdrop-filter:blur(calc(20 * var(--u)))}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 /* chip 与列表 */
-.chip{display:inline-flex;align-items:center;height:calc(24 * var(--u));padding:0 calc(10 * var(--u));border-radius:999px;background:var(--accent-chip);color:var(--accent-text);font-size:calc(12.5 * var(--u));font-weight:600;font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
-/* 灰 chip 只放中文标签（辑名、主题），没有数字：退回正文字体、不要 tabular-nums，否则「·」跟着换成系统字体变窄、标签发挤。
-   字重 400：字重三档（400 / 600 / 700，2026-08-25 定）里它不是选中项、按钮或小标题，归「其余」（原 500）。 */
-.chip-grey{background:var(--fill);color:var(--label2);font-weight:400;font-family:var(--font);font-variant-numeric:normal}
-.list{background:var(--glass);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+/* chip 是不能点的标签，一律灰（SPEC §2a；同刷刷的计数胶囊：fill 底、次级字、400）。默认 chip 放编号「07 / 13」，数字用 --font-num 等宽。 */
+.chip{display:inline-flex;align-items:center;height:calc(24 * var(--u));padding:0 calc(10 * var(--u));border-radius:999px;background:var(--fill);color:var(--label2);font-size:calc(12.5 * var(--u));font-weight:400;font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* chip-grey 只放中文标签（辑名、主题），没有数字：退回正文字体、不要 tabular-nums。颜色与字重同 .chip（2026-10-25 起两种 chip 都灰）。 */
+.chip-grey{font-family:var(--font);font-variant-numeric:normal}
+.list{background:var(--glass);-webkit-backdrop-filter:blur(24px) saturate(150%);backdrop-filter:blur(24px) saturate(150%);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
 .row{display:flex;align-items:center;gap:calc(14 * var(--u));padding:calc(12 * var(--u)) var(--pad);border-top:1px solid var(--sep);min-width:0;color:inherit}
 .row:first-child{border-top:0}
 .row:hover{background:var(--glass-strong)}
@@ -117,9 +131,20 @@ svg.icon,.icon svg{width:calc(20 * var(--u));height:calc(20 * var(--u));fill:non
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}body::before{filter:none}}
 /* 自适应：≤900 顶栏收紧；≤600 只留品牌图标 + 一个主题按钮，控件弹出 */
 @media (max-width:900px){.topbar{padding:8px var(--page-x)}.brand-text span{display:none}.seg button{padding:4px 9px;font-size:12px}.accents{gap:7px}.accent-dot{width:16px;height:16px}}
+/* ≤600 是手机：能点的东西一律 ≥44px（界面统一 2026-10-25；色点看着还是 18px，点得到的范围放到 44）。顶栏上下内边距收到 4px，顶栏总高不变。 */
 @media (max-width:600px){
+  .topbar{padding-top:4px;padding-bottom:4px}
+  .brand{min-width:44px;min-height:44px}
   .brand-text{display:none}
   .theme-toggle{display:grid}
+  .btn{min-height:44px}
+  .icon-btn,.theme-toggle{width:44px;height:44px}
+  .theme-controls .seg button{flex:1;min-height:44px;padding:4px 14px;font-size:13px}
+  .accents{gap:0}
+  .accent-dot{width:44px;height:44px;background:transparent;display:grid;place-items:center}
+  .accent-dot::before{content:"";width:18px;height:18px;border-radius:50%;background:var(--dot);transition:box-shadow .15s}
+  .accent-dot[aria-pressed="true"]{box-shadow:none}
+  .accent-dot[aria-pressed="true"]::before{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent)}
   .theme-controls{display:none;position:absolute;right:var(--page-x);top:calc(100% + 8px);flex-direction:column;align-items:stretch;gap:12px;padding:14px;background:var(--glass-strong);-webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);border-radius:14px;box-shadow:var(--shadow)}
   .theme-controls[data-open]{display:flex}
   .accents{justify-content:space-between}

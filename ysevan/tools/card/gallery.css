@@ -4,7 +4,7 @@
 /* 上下留白相等：顶栏→标题 与 页脚→页面底 都是 --page-y（屋主 2026-09-23「上下不对称看着不舒服」） */
 main{max-width:var(--page-max);margin:auto;padding:var(--page-y) var(--page-x) 0;min-width:0}
 .hero{display:flex;align-items:flex-end;justify-content:space-between;gap:calc(12 * var(--u));flex-wrap:wrap;margin-bottom:var(--gap)}
-h1{margin:0;font-size:var(--fs-title);letter-spacing:-.4px;font-weight:700;line-height:1.2}
+h1{margin:0;font-size:var(--fs-title);letter-spacing:calc(-.4 * var(--u));font-weight:700;line-height:1.2}
 .hero .sub{color:var(--label2);margin:calc(6 * var(--u)) 0 0;font-size:var(--fs-body)}
 .hero .count{display:flex;align-items:center;gap:calc(8 * var(--u));color:var(--label2);font-size:var(--fs-small);font-family:var(--font-num);font-variant-numeric:tabular-nums}
 /* 选卡台（Cover Flow）：玻璃卡里嵌 D 星野舞台，舞台在左、当前卡信息在右（信息栏 clamp 到 calc(480 * var(--u))，余下全给舞台）；窄一点上下叠 */
@@ -40,7 +40,7 @@ h1{margin:0;font-size:var(--fs-title);letter-spacing:-.4px;font-weight:700;line-
 @media (prefers-reduced-motion:reduce){.globe-stage::before{animation:none}.flow-card,.flow-card.is-pressed,.flow-card.is-springing{transition:none}.flow-press,.flow-card.is-pressed .flow-press{transform:translate(-50%,-50%) scale(1);transition:opacity .2s ease}}
 .globe-info{min-width:0;padding:calc(6 * var(--u)) calc(8 * var(--u)) calc(6 * var(--u)) 0}
 .globe-meta{display:flex;align-items:center;flex-wrap:wrap;gap:calc(8 * var(--u));margin:0 0 calc(12 * var(--u))}
-.globe-title{font-size:var(--fs-title);font-weight:700;letter-spacing:-.4px;line-height:1.2;margin:0 0 calc(6 * var(--u));overflow-wrap:anywhere}
+.globe-title{font-size:var(--fs-title);font-weight:700;letter-spacing:calc(-.4 * var(--u));line-height:1.2;margin:0 0 calc(6 * var(--u));overflow-wrap:anywhere}
 .globe-subtitle{color:var(--label2);font-size:var(--fs-small);letter-spacing:.06em;margin:0 0 calc(10 * var(--u));text-transform:uppercase}
 .globe-description{color:var(--label2);font-size:var(--fs-body);line-height:1.7;max-width:calc(460 * var(--u));margin:0 0 calc(22 * var(--u))}
 .globe-actions{display:flex;align-items:center;gap:calc(10 * var(--u));flex-wrap:wrap}

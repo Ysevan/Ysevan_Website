@@ -25,12 +25,12 @@ html,body{min-width:280px}
 .story{padding:calc(6 * var(--u)) 0 calc(20 * var(--u));min-width:0}
 .story-meta{display:flex;align-items:center;flex-wrap:wrap;gap:calc(8 * var(--u));margin:0 0 calc(14 * var(--u))}
 .subtitle{color:var(--label2);font-size:var(--fs-small);letter-spacing:.08em;text-transform:uppercase;margin:0 0 calc(6 * var(--u))}
-h1{font-size:var(--fs-title);font-weight:700;letter-spacing:-.4px;line-height:1.2;margin:0 0 calc(12 * var(--u));overflow-wrap:anywhere}
+h1{font-size:var(--fs-title);font-weight:700;letter-spacing:calc(-.4 * var(--u));line-height:1.2;margin:0 0 calc(12 * var(--u));overflow-wrap:anywhere}
 .description{color:var(--label2);font-size:var(--fs-body);line-height:1.8;max-width:calc(420 * var(--u));margin:0 0 calc(18 * var(--u));white-space:pre-line}
 .card-details{display:flex;align-items:center;flex-wrap:wrap;gap:calc(8 * var(--u));color:var(--label2);font-size:var(--fs-small);padding-bottom:calc(18 * var(--u));border-bottom:1px solid var(--sep)}
 .detail-dot{width:calc(6 * var(--u));height:calc(6 * var(--u));border-radius:50%;background:var(--card-accent)}.detail-divider{color:var(--label3);margin:0 2px}
 .actions{display:flex;flex-wrap:wrap;gap:calc(10 * var(--u));margin:calc(20 * var(--u)) 0}
-.actions .btn svg,.save-button svg{width:calc(18 * var(--u));height:calc(18 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.save-button svg{width:calc(18 * var(--u));height:calc(18 * var(--u));fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .actions .btn svg [data-fill]{fill:currentColor;stroke:none}
 .foil-control{max-width:calc(380 * var(--u))}.foil-control label{display:flex;justify-content:space-between;font-size:var(--fs-body);color:var(--label);margin-bottom:calc(10 * var(--u))}.foil-control output{font-family:var(--font-num);font-variant-numeric:tabular-nums;color:var(--accent-text);font-weight:600}
 input[type=range]{width:100%;height:calc(20 * var(--u));margin:0;accent-color:var(--accent);cursor:pointer;background:transparent}input[type=range]:disabled{opacity:.4;cursor:not-allowed}
@@ -73,4 +73,6 @@ input[type=range]{width:100%;height:calc(20 * var(--u));margin:0;accent-color:va
   #stage{flex:1 1 auto;height:auto;min-height:0;max-height:min(calc(621 * var(--u)),100%)}
 }
 @media (max-width:900px){.viewer-layout{grid-template-columns:1fr;max-width:640px;gap:24px}#stage{aspect-ratio:4/5;max-height:min(62svh,600px);min-height:340px}.description{max-width:none}.foil-control,.depth-controls,.card-navigation,.save-status{max-width:none}.site-footer{text-align:center}.footer-main{justify-content:center}.site-legal{align-items:center}}
-@media (max-width:600px){.back-link span{display:none}.actions .btn{flex:1 1 auto}#stage{min-height:300px}}
+/* 手机上能点的一律 ≥44px（界面统一 2026-10-25）：返回只剩图标时也要点得到 */
+@media (max-width:600px){.back-link span{display:none}.back-link{min-width:44px;min-height:44px;justify-content:center}.actions .btn{flex:1 1 auto}#stage{min-height:300px}
+  .card-navigation a,.save-button,.depth-controls summary{min-height:44px}input[type=range]{height:44px}}
