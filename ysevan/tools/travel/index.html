@@ -4,14 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#F4F5F9" />
+    <!-- 外观（浅 / 深 / 自动，六个强调色）：样式表生效之前就设好，免得先闪一下浅色。theme.mjs 管之后的切换，两处的键名和颜色由 scripts/planner-theme.test.mjs 对齐。 -->
+    <script>
+      (function () {
+        var mode = "light", accent = "blue";
+        try {
+          mode = localStorage.getItem("travel-mode") || mode;
+          accent = localStorage.getItem("travel-accent") || accent;
+        } catch (e) {}
+        if (["light", "dark", "auto"].indexOf(mode) < 0) mode = "light";
+        if (["blue", "green", "indigo", "orange", "pink", "teal"].indexOf(accent) < 0) accent = "blue";
+        var root = document.documentElement;
+        root.setAttribute("data-mode", mode);
+        root.setAttribute("data-accent", accent);
+        var dark = mode === "dark" || (mode === "auto" && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.querySelector('meta[name="theme-color"]').setAttribute("content", dark ? "#0B0C10" : "#F4F5F9");
+      })();
+    </script>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="我的旅行" />
     <link rel="apple-touch-icon" href="/ysevan/tools/travel/apple-touch-icon.png" />
     <link rel="manifest" href="/ysevan/tools/travel/manifest.webmanifest" />
     <link rel="icon" href="/ysevan/tools/travel/icon.svg" type="image/svg+xml" />
     <title>我的旅行</title>
-    <script type="module" crossorigin src="/ysevan/tools/travel/assets/index-DYxlBBF6.js"></script>
-    <link rel="stylesheet" crossorigin href="/ysevan/tools/travel/assets/index-TdmMnj4a.css">
+    <script type="module" crossorigin src="/ysevan/tools/travel/assets/index-HIiIaogA.js"></script>
+    <link rel="stylesheet" crossorigin href="/ysevan/tools/travel/assets/index-BCTbqJyN.css">
   </head>
   <body>
     <div id="root"></div>
