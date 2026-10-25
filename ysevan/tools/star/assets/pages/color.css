@@ -108,7 +108,7 @@
 .spot-cap { margin: 0; font-size: var(--fs-xs); font-weight: 600; color: var(--label); }
 .chip-semi, .chip-solid { padding: calc(5 * var(--u)) calc(13 * var(--u)); border-radius: 999px; color: var(--accent-text); font-size: calc(14 * var(--u)); font-weight: 600; }
 .chip-semi { background: rgba(255,45,85,.14); }
-.chip-solid { background: var(--accent-tint); }
+.chip-solid { background: #FFE8EC; }   /* 样例钉 SPEC 的粉色实底（页面上写着 #FFE8EC、4.59）；外壳的 --accent-tint 10-25 起取刷刷的值，不跟它走 */
 
 /* ---- 7 光晕 ---- */
 .halo-demo { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: calc(16 * var(--u)); align-items: center; }
@@ -452,7 +452,7 @@
 .uti-btn { height: calc(32 * var(--u)); padding: 0 calc(14 * var(--u)); border-radius: calc(10 * var(--u)); font-size: calc(13.5 * var(--u)); }
 .uti-count { height: calc(22 * var(--u)); padding: 0 calc(9 * var(--u)); border-radius: 999px; font-size: calc(12 * var(--u)); }
 .uti-row.is-semi .uti-chip, .uti-row.is-semi .uti-btn, .uti-row.is-semi .uti-count { background: rgba(255,45,85,.14); }
-.uti-row.is-solid .uti-chip, .uti-row.is-solid .uti-btn, .uti-row.is-solid .uti-count { background: var(--accent-tint); }
+.uti-row.is-solid .uti-chip, .uti-row.is-solid .uti-btn, .uti-row.is-solid .uti-count { background: #FFE8EC; }   /* 同上：钉 SPEC 粉色实底，数字4.59写在页面上 */
 .uti-ratio { margin-left: auto; padding: calc(1 * var(--u)) calc(9 * var(--u)); border-radius: 999px; background: var(--raised); font-size: var(--fs-xs); font-weight: 600; white-space: nowrap; }
 .uti-ratio.is-fail { background: var(--red-tint); color: var(--red-text); }
 .uti-ratio.is-pass { background: var(--green-tint); color: var(--green-text); }

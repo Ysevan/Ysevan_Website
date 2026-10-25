@@ -333,7 +333,8 @@
       return { w: w, li: li, s: s, px: li.children[2], same: li.children[3] };
     });
     function render(speak) {
-      var fam = bodyFont();
+      /* 按样字自己的栈量（--font-cjk，苹方打头）：外壳正文10-25起系统UI在前，canvas 不认 -apple-system，拿正文的栈会量不出 */
+      var fam = getComputedStyle(lis[0].s).fontFamily;
       var widths = {};
       if (!probeCtx) probeCtx = doc.createElement("canvas").getContext("2d");
       lis.forEach(function (r) {
@@ -595,7 +596,7 @@
     var read = $("[data-tfam-read]", box);
     var picks = $$("[data-tfam-pick]", box);
     var STACK = {
-      sans: bodyFont(),
+      sans: getComputedStyle($('[data-fam="sans"]', stage)).fontFamily,   /* 样例黑体那格用 --font-cjk（10-25起正文是系统UI在前） */
       serif: '"Songti SC", "STSong", "SimSun", serif',
       kai: getComputedStyle($('[data-fam="kai"]', stage)).fontFamily,
       xing: '"Xingkai SC", "STXingkai", "华文行楷", ' + getComputedStyle($('[data-fam="kai"]', stage)).fontFamily,
@@ -1048,7 +1049,7 @@
       }).join("；") + "。";
       /* 按写的栈认（计算样式里 Chrome 会把 BlinkMacSystemFont 写成 "system-ui"，读出来认不准是谁） */
       var rs = getComputedStyle(root);
-      text += "中文字族打头时数字由" + leaders(rs.getPropertyValue("--font")).latin + "画" + (pf.diff > 0.5 ? "，这个浏览器里它不认等宽" : "，这个浏览器里它也认等宽") + "；";
+      text += "中文字族打头时数字由" + leaders(rs.getPropertyValue("--font-cjk")).latin + "画" + (pf.diff > 0.5 ? "，这个浏览器里它不认等宽" : "，这个浏览器里它也认等宽") + "；";
       text += "--font-num时由" + leaders(rs.getPropertyValue("--font-num")).latin + "画" + (num.diff > 0.5 ? "，还是会跳（这台机器要另核）。" : "，等宽生效。");
       read.textContent = text;
     }

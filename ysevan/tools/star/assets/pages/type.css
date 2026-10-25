@@ -110,7 +110,7 @@
   min-width: 0; padding: calc(6 * var(--u)) calc(12 * var(--u)); border-radius: var(--r-sm); background: var(--raised);
 }
 .twt-w { font-family: var(--mono); font-size: var(--fs-small); color: var(--label2); }
-.twt-s { min-width: 0; font-size: calc(19 * var(--u)); line-height: 1.35; color: var(--label); overflow-wrap: anywhere; }
+.twt-s { min-width: 0; font-family: var(--font-cjk); font-size: calc(19 * var(--u)); line-height: 1.35; color: var(--label); overflow-wrap: anywhere; }
 .twt-px { font-size: var(--fs-xs); color: var(--label2); white-space: nowrap; }
 .twt-same { min-width: calc(66 * var(--u)); font-size: var(--fs-xs); font-weight: 600; text-align: right; white-space: nowrap; color: var(--label2); }
 .twt-same.is-dup { color: var(--orange-text); }
@@ -171,7 +171,7 @@
 .tkai.no-indent .tkai-big { text-indent: 0; }
 /* 子集外的字：按选的回落方式换字体，底下一道熔岩橙虚线标出来 */
 .tkai-out { font-family: var(--tkai-fb); text-decoration: underline dashed var(--xw-lava); text-decoration-thickness: 2px; text-underline-offset: .12em; }
-.tkai[data-fb="sans"] .tkai-big { --tkai-fb: var(--font); }
+.tkai[data-fb="sans"] .tkai-big { --tkai-fb: var(--font-cjk); }
 .tkai[data-fb="serif"] .tkai-big { --tkai-fb: serif; }
 .tkai-blob .tkai-foot { margin-top: calc(12 * var(--u)); padding-top: calc(10 * var(--u)); border-top: 1px solid rgba(74,77,53,.18); font-size: calc(12.5 * var(--u)); letter-spacing: .1em; }
 .tkai-mid { position: absolute; top: calc(8 * var(--u)); bottom: calc(8 * var(--u)); left: 50%; border-left: 1px dashed var(--xw-olive-2); pointer-events: none; }
@@ -198,13 +198,13 @@
 .tfam-legend .ty-toggle { margin-left: calc(6 * var(--u)); }
 .tfam-stage { display: grid; gap: calc(12 * var(--u)); min-width: 0; padding: calc(16 * var(--u)); border-radius: calc(12 * var(--u)); background: var(--xw-card); box-shadow: 0 0 0 1px var(--xw-line); }
 .tfam-stage [data-fam] { transition: opacity .2s ease; }
-.tfam-stage [data-fam="sans"] { font-family: var(--font); }
+.tfam-stage [data-fam="sans"] { font-family: var(--font-cjk); }
 .tfam-stage [data-fam="serif"] { font-family: "Songti SC", "STSong", "SimSun", serif; }
 .tfam-stage [data-fam="kai"] { font-family: var(--font-kai); font-weight: 400; }
 .tfam-stage [data-fam="hand"] { font-family: cursive; }
 .tfam-stage .is-xing { font-family: "Xingkai SC", "STXingkai", "华文行楷", var(--font-kai); font-weight: 400; letter-spacing: .05em; }
 .tfam-stage[data-pick] [data-fam]:not(.is-on) { opacity: .18; }
-.tfam-stage.is-plain [data-fam] { font-family: var(--font); }
+.tfam-stage.is-plain [data-fam] { font-family: var(--font-cjk); }
 .tfam-hero { display: flex; align-items: baseline; flex-wrap: wrap; gap: calc(6 * var(--u)) calc(16 * var(--u)); padding-bottom: calc(10 * var(--u)); border-bottom: 1px solid var(--xw-line); }
 .tfam-big { font-size: calc(54 * var(--u)); line-height: 1.04; letter-spacing: .06em; color: var(--xw-olive-deep); }
 .tfam-hero-sub { font-size: calc(13.5 * var(--u)); letter-spacing: .1em; color: var(--xw-ink-2); }
@@ -301,7 +301,7 @@
 .ttn-box { display: grid; justify-items: start; gap: calc(8 * var(--u)); min-width: 0; margin: 0; padding: calc(12 * var(--u)) calc(14 * var(--u)); border-radius: var(--r-sm); background: var(--raised); }
 .ttn-box figcaption { font-size: var(--fs-xs); font-weight: 600; color: var(--label2); }
 /* 反例：改前的写法，中文字族打头＋等宽声明，Mac 的 Chrome 里苹方照样跳（HTML 上挂了 data-tnum-ok，护栏不计） */
-.ttn-pf { font-family: var(--font); font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; /* tnum-ok：反例，演示苹方打头会跳 */ }
+.ttn-pf { font-family: var(--font-cjk); font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; /* tnum-ok：反例，演示苹方打头会跳 */ }
 .ttn-pf figcaption { color: var(--red-text); }
 /* 现行（SPEC §3a）：同一条里写 --font-num */
 .ttn-num { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }

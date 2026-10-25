@@ -140,7 +140,9 @@
  *   token 名字说用途、不说颜色（SPEC-apple-glass.md「命名教训」）：--accent-tint 实色软底、--accent-shadow 投影 …
  *
  * ── 字体令牌 ────────────────────────────────────────────────────────────
- *   --font      正文：中文字族打头（家族契约 A.1）。
+ *   --font      正文：系统 UI 在前（-apple-system、BlinkMacSystemFont、"SF Pro Text"，再到苹方等中文字族），同刷刷——界面统一2026-10-25
+ *               「家族有分歧一律跟刷刷」。此前照家族契约 A.1 是中文字族打头，那条栈留在 --font-cjk 给排版章的样例用。
+ *               系统 UI 在前时 Mac 上西文、数字、箭头、中点归 SF 画（窄字形），中文仍是苹方。
  *   --font-num  数字（SPEC §3a「数字字体」，2026-10-08）：凡写了 font-variant-numeric: tabular-nums 的规则，同一条里必须写
  *               font-family: var(--font-num)。苹方在 Chrome 里不认 tabular-nums / "tnum"，--font 下写了也照样跳（40px 600的
  *               「1111」宽65.6、「0000」宽96.0）；BlinkMacSystemFont（Mac 的 Chrome）/ -apple-system（Safari、iOS）/ "Segoe UI"（Windows）/
@@ -173,27 +175,29 @@
   --u: calc(1px * var(--scale));
 
   --fs-title: calc(clamp(26px, 1.4vw + 14px, 34.16px) * var(--scale));
-  --fs-h2: calc(clamp(19px, .3vw + 17.68px, 22px) * var(--scale));
+  --fs-h2: calc(clamp(18px, .8vw + 10px, 21.5px) * var(--scale));      /* 同刷刷（界面统一2026-10-25）：1440处21.5、手机18 */
   --fs-h3: calc(clamp(17px, .25vw + 16.4px, 20px) * var(--scale));
   --fs-lead: calc(clamp(14px, .2vw + 13.12px, 16px) * var(--scale));
-  --fs-body: calc(clamp(14px, .15vw + 12.84px, 15px) * var(--scale));
+  --fs-body: calc(clamp(13px, .35vw + 10px, 15px) * var(--scale));     /* 同刷刷：手机正文13、1440处15 */
   --fs-small: calc(13px * var(--scale));
   --fs-xs: calc(12px * var(--scale));
   --page-pt: calc(26 * var(--u));      /* 正文上内边距：[data-hero] 顶到顶栏底下要抵掉它（文件头「页面可以用的外壳钩子」） */
   --gap: calc(clamp(10px, 1vw, 14.4px) * var(--scale));
-  --pad: calc(clamp(18px, .95vw + 14.32px, 28px) * var(--scale));
+  --pad: calc(clamp(14px, 1.2vw, 17.3px) * var(--scale));              /* 面板内边距同刷刷：1440处17.3、手机14 */
   --side-w: calc(clamp(200px, 17vw, 244.8px) * var(--scale));
   --page-x: calc(clamp(16px, 3vw, 43.2px) * var(--scale));
   --measure: calc(680px * var(--scale));
   --label-w: calc(88px * var(--scale));
-  --r-xs: calc(8px * var(--scale));
+  --r-xs: calc(10px * var(--scale));
   --r-sm: calc(12px * var(--scale));
   --r-md: calc(16px * var(--scale));
-  --r-lg: calc(22px * var(--scale));
+  --r-lg: calc(18px * var(--scale));   /* 面板圆角同刷刷 */
   --topbar-h: 56px;
-  --tabbar-h: 60px;
+  --tabbar-h: 62px;
 
-  --font: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;   /* 同刷刷：系统 UI 在前（界面统一2026-10-25，见文件头「字体令牌」） */
+  /* SPEC A.1 原来的中文字族打头栈：外壳正文10-25起改成系统UI在前（同刷刷），排版章「中文在前」的样例（字重、字体栈、字族、等宽数字的反例）拿它演示，别删 */
+  --font-cjk: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, sans-serif;
   /* 等宽数字专用（SPEC §3a）：前四个按「谁会先取到」排，中文落到后面的中文字族；用法见文件头「字体令牌」 */
   --font-num: BlinkMacSystemFont, -apple-system, "Segoe UI", system-ui, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;   /* Menlo：Mac 的 Chrome 取不到前两个，没有它就一路落到 Courier New（控制室10-08实测） */
@@ -216,40 +220,41 @@
 /* ---------- 3. 六个强调色的原始值（浅 / 深两支，下面第4节按明暗取一支）----------
    a 填充 / a2渐变浅端 / at 文字档（HIG 增强对比度）/ ati 实色软底 / ash 投影 / b1–b3三团光晕。
    深色 a2：样张 shua-glass.html 深色只重写了蓝（#64D2FF），其余沿用浅色那组——与岗岗、card 一致（SPEC「各家有记录的偏离」）。
-   实色软底：浅 = 填充色兑11% 进白（岗岗算法），深 = 填充色兑18% 进 #17181C（card 算法）；文字档压上去实算 ≥4.59。 */
+   实色软底：取刷刷 3.14.2 的值（界面统一2026-10-25，「家族有分歧一律跟刷刷」）；文字档压上去实算浅 ≥4.60、深 ≥5.02。
+   此前是「浅 = 填充色兑11% 进白、深 = 兑18% 进 #17181C」（色彩页「有字的浅底用实色」那条的样例仍按 SPEC 原值画，见 pages/color.css）。 */
 :root, [data-accent="blue"] {
   --a-l: #007AFF; --a-d: #0A84FF; --a2-l: #5AC8FA; --a2-d: #64D2FF; --at-l: #0040DD; --at-d: #409CFF;
-  --ati-l: #E3F0FF; --ati-d: #152B45; --ash-l: rgba(0,122,255,.13); --ash-d: rgba(10,132,255,.2);
+  --ati-l: #C7E2FF; --ati-d: #142B47; --ash-l: rgba(0,122,255,.13); --ash-d: rgba(10,132,255,.2);
   --b1-l: rgba(90,200,250,.55); --b2-l: rgba(255,214,170,.55); --b3-l: rgba(175,160,255,.45);
   --b1-d: rgba(10,132,255,.35); --b2-d: rgba(255,159,10,.22); --b3-d: rgba(94,92,230,.35);
 }
 [data-accent="green"] {
   --a-l: #34C759; --a-d: #30D158; --a2-l: #A8E063; --a2-d: #A8E063; --at-l: #1F7A36; --at-d: #30DB5B;
-  --ati-l: #E9F9ED; --ati-d: #1C3927; --ash-l: rgba(52,199,89,.15); --ash-d: rgba(48,209,88,.2);
+  --ati-l: #D8F4DF; --ati-d: #1E502F; --ash-l: rgba(52,199,89,.15); --ash-d: rgba(48,209,88,.2);
   --b1-l: rgba(52,199,89,.4); --b2-l: rgba(255,214,170,.55); --b3-l: rgba(48,176,199,.35);
   --b1-d: rgba(48,209,88,.28); --b2-d: rgba(255,159,10,.18); --b3-d: rgba(64,200,224,.25);
 }
 [data-accent="indigo"] {
   --a-l: #5856D6; --a-d: #5E5CE6; --a2-l: #BF5AF2; --a2-d: #BF5AF2; --at-l: #3634A3; --at-d: #8E8BFF;
-  --ati-l: #EDECFA; --ati-d: #242440; --ash-l: rgba(88,86,214,.15); --ash-d: rgba(94,92,230,.22);
+  --ati-l: #DADAF6; --ati-d: #252648; --ash-l: rgba(88,86,214,.15); --ash-d: rgba(94,92,230,.22);
   --b1-l: rgba(88,86,214,.4); --b2-l: rgba(255,45,85,.25); --b3-l: rgba(175,160,255,.45);
   --b1-d: rgba(94,92,230,.35); --b2-d: rgba(255,55,95,.18); --b3-d: rgba(191,90,242,.25);
 }
 [data-accent="orange"] {
   --a-l: #FF9500; --a-d: #FF9F0A; --a2-l: #FFD60A; --a2-d: #FFD60A; --at-l: #C93400; --at-d: #FFB340;
-  --ati-l: #FFF3E3; --ati-d: #413019; --ash-l: rgba(255,149,0,.16); --ash-d: rgba(255,159,10,.2);
+  --ati-l: #FFEDD4; --ati-d: #5C4118; --ash-l: rgba(255,149,0,.16); --ash-d: rgba(255,159,10,.2);
   --b1-l: rgba(255,149,0,.4); --b2-l: rgba(255,214,170,.55); --b3-l: rgba(255,59,48,.25);
   --b1-d: rgba(255,159,10,.3); --b2-d: rgba(255,69,58,.18); --b3-d: rgba(94,92,230,.25);
 }
 [data-accent="pink"] {
   --a-l: #FF2D55; --a-d: #FF375F; --a2-l: #FF9AA2; --a2-d: #FF9AA2; --at-l: #D30F45; --at-d: #FF6482;
-  --ati-l: #FFE8EC; --ati-d: #411E28; --ash-l: rgba(255,45,85,.14); --ash-d: rgba(255,55,95,.2);
+  --ati-l: #FFEAEE; --ati-d: #451E2B; --ash-l: rgba(255,45,85,.14); --ash-d: rgba(255,55,95,.2);
   --b1-l: rgba(255,45,85,.35); --b2-l: rgba(255,214,170,.55); --b3-l: rgba(191,90,242,.3);
   --b1-d: rgba(255,55,95,.3); --b2-d: rgba(255,159,10,.18); --b3-d: rgba(191,90,242,.25);
 }
 [data-accent="teal"] {
   --a-l: #30B0C7; --a-d: #40C8E0; --a2-l: #64D2FF; --a2-d: #64D2FF; --at-l: #0071A4; --at-d: #5AC8F5;
-  --ati-l: #E8F6F9; --ati-d: #1E383F; --ash-l: rgba(48,176,199,.15); --ash-d: rgba(64,200,224,.2);
+  --ati-l: #DCF2F5; --ati-d: #224954; --ash-l: rgba(48,176,199,.15); --ash-d: rgba(64,200,224,.2);
   --b1-l: rgba(48,176,199,.45); --b2-l: rgba(52,199,89,.3); --b3-l: rgba(175,160,255,.45);
   --b1-d: rgba(64,200,224,.3); --b2-d: rgba(48,209,88,.2); --b3-d: rgba(94,92,230,.25);
 }
@@ -273,15 +278,15 @@
   --well: var(--lt, #F7F8FA) var(--dk, #16171C);
   --code-bg: var(--lt, #F3F4F8) var(--dk, #15161B);
   --raised: var(--lt, #FFFFFF) var(--dk, #2C2D35);
-  --seg-on: var(--lt, #FFFFFF) var(--dk, #5B5C63);
+  --seg-on: var(--glass-strong);   /* 分段选中块同刷刷：强玻璃（原来是实色白 / #5B5C63） */
   --hover: var(--lt, rgba(255,255,255,.55)) var(--dk, rgba(255,255,255,.07));
   --scrim: var(--lt, rgba(20,24,36,.18)) var(--dk, rgba(0,0,0,.5));
   /* 模糊档位 lite / off 的整页遮罩与弹层面板（ix-sheet-frosted「降级」：压暗 .28 / .5，面板底近乎不透明） */
   --scrim-dim: var(--lt, rgba(20,24,36,.28)) var(--dk, rgba(0,0,0,.5));
   --glass-panel-solid: var(--lt, rgba(255,255,255,.97)) var(--dk, rgba(36,38,48,.97));
-  --shadow: var(--lt, 0 10px 30px rgba(20,30,60,.08)) var(--dk, 0 10px 30px rgba(0,0,0,.35)), inset 0 1px 0 var(--glass-edge);
-  --shadow-sm: var(--lt, 0 1px 3px rgba(20,30,60,.12)) var(--dk, 0 1px 3px rgba(0,0,0,.4));
-  --shadow-pop: var(--lt, 0 24px 60px rgba(20,30,60,.18)) var(--dk, 0 24px 60px rgba(0,0,0,.55)), inset 0 1px 0 var(--glass-edge);
+  --shadow: var(--lt, 0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(20,30,60,.08)) var(--dk, 0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(0,0,0,.35)), inset 0 1px 0 var(--glass-edge);   /* 投影随 --u 放大（同刷刷） */
+  --shadow-sm: var(--lt, 0 1px calc(3 * var(--u)) rgba(20,30,60,.12)) var(--dk, 0 1px calc(3 * var(--u)) rgba(0,0,0,.4));
+  --shadow-pop: var(--lt, 0 calc(24 * var(--u)) calc(60 * var(--u)) rgba(20,30,60,.18)) var(--dk, 0 calc(24 * var(--u)) calc(60 * var(--u)) rgba(0,0,0,.55)), inset 0 1px 0 var(--glass-edge);
   /* 语义色固定、不随强调色：填充 / 文字档 / 实色软底。深色红字 HIG #FF6961压强玻璃最不利角（青光晕）只有4.49，本地提亮到 #FF6E66（4.63） */
   --red: var(--lt, #FF3B30) var(--dk, #FF453A);
   --red-text: var(--lt, #D70015) var(--dk, #FF6E66);
@@ -430,12 +435,12 @@ code, pre, kbd { font-family: var(--mono); }
   display: flex; align-items: center; gap: calc(10 * var(--u));
   height: calc(34 * var(--u)); padding: 0 calc(10 * var(--u)); border-radius: calc(10 * var(--u));
   color: var(--label); font-size: var(--fs-body); text-decoration: none; white-space: nowrap;
-  transition: background-color .15s ease;
+  transition: background-color .15s ease, color .15s ease, box-shadow .15s ease;
 }
 .nav-ic { display: grid; place-items: center; color: var(--label2); }
 .nav-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
-.nav-item[aria-current="page"] { background: var(--glass-strong); color: var(--accent-text); font-weight: 600; box-shadow: var(--shadow-sm); }
+.nav-item[aria-current="page"] { background: var(--glass-strong); color: var(--accent-text); font-weight: 600; box-shadow: var(--shadow); }   /* 选中项整套投影（同刷刷） */
 .nav-item[aria-current="page"] .nav-ic { color: var(--accent-text); }
 .nav-item[aria-disabled="true"] { color: var(--label2); cursor: default; }
 .nav-item[aria-disabled="true"] .nav-ic { color: var(--label3); }
@@ -452,28 +457,30 @@ a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
 .theme-row { display: grid; gap: calc(6 * var(--u)); }
 /* 「外观」「强调色」两个字只给读屏（分段的字与色点本身已经说明白了），省下侧栏两行高度 */
 .theme-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.seg { display: flex; padding: 2px; border-radius: calc(10 * var(--u)); background: var(--fill); }
+.seg { display: flex; padding: calc(2 * var(--u)); border-radius: calc(10 * var(--u)); background: var(--fill); }
 .seg button {
   flex: 1; min-width: 0; border: 0; background: transparent; cursor: pointer;
-  padding: calc(5 * var(--u)) 0; border-radius: calc(8 * var(--u));
-  color: var(--label); font-size: var(--fs-small); white-space: nowrap;
+  min-height: calc(28 * var(--u)); padding: calc(4 * var(--u)) calc(2 * var(--u)); border-radius: calc(8 * var(--u));
+  color: var(--label); font-size: calc(12 * var(--u)); white-space: nowrap;
+  transition: background-color .15s ease, color .15s ease, box-shadow .15s ease;
 }
-.seg button[aria-checked="true"] { background: var(--seg-on); font-weight: 600; box-shadow: var(--shadow-sm); }
+.seg button[aria-checked="false"]:hover { color: var(--accent-text); }
+.seg button[aria-checked="true"] { background: var(--seg-on); font-weight: 600; box-shadow: 0 1px calc(3 * var(--u)) rgba(0,0,0,.12); }   /* 同刷刷 */
 .dots { display: flex; flex-wrap: wrap; gap: calc(11 * var(--u)); padding: 4px 3px; }
 .dot {
   position: relative; flex: none; width: calc(20 * var(--u)); height: calc(20 * var(--u));
   padding: 0; border: 0; border-radius: 50%; cursor: pointer; background: var(--dot);
-  transition: transform .15s ease;
+  transition: box-shadow .15s ease;
 }
-.dot:hover { transform: scale(1.12); }
 .dot:focus-visible { outline-offset: 4px; }
 .dot[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
-.dot[data-accent-set="blue"] { --dot: linear-gradient(135deg, var(--lt, #007AFF) var(--dk, #0A84FF), var(--lt, #5AC8FA) var(--dk, #64D2FF)); }
-.dot[data-accent-set="green"] { --dot: linear-gradient(135deg, var(--lt, #34C759) var(--dk, #30D158), #A8E063); }
-.dot[data-accent-set="indigo"] { --dot: linear-gradient(135deg, var(--lt, #5856D6) var(--dk, #5E5CE6), #BF5AF2); }
-.dot[data-accent-set="orange"] { --dot: linear-gradient(135deg, var(--lt, #FF9500) var(--dk, #FF9F0A), #FFD60A); }
-.dot[data-accent-set="pink"] { --dot: linear-gradient(135deg, var(--lt, #FF2D55) var(--dk, #FF375F), #FF9AA2); }
-.dot[data-accent-set="teal"] { --dot: linear-gradient(135deg, var(--lt, #30B0C7) var(--dk, #40C8E0), #64D2FF); }
+/* 色点用纯色（同刷刷，界面统一2026-10-25；原来是填充 → 渐变浅端的渐变） */
+.dot[data-accent-set="blue"] { --dot: var(--lt, #007AFF) var(--dk, #0A84FF); }
+.dot[data-accent-set="green"] { --dot: var(--lt, #34C759) var(--dk, #30D158); }
+.dot[data-accent-set="indigo"] { --dot: var(--lt, #5856D6) var(--dk, #5E5CE6); }
+.dot[data-accent-set="orange"] { --dot: var(--lt, #FF9500) var(--dk, #FF9F0A); }
+.dot[data-accent-set="pink"] { --dot: var(--lt, #FF2D55) var(--dk, #FF375F); }
+.dot[data-accent-set="teal"] { --dot: var(--lt, #30B0C7) var(--dk, #40C8E0); }
 /* 色名气泡：压在别的东西上面，所以用实色（正文色底 + 页面底色字） */
 .dot-name {
   position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%);
@@ -499,11 +506,12 @@ a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
 .tabbar { display: none; }
 .tab {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-  min-width: 0; padding: 6px 0 5px; border: 0; border-radius: 14px; background: none; cursor: pointer;
-  color: var(--label2); font-size: 11px; line-height: 1.2; text-decoration: none;
+  min-width: 0; height: 52px; padding: 3px 0; border: 0; border-radius: 10px; background: none; cursor: pointer;
+  color: var(--label2); font-size: 10px; line-height: 1.2; text-decoration: none;
 }
-.tab .i { width: 23px; height: 23px; }
-.tab[aria-current="page"], .tab[aria-expanded="true"] { color: var(--accent-text); background: var(--glass-strong); font-weight: 600; }
+.tab .i { width: 22px; height: 22px; }
+/* 选中项不垫底块，只把图标和字换成文字档、600（同刷刷，界面统一2026-10-25） */
+.tab[aria-current="page"], .tab[aria-expanded="true"] { color: var(--accent-text); background: none; font-weight: 600; }
 
 /* ---------- 「更多」面板（≤900才有入口）：浮在正文上，玻璃提到 .88让字的底可预测 ---------- */
 /* 遮罩是 .scrim-frost（第13节），按模糊档位糊开或压暗 */
@@ -552,7 +560,7 @@ a.nav-item[href]:not([aria-current]):hover { background: var(--hover); }
 html.jump-in .page { animation-name: page-fade; }
 @keyframes page-fade { from { opacity: 0; } }
 .page-head { padding: var(--pad); border-radius: var(--r-lg); background: var(--glass-strong); box-shadow: var(--shadow); }
-.page-title { margin: 0; font-size: var(--fs-title); line-height: 1.2; font-weight: 700; letter-spacing: -.4px; }
+.page-title { margin: 0; font-size: var(--fs-title); line-height: 1.2; font-weight: 700; letter-spacing: calc(-.4 * var(--u)); }
 .page-sub { margin: calc(8 * var(--u)) 0 0; max-width: var(--measure); color: var(--label2); font-size: var(--fs-lead); line-height: 1.7; }
 .page-toc:empty { display: none; }
 .page-toc { display: grid; gap: calc(10 * var(--u)); margin-top: calc(20 * var(--u)); padding-top: calc(16 * var(--u)); border-top: 1px solid var(--sep); }
@@ -570,7 +578,7 @@ html.jump-in .page { animation-name: page-fade; }
 .toc-pill:hover { background: var(--accent-tint); color: var(--accent-text); }
 
 .group { margin-top: calc(40 * var(--u)); scroll-margin-top: calc(16 * var(--u)); }
-.group-title { display: flex; align-items: center; gap: calc(10 * var(--u)); margin: 0 0 calc(14 * var(--u)); font-size: var(--fs-h2); line-height: 1.3; font-weight: 700; color: var(--label); }
+.group-title { display: flex; align-items: center; gap: calc(10 * var(--u)); margin: 0 0 calc(14 * var(--u)); font-size: var(--fs-h2); line-height: 1.3; font-weight: 700; letter-spacing: calc(-.2 * var(--u)); color: var(--label); }
 .group-title::before { content: ""; flex: none; width: calc(6 * var(--u)); height: calc(22 * var(--u)); border-radius: 3px; background: linear-gradient(180deg, var(--accent), var(--accent-2)); }
 .group[data-scope="xiaowu"] .group-title::before { background: linear-gradient(180deg, #5E6144, #8B8C6D); }
 .group[data-scope="common"] .group-title::before { background: linear-gradient(180deg, #8E8E93, #C7C7CC); }
@@ -588,7 +596,7 @@ html.jump-in .page { animation-name: page-fade; }
 /* 条目卡不挂 backdrop-filter：卡又长又多，屋主台式机没显卡，磨砂是那台机器的瓶颈。 */
 .entry[data-scope="xiaowu"] { --scope-tint: var(--scope-xw-tint); --scope-text: var(--scope-xw-text); }
 .entry[data-scope="common"] { --scope-tint: var(--fill); --scope-text: var(--label2); }
-.entry-head h3 { margin: 0; font-size: var(--fs-h3); line-height: 1.4; font-weight: 700; letter-spacing: -.2px; }
+.entry-head h3 { margin: 0; font-size: var(--fs-h3); line-height: 1.4; font-weight: 700; letter-spacing: calc(-.2 * var(--u)); }
 .entry-lede { margin: calc(6 * var(--u)) 0 0; max-width: var(--measure); color: var(--label2); line-height: 1.7; }
 .entry-tags { list-style: none; display: flex; flex-wrap: wrap; gap: calc(6 * var(--u)); margin: calc(12 * var(--u)) 0 0; padding: 0; }
 .entry-tags li {
@@ -659,19 +667,21 @@ html.jump-in .page { animation-name: page-fade; }
 
 /* ---------- 10. 通用小件 ---------- */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: calc(6 * var(--u));
+  display: inline-flex; align-items: center; justify-content: center; gap: calc(7 * var(--u));
   height: calc(38 * var(--u)); padding: 0 calc(16 * var(--u)); border: 0; border-radius: calc(12 * var(--u));
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: var(--on-accent-gradient); text-shadow: 0 1px 2px rgba(0,0,0,.25);
+  color: var(--on-accent-gradient); text-shadow: 0 1px calc(2 * var(--u)) rgba(0,0,0,.25);
   font-size: var(--fs-body); font-weight: 600; white-space: nowrap; text-decoration: none; cursor: pointer;
   box-shadow: 0 calc(8 * var(--u)) calc(18 * var(--u)) var(--accent-shadow);
-  transition: transform .15s ease;
+  transition: background-color .15s ease, color .15s ease, box-shadow .15s ease;
 }
-.btn:hover { transform: translateY(-1px); }
-.btn:active { transform: scale(.98); }
+/* 悬停压暗、不位移（同刷刷，界面统一2026-10-25；原来是上浮1px、按下缩到.98）：渐变上叠一层14%黑，白字对比度只会变好 */
+.btn:hover { background-image: linear-gradient(rgba(0,0,0,.14), rgba(0,0,0,.14)), linear-gradient(135deg, var(--accent), var(--accent-2)); }
 .btn .i { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
 .btn-tint { background: var(--accent-tint); color: var(--accent-text); text-shadow: none; box-shadow: none; }
 .btn-glass { background: var(--glass-strong); color: var(--label); text-shadow: none; box-shadow: var(--shadow); }
+.btn-tint:hover { background: var(--accent-tint); box-shadow: var(--shadow); }   /* 次按钮悬停：底不变、加投影（同刷刷） */
+.btn-glass:hover { background: var(--glass-strong); }
 .pill, .pill-accent {
   display: inline-flex; align-items: center; height: calc(24 * var(--u)); padding: 0 calc(10 * var(--u));
   border-radius: 999px; font-size: calc(12.5 * var(--u)); white-space: nowrap;
@@ -817,14 +827,14 @@ a.row:hover { background: var(--hover); }
   html { scroll-padding-top: 8px; }
   .entry, .group { scroll-margin-top: 12px; }
   .tabbar {
-    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px;
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0;
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
-    padding: 6px max(8px, env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+    padding: 5px max(5px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(5px, env(safe-area-inset-left));
     background: var(--glass);
     -webkit-backdrop-filter: blur(30px) saturate(160%);
     backdrop-filter: blur(30px) saturate(160%);
-    border-top: 1px solid var(--glass-edge);
-    box-shadow: 0 -1px 0 var(--sep);
+    border-top: 1px solid var(--glass-edge);   /* 顶边只有一条亮线（同刷刷，去掉了原来那道 0 -1px 0 分隔线投影） */
   }
   .more-panel {
     top: auto; left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right)); width: auto;
@@ -1243,7 +1253,7 @@ html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
   .nav-item { height: calc(28 * var(--u)); }
   .side-foot { padding-top: calc(8 * var(--u)); }
   .theme { gap: calc(6 * var(--u)); }
-  .side-foot .seg button { padding-top: calc(3 * var(--u)); padding-bottom: calc(3 * var(--u)); }
+  .side-foot .seg button { min-height: 0; padding-top: calc(3 * var(--u)); padding-bottom: calc(3 * var(--u)); }
   .side-foot .seg-sm button { padding-top: calc(2 * var(--u)); padding-bottom: calc(2 * var(--u)); }
   .side-foot .dots { padding-top: 2px; padding-bottom: 2px; }
   .side-foot .theme-foot { margin-bottom: calc(-6 * var(--u)); }
