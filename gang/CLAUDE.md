@@ -108,6 +108,38 @@ Get-ChildItem .git -Recurse -Force -File |
 
 ---
 
+## 八、动效只动 transform / opacity，唯一例外是材料进度小圆环（2026-10-08）
+
+新加的动画一律只过渡 `transform` 与 `opacity`（`design-proposal.md`「动效口径」）。
+**唯一例外**：材料进度小圆环 `.check-ring-arc` 的 `stroke-dashoffset`（控制室开）。
+
+再想加别的非 transform / opacity 动画，先在屋主台式机那档（2040×1019@1.25、软件渲染旗标
+`--disable-gpu --use-gl=swiftshader --enable-unsafe-swiftshader`）做改前 / 改后帧率 A/B：
+中位 ≤ ×1.15、P95 ≤ ×1.25、长帧（>25ms）≤ 改前 + 2，并先让「每帧白卡 30ms」的红探针红一次；不过就换写法。
+
+**量帧率必须断言操作真落地**（真勾上了、真播了动画），否则「没动」会冒充「不卡」。
+这一轮的测法与数字见 `design-proposal.md`「stroke-dashoffset 例外与帧率」一节，本机脚本在 `~/.ysevan-verify/gang/ring/perf.mjs`。
+
+---
+
+## 九、数字与中文之间不留空格（家族契约，屋主 2026-08-26 定）
+
+我们自己写的界面字，数字挨中文不隔空格：「23项」「查看全部23个结果」「本业务还有8条注意事项」。
+界面字包括脚本拼出来的字、`index.html` 的可见文字与 `aria-label` / `title` / `placeholder`、读屏播报。
+数字与数字之间的「2 / 4」照旧带空格。
+
+**CSS 撑出的空隙也算**：数字和它自己的标签或单位被 flex 的 gap、margin 隔开（「逾期 3」「共 15 项」），一样不要。
+两个各自完整的词组挨着放（标题旁边一个自带单位的「10项」），中间的空隙是版式，不算（控制室 2026-10-08 裁）。
+
+**手册原文一字不动**：`employee-handbook.js`（条文）、`employee-handbook-formatting.js`（原件格式数据，记的是原块文字和 UTF-16 范围，
+改一个字范围就错）、`design/apple-glass/shua-glass.html`（样张）。
+
+改完跑 `node ~/.ysevan-verify/shared/number-spacing-scan.mjs gang=<目录>`，非豁免必须为 0。
+**它扫不出字符串拼接**（`"有 " + n + " 处"`），拼接要自己翻；CSS 空隙用 `~/.ysevan-verify/gang/spacing/gapscan.mjs` 在渲染后的页面上找。
+1.x 全站改过一遍，后来新写的办理指引和搜索联想又带回了空格，就是因为这条只记在 CHANGELOG 里。细节见 `design-proposal.md`「数字与中文之间不留空格」。
+
+---
+
 ## 收尾规矩：改完先汇报，屋主点头才推
 
 **这个仓库的推送权在屋主手里，不在你手里。**

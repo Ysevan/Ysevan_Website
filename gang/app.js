@@ -114,8 +114,8 @@
   let printImages = true;
   /* 灯箱按环节筛图："" = 全部；筛选期间上一张/下一张只在该环节内循环。 */
   let lightboxStage = "";
-  /* 900–1120px 中间态的「正文顶部横向要点条」：收起只出一行摘要，展开为完整速查卡。
-     仅内存，不持久化；其余断点由 CSS 置 display:none，桌面与手机形态一字不变。 */
+  /* 「工具」抽屉开着没有。变量名沿用 v1.x 中间态「正文顶部横向要点条」的叫法（要点条 v1.8.0 起撤掉，
+     v2.0 起速查卡在各宽度都收进「工具」抽屉）。仅内存，不持久化。 */
   let asideBarOpen = false;
   let flashTimer = 0;
   /* 目录抽屉（仅 ≤900px 可达）：opener 用于关闭后归还焦点。 */
@@ -473,7 +473,7 @@
       while ((match = pattern.exec(value))) {
         if (!activeCodes.includes(match[1])) continue;
         const start = match.index + match[0].indexOf(match[1]), end = start + match[1].length;
-        html += part(cursor, start) + `<button type="button" class="code-badge" data-code="${escapeHtml(match[1])}" aria-label="复制交易码 ${escapeHtml(match[1])}">${part(start, end)}</button>`;
+        html += part(cursor, start) + `<button type="button" class="code-badge" data-code="${escapeHtml(match[1])}" aria-label="复制交易码${escapeHtml(match[1])}">${part(start, end)}</button>`;
         cursor = end;
       }
     }
@@ -668,7 +668,7 @@
     return picked;
   };
 
-  /* 卡片 = 卡头（原文标签 + 已备齐 n/m + 清空勾选）+ 勾选项 + “原文”折叠（逐字原文）。
+  /* 卡片 = 卡头（原文标签 + 已备齐 n/m 小圆环 + 清空勾选）+ 勾选项 + “原文”折叠（逐字原文）。
      卡键用“块下标.行下标”，同一业务内稳定，作为 localStorage 里的分卡下标集合的键。 */
   function materialCard(line, display, ctx, keepPrefix) {
     if (!ctx.cards || !line.info || !MATERIAL_LABELS.has(line.info.label)) return "";
@@ -688,7 +688,7 @@
       return `<li${size ? ` class="${size}"` : ""}><label class="check-item"><input type="checkbox" data-check-index="${order}"${picked.has(order) ? " checked" : ""}><span class="check-text">${inlineText(item.text, false)}</span></label></li>`;
     }).join("");
     if (activeFormat) activeFormat.cursor = 0;
-    return `<div class="check-card" data-check-card="${escapeHtml(cardKey)}"><div class="check-head"><b class="def-label">${headHtml}</b><span class="check-progress" data-check-progress>已备齐${picked.size}/${items.length}</span><button type="button" class="check-clear" data-check-clear>清空勾选</button></div><ul class="check-list">${list}</ul><details class="check-source"><summary>原文</summary><p class="check-raw">${inlineText(source, ctx.badges)}</p></details></div>`;
+    return `<div class="check-card" data-check-card="${escapeHtml(cardKey)}"><div class="check-head"><b class="def-label">${headHtml}</b><span class="check-progress" data-check-progress>${ringHtml(picked.size, items.length, "card")}<span class="check-ring-of" aria-hidden="true">共${items.length}项</span><span class="sr-only" data-ring-text>已备齐${picked.size}/${items.length}</span></span><button type="button" class="check-clear" data-check-clear>清空勾选</button></div><ul class="check-list">${list}</ul><details class="check-source"><summary>原文</summary><p class="check-raw">${inlineText(source, ctx.badges)}</p></details></div>`;
   }
 
   /* ---------------- 核对重点：行级风险分级 ----------------
@@ -928,7 +928,7 @@
     tocTotal = all.length;
     tocFilter = "";
     tocFolded = null;
-    shell.toc.innerHTML = `<div class="toc-sticky"><div class="toc-heading"><h2>目录</h2><span class="toc-count">全部${all.length}项</span></div><div class="toc-filter"><label class="sr-only" for="toc-filter-input">过滤业务</label><input id="toc-filter-input" type="search" autocomplete="off" placeholder="过滤业务，例如：存折"></div><div class="quick-entry" data-quick-entry aria-label="常办业务"></div><div class="toc-scroll">${groups.map(({ group, nodes }) => `<details class="toc-group" ${nodes.some((item) => item.key === node.key) ? "open" : ""}><summary>${escapeHtml(cleanTitle(group.title))}<small>${nodes.length} 项</small></summary><div>${nodes.map((item) => {
+    shell.toc.innerHTML = `<div class="toc-sticky"><div class="toc-heading"><h2>目录</h2><span class="toc-count">全部${all.length}项</span></div><div class="toc-filter"><label class="sr-only" for="toc-filter-input">过滤业务</label><input id="toc-filter-input" type="search" autocomplete="off" placeholder="过滤业务，例如：存折"></div><div class="quick-entry" data-quick-entry aria-label="常办业务"></div><div class="toc-scroll">${groups.map(({ group, nodes }) => `<details class="toc-group" ${nodes.some((item) => item.key === node.key) ? "open" : ""}><summary>${escapeHtml(cleanTitle(group.title))}<small>${nodes.length}项</small></summary><div>${nodes.map((item) => {
       const title = cleanTitle(item.section.title);
       const selected = item.key === node.key;
       const starred = visits.isStarred(item.key);
@@ -1025,7 +1025,7 @@
   /* 下一环节保留在正文末尾，始终参与文档流。 */
 
   function renderProgressBar() {
-    return `<nav class="step-footer" aria-label="阅读环节切换"><button type="button" class="previous" data-stage-index="${activeStage - 1}">上一环节</button><span class="step-now">阅读位置 ${activeStage + 1} / 4</span><button type="button" class="next" data-stage-index="${activeStage + 1}">下一环节</button></nav>`;
+    return `<nav class="step-footer" aria-label="阅读环节切换"><button type="button" class="previous" data-stage-index="${activeStage - 1}">上一环节</button><span class="step-now">阅读位置${activeStage + 1} / 4</span><button type="button" class="next" data-stage-index="${activeStage + 1}">下一环节</button></nav>`;
   }
 
   function preparationQuote(ref, format) {
@@ -1046,11 +1046,11 @@
     const format = ref.field === "rows" ? original?.cells?.[ref.rowIndex]?.[ref.cellIndex] : original;
     const sliced = SourceFormat && format?.text?.slice(ref.start, ref.end) === ref.text
       ? SourceFormat.slice(format.text, format.spans, ref.start, ref.end) : null;
-    return `<li class="source-quote">${ref.branchTitle ? `<small class="quote-context">适用情形：${escapeHtml(ref.branchTitle)}</small>` : ""}${preparation && preparationQuote(ref, sliced) || `<p>${inlineText(ref.text, false, sliced)}</p>`}<button type="button" class="source-link" data-source-jump="${ref.sourceIndex}" data-source-line-jump="${ref.lineIndex}">查看原句位置 <span aria-hidden="true">↗</span></button></li>`;
+    return `<li class="source-quote">${ref.branchTitle ? `<small class="quote-context">适用情形：${escapeHtml(ref.branchTitle)}</small>` : ""}${preparation && preparationQuote(ref, sliced) || `<p>${inlineText(ref.text, false, sliced)}</p>`}<button type="button" class="source-link" data-source-jump="${ref.sourceIndex}" data-source-line-jump="${ref.lineIndex}">查看原句位置<span class="ic ic-jump" aria-hidden="true"></span></button></li>`;
   }
 
   function renderQuoteGroup(node, title, refs, className = "") {
-    return `<section class="quote-group ${className}"><header><h3>${escapeHtml(title)}</h3><span>${refs.length ? `${refs.length} 条原句` : "待核实"}</span></header>${refs.length ? `<ul>${refs.map(ref => sourceQuote(node, ref, className === "before-notes")).join("")}</ul>` : `<p class="not-stated">原文未注明</p>`}</section>`;
+    return `<section class="quote-group ${className}"><header><h3>${escapeHtml(title)}</h3><span>${refs.length ? `${refs.length}条原句` : "待核实"}</span></header>${refs.length ? `<ul>${refs.map(ref => sourceQuote(node, ref, className === "before-notes")).join("")}</ul>` : `<p class="not-stated">原文未注明</p>`}</section>`;
   }
 
   function renderClosing(node, guide) {
@@ -1062,28 +1062,28 @@
 
   function renderBranchIndex(guide) {
     if (!guide?.branches?.length) return "";
-    return `<nav class="branch-index" aria-label="按适用情形定位"><h3>先选适用情形</h3><div>${guide.branches.map(ref => `<button type="button" data-source-jump="${ref.sourceIndex}" data-source-line-jump="${ref.lineIndex}">${escapeHtml(ref.text)} <span aria-hidden="true">↗</span></button>`).join("")}</div></nav>`;
+    return `<nav class="branch-index" aria-label="按适用情形定位"><h3>先选适用情形</h3><div>${guide.branches.map(ref => `<button type="button" data-source-jump="${ref.sourceIndex}" data-source-line-jump="${ref.lineIndex}">${escapeHtml(ref.text)}<span class="ic ic-jump" aria-hidden="true"></span></button>`).join("")}</div></nav>`;
   }
 
   function renderCautionIndex(guide) {
     const refs = (guide?.cautions || []).filter(ref => ref.phaseKey !== "prepare");
     if (!refs.length) return "";
     const groups = refs.filter((ref, index) => refs.findIndex(item => item.sourceIndex === ref.sourceIndex) === index);
-    return `<nav class="caution-index" aria-label="业务注意事项索引"><b>本业务还有 ${refs.length} 条注意事项</b><p>涉及不同办理时点，点选回到原文查看。</p><div>${groups.map(ref => `<button type="button" data-source-jump="${ref.sourceIndex}" data-source-line-jump="${ref.lineIndex}">${escapeHtml((ref.context || ref.text).split(/[：:\n]/)[0])} <span aria-hidden="true">↗</span></button>`).join("")}</div></nav>`;
+    return `<nav class="caution-index" aria-label="业务注意事项索引"><b>本业务还有${refs.length}条注意事项</b><p>涉及不同办理时点，点选回到原文查看。</p><div>${groups.map(ref => `<button type="button" data-source-jump="${ref.sourceIndex}" data-source-line-jump="${ref.lineIndex}">${escapeHtml((ref.context || ref.text).split(/[：:\n]/)[0])}<span class="ic ic-jump" aria-hidden="true"></span></button>`).join("")}</div></nav>`;
   }
 
   function renderPreparationIndex(phase) {
     const materials = phase.blocks.findIndex(block => /材料|填写单据|所需资料/.test(block.text || ""));
     const notes = phase.blocks.findIndex(block => /注意事项|风险提示|要点提示/.test(block.text || ""));
     if (materials < 0 || notes < 0) return "";
-    return `<nav class="preparation-index" aria-label="准备内容定位"><button type="button" data-source-jump="${phase.sourceIndices[materials]}" data-source-line-jump="0"><b>材料与单据</b><span>查看清单 ↓</span></button><button type="button" data-source-jump="${phase.sourceIndices[notes]}" data-source-line-jump="0"><b>办前注意事项</b><span>先看限制与条件 ↓</span></button></nav>`;
+    return `<nav class="preparation-index" aria-label="准备内容定位"><button type="button" data-source-jump="${phase.sourceIndices[materials]}" data-source-line-jump="0"><b>材料与单据</b><span>查看清单<i class="ic ic-down" aria-hidden="true"></i></span></button><button type="button" data-source-jump="${phase.sourceIndices[notes]}" data-source-line-jump="0"><b>办前注意事项</b><span>先看限制与条件<i class="ic ic-down" aria-hidden="true"></i></span></button></nav>`;
   }
 
   function renderOperationIndex(node, phase) {
     const items = guideFor(node)?.transactionEntries || [];
     if (!items.length) return "";
-    const buttons = (entries) => entries.map(item => `<button type="button" data-source-jump="${item.sourceIndex}" data-source-line-jump="${item.lineIndex}"><b>${escapeHtml(item.codes.join(" / "))}</b><span>${escapeHtml(item.branchTitle ? `${item.branchTitle} · ${item.text}` : item.text)}</span><i aria-hidden="true">↗</i></button>`).join("");
-    const more = items.length > 4 ? `<details class="more-entries"><summary>展开其余 ${items.length - 4} 处入口</summary><div>${buttons(items.slice(4))}</div></details>` : "";
+    const buttons = (entries) => entries.map(item => `<button type="button" data-source-jump="${item.sourceIndex}" data-source-line-jump="${item.lineIndex}"><b>${escapeHtml(item.codes.join(" / "))}</b><span>${escapeHtml(item.branchTitle ? `${item.branchTitle} · ${item.text}` : item.text)}</span><i class="ic ic-jump" aria-hidden="true"></i></button>`).join("");
+    const more = items.length > 4 ? `<details class="more-entries"><summary>展开其余${items.length - 4}处入口</summary><div>${buttons(items.slice(4))}</div></details>` : "";
     return `<nav class="operation-index" aria-label="交易与系统入口定位"><h3>交易 / 系统入口 <small>点选原句，按适用情形办理</small></h3><div>${buttons(items.slice(0, 4))}</div>${more}</nav>`;
   }
 
@@ -1117,12 +1117,13 @@
       return `<section class="stage-section" id="stage-${index}" data-stage-index="${index}" aria-labelledby="stage-title-${index}"${readingMode === "guided" && activeStage !== index ? " hidden" : ""}><header class="document-heading"><p>${String(index + 1).padStart(2, "0")}</p><h2 id="stage-title-${index}" tabindex="-1">${escapeHtml(stage.label)}</h2><span>${escapeHtml(stage.hint)}</span></header>${extra}<div class="document-body">${body}</div></section>`;
     }).join("");
     const subtitles = ["材料 · 办前提醒", "交易码 · 操作提示", "原文完结要求", "打印 · 复审 · 签章"];
-    return `<section class="reader workflow-reader"><p class="breadcrumbs">${breadcrumbs}</p><div class="reader-heading"><div><h1 tabindex="-1">${formattedTitle(node)}</h1><p>对照原文，一环节一环节查阅</p></div><div class="reader-actions">${renderStarButton(node.key)}<button type="button" data-print-page>打印</button><button type="button" data-raw-toggle aria-pressed="false">原文对照</button></div></div><div class="workflow-toolbar"><span>办理指引</span><div class="reading-modes" role="group" aria-label="阅读方式"><button type="button" data-reading-mode="guided" aria-pressed="${readingMode === "guided"}">分环节看</button><button type="button" data-reading-mode="all" aria-pressed="${readingMode === "all"}">连续阅读</button></div></div><nav class="workflow-steps" aria-label="办理环节">${flow.map((stage, index) => `<button type="button" class="workflow-step" data-stage-index="${index}"${index === activeStage ? ' aria-current="step"' : ""}><span class="workflow-number">${String(index + 1).padStart(2, "0")}</span><span><b>${escapeHtml(stage.label)}</b><small>${subtitles[index]}</small></span></button>`).join("")}</nav><p class="source-color-note"><span aria-hidden="true">●</span> 正文保留手册原有重点颜色</p><article class="document">${sections}</article>${renderProgressBar()}</section>`;
+    return `<section class="reader workflow-reader"><p class="breadcrumbs">${breadcrumbs}</p><div class="reader-heading"><div><h1 tabindex="-1">${formattedTitle(node)}</h1><p>对照原文，一环节一环节查阅</p></div><div class="reader-actions">${renderStarButton(node.key)}<button type="button" data-print-page>打印</button><button type="button" data-raw-toggle aria-pressed="false">原文对照</button></div></div><div class="workflow-toolbar"><span>办理指引</span><div class="reading-modes" role="group" aria-label="阅读方式"><button type="button" data-reading-mode="guided" aria-pressed="${readingMode === "guided"}">分环节看</button><button type="button" data-reading-mode="all" aria-pressed="${readingMode === "all"}">连续阅读</button></div></div><nav class="workflow-steps" aria-label="办理环节">${flow.map((stage, index) => `<button type="button" class="workflow-step" data-stage-index="${index}"${index === activeStage ? ' aria-current="step"' : ""}><span class="workflow-number">${String(index + 1).padStart(2, "0")}</span><span><b>${escapeHtml(stage.label)}</b><small>${subtitles[index]}</small></span></button>`).join("")}</nav><p class="source-color-note"><span class="source-color-dot" aria-hidden="true"></span>正文保留手册原有重点颜色</p><article class="document">${sections}</article>${renderProgressBar()}</section>`;
   }
 
-  /* 标星入口全站只有这一个（目录里的 ★ 是只读的，取消集中在快速入口的常办组），
-     因此不会出现「两处星标状态不同步」那类经典 bug。 */
-  const starText = (on) => (on ? "★ 已在常办" : "☆ 加入常办");
+  /* 标星入口全站只有这一个（目录里的星标是只读的，取消集中在快速入口的常办组），
+     因此不会出现「两处星标状态不同步」那类经典 bug。
+     星形是 .star-toggle::before 画的线条图标（未标空心、已标实心，跟 aria-pressed 走），字里不再带 ☆ / ★ 字符（SPEC §5b）。 */
+  const starText = (on) => (on ? "已在常办" : "加入常办");
 
   function renderStarButton(nodeKey) {
     const on = visits.isStarred(nodeKey);
@@ -1246,7 +1247,7 @@
       ? `<section class="qc-codes"><h3>原文中出现的编号</h3>${codes.map((code) => `<button type="button" class="transaction-code" data-code-jump="${escapeHtml(code)}" title="定位到正文中首次出现处">${escapeHtml(code)}</button>`).join("")}<p class="aside-hint">取自原文，请以系统实际交易码为准</p></section>`
       : "";
     const docSection = materialCards.length
-      ? `<section class="qc-docs"><h3>材料清单</h3><button type="button" class="qc-jump" data-source-jump="${materialCards[0]?.cardKey.split(".")[0] || 0}" data-source-line-jump="${materialCards[0]?.cardKey.split(".")[1] || 0}"><b data-check-summary>已备齐${done}/${total}</b><small>${materialCards.length}张勾选卡 · 点此查看材料原句</small></button></section>`
+      ? `<section class="qc-docs"><h3>材料清单</h3><button type="button" class="qc-jump" data-source-jump="${materialCards[0]?.cardKey.split(".")[0] || 0}" data-source-line-jump="${materialCards[0]?.cardKey.split(".")[1] || 0}"><span class="qc-progress" data-check-summary>${ringHtml(done, total, "sum")}<span class="qc-progress-text" aria-hidden="true"><b>已备齐</b><span class="check-ring-of">共${total}项</span></span><span class="sr-only" data-ring-text>已备齐${done}/${total}</span></span><small>${materialCards.length}张勾选卡 · 点此查看材料原句</small></button></section>`
       : "";
     const riskSection = risks.length
       ? `<section class="qc-risk"><h3>风险摘要<span class="qc-risk-count">共${riskTotal}条</span></h3><ul>${risks.map((item) => `<li><button type="button" class="qc-risk-item risk-${item.level}" data-risk-anchor="${item.anchor}"><span class="risk-tag">${RISK_TAG[item.level]}</span>${escapeHtml(item.brief)}</button></li>`).join("")}</ul></section>`
@@ -1321,17 +1322,19 @@
     const bar = shell.reader.querySelector(".step-footer");
     if (!bar) return;
     const now = bar.querySelector(".step-now");
-    if (now) now.textContent = `阅读位置 ${activeStage + 1} / 4`;
+    if (now) now.textContent = `阅读位置${activeStage + 1} / 4`;
     const previous = bar.querySelector("button.previous"), next = bar.querySelector("button.next");
     if (previous) {
       previous.disabled = activeStage === 0;
       previous.setAttribute("data-stage-index", String(activeStage - 1));
-      previous.textContent = activeStage ? `← ${STAGES[activeStage - 1].label}` : "上一环节";
+      previous.textContent = activeStage ? STAGES[activeStage - 1].label : "上一环节";
+      if (activeStage) previous.setAttribute("aria-label", `上一环节：${STAGES[activeStage - 1].label}`);
+      else previous.removeAttribute("aria-label");
     }
     if (next) {
       next.disabled = activeStage === STAGES.length - 1;
       next.setAttribute("data-stage-index", String(activeStage + 1));
-      next.textContent = activeStage < STAGES.length - 1 ? `下一环节：${STAGES[activeStage + 1].label} →` : "已到最后环节";
+      next.textContent = activeStage < STAGES.length - 1 ? `下一环节：${STAGES[activeStage + 1].label}` : "已到最后环节";
     }
   }
 
@@ -1752,29 +1755,102 @@
     return { done, total: boxes.length };
   }
 
-  function paintCard(card) {
+  /* ================= 材料进度小圆环（§16，2026-10-08）=================
+     「已备齐 n/m」画成小圆环：淡强调色的轨道上用强调色按 n/m 画一段弧（<circle pathLength="100">，dashoffset = 100 − 百分比，
+     12 点钟起顺时针），环心是已勾项数 n，旁边小字「共 m 项」。读屏只读那句隐藏的「已备齐n/m」：环和逐帧滚动的数字都 aria-hidden。
+     终态直接写进 HTML（弧的 dashoffset、数字、读屏句），所以首次渲染、换业务、换环节都是静止的终值，不从 0 滚。
+     勾选 / 清空时从「此刻画到的位置」播到新值（WAAPI）；数字不另起时钟，每帧读同一个动画的 getComputedTiming().progress
+     （已套过缓动），数字读到几，弧就正好画到几分之几——与刷刷 3.14.0 结算页分数圈同一写法。
+     stroke-dashoffset 不是 transform / opacity：这是全站唯一一处例外，控制室开的，前提是 2040 软件渲染 A/B 帧率过关（§16.4）。 */
+  const RING_EASE = "cubic-bezier(.2,.7,.2,1)";
+  const RING_MS = { card: 450, sum: 800 }; // 勾一项要跟手；速查卡是抽屉打开后补画一段，给眼睛一点时间
+  const ringPlays = new WeakMap();         // 弧 → 正在播的那段动画（再勾一次时据此接着走、并让旧的数字循环自行退出）
+  const ringOffset = (done, total) => (total > 0 ? Number((100 - (100 * Math.min(done, total)) / total).toFixed(2)) : 100);
+
+  function ringHtml(done, total, kind) {
+    return `<span class="check-ring check-ring-${kind}" aria-hidden="true"><svg class="check-ring-svg" viewBox="0 0 36 36" focusable="false"><circle class="check-ring-track" cx="18" cy="18" r="15" pathLength="100"></circle><circle class="check-ring-arc" cx="18" cy="18" r="15" pathLength="100" stroke-dashoffset="${ringOffset(done, total)}"></circle></svg><span class="check-ring-num">${done}</span></span>`;
+  }
+
+  /* 把宿主（卡头 .check-progress 或速查卡 [data-check-summary]）里的圆环改到 done/total。
+     读屏句与「共 m 项」当场改；要播、看得见、不在减弱动态效果下、支持 WAAPI 时才从当前位置画过去，否则直接到终态。 */
+  function setRing(host, done, total, kind, animate) {
+    if (!host || typeof host.querySelector !== "function") return;
+    const text = host.querySelector("[data-ring-text]");
+    if (text) text.textContent = `已备齐${done}/${total}`;
+    const of = host.querySelector(".check-ring-of");
+    if (of) of.textContent = `共${total}项`;
+    const arc = host.querySelector(".check-ring-arc");
+    const num = host.querySelector(".check-ring-num");
+    if (!arc || !num) return;
+    const to = ringOffset(done, total);
+    /* 上一段还在播：读它此刻的计算值当起点（不跳回去），再取消它。环心数字按这个起点折成「等效项数」，与弧同源。 */
+    const computed = typeof window.getComputedStyle === "function" ? parseFloat(window.getComputedStyle(arc).strokeDashoffset) : NaN;
+    const from = Number.isFinite(computed) ? computed : to;
+    const previous = ringPlays.get(arc);
+    if (previous) { ringPlays.delete(arc); try { previous.cancel(); } catch (error) { /* 已结束 */ } }
+    arc.setAttribute("stroke-dashoffset", String(to));
+    const visible = typeof arc.getClientRects === "function" && arc.getClientRects().length > 0;
+    if (!animate || !visible || reduceMotion() || typeof arc.animate !== "function" || Math.abs(from - to) < 0.01) {
+      num.textContent = String(done);
+      return;
+    }
+    const fromCount = total > 0 ? (total * (100 - from)) / 100 : 0;
+    const play = arc.animate([{ strokeDashoffset: from }, { strokeDashoffset: to }], { duration: RING_MS[kind] || RING_MS.card, easing: RING_EASE });
+    ringPlays.set(arc, play);
+    const settle = () => { if (ringPlays.get(arc) === play) { ringPlays.delete(arc); num.textContent = String(done); } };
+    play.onfinish = settle;
+    const tick = () => {
+      if (ringPlays.get(arc) !== play) return;                         // 被下一次勾选接管，或已收尾
+      if (!arc.isConnected) { ringPlays.delete(arc); play.cancel(); return; } // 正文被重建（换业务 / 换环节）
+      const timing = play.effect && typeof play.effect.getComputedTiming === "function" ? play.effect.getComputedTiming() : null;
+      if (!timing || timing.progress == null || play.playState === "finished") { settle(); return; }
+      num.textContent = String(Math.round(fromCount + (done - fromCount) * timing.progress));
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  function paintCard(card, animate) {
     const stat = cardStat(card);
-    const label = card.querySelector("[data-check-progress]");
-    if (label) label.textContent = `已备齐${stat.done}/${stat.total}`;
+    setRing(card.querySelector("[data-check-progress]"), stat.done, stat.total, "card", animate);
     return stat;
   }
 
-  /* 右栏「材料清单」的合计随正文里的实际勾选走，不另存一份计数；
-     中间态要点条上的那一段（收起时唯一能看到的材料进度）与它同源同步。 */
+  function materialTotals() {
+    let done = 0;
+    let total = 0;
+    if (shell) each(shell.reader.querySelectorAll(".check-card"), (card) => {
+      const stat = cardStat(card);
+      done += stat.done;
+      total += stat.total;
+    });
+    return { done, total };
+  }
+
+  /* 速查卡「材料清单」的合计随正文里的实际勾选走，不另存一份计数。
+     阅读工具是模态抽屉：开着时正文不可操作，所以合计只会在抽屉关着时变。关着时只改读屏句，弧和环心数字停在上次看到的值；
+     下次打开、面板落定后由 playMaterialSummary 从那个值画到新值（「圆环计数弹出」：面板先落定，圆环再画）。 */
   function paintMaterialSummary() {
     if (!shell) return;
     const label = shell.aside.querySelector("[data-check-summary]");
     const bar = shell.aside.querySelector("[data-bar-checks]");
     if (!label && !bar) return;
-    let done = 0;
-    let total = 0;
-    each(shell.reader.querySelectorAll(".check-card"), (card) => {
-      const stat = cardStat(card);
-      done += stat.done;
-      total += stat.total;
-    });
-    if (label) label.textContent = `已备齐${done}/${total}`;
+    const { done, total } = materialTotals();
+    if (label) {
+      if (asideBarOpen) setRing(label, done, total, "sum", true);
+      else {
+        const text = label.querySelector("[data-ring-text]");
+        if (text) text.textContent = `已备齐${done}/${total}`;
+      }
+    }
     if (bar) bar.textContent = `材料已备齐${done}/${total}`;
+  }
+
+  function playMaterialSummary() {
+    const label = shell ? shell.aside.querySelector("[data-check-summary]") : null;
+    if (!label) return;
+    const { done, total } = materialTotals();
+    requestAnimationFrame(() => { if (asideBarOpen) setRing(label, done, total, "sum", true); });
   }
 
   function toggleCheck(input) {
@@ -1788,7 +1864,7 @@
     else picked.delete(order);
     checkState[cardKey] = [...picked].sort((left, right) => left - right);
     saveChecks();
-    paintCard(card);
+    paintCard(card, true);
     paintMaterialSummary();
   }
 
@@ -1797,7 +1873,7 @@
     const cardKey = card.dataset ? card.dataset.checkCard : "";
     if (cardKey) delete checkState[cardKey];
     saveChecks();
-    const stat = paintCard(card);
+    const stat = paintCard(card, true);
     paintMaterialSummary();
     announce(`已清空该卡的勾选，共${stat.total}项`);
   }
@@ -2005,6 +2081,7 @@
         void host.offsetHeight;
         try { close.focus({ preventScroll: true }); } catch (error) { close.focus(); }
       }
+      if (!wasOpen) playMaterialSummary(); // 面板落定后，速查卡圆环从上次看到的值画到当前合计（没变就不动）
     } else {
       if (host) {
         if (modalIsOpen(host)) modalHide(host, shell.toolsModal);
@@ -2710,7 +2787,7 @@
     return null;
   }
 
-  /* 「完整可见」：矩形整个落在 viewBounds 里——视口之内、不被吸顶栏与 ≤600px 的 tab bar 盖住、
+  /* 「完整可见」：矩形整个落在 viewBounds 里——视口之内、不被吸顶栏盖住、
      也不被裁切它的祖先（横滚的胶片条、速查卡抽屉的滚动框）裁掉。折叠着、display:none 的量出来是 0×0，天然不算。 */
   function fullyInView(node) {
     if (!node || typeof node.getBoundingClientRect !== "function") return false;
@@ -3034,7 +3111,7 @@
       shell.reader.innerHTML = renderReader(node, flow);
     }
     shell.aside.innerHTML = renderAside(node, flow);
-    setAsideBar(asideBarOpen); // 要点条的展开态跨业务保留（类挂在常驻的 host 上，这里只做一次对齐）
+    setAsideBar(asideBarOpen); // 「工具」抽屉的开合态跨业务保留（类挂在常驻的 host 上，这里只做一次对齐）
     paintModeSwitch();         // 分段控件的 aria-checked 已随模板渲染好，这一趟补「自动」那一档的解析说明
     /* 锚点条在原文对照视图里整条收起：那里没有四步可跳。 */
     if (railHost) railHost.innerHTML = rawMode ? "" : renderRail(flow);
@@ -3228,7 +3305,7 @@
   /* 角标只回答「凭什么命中」：交易码精确匹配给码；标题命中不出（标题里的高亮已经说明了）；其余给正文出现次数。
      只命中上级路径、正文 0 处的那种不出角标——写「正文0处」是错话。 */
   function suggestBadge(item) {
-    if (item.codeExact && item.matchedCode) return `交易码 ${item.matchedCode}`;
+    if (item.codeExact && item.matchedCode) return `交易码${item.matchedCode}`;
     if (item.titleHit) return "";
     return item.occurrences ? `正文${item.occurrences}处` : "";
   }
@@ -3249,7 +3326,7 @@
       const picked = rankSuggest(result, isNarrow() ? SUGGEST_NARROW : SUGGEST_DESKTOP);
       /* 末尾固定一条「查看全部」：选它 = 点「搜索」按钮，进原来的结果页。 */
       rows = picked.map((item, index) => suggestRow(index, item, term, suggestBadge(item))).join("")
-        + `<li role="option" id="ss-${picked.length}" aria-selected="false" data-suggest-all>查看全部 ${result.total} 个结果</li>`;
+        + `<li role="option" id="ss-${picked.length}" aria-selected="false" data-suggest-all>查看全部${result.total}个结果</li>`;
       speech = `${picked.length}条联想，上下键选择`;
     } else {
       /* 零结果：模块给的「名称相近」最多 3 条，不出「查看全部」（结果页也是零条，去了没有意义）。 */

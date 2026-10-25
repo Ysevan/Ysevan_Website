@@ -55,7 +55,7 @@
         <label class="sr-only" for="global-search-input">搜索业务、交易码或单据</label>
         <input id="global-search-input" type="search" autocomplete="off" placeholder="搜索业务、交易码、单据，例如：开户、结算卡、8201200" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-suggest">
         <!-- 清空按钮：框里有字才出现；只清框内文字并把焦点还回输入框，不改结果页（与 Esc 在框内的行为一致）。 -->
-        <button type="button" class="search-clear" id="global-search-clear" aria-label="清空搜索框" hidden>×</button>
+        <button type="button" class="search-clear" id="global-search-clear" aria-label="清空搜索框" hidden><span class="ic ic-x" aria-hidden="true"></span></button>
         <button type="submit">搜索</button>
         <!-- 搜索联想浮层（design-proposal.md §11）：边输边出，由 app.js「搜索联想浮层」一节驱动开合与内容，默认关闭。
              焦点始终留在输入框里，选项不可聚焦，当前项靠输入框的 aria-activedescendant 指过来；

@@ -465,10 +465,10 @@
   function reasonText(mode, normalized, item) {
     var shared = item.shared || [];
     if (mode === "bigram" && shared.length) {
-      return "名称与「" + normalized + "」有 " + shared.length + " 处字面重合（" + shared.slice(0, 3).join("、") + "）";
+      return "名称与「" + normalized + "」有" + shared.length + "处字面重合（" + shared.slice(0, 3).join("、") + "）";
     }
     if (mode === "char" && shared.length) {
-      return "名称与「" + normalized + "」共用「" + shared.slice(0, 3).join("") + "」" + shared.length + " 个字";
+      return "名称与「" + normalized + "」共用「" + shared.slice(0, 3).join("") + "」" + shared.length + "个字";
     }
     return "手册中没有与「" + normalized + "」更接近的名称，按原书顺序补一条「" + item.entry.category + "」常办业务";
   }
