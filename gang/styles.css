@@ -688,7 +688,6 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 .step-footer button.previous { --ic-mask:var(--ic-chevron-left); }
 .step-footer button.next { --ic-mask:var(--ic-chevron); }
 .step-footer button.previous:disabled::before, .step-footer button.next:disabled::after { display:none; }
-}
 /* --brand-box 是渐变方块的边长：::before 与那枚可换图标都按它算，改一处两处同步。 */
 .brand { --brand-box:calc(34 * var(--u)); position:relative; display:inline-flex; align-items:center; gap:10px; }
 /* 品牌图标：34px 圆角方块（强调色渐变）+ 白色线条「打开的书」。压缩态与 ≤900px 一并缩到 28px。 */
@@ -1381,7 +1380,9 @@ footer { padding:18px 20px calc(18px + env(safe-area-inset-bottom)); border-top:
   .manual-layout { grid-template-columns:270px minmax(0,1fr); grid-template-rows:auto minmax(0,1fr); }
   .toc { grid-row:1 / span 2; grid-column:1; }
   .aside-host { --aside-pad:clamp(24px,3.4vw,42px); grid-column:2; grid-row:1; display:block; border-bottom:1px solid var(--line); background:var(--panel); }
-  .reader-host { grid-column:2; grid-row:2; }\n\n\1；不再沿用此断点的三列速查与横排按钮。 */
+  .reader-host { grid-column:2; grid-row:2; }
+
+  /* 工具已统一为抽屉；不再沿用此断点的三列速查与横排按钮。 */
 
   /* 专注模式下右栏塌缩成一枚浮动退出按钮：要让出行列占位，回到基础层那套定位。 */
   html.focus-mode .manual-layout { grid-template-rows:minmax(0,1fr); }
@@ -2280,3 +2281,4 @@ footer { padding:18px 20px calc(18px + env(safe-area-inset-bottom)); border-top:
   .branch-index button, .operation-index button, .tools-drawer-head button, .aside-print, .aside-focus, .aside-switch, .qc-jump, .qc-risk-item,
   .lightbox-close, .hotkey-close, .lightbox-actions button, .lightbox-filter button, .raw-exit, .toc-drawer-close, .reading-modes button, .category-tabs button, .mode-seg button { border:1px solid ButtonText; }
   .check-card, .quote-group, .branch-index, .operation-index, .workflow-step, .raw-bar { border:1px solid CanvasText; }
+}
