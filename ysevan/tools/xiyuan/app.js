@@ -24,6 +24,7 @@ import {BEVEL,bevel,bevelSegments,createFinishes} from './material-kit.js?v=f605
 import {createWetRooms} from './wet-rooms.js?v=f51fc87429';
 import {createFurnishing,bedding,COFFEE} from './furnish-layer.js?v=e90d2fee72';
 import {createRoomLights,ownerRoomAt} from './room-lights.js?v=af40d3a7b9';
+import {installPlanView} from './plan3d-mode.js?v=091958cae9';
 
 const $=id=>document.getElementById(id);
 let dirtyUntil=performance.now()+1500;function invalidate(ms=400,shadow=false){dirtyUntil=Math.max(dirtyUntil,performance.now()+ms);if(shadow&&renderer)renderer.shadowMap.needsUpdate=true;}
@@ -636,3 +637,5 @@ const diag=document.createElement('span');diag.id='renderStatus';diag.style.cssT
 {const chosen=new URLSearchParams(location.search).get('layout');if(['original','central'].includes(chosen))document.querySelector(`[data-layout="${chosen}"]`)?.click();}
 // Video frame capture (capture-hook.js, video/ in the repository): loaded only with ?capture=1, otherwise nothing changes.
 if(new URLSearchParams(location.search).get('capture')==='1')import('./capture-hook.js?v=f26dc05075').then(({installCapture})=>installCapture({renderer,scene,camera,tier:renderTier,rooms,canWalk,roomAt:(x,z)=>ownerRoomAt(rooms,x,z),layout:()=>activeLayout,prepare,hold:v=>{captureHold=v;},refresh:()=>{updateZones();updateGamingLighting();fitSun();}}));
+// 平面俯视换成米家式三维剖切图（plan3d-mode.js，2026-10-26）；地址加 ?plan=classic 回到旧的平面俯视。
+installPlanView({THREE,scene,camera,controls,renderer,renderTier,sun,ui,toast,invalidate,setFov,setCut:setArchitecturalCut,changeMode,goRoom,selectUnit,rooms,unitNames,unitCenters,winSegments,walls:{original:originalData,central:centralWallData},groups:{house,allFurnishings,annotations},stopTween:()=>{transition=null;},get transition(){return transition;},get mode(){return mode;},get layout(){return activeLayout;},get focusUnit(){return focusUnit;}});

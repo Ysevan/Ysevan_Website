@@ -240,3 +240,69 @@ body.design-open:not(.ui-min-design) .orientation{display:none}
 }
 @media(max-width:700px){body:has(#intro:not([hidden])):not(.ui-min-intro) .layout-flag{bottom:calc(213*var(--u))}}
 @media(pointer:coarse) and (max-height:500px) and (orientation:landscape){.quality-label select{margin:calc(-9*var(--u)) 0 calc(-3*var(--u))}#fpsLabel{padding:calc(3*var(--u)) calc(10*var(--u));border-radius:calc(999*var(--u));background:var(--panel)}}
+/* 平面俯视，米家式三维剖切图（plan3d-mode.js，2026-10-26）。地址带 ?plan=classic 时 body 没有 .plan3d，下面都不生效。 */
+#p3Kit,#p3Bar,#p3Overlay{display:none}
+body.plan3d #p3Kit{display:block;margin-top:calc(12*var(--u))}
+body.plan3d.ui-min-room #p3Kit{display:none}
+body.plan3d :is(#roomPins,.orientation){display:none}
+body.plan3d:not(.ui-min-room):not(.ui-phone) .room-label{width:calc(344*var(--u));max-width:calc(344*var(--u));max-height:calc(100% - calc(250*var(--u)));overflow:auto}
+body.plan3d #p3Overlay{display:block;position:fixed;inset:0;pointer-events:none;z-index:3;overflow:hidden}
+.p3-leaders{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.p3-leader{stroke:rgba(48,58,50,.55);stroke-width:1.2;fill:none}
+.p3-dot{fill:var(--ink)}
+.p3-labels>*{position:absolute;left:0;top:0;will-change:transform}
+.p3-room{pointer-events:auto;display:inline-flex;align-items:center;gap:calc(6*var(--u));padding:calc(6*var(--u)) calc(12*var(--u));background:#fff;color:var(--ink);font-size:calc(13*var(--u));font-weight:600;white-space:nowrap;border-radius:calc(999*var(--u));box-shadow:0 calc(3*var(--u)) calc(10*var(--u)) rgba(20,30,60,.13)}
+.p3-room:before{content:"";width:calc(5*var(--u));height:calc(5*var(--u));border-radius:50%;background:#71955d}
+.p3-room:hover{background:var(--cream)}
+.p3-room.on{background:var(--accent);color:#fff}
+.p3-room.on:before{background:#fff}
+.p3-dim{padding:calc(2*var(--u)) calc(7*var(--u));background:rgba(255,255,255,.94);border:1px solid rgba(63,90,58,.45);border-radius:calc(999*var(--u));font-family:var(--font-num);font-size:calc(11*var(--u));font-weight:600;color:#2f4a2b;white-space:nowrap}
+.p3-dim.tight{color:#8d4630;border-color:#ac583e;background:#fbefe9}
+.p3-mark{display:flex;align-items:center;white-space:nowrap;--tone:var(--ink)}
+.p3-mark[data-layer=water]{--tone:#2f6f93}
+.p3-mark[data-layer=sockets]{--tone:#8a5d17}
+.p3-mark[data-layer=lights]{--tone:#7d6410}
+.p3-mark[data-layer=ac]{--tone:#356b68}
+.p3-ic{flex:none;display:grid;place-items:center;width:calc(24*var(--u));height:calc(24*var(--u));border-radius:50%;background:#fff;border:calc(2*var(--u)) solid var(--tone);color:var(--tone);box-shadow:0 calc(2*var(--u)) calc(6*var(--u)) rgba(20,30,60,.15);position:relative;z-index:1}
+.p3-ic .i{width:calc(14*var(--u));height:calc(14*var(--u))}
+.p3-ic b{font-size:calc(13*var(--u));font-weight:700;color:#fff;line-height:1}
+.p3-mark[data-tone=bearing] .p3-ic{background:#27302a;border-color:#27302a}
+.p3-tx{margin-left:calc(-6*var(--u));padding:calc(3*var(--u)) calc(9*var(--u)) calc(3*var(--u)) calc(12*var(--u));background:rgba(255,255,255,.95);border-radius:calc(999*var(--u));font-size:calc(11*var(--u));color:var(--ink);box-shadow:0 calc(2*var(--u)) calc(6*var(--u)) rgba(20,30,60,.1)}
+.p3-mark[data-tone=bearing] .p3-tx{font-weight:600}
+.p3-mark.icon-only .p3-tx{display:none}
+.p3-mark.p3-flag .p3-ic{display:none}
+.p3-mark[data-tone=bay] .p3-tx{margin:0;padding:calc(3*var(--u)) calc(10*var(--u));background:#fbf1e6;color:#7a4718;border:calc(2*var(--u)) dashed #a0622c;border-radius:calc(999*var(--u));font-weight:600}
+.p3-chips{display:flex;flex-wrap:wrap;gap:calc(6*var(--u))}
+.p3-chip{display:inline-flex;align-items:center;gap:calc(5*var(--u));min-height:calc(32*var(--u));padding:0 calc(10*var(--u));border-radius:var(--r-btn);background:var(--fill);color:var(--ink);font-size:calc(12*var(--u))}
+.p3-chip .i{width:calc(15*var(--u));height:calc(15*var(--u))}
+.p3-chip[aria-pressed=true]{background:var(--accent-soft);color:var(--accent-text);font-weight:600}
+.p3-actions{display:flex;flex-wrap:wrap;align-items:center;gap:calc(6*var(--u));margin-top:calc(10*var(--u))}
+.p3-actions button:not(.primary){display:inline-flex;align-items:center;justify-content:center;gap:calc(5*var(--u));min-height:calc(36*var(--u));min-width:calc(36*var(--u));padding:0 calc(8*var(--u));border-radius:var(--r-btn);background:var(--fill);color:var(--ink);font-size:calc(12*var(--u))}
+.p3-actions .i{width:calc(17*var(--u));height:calc(17*var(--u))}
+.p3-actions .p3-export.primary{min-width:0;min-height:calc(36*var(--u));padding:0 calc(14*var(--u));font-size:calc(13*var(--u));gap:calc(6*var(--u));margin-left:auto}
+.p3-north{display:inline-flex;align-items:center;gap:calc(2*var(--u));color:var(--muted);font-size:calc(11*var(--u))}
+.p3-north i{display:inline-flex;transition:transform .3s}
+.p3-north .i{width:calc(16*var(--u));height:calc(16*var(--u))}
+.p3-room-actions{display:flex;flex-wrap:wrap;gap:calc(6*var(--u));margin-top:calc(10*var(--u))}
+.p3-legend{list-style:none;margin:calc(12*var(--u)) 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:calc(4*var(--u)) calc(8*var(--u));font-size:calc(11*var(--u));color:var(--muted)}
+.p3-legend li{display:flex;align-items:center;gap:calc(7*var(--u))}
+.sw{flex:none;display:inline-block;width:calc(18*var(--u));height:calc(10*var(--u))}
+.sw-bearing{background:#27302a}
+.sw-cap{background:#aab39f}
+.sw-bay{border:calc(2*var(--u)) dashed #a0622c}
+.sw-water{width:calc(10*var(--u));border-radius:50%;border:calc(2*var(--u)) solid #2f6f93;background:#fff;margin:0 calc(4*var(--u))}
+.sw-dim{height:calc(3*var(--u));background:#3f5a3a}
+body.plan3d .room-label p.p3-note{margin-top:calc(8*var(--u));font-size:calc(11*var(--u))}
+#p3Bar button{flex:1;min-height:calc(44*var(--u));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(2*var(--u));border-radius:var(--r-btn);color:var(--ink)}
+#p3Bar .i{width:calc(19*var(--u));height:calc(19*var(--u))}
+#p3Bar small{font-size:calc(11*var(--u))}
+#p3Bar .p3-north{flex:none;flex-direction:column;justify-content:center;width:calc(40*var(--u))}
+@media(max-width:700px),(pointer:coarse) and (max-height:500px){body.plan3d.ui-phone #p3Bar{display:flex;position:absolute;z-index:9;left:calc(var(--sl) + calc(12*var(--u)));right:calc(var(--sr) + calc(12*var(--u)));bottom:calc(var(--sb) + calc(84*var(--u)));padding:calc(4*var(--u));background:var(--panel);border-radius:var(--r-card);box-shadow:var(--shadow)}
+body.plan3d .p3-actions,body.plan3d .p3-legend{display:none}
+body.plan3d .p3-chip{min-height:calc(44*var(--u))}
+body.plan3d .p3-room-actions .small{min-height:calc(44*var(--u))}}
+body.plan3d .layout-flag{display:none}
+body.plan3d .p3-actions .p3-export.primary{flex:1 1 100%;justify-content:center;margin-left:0}
+#p3Kit.focused .p3-legend{display:none}
+@media(pointer:coarse) and (max-height:500px) and (orientation:landscape){body.plan3d.ui-phone #p3Bar{right:auto;width:calc(50% - calc(36*var(--u)) - var(--sl));bottom:calc(var(--sb) + calc(10*var(--u)));padding:calc(2*var(--u))}
+#p3Bar button small{display:none}}
