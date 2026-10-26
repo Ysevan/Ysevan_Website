@@ -6,6 +6,9 @@
 // (never saved: a stray touch must not hide the mode bar for good; a reload or a mode change shows the saved choices again), and what a
 // tap or the switch expanded folds back after UI_TIMING.idle without use; never while a field has focus, a dialog or the design panel is
 // open, or a finger holds a walking control. Only the switch, a box's − / chip and the size buttons save. Collapsed boxes are display:none (style.css body.ui-min-*): nothing moves and the page never widens.
+// Line icons come from the sprite at the top of index.html (#i-<name>); data-icon names the one a button shows.
+export const icon=n=>`<svg class="i" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+export function setIcon(el,n){el.setAttribute?.('data-icon',n);el.innerHTML=icon(n);}
 export const UI_KEY='xiyuan-ui-v1',UI_TIMING={idle:5000,tapMove:10,tapMs:400,hint:6000};
 // A phone is narrow, or a short touch screen: a 900×417 landscape phone is wider than 700 px but is not a desktop. Mirrored in style.css.
 export const PHONE_QUERY='(max-width:700px),(pointer:coarse) and (max-height:500px)',LAND_QUERY='(pointer:coarse) and (max-height:500px) and (orientation:landscape)';
@@ -13,18 +16,18 @@ export const PHONE_QUERY='(max-width:700px),(pointer:coarse) and (max-height:500
 // line: collapses to one line in place (no chip). sizes: large/small, the switch sits before the collapse button. show: opening the box
 // (the design button) also expands it. phone: the phone default.
 export const PANELS=[
- {key:'top',sel:['header','.unit-nav'],into:['.header-actions'],icon:'玺',label:'顶栏',phone:'min'},
- {key:'intro',sel:['#intro'],icon:'✦',label:'介绍',phone:'open'},
+ {key:'top',sel:['header','.unit-nav'],into:['.header-actions'],icon:'panel-top',label:'顶栏',phone:'min'},
+ {key:'intro',sel:['#intro'],icon:'home',label:'介绍',phone:'open'},
  {key:'room',sel:['#roomLabel'],line:true,label:'房间说明',phone:'min'},
- {key:'map',sel:['#miniPanel'],own:'#mapToggle',sizes:true,icon:'⌖',label:'定位',phone:'min'},
- {key:'tools',sel:['.tools','.footer-meta'],into:['.tools'],icon:'⚙',label:'显示',phone:'min'},
- {key:'bed',sel:['#bedPanel'],own:'#closeBed',sizes:true,icon:'↔',label:'床距',phone:'min'},
- {key:'study',sel:['#studyControls'],icon:'◐',label:'书房',phone:'min'},
- {key:'design',sel:['#designPanel'],show:true,icon:'◒',label:'装修',phone:'open'},
- {key:'tour',sel:['#tourCaption'],icon:'▷',label:'导览',phone:'min'},
- {key:'floor',sel:['#floorPanel'],icon:'▥',label:'楼层',phone:'open'},
- {key:'info',sel:['#walkHint','.layout-flag'],into:['#walkHint','.layout-flag'],icon:'ⓘ',label:'提示',phone:'min'},
- {key:'modes',sel:['.mode-bar'],into:['.mode-bar'],icon:'◇',label:'模式',phone:'open'},
+ {key:'map',sel:['#miniPanel'],own:'#mapToggle',sizes:true,icon:'map',label:'定位',phone:'min'},
+ {key:'tools',sel:['.tools','.footer-meta'],into:['.tools'],icon:'sliders',label:'显示',phone:'min'},
+ {key:'bed',sel:['#bedPanel'],own:'#closeBed',sizes:true,icon:'bed',label:'床距',phone:'min'},
+ {key:'study',sel:['#studyControls'],icon:'monitor',label:'书房',phone:'min'},
+ {key:'design',sel:['#designPanel'],show:true,icon:'palette',label:'装修',phone:'open'},
+ {key:'tour',sel:['#tourCaption'],icon:'video',label:'导览',phone:'min'},
+ {key:'floor',sel:['#floorPanel'],icon:'building',label:'楼层',phone:'open'},
+ {key:'info',sel:['#walkHint','.layout-flag'],into:['#walkHint','.layout-flag'],icon:'info',label:'提示',phone:'min'},
+ {key:'modes',sel:['.mode-bar'],into:['.mode-bar'],icon:'panel-bottom',label:'模式',phone:'open'},
 ];
 export function createPanels({canvas,viewport,toggle,dock,chips,doc=globalThis.document,win=globalThis.window,store,timing=UI_TIMING,panels=PANELS}={}){
  if(store===undefined)try{store=win.localStorage;}catch{store=null;}
@@ -39,16 +42,16 @@ export function createPanels({canvas,viewport,toggle,dock,chips,doc=globalThis.d
  const setPref=(p,v)=>{bag('pref')[p.key]=v;},inside=(p,t)=>!!t&&p.els.some(e=>e===t||e.contains?.(t));
  const inUI=t=>!!t&&(P.some(p=>inside(p,t))||!!dock?.contains?.(t)||toggle===t);
  const focusIn=p=>{const a=doc.activeElement;return !!a&&a!==body&&inside(p,a);},toView=()=>viewport?.focus?.({preventScroll:true});
- const mk=(cl,text,label)=>{const b=doc.createElement('button');b.type='button';b.className=cl;b.textContent=text;b.setAttribute('aria-label',label);b.title=label;return b;};
+ const mk=(cl,name,label)=>{const b=doc.createElement('button');b.type='button';b.className=cl;setIcon(b,name);b.setAttribute('aria-label',label);b.title=label;return b;};
  for(const p of P){if(!p.els.length)continue;const ids=p.els.map((e,i)=>e.id||(e.id='ui-'+p.key+(i||''))).join(' ');
   if(p.own){const b=doc.querySelector(p.own);if(b)p.btns.push(b);}
-  else if(p.into)for(const s of p.into){const box=doc.querySelector(s);if(box){const b=mk('ui-min-btn','−','收起'+p.label);box.append(b);p.btns.push(b);}}
-  else{const b=mk('ui-min-btn ui-abs','−','收起'+p.label);p.els[0].prepend(b);p.btns.push(b);}
+  else if(p.into)for(const s of p.into){const box=doc.querySelector(s);if(box){const b=mk('ui-min-btn','minus','收起'+p.label);box.append(b);p.btns.push(b);}}
+  else{const b=mk('ui-min-btn ui-abs','minus','收起'+p.label);p.els[0].prepend(b);p.btns.push(b);}
   for(const b of p.btns){b.setAttribute('aria-controls',ids);b.addEventListener('click',()=>p.line&&!shown(p)?open(p.key):collapse(p.key));}
   if(p.line)p.els[0].addEventListener('click',e=>{if(!shown(p)&&!p.btns.includes(e.target))open(p.key);});
-  if(p.sizes&&p.btns[0]){const b=p.size=mk('ui-size-btn','⤢','放大'+p.label);b.setAttribute('aria-controls',ids);p.btns[0].before(b);b.addEventListener('click',()=>setSize(p.key,!large(p)));}
+  if(p.sizes&&p.btns[0]){const b=p.size=mk('ui-size-btn','maximize','放大'+p.label);b.setAttribute('aria-controls',ids);p.btns[0].before(b);b.addEventListener('click',()=>setSize(p.key,!large(p)));}
   if(!p.line&&chips){const c=p.chip=doc.createElement('button');c.type='button';c.className='ui-chip';c.setAttribute('data-panel',p.key);c.setAttribute('aria-controls',ids);c.setAttribute('aria-expanded','false');c.setAttribute('aria-label','展开'+p.label);c.title='展开'+p.label;
-   const i=doc.createElement('span');i.setAttribute('aria-hidden','true');i.textContent=p.icon;const s=doc.createElement('small');s.textContent=p.label;c.append(i,s);c.hidden=true;chips.append(c);
+   const i=doc.createElement('span');i.setAttribute('aria-hidden','true');setIcon(i,p.icon);const s=doc.createElement('small');s.textContent=p.label;c.append(i,s);c.hidden=true;chips.append(c);
    c.addEventListener('click',()=>open(p.key,true));}
   p.was=present(p);}
  function render(){let any=false;
@@ -56,8 +59,8 @@ export function createPanels({canvas,viewport,toggle,dock,chips,doc=globalThis.d
    // Opening the design panel (its header button) brings it back even if it was last collapsed to a chip.
    if(p.show&&here&&!p.was&&!shown(p)){setPref(p,'open');save();}p.was=here;
    const on=shown(p);if(on&&here)any=true;body.classList.toggle('ui-min-'+p.key,!on);
-   for(const b of p.btns){b.setAttribute('aria-expanded',String(on));if(p.line){b.textContent=on?'−':'+';b.setAttribute('aria-label',(on?'收起':'展开')+p.label);b.title=(on?'收起':'展开')+p.label;}}
-   if(p.sizes){const L=large(p);body.classList.toggle('ui-small-'+p.key,!L);if(p.size){p.size.setAttribute('aria-pressed',String(L));p.size.textContent=L?'⤡':'⤢';p.size.setAttribute('aria-label',(L?'缩小':'放大')+p.label);p.size.title=(L?'缩小':'放大')+p.label;}}
+   for(const b of p.btns){b.setAttribute('aria-expanded',String(on));if(p.line){setIcon(b,on?'minus':'plus');b.setAttribute('aria-label',(on?'收起':'展开')+p.label);b.title=(on?'收起':'展开')+p.label;}}
+   if(p.sizes){const L=large(p);body.classList.toggle('ui-small-'+p.key,!L);if(p.size){p.size.setAttribute('aria-pressed',String(L));setIcon(p.size,L?'minimize':'maximize');p.size.setAttribute('aria-label',(L?'缩小':'放大')+p.label);p.size.title=(L?'缩小':'放大')+p.label;}}
    if(p.chip)p.chip.hidden=on||!here;}
   const t=any?'全部收起':'全部展开';toggle?.setAttribute('aria-expanded',String(any));toggle?.setAttribute('aria-label',t);if(toggle){toggle.title=cls==='phone'?t+'（漫游、导览时也可轻点画面）':t;const s=toggle.querySelector?.('small');if(s)s.textContent=any?'收起':'展开';}
   body.classList.toggle('ui-phone',cls==='phone');}
