@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><meta name="theme-color" content="#e7e4db"><meta name="robots" content="noindex">
+<title>玺院</title>
+<style>
+:root{--ink:#303a32;--muted:#5a6155;--accent:#556b4d;--line:rgba(69,82,61,.16);--cream:#f8f7f1;--ground:#e7e4db;--seal:#69745b}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.7 -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:1040px;margin:0 auto;padding:40px 24px 56px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.seal{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--seal);border-radius:2px;font:26px/1 "Songti SC","Noto Serif SC",serif}
+h1{margin:0;font:600 28px/1 "Songti SC","Noto Serif SC",serif;letter-spacing:5px}
+.lede{margin:0 0 28px;color:var(--muted)}
+.clip{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:18px 18px 20px;margin:0 0 22px}
+.clip h2{margin:0;font:600 21px/1.4 "Songti SC","Noto Serif SC",serif;letter-spacing:2px}
+.meta{margin:2px 0 12px;font-size:13px;color:var(--muted)}
+video{display:block;width:100%;height:auto;background:var(--ground);border-radius:8px}
+.tall video{max-width:420px;margin:0 auto}
+a{color:var(--accent)}
+.back{display:inline-block;margin-top:6px;padding:11px 18px;border:1px solid var(--accent);border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;color:#475d3e}
+@media (max-width:600px){main{padding:24px 16px 40px}.clip{padding:12px 12px 14px}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<main>
+<header><span class="seal">玺</span><h1>玺院</h1></header>
+<p class="lede">画面由网页里的三维模型逐帧渲染。</p>
+<section class="clip">
+<h2>跟着镜头看一遍</h2>
+<p class="meta">横版，1920×1080，1分58秒，无声</p>
+<video controls playsinline muted preload="metadata" poster="./xiyuan-main.jpg" width="1920" height="1080"><source src="./xiyuan-main.mp4" type="video/mp4"></video>
+</section>
+<section class="clip tall">
+<h2>我的 B 户型</h2>
+<p class="meta">竖版，1080×1920，49秒，无声</p>
+<video controls playsinline muted preload="metadata" poster="./xiyuan-vertical.jpg" width="1080" height="1920"><source src="./xiyuan-vertical.mp4" type="video/mp4"></video>
+</section>
+<a class="back" href="../xiyuan/">走进我的 B 户型</a>
+</main>
+</body>
+</html>

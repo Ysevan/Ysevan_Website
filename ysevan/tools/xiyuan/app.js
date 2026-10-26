@@ -513,7 +513,7 @@ function applyQuality(q){quality=q;pixelBudget=tierBudget(renderTier,q);resizeRe
 window.addEventListener('resize',resizeRenderer);controls.addEventListener('change',()=>invalidate(120));
 document.addEventListener('click',()=>invalidate(700,true));document.addEventListener('visibilitychange',()=>{keys={};drag=null;last=performance.now();invalidate(700);});
 let last=performance.now(),lastDraw=0,frame=0,fpsFrames=0,fpsSince=performance.now(),lastUi=0,slowWindows=0;let quality='auto',pixelBudget=tierBudget(renderTier,'auto'),targetFPS=60;
-function animate(now){requestAnimationFrame(animate);if(document.hidden){last=now;return;}const frameInterval=1000/targetFPS,elapsed=now-lastDraw;if(elapsed<frameInterval-.5)return;const dt=Math.min((now-last)/1000,.06);last=now;lastDraw=now-Math.max(0,elapsed%frameInterval);
+let captureHold=false;function animate(now){requestAnimationFrame(animate);if(captureHold)return;if(document.hidden){last=now;return;}const frameInterval=1000/targetFPS,elapsed=now-lastDraw;if(elapsed<frameInterval-.5)return;const dt=Math.min((now-last)/1000,.06);last=now;lastDraw=now-Math.max(0,elapsed%frameInterval);
  const moving=mode==='walk'&&(Object.values(keys).some(Boolean)||touchWalk.moving),touring=mode==='tour'&&!tourPaused;
  if(touring)tourFrame(dt);else if(moving)walkFrame(dt);else if(transition){const u=clamp((now-transition.start)/transition.duration,0,1),e=ease(u);camera.position.lerpVectors(transition.from,transition.to,e);controls.target.lerpVectors(transition.tf,transition.tt,e);controls.update();if(u===1){transition=null;invalidate(1);}}else if(!['walk','tour'].includes(mode)&&now<dirtyUntil)controls.update();
  const active=moving||touring||!!transition||now<dirtyUntil;
@@ -634,3 +634,5 @@ const diag=document.createElement('span');diag.id='renderStatus';diag.style.cssT
 
 // Local comparison links select a layout without overwriting saved colour preferences.
 {const chosen=new URLSearchParams(location.search).get('layout');if(['original','central'].includes(chosen))document.querySelector(`[data-layout="${chosen}"]`)?.click();}
+// Video frame capture (capture-hook.js, video/ in the repository): loaded only with ?capture=1, otherwise nothing changes.
+if(new URLSearchParams(location.search).get('capture')==='1')import('./capture-hook.js?v=f26dc05075').then(({installCapture})=>installCapture({renderer,scene,camera,tier:renderTier,rooms,canWalk,roomAt:(x,z)=>ownerRoomAt(rooms,x,z),layout:()=>activeLayout,prepare,hold:v=>{captureHold=v;},refresh:()=>{updateZones();updateGamingLighting();fitSun();}}));
