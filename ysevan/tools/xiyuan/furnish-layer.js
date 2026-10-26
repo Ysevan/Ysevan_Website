@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {cutFabric} from './detail-kit.js?v=95ac5fde41';
+import {cutFabric} from './detail-kit.js?v=95ac5fde41';import {coffeeTableParts,entryMirrorFrame,entryHooks,SOFA,tierSegments} from './living-kit.js?v=8eb64615a6';
 // Soft furnishings and accessories (scene detail round 3): puffy cushions, a throw, made beds, rugs, lamps, prints, the entry
 // joinery and the balcony rack. Plan metres like app.js. Parts reuse the home's materials wherever they can (same material,
 // shadow flags as box()), so batchStatic() folds them into draw calls the groups already make. No light sources: lamps glow
@@ -75,7 +75,7 @@ export function bedding(parent,{width:W,length:L,top:T,M,scarf=M.terracotta,fit=
 
 // --- Furnishing layer ------------------------------------------------------------------------------------------------------
 export function createFurnishing({box,cyl,rod,mat,M,clipPlane,rug,vase,contacts,oakCut,soft=false}){
- const cut={clippingPlanes:[clipPlane]};
+ const cut={clippingPlanes:[clipPlane]},seg=tierSegments(box,M.oak); // the tier's bevel segments for living-kit.js parts
  // Lamp shades and LED lines: glow in the shared furnishing, glowCut for the lamps in the layouts' rooms (the original master's
  // reading lights hang above 1.28 m), so each group adds one draw call for its lamps; brassCut for brass above 1.28 m.
  // The furnishing's own materials are named furnish-* (check:furnish caps their draw calls).
@@ -106,7 +106,7 @@ export function createFurnishing({box,cyl,rod,mat,M,clipPlane,rug,vase,contacts,
  function print(parent,x,y,z,w,h,nx,nz,k){box(x+nx*.015,y-h/2,z+nz*.015,nx?.03:w,h,nx?w:.03,oakCut(),parent);
   const g=new THREE.PlaneGeometry(w-.07,h-.07),uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setXY(i,(k%2+uv.getX(i))/2,(Math.floor(k/2)+uv.getY(i))/2);
   g.rotateY(Math.atan2(nx,nz));g.translate(x+nx*.0312,y,z+nz*.0312);const q=new THREE.Mesh(g,prints());q.receiveShadow=true;q.name='print';parent.add(q);return q;}
- function floorLamp(parent,x,z,h){cyl(x,0,z,.15,.025,M.dark,parent,.16);cyl(x,.025,z,.011,h-.3,M.brass,parent);unlit(cyl(x,h-.29,z,.19,.29,glow,parent,.17));}
+ function floorLamp(parent,x,z,h){cyl(x,0,z,.15,.022,M.stone,parent,.152);cyl(x,.022,z,.13,.008,M.stone,parent,.145);cyl(x,.03,z,.011,h-.305,M.brass,parent);cyl(x,h-.3,z,.03,.02,M.brass,parent,.012);unlit(cyl(x,h-.29,z,.19,.29,glow,parent,.17));for(const [y,r] of [[h-.292,.191],[h-.006,.171]])cyl(x,y,z,r,.006,M.brass,parent);}
 
  const api={
   // Leafy pot plant: a trunk with broad blades growing from it in a spiral (golden angle), the lower ones drooping. The trunk takes
@@ -117,11 +117,13 @@ export function createFurnishing({box,cyl,rod,mat,M,clipPlane,rug,vase,contacts,
     const base=[x+dx*s,y,z+dz*s];
     const q=new THREE.Mesh(leafGeo(),mat(tones[i%tones.length],.95));q.position.set(...base);q.rotation.set(-pitch,Math.atan2(dx,dz),0,'YXZ');q.scale.setScalar(len);q.castShadow=true;q.receiveShadow=true;q.name='leaf';parent.add(q);}},
   // Owner's living room (both B units: built before the right-hand unit is cloned): puffy cushions against the back, a throw
-  // over the south arm, a floor lamp at the north arm.
+  // over the south arm, a floor lamp at the north arm. compact: the owner's 2.35 m sofa (living-kit.js SOFA: seat 0.47, back
+  // cushions' face about x 7.20), else the neighbours' original sofa (seat 0.57 against the back at 6.985).
   sofa(parent,{compact=false}={}){
-   for(let i=0;i<3;i++)cushion(parent,{x:7.12,z:compact?8.50+i*.68:8.17+i*.85,seat:.57,back:6.985,dir:1,m:i===1?M.terracotta:M.olive,lean:.32,yaw:(i-1)*.07});
-   // Arm 6.8–7.8 × 10.22–10.38, top 0.75, 5 cm round: from the seat cushion, up the arm's inner face, over it and down the outside.
-   const p=path([[9.95,.578],[10.164,.579],{arc:[10.164,.629,.05,-Math.PI/2,0]},[10.214,.7],{arc:[10.27,.7,.056,Math.PI,Math.PI/2]},[10.33,.756],{arc:[10.33,.7,.056,Math.PI/2,0]},[10.386,.66],[10.386,.4]]);
+   const s=compact?SOFA.seat:.57;
+   for(let i=0;i<3;i++)cushion(parent,{x:7.12,z:compact?8.50+i*.68:8.17+i*.85,seat:s,back:compact?SOFA.back:6.985,dir:1,m:i===1?M.terracotta:M.olive,lean:.32,yaw:(i-1)*.07});
+   // Arm 6.8–7.8 × 10.22–10.38, top 0.75, 5 cm round: from the seat cushion (top s), up the arm's inner face, over it and down the outside.
+   const p=path([[9.95,s+(compact?.014:.008)],[10.164,s+.009],{arc:[10.164,s+.059,.05,-Math.PI/2,0]},[10.214,.7],{arc:[10.27,.7,.056,Math.PI,Math.PI/2]},[10.33,.756],{arc:[10.33,.7,.056,Math.PI/2,0]},[10.386,.66],[10.386,.4]]);
    const g=cloth(steps(7.25,7.75,7),p.marks.filter((_,i,a)=>i%2===0||i===a.length-1),(a,b)=>{const [u,y]=p.at(b),hang=Math.max(0,.7-y)/.3,out=u>10.3?1:0;return [a+.012*Math.sin(b*7)*hang,y-.035*hang*Math.sin(a*9)**2*out,u+out*.014*hang*Math.sin(a*17)];});
    const q=new THREE.Mesh(g,M.terracotta);q.castShadow=true;q.receiveShadow=true;q.name='throw';parent.add(q);
    floorLamp(parent,7.08,7.42,1.62);},
@@ -134,8 +136,9 @@ export function createFurnishing({box,cyl,rod,mat,M,clipPlane,rug,vase,contacts,
    box(10.3475,.15,3.605,.395,.78,1.09,M.oak,cabinet,.01);box(10.3375,.93,3.605,.415,.025,1.1,M.stone,cabinet);
    for(const z of [3.335,3.875]){box(10.14,.165,z,.018,.745,.533,M.white,cabinet,.006);box(10.124,.62,z+(z<3.6?.21:-.21),.014,.16,.016,M.brass,cabinet);}
    unlit(box(10.17,.142,3.605,.012,.006,1.04,glow,cabinet));
-   box(9.29,.3,1.208,.62,1.56,.016,mirror(),parent);box(9.29,.33,1.219,.56,1.5,.006,mirror(),parent).name='mirror';
-   box(8.958,1.58,1.85,.016,.07,.62,mirror(),parent);for(let i=0;i<4;i++){const z=1.61+i*.16;box(8.995,1.6,z,.058,.022,.022,mirror(),parent);box(9.019,1.6,z,.01,.045,.026,mirror(),parent);}
+   // Mirror glass in a 30 mm brass-finish frame standing 4 mm proud of it; hook rail in the cabinet finish with brass hooks (living-kit.js).
+   entryMirrorFrame(parent,M,{seg});box(9.29,.33,1.216,.56,1.5,.006,mirror(),parent).name='mirror';
+   entryHooks(parent,M,{seg});
    const bag=cutFabric(M,clipPlane);box(9.03,1.42,1.77,.012,.2,.022,bag,parent);box(9.061,1.08,1.77,.07,.34,.36,bag,parent,.012);
    box(10.09,0,2.0,.68,.011,.86,M.walnut,parent,.004).name='doormat';
    // The LED's and the downlights' patches (not on the software tier: blended fill for a small gain at desktop size).
@@ -145,10 +148,10 @@ export function createFurnishing({box,cyl,rod,mat,M,clipPlane,rug,vase,contacts,
   smartLock(door){const hinge=door.children.find(c=>c.userData.doorLeaf),x=hinge.children[0].geometry.parameters.width-.075;
    const at=(...a)=>{box(...a,M.brass,hinge).receiveShadow=false;};for(const s of [1,-1])at(x,.86,s*.025,.064,.5,.012);
    for(let r=0;r<4;r++)for(let c=0;c<3;c++)at(x-.018+c*.018,1.14+r*.024,.032,.011,.011,.003);at(x,.93,-.035,.03,.05,.008);return door;},
-  // Owner's coffee table (stone on walnut, a vase), the same in every layout: in the owner's shared group after the right-hand unit
+  // Owner's 0.72 m square coffee table (stone top on a walnut frame, living-kit.js; a vase), the same in every layout: in the owner's shared group after the right-hand unit
   // is cloned, so its parts join draw calls that already span the living room (in a layout's group, which mostly lives in the
   // bedrooms, they would stretch those batches into every view). Around the vase: a tray with a cup, two books laid tangentially.
-  table(parent){cyl(8.75,.31,9.35,.36,.045,M.stone,parent);cyl(8.75,.035,9.35,.13,.275,M.walnut,parent);vase(8.75,.355,9.35,parent);
+  table(parent){coffeeTableParts(parent,M,seg,COFFEE);vase(8.75,.355,9.35,parent);
    cyl(8.94,.355,9.46,.11,.016,M.walnut,parent,.1);cyl(8.96,.371,9.45,.035,.07,M.white,parent,.03);
    box(8.58,.355,9.18,.25,.03,.17,M.olive,parent,.004).rotation.y=Math.PI/4;box(8.584,.385,9.176,.22,.026,.15,M.terracotta,parent,.004).rotation.y=Math.PI/4+.22;},
   // Per layout, inside the layout's own group (owner only): bedroom rugs, lamps and prints; the concept layouts' coffee-table patch

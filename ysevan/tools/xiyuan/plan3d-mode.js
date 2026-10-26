@@ -4,10 +4,10 @@
 // 本模块看 body[data-mode] 变成 plan 时接手镜头和画面，离开时把借用的东西还回去。
 // ?plan=classic 回到旧的平面俯视（正上方俯视，0.35 米剖切，房间标签进漫游），对照截图或屋主想换回来时用。
 import * as THREE from 'three';
-import {CUT, LAYERS, PART_LAYER, COLORS, SOURCES, loadData, buildScene, markerSpecs, placeLabels, unitRooms, boxOf, shortName} from './plan3d-layers.js?v=c943babeef';
+import {CUT, LAYERS, PART_LAYER, COLORS, SOURCES, loadData, buildScene, markerSpecs, placeLabels, unitRooms, boxOf, shortName} from './plan3d-layers.js?v=ade4aab7de';
 import {exportDrawing} from './plan3d-export.js?v=7dfcf36dc9';
 import {LAYOUTS} from './layout-data.js?v=177b5128ed';
-import {PRESETS} from './design-presets.js?v=0154371027';
+import {PRESETS} from './design-presets.js?v=d747850719';
 
 const FOV = 16, POLAR = 38 * Math.PI / 180, TOP = .002, STORE = 'xiyuan-plan3d-v1';
 const icon = (n, cls = 'i') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;

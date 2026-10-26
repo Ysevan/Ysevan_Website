@@ -69,9 +69,9 @@ export const DOWNLIGHTS=[[7.25,7.75],[7.25,9.25],[7.25,10.75],[10,7.75],[10,9.25
 export const COVE=[6.95,7.3,10.3,11.2];
 // Curtains, stacked open at both ends of each window; [a, b, bottom, top], listed so the room is on the left of a→b (curtainGeo()).
 // Living and south-room sliders hang from the ceiling, the north bay to its seat; the master bay has its own curtain box
-// (bay-window.js). The north-west window only where it is a bedroom.
+// (bay-window.js). The north-west window only where it is a bedroom; its stacks follow the DWG window (PC2018, x 0.60–2.60).
 export const CURTAINS={all:[[[7.4,11.39],[6.95,11.39],.02,2.77],[[10.25,11.39],[9.8,11.39],.02,2.77],[[4.4,11.39],[3.95,11.39],.02,2.77],[[6.25,11.39],[5.8,11.39],.02,2.77],
- [[4.02,2.6],[4.32,2.6],.5,2.77],[[4.98,2.6],[5.28,2.6],.5,2.77]],northWest:[[[.13,2.64],[.53,2.64],.02,2.77],[[2.3,2.64],[2.72,2.64],.02,2.77]]};
+ [[4.02,2.6],[4.32,2.6],.5,2.77],[[4.98,2.6],[5.28,2.6],.5,2.77]],northWest:[[[.14,2.64],[.58,2.64],.02,2.77],[[2.4,2.64],[2.77,2.64],.02,2.77]]};
 
 export function createDetailLayer({mat,M,clipPlane,footprint,floorHoles,wallSets,groups,doors,windows,mirrored,hidden=[],roof,owner,layouts}){
  const D=detailMaterials({mat,M,clipPlane}),out={skirting:{},doors:[]};

@@ -11,7 +11,8 @@ export function createBayWindow({box,cyl,book,vase,materials:M,parent,clipPlane,
  const B=(x0,y0,z0,x1,y1,z1,m,r=0)=>box((x0+x1)/2,y0,(z0+z1)/2,x1-x0,y1-y0,z1-z0,m,g,r);
  const {top,thick,niche,knee}=BAY.desk,lip=top-thick;
  // Step 2: one top over the whole sill; the 0.30 m knee overhang is only at the west end (dead end of the bed-side lane).
- B(niche[0],lip,niche[1],niche[2],top,niche[3],M.oak);if(!compact)B(knee[0],lip,knee[1],knee[2],top,knee[3],M.oak);
+ // Fit-out round: the worktop's room-side edges take the casework bevel (1 cm), like a real 40 mm solid-oak top.
+ B(niche[0],lip,niche[1],niche[2],top,niche[3],M.oak,.01);if(!compact)B(knee[0],lip,knee[1],knee[2],top,knee[3],M.oak,.01);
  for(const x of [niche[0]+.02,(niche[0]+niche[2])/2,niche[2]-.02])B(x-.009,BAY.opening.sill,niche[1]+.02,x+.009,lip,niche[3]-.02,M.oak);
  B(niche[0]+.03,lip-.008,niche[1]+.005,niche[2]-.03,lip,niche[1]+.015,warm).castShadow=false;
  book(1.32,BAY.opening.sill,11.68,'#b9ad93',g);book(1.36,BAY.opening.sill+.035,11.7,'#a7b29e',g);book(2.32,BAY.opening.sill,11.7,'#c9b48f',g);

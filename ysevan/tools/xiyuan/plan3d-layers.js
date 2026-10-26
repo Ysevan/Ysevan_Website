@@ -12,9 +12,9 @@
 //  - 尺寸：房间净距从房间中心向四面打射线，碰到上面的墙、窗、关着的门扇为止；01 和 04 的家具净距取 fitout-dimensions.js。
 import * as THREE from 'three';
 import {mergeGeometries} from './utils/BufferGeometryUtils.js?v=fda7e946b8';
-import * as DETAIL from './detail-layer.js?v=590ca89d63';
+import * as DETAIL from './detail-layer.js?v=56bf62351d';
 import * as LAYOUT from './layout-data.js?v=177b5128ed';
-import * as LIVING from './living-balcony.js?v=3cc6ecc8d3';
+import * as LIVING from './living-balcony.js?v=d171d5c24b';
 import * as LAMPS from './room-lights.js?v=af40d3a7b9';
 import * as FITOUT from './fitout-dimensions.js?v=40ecd197db';
 

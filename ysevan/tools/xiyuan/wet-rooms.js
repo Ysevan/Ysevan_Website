@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {mergeGeometries} from './utils/BufferGeometryUtils.js?v=fda7e946b8';
-import {metricBoxUV} from './metric-uv.js?v=ff624541bd';
+import {metricBoxUV} from './metric-uv.js?v=07dab91ffb';
 // Kitchen and bathroom fit-out (scene detail round 3). The water points, worktops, sanitaryware and shower screens stay
 // exactly as app.js builds them (hashed in services-lock.json); this module only adds around them, after they exist,
 // on the owner's CAD walls (layout-original.json; the central set is identical in these rooms):

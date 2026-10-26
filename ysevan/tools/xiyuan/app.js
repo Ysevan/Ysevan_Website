@@ -1,30 +1,31 @@
-import {createLivingBalcony,LEGACY_LIVING_BOXES} from './living-balcony.js?v=3cc6ecc8d3';
+import {createLivingBalcony,LEGACY_LIVING_BOXES} from './living-balcony.js?v=d171d5c24b';import {chairParts,diningTableParts,pendantParts,latheGeo,addMesh} from './living-kit.js?v=8eb64615a6';
 import {FITOUT_DIMENSIONS} from './fitout-dimensions.js?v=40ecd197db';
 import {resolveLayout,WITHDRAWAL_NOTICE} from './layout-policy.js?v=d3fe69be91';
 import {MASTER_ENTRIES,CENTRAL_ENTRY,REFUGE_ENTRY,NORTH_ENTRY,ENTRY_VIEWS,DOOR_VIEW_DEFAULT,DOOR_VIEW_WALK,DOOR_OPEN} from './door-layout.js?v=dbf9e8b9fa'; import {createSky,eyeFov,crosses} from './scene-env.js?v=b921ffdb6b'; import {createPanels,createLandscape,setIcon} from './ui-panels.js?v=b45f2fcbff';
 import {LAYOUTS,CONCEPT_ROOMS,REDESIGN_VIEWS,OWNER_REPLACED_BOXES,BAY_BOXES,bayBoxesForLayout,WARDROBES,NORTHWEST_BED,NORTH_BED,NORTH_DESK,SOUTH_BED,MASTER_PLACEMENTS,ROOM_DECOR,OWNER_ROOMS,NORTH_ROOM,layoutBoxes,masterBox,masterClearance} from './layout-data.js?v=177b5128ed';
-import {createDesignStudio} from './design-studio.js?v=315e52595c';
-import {createConceptRoom} from './concept-rooms.js?v=2c689347a0';
-import {LIGHTING,OUTDOOR} from './design-presets.js?v=0154371027';
-import {createGamingRoom} from './gaming-room.js?v=63b9f2b6d6'; import {createBayWindow} from './bay-window.js?v=c3e426e534'; import {createSideCabinet} from './storage-fitout.js?v=4c5573f604';
-import {createOwnerMasterBed} from './owner-master-bed.js?v=f9e70db44c';
-import {createFittedWardrobe} from './fitted-wardrobe.js?v=3c06a47c42';
+import {createDesignStudio} from './design-studio.js?v=4248978574';
+import {createConceptRoom} from './concept-rooms.js?v=442240299b';
+import {LIGHTING,OUTDOOR} from './design-presets.js?v=d747850719';
+import {createGamingRoom} from './gaming-room.js?v=706a47ef83'; import {createBayWindow} from './bay-window.js?v=bb50668ec7'; import {createSideCabinet} from './storage-fitout.js?v=4c5573f604';
+import {createOwnerMasterBed} from './owner-master-bed.js?v=8f9a1628cb';
+import {createFittedWardrobe} from './fitted-wardrobe.js?v=c03b30a317';import {createBed,createCompactBed,createNightstand,createWardrobe,createWritingDesk,createSideChair} from './bedroom-kit.js?v=91fb07a8ba';
 import {STUDY_COLLISIONS,STUDY_VIEWS,GAMING_MODES,studyBoxes,studyWalkBoxes} from './design-data.js?v=0d48267e23';
 import {createNavigator,pointIn} from './navigation.js?v=3af6116843';
 import {createTouchWalk} from './touch-walk.js?v=c90b65fc68';
 import * as THREE from 'three';
 import {OrbitControls} from './vendor/OrbitControls.js?v=b97879c748';
 import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js?v=c1b7c9bd2c';
-import {metricBoxUV,WALL_UV} from './metric-uv.js?v=ff624541bd';
+import {metricBoxUV,WALL_UV} from './metric-uv.js?v=07dab91ffb';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js?v=c20f0b4677';
 import {mergeGeometries} from './utils/BufferGeometryUtils.js?v=fda7e946b8';
 import {pickTier,probeRenderer,tierSettings,tierBudget,SOFT_ENV_SKY,SOFT_ENV_GROUND,SUN_MAP} from './render-tier.js?v=72ed1d1d60';import {lightSpaceBounds,layoutFootprints,shadeMaterial,contactGeometry,wallAOGeometry} from './light-layer.js?v=04d6265177';
-import {leverGeo} from './detail-kit.js?v=95ac5fde41';import {createDetailLayer,doorReveal,windowSide} from './detail-layer.js?v=590ca89d63';
-import {BEVEL,bevel,bevelSegments,createFinishes} from './material-kit.js?v=f605101d42';
-import {createWetRooms} from './wet-rooms.js?v=f51fc87429';
-import {createFurnishing,bedding,COFFEE} from './furnish-layer.js?v=e90d2fee72';
+import {leverGeo} from './detail-kit.js?v=95ac5fde41';import {createDetailLayer,doorReveal,windowSide} from './detail-layer.js?v=56bf62351d';import {windowSpec,buildWindow,sliderParts,dwgRail,buildServices} from './open-kit.js?v=7e93283c8f';
+import {BEVEL,bevel,bevelSegments,createFinishes} from './material-kit.js?v=12514ab916';
+import {createWetRooms} from './wet-rooms.js?v=08a34d6c5a';
+import {refineWetFixtures} from './wet-fixtures.js?v=08280ef6d2';
+import {createFurnishing,bedding,COFFEE} from './furnish-layer.js?v=bc9ae48c34';
 import {createRoomLights,ownerRoomAt} from './room-lights.js?v=af40d3a7b9';
-import {installPlanView} from './plan3d-mode.js?v=091958cae9';
+import {installPlanView} from './plan3d-mode.js?v=a577d95bb2';
 
 const $=id=>document.getElementById(id);
 let dirtyUntil=performance.now()+1500;function invalidate(ms=400,shadow=false){dirtyUntil=Math.max(dirtyUntil,performance.now()+ms);if(shadow&&renderer)renderer.shadowMap.needsUpdate=true;}
@@ -119,7 +120,9 @@ const doorSpecs=[],windowSpecs=[];
 function windowWall(a,b,bottom,height,segments=3,base=true){const [x1,z1]=a,[x2,z2]=b,dx=x2-x1,dz=z2-z1,L=Math.hypot(dx,dz),rotation=-Math.atan2(dz,dx);const g=new THREE.Group();g.position.set((x1+x2)/2,0,(z1+z2)/2);g.rotation.y=rotation;detailTarget.add(g);
  if(base){box(0,0,0,L,bottom,.16,M.wall,g);box(0,bottom+height,0,L,Math.max(.01,2.78-bottom-height),.16,M.wall,g);}
  const fmat=M.frame,side=windowSide(a,b,footprint);windowSpecs.push({a,b,bottom,height,base,side,target:detailTarget});
- // Frame 60 mm, mullions 50 mm, 100 mm deep. In the B units the first pane, if 0.6 m or wider, opens: its own 40 mm sash proud on the room side, handle at mid-height.
+ // B units: the DWG frame, mullions, transoms and outward casements (open-kit.js windowSpec()). Otherwise frame 60 mm, mullions 50 mm, 100 deep, and in the
+ // B units the first pane, if 0.6 m or wider, opens: its own 40 mm sash proud on the room side, handle at mid-height.
+ const spec=detailTarget===bDetails?windowSpec(a,b):null;if(spec){buildWindow(spec,{box,M,g,L,bottom,height,side,soft:renderTier==='soft',arch:(x0,z0,x1,z1,y0,y1)=>archBox((x0+x1)/2,y0,(z0+z1)/2,x1-x0,y1-y0,z1-z0)});winSegments.push([x1,z1,x2,z2]);return g;}
  box(0,bottom,0,L,.06,.1,fmat,g);box(0,bottom+height-.06,0,L,.06,.1,fmat,g);
  for(let i=0;i<=segments;i++)box(-L/2+L*i/segments,bottom,0,.05,height,.1,fmat,g);
  const q=box(0,bottom+.02,0,L-.03,height-.04,.018,M.glass,g);q.castShadow=false;
@@ -127,9 +130,9 @@ function windowWall(a,b,bottom,height,segments=3,base=true){const [x1,z1]=a,[x2,
   for(const y of [y0,y1-.04])box((u0+u1)/2,y,v,u1-u0,.04,.06,fmat,g);for(const u of [u0+.02,u1-.02])box(u,y0,v,.04,y1-y0,.06,fmat,g);
   box(u1-.02,hy-.04,side*.071,.028,.08,.012,fmat,g);box(u1-.02,hy-.13,side*.087,.018,.12,.02,fmat,g);}
  winSegments.push([x1,z1,x2,z2]);return g;}
-windowWall([.4,2.45],[2.4,2.45],.5,1.8,2);windowWall([3.95,2.45],[5.2,2.45],.5,1.8,2);windowWall([5.45,2.45],[6.15,2.45],.5,1.8,1);windowWall([7.1,.15],[8.3,.15],.9,1.4,2);
+windowWall([.6,2.45],[2.6,2.45],.6,1.75,2);windowWall([3.95,2.45],[5.2,2.45],.5,1.85,2);windowWall([5.4,2.45],[6.15,2.45],.5,1.85,1);windowWall([7.1,.15],[8.3,.15],.9,1.45,2);
 windowWall([.7,12.15],[2.8,12.15],.5,1.8,3);windowWall([.7,11.6],[.7,12.15],.5,1.8,1);windowWall([2.85,11.6],[2.85,12.15],.5,1.8,1);
-windowWall([0,5.95],[0,6.75],.9,1.4,1);windowWall([0,8.05],[0,9.15],.65,1.65,1);
+windowWall([0,5.95],[0,6.75],.9,1.45,1);
 // Bay-window seats are low, not full-height walls.
 box(1.78,0,11.9,2.15,.48,.5,M.stone);box(4.56,0,2.73,1.25,.48,.48,M.stone);box(5.8,0,2.73,.7,.48,.48,M.stone);
 function doorway(x,z,width,along='x',swing=1){const g=new THREE.Group();g.position.set(x,0,z);if(along==='z')g.rotation.y=Math.PI/2;detailTarget.add(g);const fm=mat('#a79274',.68,{clippingPlanes:[clipPlane]});
@@ -141,29 +144,32 @@ function doorway(x,z,width,along='x',swing=1){const g=new THREE.Group();g.positi
  // Leaf clears the 16 mm threshold stone; lever handles with square roses on both faces.
  const hinge=new THREE.Group();hinge.userData.doorLeaf=true;hinge.position.x=-width/2;hinge.rotation.y=swing*Math.PI*.47;g.add(hinge);const dm=mat('#b7a282',.72,{clippingPlanes:[clipPlane]});box(width/2,.02,0,width,2.25,.038,dm,hinge);const lever=new THREE.Mesh(leverGeo(width),M.brass);lever.castShadow=true;hinge.add(lever);return g;}
 function configuredDoor(d){const g=doorway(d.x,d.z,d.width,d.along,d.swing);if(d.mirror)g.scale.x=-1;return g;}
-const childDoor=doorway(2.25,5.9,.9);childDoor.scale.x=-1;configuredDoor(NORTH_ENTRY);const originalMasterDoor=configuredDoor(MASTER_ENTRIES.original);
+const childDoor=doorway(2.3,5.9,.9);childDoor.scale.x=-1;configuredDoor(NORTH_ENTRY);const originalMasterDoor=configuredDoor(MASTER_ENTRIES.original);
 // The refuge doorset is retained at its original opening; not replaced with a decorative sliding door.
 configuredDoor(REFUGE_ENTRY);
-const southDoor=configuredDoor({x:6,z:7.1,width:.9,along:'x',swing:-1,mirror:true});doorway(5.85,4.9,.8);doorway(10.65,2,1.1,'z');
+const southDoor=configuredDoor({x:6,z:7.1,width:.9,along:'x',swing:-1,mirror:true});doorway(5.9,4.9,.8);configuredDoor({x:10.65,z:2,width:1.1,along:'z',swing:-1,mirror:true});
 const centralSouthDoor=configuredDoor(CENTRAL_ENTRY);centralSouthDoor.visible=false;
 // Door frames always remain; leaves can be hidden for viewing, not physically removed.
-function slider(x,z,w){const g=new THREE.Group();detailTarget.add(g);const fm=M.frame;box(x,2.3,z,w,.06,.12,fm,g);box(x-w/2,0,z,.04,2.3,.12,fm,g);box(x+w/2,0,z,.04,2.3,.12,fm,g);const leaf=new THREE.Group();leaf.userData.doorLeaf=true;g.add(leaf);box(x-w*.35,0,z,w*.28,2.3,.025,M.glass,leaf);box(x-w*.21,0,z,.025,2.3,.07,fm,leaf);archBox(x,2.36,z,w,.42,.18);
- for(const s of [-1,1])box(x-w*.21,.85,z+s*.047,.016,.34,.024,fm,leaf);const {t,c}=doorReveal([originalData,centralWallData],x,z,w,'x');doorSpecs.push({x,z,w,along:'x',swing:0,t,c,g,target:detailTarget,kind:'slider'});return g;}
-slider(8.6,11.55,2.7);slider(4.75,11.55,1.8);const studyDivider=slider(1.4,3.9,2.7);
-// Balcony balustrade and columns; no fabricated outside view.
-function rail(a,b){const [x1,z1]=a,[x2,z2]=b;const L=Math.hypot(x2-x1,z2-z1);rod([x1,1.1,z1],[x2,1.1,z2],.025,M.metal,detailTarget);for(let d=0;d<=L;d+=.16){const t=d/L;rod([x1+(x2-x1)*t,.08,z1+(z2-z1)*t],[x1+(x2-x1)*t,1.08,z1+(z2-z1)*t],.012,M.metal,detailTarget);}winSegments.push([x1,z1,x2,z2]);}
-rail([3.4,13.35],[10.5,13.35]);rail([3.4,11.75],[3.4,13.35]);
+function slider(x,z,w){const g=new THREE.Group();detailTarget.add(g);const leaf=new THREE.Group();leaf.userData.doorLeaf=true;g.add(leaf);sliderParts({box,M,g,leaf,x,z,w});archBox(x,2.36,z,w,.42,.18);
+ const {t,c}=doorReveal([originalData,centralWallData],x,z,w,'x');doorSpecs.push({x,z,w,along:'x',swing:0,t,c,g,target:detailTarget,kind:'slider'});return g;}
+slider(8.6,11.55,2.7);slider(5.1,11.55,1.8);slider(8,3.1,1.6);const studyDivider=slider(1.4,3.9,2.7);
+// Balcony: the DWG window wall on the south front (open-kit.js), the railing on the west side; no fabricated outside view.
+function rail(a,b,dwg=null){if(dwg){dwgRail({rod,box,M,parent:detailTarget,a,b,header:dwg.header});winSegments.push([...a,...b]);return;}const [x1,z1]=a,[x2,z2]=b;const L=Math.hypot(x2-x1,z2-z1);rod([x1,1.1,z1],[x2,1.1,z2],.025,M.metal,detailTarget);for(let d=0;d<=L;d+=.16){const t=d/L;rod([x1+(x2-x1)*t,.08,z1+(z2-z1)*t],[x1+(x2-x1)*t,1.08,z1+(z2-z1)*t],.012,M.metal,detailTarget);}winSegments.push([x1,z1,x2,z2]);}
+windowWall([3.5,13.4],[9.95,13.4],.05,2.3,6,false);rail([3.45,12.35],[3.45,13.4],{header:2.35});
+// Equipment the DWG draws in the owner's unit: wall air-conditioner, balcony outdoor units, condensate stack, distribution boxes
+// (open-kit.js); fixed like the walls, so outside the furniture groups and the furnishing toggle.
+buildServices({box,clipPlane,parent:house,soft:renderTier==='soft'});
 // Contact shadows: every furniture footprint gets an eased patch (light-layer.js); one geometry per group, so after batchStatic
 // each group adds at most one draw call. The same unlit material draws the fake AO along the walls (cut with them).
 const shadeMat=shadeMaterial(clipPlane);function contacts(boxes,parent){const q=new THREE.Mesh(contactGeometry(boxes),shadeMat);parent.add(q);return q;}
 const rugMaterials=new Set();
-function rug(x,z,w,d,color='#c4c7b5'){const m=mat(color,.98,{map:fabrictex});rugMaterials.add(m);const q=round(x,.017,z,w,.018,d,m,furniture,.04);q.receiveShadow=true;for(let i=0;i<10;i++){const line=box(x-w/2+.08+i*.024,.038,z,.009,.002,d-.08,mat('#eeeee4',1),furniture);}}
+function rug(x,z,w,d,color='#c4c7b5'){const m=mat(color,.98,{map:fabrictex});rugMaterials.add(m);const q=round(x,.017,z,w,.018,d,m,furniture,.04);q.receiveShadow=true;const L=mat('#eeeee4',1),b=.07,s=.016;for(const [u,v,a,c] of [[x,z-d/2+b,w-2*b,s],[x,z+d/2-b,w-2*b,s],[x-w/2+b,z,s,d-2*b-s],[x+w/2-b,z,s,d-2*b-s]])box(u,.0355,v,a,.0015,c,L,furniture);}
 function plant(x,z,h=1,parent=furniture){furnish.plant(x,z,h,parent);}
-function vase(x,y,z,parent=furniture){cyl(x,y,z,.09,.19,M.terracotta,parent,.045);for(let i=0;i<4;i++){rod([x,y+.15,z],[x+(i-1.5)*.04,y+.45+(i%2)*.05,z+.03],.003,M.brass,parent);sphere(x+(i-1.5)*.04,y+.44+(i%2)*.05,z+.03,.045,.06,.02,M.olive,parent);}}
-function book(x,y,z,color='#b1b69f',parent=furniture){box(x,y,z,.25,.035,.17,mat(color),parent,.006);}
+function vase(x,y,z,parent=furniture){addMesh(parent,latheGeo(x,y,z,[[0,0],[.06,0],[.088,.07],[.062,.145],[.036,.178],[.04,.19],[0,.19]],BEVEL.segments>1?16:8),M.terracotta,'vase');for(let i=0;i<4;i++){rod([x,y+.15,z],[x+(i-1.5)*.04,y+.45+(i%2)*.05,z+.03],.003,M.brass,parent);sphere(x+(i-1.5)*.04,y+.44+(i%2)*.05,z+.03,.045,.06,.02,M.olive,parent);}}
+function book(x,y,z,color='#b1b69f',parent=furniture){const c=mat(color);for(const t of [0,.031])box(x,y+t,z,.25,.004,.17,c,parent);box(x-.123,y,z,.004,.035,.17,c,parent);box(x+.002,y+.004,z,.242,.027,.162,M.white,parent);}
 // cut: hung above 1.28 m, so every part is cut with the walls; the frame keeps sharing oak's colour across presets.
-let oakCut=null;function art(x,y,z,w,h,rotation=0,cut=false){const c=cut?{clippingPlanes:[clipPlane]}:{};if(cut&&!oakCut){oakCut=M.oak.clone();oakCut.clippingPlanes=[clipPlane];oakCut.color=M.oak.color;}const g=new THREE.Group();g.position.set(x,y,z);g.rotation.y=rotation;furniture.add(g);box(0,0,0,w,h,.035,cut?oakCut:M.oak,g);box(0,.035,.025,w-.07,h-.07,.012,mat('#ebe8db',.78,c),g);const a=cyl(0,.1,0,.01,.01,M.oak);furniture.remove(a);for(let i=0;i<3;i++){const q=new THREE.Mesh(new THREE.CircleGeometry(w*(.12+i*.03),24),new THREE.MeshBasicMaterial({color:['#657158','#c5ac80','#9d7d5b'][i],...c}));q.position.set((i-1)*w*.2,h*(.3+i*.17),.036+i*.002);g.add(q);}return g;}
-function chair(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;furniture.add(g);round(0,.43,0,.45,.07,.43,M.linen,g,.05);round(0,.53,.19,.44,.36,.055,M.oak,g,.025);for(let a of [-1,1])for(let b of [-1,1])rod([a*.17,0,b*.16],[a*.15,.46,b*.14],.023,M.walnut,g);return g;}
+let oakCut=null;function art(x,y,z,w,h,rotation=0,cut=false){const c=cut?{clippingPlanes:[clipPlane]}:{};if(cut&&!oakCut){oakCut=M.oak.clone();oakCut.clippingPlanes=[clipPlane];oakCut.color=M.oak.color;}const g=new THREE.Group();g.position.set(x,y,z);g.rotation.y=rotation;furniture.add(g);const F=cut?oakCut:M.oak,t=.035;for(const u of [-1,1])box(u*(w-t)/2,0,.01125,t,h,.0575,F,g);for(const v of [0,h-t])box(0,v,.01125,w-2*t,t,.0575,F,g);box(0,t,-.015,w-2*t,h-2*t,.005,F,g);box(0,t,.0105,w-2*t,h-2*t,.004,mat('#ebe8db',.78,c),g);for(let i=0;i<3;i++){const q=new THREE.Mesh(new THREE.CircleGeometry(w*(.12+i*.03),24),mat(['#657158','#c5ac80','#9d7d5b'][i],.9,c));q.position.set((i-1)*w*.2,h*(.3+i*.17),.0128+i*.0004);q.receiveShadow=true;g.add(q);}return g;}
+function chair(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;furniture.add(g);chairParts(g,M,BEVEL.segments);return g;}
 // Soft furnishings and accessories (furnish-layer.js): cushions, throw, made beds, lamps, prints, entry joinery, balcony rack.
 const furnish=createFurnishing({box,cyl,rod,mat,M,clipPlane,rug,vase,contacts,oakCut:()=>oakCut,soft:renderTier==='soft'});
 const livingStart=new Set(furniture.children);
@@ -179,8 +185,8 @@ round(10.17,.11,9.05,.43,.34,2.55,M.oak);box(10.43,.72,9.05,.035,1.08,1.9,mat('#
 collide(6.82,7.72,7.82,10.38);collide(7.7,7.2,9.4,8.03);collide(9.95,7.75,10.4,10.35);collide(8.33,8.86,9.3,9.9);
 const oldLivingMeshes=[...furniture.children].filter(q=>!livingStart.has(q));
 // Dining area and pendant cluster.
-round(8.05,.72,4.6,1.75,.07,.86,M.oak);for(let a of [-1,1])for(let b of [-1,1])box(8.05+a*.65,0,4.6+b*.3,.06,.72,.06,M.walnut,furniture);for(let x of [7.45,8.05,8.65]){chair(x,3.85,Math.PI);chair(x,5.36,0);}vase(8.0,.79,4.6);for(let x of [7.5,8.55])cyl(x,.795,4.62,.12,.015,M.white);collide(7.12,4.1,8.97,5.08);
-const lamps=new THREE.Group();roof.add(lamps);for(let i=0;i<3;i++){rod([7.45+i*.6,2.78,4.6],[7.45+i*.6,2.1+i*.08,4.6],.006,M.dark,lamps);sphere(7.45+i*.6,2.05+i*.08,4.6,.17,.12,.17,M.white,lamps);}const diningLight=new THREE.PointLight('#ffe3b1',3,4,2);diningLight.position.set(8,2.3,4.6);roof.add(diningLight);
+diningTableParts(furniture,M,BEVEL.segments,{cx:8.05,cz:4.6,w:1.75,d:.86,top:.76});for(let x of [7.45,8.05,8.65]){chair(x,3.85,Math.PI);chair(x,5.36,0);}vase(8.0,.76,4.6);for(let x of [7.5,8.55])addMesh(furniture,latheGeo(x,.76,4.62,[[0,0],[.08,0],[.125,.016],[.115,.017],[0,.01]],BEVEL.segments>1?20:12),M.white,'plate');collide(7.12,4.1,8.97,5.08);
+const lamps=new THREE.Group();roof.add(lamps);for(let i=0;i<3;i++){rod([7.45+i*.6,2.78,4.6],[7.45+i*.6,2.1+i*.08,4.6],.006,M.dark,lamps);pendantParts(lamps,M,BEVEL.segments,7.45+i*.6,2.1+i*.08,4.6);}const diningLight=new THREE.PointLight('#ffe3b1',3,4,2);diningLight.position.set(8,2.3,4.6);roof.add(diningLight);
 // Kitchen: sink, cabinets, hob, tall fridge.
 round(6.91,0,1.67,.6,.86,2.7,M.oak);round(7.61,0,.59,1.85,.86,.58,M.oak);box(6.91,.86,1.67,.66,.035,2.7,M.stone,furniture);box(7.61,.86,.59,1.85,.035,.64,M.stone,furniture);box(6.6,.91,1.65,.035,.48,2.55,mat('#d2d3be',.78,{clippingPlanes:[clipPlane]}),furniture);box(6.9,.902,1.55,.49,.012,.62,mat('#25312a',.3),furniture);for(let z of [1.37,1.72])cyl(6.92,.915,z,.12,.015,M.metal);
 box(7.6,.9,.59,.66,.02,.42,M.metal,furniture,.05);box(7.6,.918,.59,.53,.01,.3,mat('#82908c'),furniture,.06);rod([7.65,.91,.36],[7.65,1.18,.36],.016,M.metal);rod([7.65,1.18,.36],[7.65,1.18,.58],.016,M.metal);
@@ -188,24 +194,24 @@ round(8.48,0,2.65,.62,1.94,.63,mat('#a9b2a3',.4));box(8.145,1.1,2.65,.017,.02,.5
 // Entry bench and slim storage, without shrinking the entry passage.
 const entryCabinet=furnish.entry(furniture);vase(10.25,.955,3.64,entryCabinet);const entryCabinetFootprint=[10.03,3.06,10.5,4.16];collide(...entryCabinetFootprint);furnish.smartLock(doorSpecs.find(d=>d.x===10.65&&d.z===2).g);
 // Bedroom furniture. The master bed can be measured and resized.
-function bed(cx,cz,width,length=2,rot=0,master=false){if(master){const g=createOwnerMasterBed({cx,cz,width,length,rotation:rot},{box,materials:M,parent:furniture});contacts([[-width/2-.04,-length/2-.05,width/2+.04,length/2+.05]],g);return g;}const g=new THREE.Group();g.position.set(cx,0,cz);g.rotation.y=rot;furniture.add(g);round(0,.13,0,width+.12,.19,length+.12,M.oak,g,.04);round(0,.32,0,width,.2,length,M.white,g,.08);round(0,.16,-length/2-(master?.055:.06),width+.2,.92,master?.11:.12,M.olive,g,.06);bedding(g,{width,length,top:.52,M});if(master)contacts([[-width/2-.1,-length/2-.11,width/2+.1,length/2+.06]],g);return g;}
+function bed(cx,cz,width,length=2,rot=0,master=false,layout=null){const g=master?createOwnerMasterBed({cx,cz,width,length,rotation:rot},{box,materials:M,parent:furniture}):createBed({cx,cz,width,length,rot,layout},{box,M,parent:furniture,bedding});if(master)contacts([[-width/2-.04,-length/2-.05,width/2+.04,length/2+.05]],g);return g;}
 const masterStart=new Set(furniture.children);
 let masterBed=bed(1.15,9.8,1.8,2,Math.PI/2,true);
 // Width is along the CAD bedroom's long side; foot lies toward the wardrobe.
-function nightstand(x,z){round(x,.05,z,.42,.42,.42,M.oak);cyl(x,.47,z,.1,.21,M.stone);cyl(x,.68,z,.16,.2,M.linen,furniture,.12);}
-nightstand(.45,8.68);nightstand(.45,11.11);rug(1.69,9.95,2.65,2.9,'#c6c6af');
-function wardrobe(x,z,w,d,h=2.38){const g=new THREE.Group();furniture.add(g);box(x,0,z,w,h,d,M.oak,g);for(let i=1;i<Math.ceil(w/.55);i++)box(x-w/2+i*w/Math.ceil(w/.55),.05,z+d/2+.001,.009,h-.1,.004,M.walnut,g);return g;}
+function nightstand(x,z,rot=0){return createNightstand({x,z,rot},{box,cyl,M,parent:furniture});}
+nightstand(.45,8.68,Math.PI/2);nightstand(.45,11.11,Math.PI/2);rug(1.69,9.95,2.65,2.9,'#c6c6af');
+function wardrobe(x,z,w,d,h=2.38,face){return createWardrobe({x,z,w,d,h,face},{box,M,parent:furniture});}
 wardrobe(3.1,9.75,.56,3.1);collide(2.82,8.2,3.38,11.3);art(.145,1.3,9.95,1.3,.72,Math.PI/2);round(1.7,.5,11.9,1.9,.09,.42,M.olive);book(2.3,.59,11.91);
 const originalMaster=new THREE.Group();for(const q of [...furniture.children])if(!masterStart.has(q)&&q!==masterBed)originalMaster.add(q);furniture.add(originalMaster);
 // South bedroom and north bedroom.
 const southStart=new Set(furniture.children);
-bed(4.52,9.78,1.5,2,Math.PI/2);wardrobe(4.48,7.65,1.98,.58);nightstand(3.65,8.72);rug(4.95,9.88,2.35,2.65,'#d0c6b1');collide(3.5,7.35,5.48,7.95);collide(3.46,9,5.58,10.55);
+bed(4.52,9.78,1.5,2,Math.PI/2);wardrobe(4.48,7.65,1.98,.58);nightstand(3.65,8.72,Math.PI/2);rug(4.95,9.88,2.35,2.65,'#d0c6b1');collide(3.5,7.35,5.48,7.95);collide(3.46,9,5.58,10.55);
 const originalSouth=new THREE.Group();for(const q of [...furniture.children])if(!southStart.has(q))originalSouth.add(q);furniture.add(originalSouth);
 const northStart=new Set(furniture.children);
 bed(4.12,3.92,1.5,2,Math.PI/2);round(3.52,.69,5.04,.65,.06,1.1,M.oak);box(3.52,0,4.6,.5,.7,.06,M.oak,furniture);box(3.52,0,5.5,.5,.7,.06,M.oak,furniture);chair(4.13,5.03,-Math.PI/2);book(3.5,.75,5.08);collide(3.1,3.15,5.18,4.68);collide(3.19,4.5,3.85,5.6);
 const originalNorth=new THREE.Group();for(const q of [...furniture.children])if(!northStart.has(q))originalNorth.add(q);furniture.add(originalNorth);
 const childStart=new Set(furniture.children);const childCollisionStart=collisionBoxes.length;
-bed(1.15,4.57,1.1,2,Math.PI/2);wardrobe(.49,5.45,.62,.62,1.6);rug(1.45,5.13,1.8,1.2,'#b5c6b1');collide(.1,4,2.2,5.15);collide(.17,5.13,.81,5.77);
+bed(1.15,4.57,1.1,2,Math.PI/2);wardrobe(.49,5.45,.62,.62,1.6,'east');rug(1.45,5.13,1.8,1.2,'#b5c6b1');collide(.1,4,2.2,5.15);collide(.17,5.13,.81,5.77);
 const oldChildFurniture=new THREE.Group();for(const q of [...furniture.children])if(!childStart.has(q))oldChildFurniture.add(q);furniture.add(oldChildFurniture);const oldChildCollisions=collisionBoxes.slice(childCollisionStart);
 // Bathrooms are not reassigned to bedrooms or expanded.
 function toilet(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;furniture.add(g);round(0,0,0,.35,.35,.48,M.white,g,.14);round(0,.34,0,.39,.055,.53,M.white,g,.15);round(0,.16,-.22,.37,.48,.16,M.white,g,.05);}
@@ -235,7 +241,7 @@ const study=gaming.room,studyDay=gaming.day,studyGuest=gaming.guest,studyChair=g
 const studyCollisions=STUDY_COLLISIONS;
 studyChair.position.z=.05;studyDivider.visible=false;let doorView=DOOR_VIEW_DEFAULT,guestMode=false,gamingMode='focus';
 // Owner's restrained timber detail remains; both entry/dining cabinets and their decor are removed in every layout.
-box(6.78,.15,9.05,.028,.94,2.7,M.oak,leftB);
+box(6.714,.15,9.05,.028,.94,2.7,M.oak,leftB);// flush on the living-room west wall face (x 6.70); it stood 66 mm off it
 const ownerExtraCollisions=[];
 // Remove ONLY owner furniture after cloning the opposite B unit. Locked wet geometry above is unchanged.
 for(const q of [...oldLivingMeshes,...oldBalconyMeshes])leftB.remove(q);
@@ -253,18 +259,16 @@ for(const id of ['original','redesign']){furniture=id==='original'?originalFitou
  for(const w of WARDROBES[id])fittedWardrobe(w);
  // Compact north-bedroom bed: a 1.2 × 2.0 mattress with an independently sized
  // 1.26 × 2.08 frame, rather than the generic bed's oversized upholstered headboard.
- const nbSpec=id==='original'?NORTH_BED:NORTHWEST_BED;const nb=new THREE.Group();nb.position.set(nbSpec.cx,0,nbSpec.cz);nb.rotation.y=nbSpec.rotation;furniture.add(nb);
- round(0,.08,0,nbSpec.width+.06,.22,2.08,M.oak,nb,.02);round(0,.30,0,nbSpec.width,.18,2,M.white,nb,.03);
- box(0,.12,-1.02,nbSpec.width+.06,.70,.04,M.oak,nb);bedding(nb,{width:nbSpec.width,length:2,top:.48,M,fit:[nbSpec.width/2+.03,1.04]});
- if(id==='original')bed(SOUTH_BED.cx,SOUTH_BED.cz,SOUTH_BED.width,2,SOUTH_BED.rotation);
+ // Fit-out round (bedroom-kit.js): legs, a slatted oak headboard on its posts; the outline is unchanged.
+ const nbSpec=id==='original'?NORTH_BED:NORTHWEST_BED;createCompactBed({cx:nbSpec.cx,cz:nbSpec.cz,rot:nbSpec.rotation,width:nbSpec.width,layout:id},{box,M,parent:furniture,bedding});
+ if(id==='original')bed(SOUTH_BED.cx,SOUTH_BED.cz,SOUTH_BED.width,2,SOUTH_BED.rotation,false,id);
  else{round(4.5,.71,3.47,1.4,.04,.6,M.oak);for(const x of [3.85,5.15])box(x,0,3.47,.035,.71,.52,M.oak,furniture);chair(4.5,4.2);book(4,.75,3.45);art(5.24,1.0,4.2,.75,1.05,-Math.PI/2);}
  rug(id==='original'?1.35:1.75,9.8,id==='original'?2.4:2.9,2.7,'#c6c6af');
  if(id==='original'){
   // Northeast writing desk replaces the wardrobe; footprint 1.20 x 0.60 m.
-  const [x,z,X,Z]=NORTH_DESK.box;box((x+X)/2,.71,(z+Z)/2,X-x,.04,Z-z,M.oak,furniture);
-  for(const zz of [z+.08,Z-.08])box((x+X)/2,0,zz,.50,.71,.035,M.metal,furniture);
-  const [cx,cz]=NORTH_DESK.chair;box(cx,.42,cz,.46,.06,.46,M.linen,furniture);box(cx+.21,.48,cz,.04,.42,.46,M.linen,furniture);
-  for(const xx of [cx-.20,cx+.20])for(const zz of [cz-.20,cz+.20])box(xx,0,zz,.035,.42,.035,M.oak,furniture);
+  // Fit-out round (bedroom-kit.js): timber writing desk with a drawer, a timber side chair facing it (west).
+  const [x,z,X,Z]=NORTH_DESK.box;createWritingDesk({cx:(x+X)/2,cz:(z+Z)/2,rot:Math.PI/2,len:Z-z,dep:X-x,top:.75},{box,M,parent:furniture});
+  const [cx,cz]=NORTH_DESK.chair;createSideChair({cx,cz,rot:Math.PI/2},{box,M,parent:furniture});
   book(3.32,.75,4.77);
  }
  // Wall-mounted reading lights, not bulky bedside tables filling the narrow side lanes.
@@ -292,7 +296,7 @@ rug(12.75,11.4,2.65,2.9,'#c6c7b8');round(13.95,.12,11.27,.85,.29,2.5,M.linen);ro
 round(11.16,.12,11.2,.42,.34,2.4,M.oak);box(10.97,.82,11.2,.035,.9,1.6,M.dark,leftA);cyl(12.65,.32,11.45,.45,.05,M.stone);cyl(12.65,.05,11.45,.15,.27,M.walnut);vase(12.65,.37,11.45);plant(11.7,12.95,1.0);collide(13.5,10,14.4,12.6);collide(10.95,10,11.4,12.4);collide(12.2,11,13.1,11.9);
 round(13.0,.73,7.3,1.5,.065,.8,M.oak);for(let x of [12.5,13.5])for(let z of [7.05,7.55])box(x,0,z,.05,.73,.05,M.walnut,leftA);chair(12.6,6.6);chair(13.35,6.6);chair(12.6,8,Math.PI);chair(13.35,8,Math.PI);vase(13,.8,7.3);collide(12.2,6.9,13.8,7.7);
 round(12.8,0,4.2,.58,.86,1.8,M.oak);round(13.65,0,3.55,1.7,.86,.6,M.oak);box(12.8,.86,4.2,.62,.035,1.8,M.stone,leftA);box(13.65,.86,3.55,1.7,.035,.64,M.stone,leftA);box(14,.9,3.55,.6,.025,.4,M.metal,leftA);cyl(12.8,.9,4.5,.12,.015,M.dark);round(14.6,0,5.05,.6,1.9,.6,M.white);collide(12.48,3.3,13.12,5.1);collide(13.1,3.25,14.5,3.88);collide(14.3,4.75,14.9,5.35);
-bed(19.5,11.45,1.8);wardrobe(20.5,9.4,.55,1.6);nightstand(18.3,10.8);nightstand(20.65,10.8);rug(19.4,11.8,2.8,2.7);collide(18.54,10.39,20.46,12.51);collide(20.225,8.6,20.775,10.2);
+bed(19.5,11.45,1.8);wardrobe(20.5,9.4,.55,1.6);nightstand(18.3,10.8,0);nightstand(20.65,10.8,0);rug(19.4,11.8,2.8,2.7);collide(18.54,10.39,20.46,12.51);collide(20.225,8.6,20.775,10.2);
 bed(16.0,11.65,1.5);wardrobe(16.1,9.92,1.8,.55);collide(15.19,10.59,16.81,12.71);collide(15.2,9.65,17.0,10.2);
 bed(17.45,6.75,1.35);round(17.0,.71,8.1,.8,.04,.35,M.oak);collide(16.71,5.69,18.19,7.81);
 toilet(15.5,5.95);basin(15.0,8.05,.5);toilet(19.15,6.2);basin(20.3,7.4,.6);collide(14.75,7.8,15.25,8.3);collide(20,7.15,20.6,7.65);
@@ -595,6 +599,9 @@ function applyLayout(id){const next=resolveLayout(id),changed=next!==activeLayou
 $('layoutPlanView').onclick=()=>{focusUnit='bl';selectUnit('bl');changeMode('plan');};
 const studio=createDesignStudio({applyLayout,applyHome:applyHomeDesign,applyGaming:renderGamingPreferences,previewRoom:id=>{goRoom(id==='master'&&activeLayout==='central'?'south':id==='child'&&activeLayout!=='original'?'south':id);if(ui.phone)$('closeDesign').click();},toast});
 
+// Wet-room fixtures (wet-fixtures.js), before contact shadows and batching: toilets, basins, kitchen fronts, sink, hob and fridge as
+// real products inside the locked parts' outlines (their meshes keep anchors and turns), the CAD east counter, shower valves.
+const wetFix=refineWetFixtures({M,owner:leftB,collisions:ownerExtraCollisions,tier:renderTier});
 // Contact shadows by group: the owner's shared furniture (not the pieces the layouts replace), the neighbours' full original sets
 // (the mirrored units are built in their own unmirrored frame), each layout's fit-out. Fake AO along each wall set's faces,
 // its ceiling bands as their own mesh (own material, so batchStatic keeps it apart; clone() copies the cut plane, so it is

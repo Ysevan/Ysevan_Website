@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {GAMING_MODES,STUDY_UPPER_DISPLAYS} from './design-data.js?v=0d48267e23';
+import {deskFrame,monitorArm,officeChair,sofaDay,sofaGuest} from './bedroom-kit.js?v=91fb07a8ba';
 // One laptop + one 27-inch display. Hardware cases are size allowances, not product CAD.
 export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlane,materials,south=false}){
  const room=new THREE.Group(),day=new THREE.Group(),guest=new THREE.Group(),chair=new THREE.Group(),shade=new THREE.Group();room.add(day,guest,chair,shade);guest.visible=false;
@@ -12,12 +13,15 @@ export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlan
  // Roller-blind box and blind hang above the 1.28 m cut: cut with the walls (material-kit.js cut twins).
  if(!south)B(1.4,2.28,2.52,2.04,.065,.065,G.whiteCut||G.white);
  B(1.4,.51,2.515,1.96,1.77,.015,G.linenCut||G.linen,shade);
- // 2.0 × 0.70 m desk, worktop 0.76 m; cable tray is accessible from below.
- B(1.4,.73,2.95,2,.03,.7);for(const x of [.48,2.32])B(x,0,2.94,.045,.73,.55,G.metal);
- B(1.4,.59,2.69,1.65,.05,.12,G.metal);B(.56,0,2.92,.30,.63,.53,G.white);
- for(const y of [.2,.4])B(.56,y,3.19,.26,.008,.005,G.oak);
+ // 2.0 × 0.70 m desk, worktop 0.76 m; cable tray is accessible from below. Fit-out round (bedroom-kit.js): steel side
+ // frames at both ends (feet, uprights, bearers), a back beam and an open tray; a three-drawer pedestal (3 mm gaps, bar pulls)
+ // between the left frame and the laptop, clear of the frame.
+ const Bd=(x,y,z,w,h,d,m,r=0)=>B(1.4+x,y,2.95+z,w,h,d,m,target,r);
+ B(1.4,.73,2.95,2,.03,.7,G.oak,target,.01);deskFrame(Bd,{xs:[-.965,.965],depth:.7,top:.73,M:G});
+ B(.64,0,2.92,.30,.63,.51,G.white,target,.008);
+ for(const [y,h] of [[.03,.2],[.233,.18],[.416,.21]]){B(.64,y,3.177,.294,h,.018,G.white,target,.004);B(.64,y+h-.04,3.19,.12,.012,.01,G.oak);}
  // 27-inch, 16:9 screen envelope ~0.62 × 0.37 m including housing. Model-dependent stand.
- B(1.95,.96,2.77,.62,.37,.035,device);rod([1.95,.76,2.66],[1.95,1.09,2.75],.018,G.metal,work);
+ B(1.95,.96,2.77,.62,.37,.035,device);monitorArm(B,work,{x:1.95,zb:2.6,y:.76,armY:.94,screenZ:2.7525,M:G});
  // Laptop open on a ventilated riser, NOT a second desktop display or a tower.
  B(.95,.82,2.98,.40,.023,.28,device);B(.95,.79,2.98,.31,.03,.17,G.metal);
  const laptop=B(.95,.85,2.84,.40,.26,.017,device);laptop.rotation.x=-.12;
@@ -30,20 +34,15 @@ export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlan
  for(let row=0;row<5;row++)for(let col=0;col<14;col++)B(1.602+col*.024,.799,3.069+row*.025,.020,.006,.019,keys);
  B(2.12,.778,3.13,.065,.035,.11,keys,work,.025);
  // Work chair is movable; retained balcony threshold is narrow, not a wide office bay.
- const cx=south?2.1:2.18,cz=3.55;
- B(cx,.43,cz,.49,.08,.46,G.olive,chair,.05);B(cx,.52,cz+.18,.45,.52,.06,G.linen,chair,.04);
- for(const x of [cx-.26,cx+.26])B(x,.63,cz+.03,.035,.035,.24,G.metal,chair);
- cyl(cx,.08,cz,.035,.35,G.metal,chair);for(let i=0;i<5;i++){const a=i*Math.PI*2/5;rod([cx,.1,cz],[cx+Math.cos(a)*.28,.045,cz+Math.sin(a)*.28],.015,G.metal,chair);}
+ // Fit-out round: an ergonomic gaming chair (bedroom-kit.js) with a headrest, its five-spoke base inside the chair box.
+ const cx=south?2.1:2.18,cz=3.55,cg=new THREE.Group();cg.position.set(cx,0,cz);chair.add(cg);
+ officeChair((x,y,z,w,h,d,m,r=0)=>B(x,y,z,w,h,d,m,cg,r),cg,{M:G,rb:.28,backTop:1.12,head:true});
  if(!south){
- // Entry faces north: west is the left-hand wall. Keep the east aisle clear.
- B(.55,.12,4.86,.86,.27,1.94,G.oak,day,.03);
- B(.59,.39,4.86,.74,.16,1.70,G.linen,day,.04);
- B(.19,.30,4.86,.14,.65,1.94,G.olive,day,.03);
- for(const z of [3.95,5.77])B(.57,.49,z,.80,.20,.12,G.linen,day,.025);
- // Open sleeper: mattress 1.20 x 1.90, real outer frame 1.24 x 1.94.
- B(.74,.14,4.86,1.24,.20,1.94,G.oak,guest,.025);
- B(.74,.34,4.86,1.20,.18,1.90,G.white,guest,.03);
- B(.19,.55,4.86,.14,.40,1.94,G.olive,guest,.025);
+ // Entry faces north: west is the left-hand wall. Keep the east aisle clear. Fit-out round (bedroom-kit.js): plinth rail on
+ // legs, two seat and two back cushions, upholstered arms; outline 0.86 × 1.94 as before.
+ sofaDay((x,y,z,w,h,d,m,r=0)=>B(.12+x,y,4.86+z,w,h,d,m,day,r),{L:1.94,D:.86,M:G});
+ // Open sleeper: mattress 1.20 x 1.90, real outer frame 1.24 x 1.94, on legs; the back stays up over the mattress's edge.
+ sofaGuest((x,y,z,w,h,d,m,r=0)=>B(.12+x,y,4.86+z,w,h,d,m,guest,r),{L:1.94,D:1.24,M:G});
  B(.78,.52,4.13,.78,.12,.34,G.linen,guest,.03);
  B(.74,.52,5.38,1.20,.03,.55,G.olive,guest);
  }else{
@@ -78,16 +77,18 @@ export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlan
   for(const xx of [-w/2+.012,w/2-.012])B(xx,0,0,.024,h,d,C,g);
   for(const y of [0,.32,.64,h-.025])B(0,y,0,w,.025,d,C,g);
   B(0,.025,-d/2+.008,w-.05,h-.05,.012,glass,g);
+  // Fit-out round: two glass doors meeting at the middle, each in a narrow 20 mm frame (the cabinet finish's cut twin).
+  for(const sg of [-1,1]){const a=sg<0?-w/2+.025:.0015,b=sg<0?-.0015:w/2-.025;for(const u of [a+.01,b-.01])B(u,.025,-d/2+.008,.02,h-.05,.016,C,g);for(const v of [.025,h-.045])B((a+b)/2,v,-d/2+.008,b-a-.04,.02,.016,C,g);}
   B(w*.35,.38,-d/2+.008,.012,.18,.014,G.handleBarCut||G.brass,g);B(w*.35,.45,-d/2+.008,.025,.025,.014,G.handleKnobCut||G.brass,g);B(w*.35,.34,-d/2+.008,.012,.26,.012,G.handlePullCut||G.brass,g);
-  // A small number of toy/car silhouettes; no brand or collection ownership implied.
-  for(const y of [.045,.365])for(const xx of [-w*.28,w*.26]){
+  // A small number of toy/car silhouettes; no brand or collection ownership implied. Fit-out round: they stand on the shelves.
+  for(const y of [.03,.35])for(const xx of [-w*.28,w*.26]){
    B(xx,y,0,.24,.055,.12,G.oliveCut||C,g,.018);
    B(xx,y+.055,0,.13,.055,.10,C,g,.015);
    for(const X of [xx-.07,xx+.07])for(const Z of [-.06,.06])B(X,y-.005,Z,.045,.045,.015,device,g,.014);
   }
   for(const xx of [-w*.28,0,w*.28]){
-   B(xx,.685,0,.08,.11,.075,G.oliveCut||C,g,.015);
-   cyl(xx,.795,0,.06,.085,G.linenCut||C,g);
+   B(xx,.665,0,.08,.11,.075,G.oliveCut||C,g,.015);
+   cyl(xx,.775,0,.06,.085,G.linenCut||C,g);
   }
   for(const y of [.30,.62]){const led=B(0,y,d/2-.04,w-.07,.007,.008,upperWarm,g);led.castShadow=false;}
  }
