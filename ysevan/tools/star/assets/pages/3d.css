@@ -272,13 +272,33 @@
 /* ---------- 12 停稳重画 ---------- */
 .td-re-wrap { display: grid; grid-template-columns: minmax(0, 1fr) calc(230 * var(--u)); gap: calc(16 * var(--u)); align-items: start; }
 
+/* ---------- 13 四步做场景（2D 画布示意，画布底色由 JS 读 --well） ---------- */
+.td-pp-wrap { display: grid; grid-template-columns: minmax(0, calc(620 * var(--u))) minmax(calc(200 * var(--u)), 1fr); gap: calc(18 * var(--u)); align-items: start; }
+.td-pp-stage { min-width: 0; }
+.td-pp-cv { display: block; width: 100%; aspect-ratio: 16 / 10; height: auto; border-radius: var(--r-sm); background: var(--well); box-shadow: inset 0 0 0 1px var(--sep); }
+.td-pp-side { display: grid; gap: calc(8 * var(--u)); min-width: 0; }
+.td-pp-side .td-dl > div { grid-template-columns: calc(64 * var(--u)) minmax(0, 1fr); }
+.td-pp-side .td-dl dd { font-family: inherit; }
+.td-pp-side .td-read { margin: 0; font-family: inherit; color: var(--label2); }
+/* 条目正文里玺院主片的抽帧小样（真图，不是示意） */
+.td-pp-real { margin: calc(12 * var(--u)) 0 0; max-width: calc(760 * var(--u)); }
+.td-pp-real img { display: block; width: 100%; height: auto; border-radius: var(--r-sm); box-shadow: 0 0 0 1px var(--sep); background: var(--well); }
+.td-pp-real figcaption { margin-top: calc(6 * var(--u)); font-size: var(--fs-xs); line-height: 1.6; color: var(--label2); }
+/* 两张很长的对照图并排，只露上面一截，点开看整张；手机一张一行 */
+.td-pp-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(14 * var(--u)); max-width: calc(760 * var(--u)); margin-top: calc(12 * var(--u)); }
+.td-pp-pair .td-pp-real { margin: 0; }
+.td-pp-crop { position: relative; display: block; max-height: calc(300 * var(--u)); overflow: hidden; border-radius: var(--r-sm); box-shadow: 0 0 0 1px var(--sep); }
+.td-pp-crop img { border-radius: 0; box-shadow: none; }
+.td-pp-crop::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: calc(48 * var(--u)); background: linear-gradient(to bottom, transparent, var(--raised)); pointer-events: none; }
+.td-pp-crop:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
 /* ---------- 窄屏 ---------- */
 @media (max-width: 900px) {
   .td-pr-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .td-bd-wrap { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 760px) {
-  .td-ov-wrap, .td-so-wrap, .td-wd-wrap, .td-od-wrap, .td-di-wrap, .td-po-wrap, .td-re-wrap { grid-template-columns: minmax(0, 1fr); }
+  .td-ov-wrap, .td-so-wrap, .td-wd-wrap, .td-od-wrap, .td-di-wrap, .td-po-wrap, .td-re-wrap, .td-pp-wrap, .td-pp-pair { grid-template-columns: minmax(0, 1fr); }
   .td-cp-row { grid-template-columns: minmax(0, 1fr) auto; }
   .td-cp-row > :first-child { grid-column: 1 / -1; }
 }

@@ -22,7 +22,7 @@
  * 同时暴露 window.STAR_NAV（页面清单 + 图标），总览页的章节目录、star.js 的 favicon 都从这里取，不另抄一份。
  */
 (function () {
-  var VERSION = "0.4.3";
+  var VERSION = "0.4.4";
 
   /* 图标：24×24 视窗，线条 stroke 1.9、圆头圆角（SPEC §5b）；颜色一律 currentColor。
      只有本来就是实心的形（「更多」的三个点）用填充。 */
@@ -72,7 +72,7 @@
     { id: "material", file: "material.html", title: "材质", group: "做法", icon: "material", tint: "#8E8E93", sub: "液态玻璃写法与降级、磨砂放在哪、暖墨阴影", ready: true, count: 11 },
     { id: "interaction", file: "interaction.html", title: "交互", group: "做法", icon: "interaction", tint: "#AF52DE", sub: "分组列表、主题切换、自动保存、输入法、Esc、弹窗", ready: true, tab: true, count: 27 },
     { id: "motion", file: "motion.html", title: "动画", group: "做法", icon: "motion", tint: "#00C7BE", sub: "曲线与时长、FLIP、减弱动效、手写开场", ready: true, count: 17 },
-    { id: "3d", file: "3d.html", title: "3D与性能", group: "做法", icon: "cube", tint: "#A2845E", sub: "叠加不替换、两段式探测、看门狗、停稳重画", ready: true, count: 12 },
+    { id: "3d", file: "3d.html", title: "3D与性能", group: "做法", icon: "cube", tint: "#A2845E", sub: "叠加不替换、两段式探测、看门狗、停稳重画", ready: true, count: 13 },
     { id: "rejected", file: "rejected.html", title: "否掉的方向", group: "避坑", icon: "rejected", tint: "#FF3B30", sub: "按时间线：否掉了什么、原话、为什么不是那样", ready: true, count: 10 },
     { id: "method", file: "method.html", title: "做网站的方法", group: "避坑", icon: "method", tint: "#34C759", sub: "验收档位、先量后截图、防假信号、测试静音", ready: true, count: 25 },
     { id: "collection", file: "collection.html", title: "收藏", group: "收藏", icon: "heart", tint: "#FF2D55", sub: "好看的skill、有意思的项目、提示词、老站特效", ready: true, tab: true }

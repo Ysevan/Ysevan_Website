@@ -14,7 +14,7 @@
  *  - 凡处理按键，第一行先判输入法合成态（e.isComposing || keyCode 229）。播报只走 StarShell.announce。
  *  - 只改样例自己的属性（局部 data-mode 只写在样例框上），不碰 <html>、不写 localStorage。
  *  - 单选组（role=radiogroup）的方向键由 star.js 统一处理（移动焦点并 click），这里只管 click。
- * 量具接口：window.StarThreeD = { running() 正在跑的演示名, contexts() 此刻活着的演示上下文数, views() 各画布状态 }。
+ * 量具接口：window.StarThreeD = { running() 正在跑的演示名, contexts() 此刻活着的演示上下文数, views() 各画布状态, pipeline() 四步做场景演示的状态 }。
  */
 (function () {
   "use strict";
@@ -1660,11 +1660,387 @@
     toggle($("[data-re-bad]", spec), function (on) { st.bad = on; st.settled = false; v.request(); setTimeout(settle, 0); });
   })();
 
+  var ppProbe = null;
+  /* ======================================================================
+   * 13 四步做场景（d-pipeline）：2D 画布画一间示例小屋（示意，不是玺院的画面）。
+   * 颜色（材质）一层、光照一层，光照层用 multiply 叠上去，就是「材质颜色乘光照」。
+   * 烘焙只管墙、地、顶：家具一直按实时光画；贴图是哪套布置烘的，影子就落在那套布置的家具下面。
+   * 「光照连颜色」反例：墙、地、顶的颜色钉在烘的那一刻（原木），换风格只有家具变。
+   * 第四步把第三步的画面当「真场景」，按帧号算镜头，从里面截出横版、竖版两格。
+   * 按需画：换选项、拖进度条才排一帧（同一帧里多次输入合并）；只有播放时连续要帧（Heavy.claim），
+   * 减弱动效下点播放直接到最后一帧。
+   * ====================================================================== */
+  (function initPipeline() {
+    var spec = $('[data-demo="pipeline"]');
+    if (!spec) return;
+    var cv = $("[data-pp-cv]", spec), dl = $("[data-pp-dl]", spec), read = $("[data-pp-read]", spec);
+    var boxBake = $("[data-pp-bake]", spec), boxVideo = $("[data-pp-video]", spec);
+    var range = $("[data-pp-f]", spec), fOut = $("[data-pp-f-out]", spec), playBtn = $("[data-pp-play]", spec), eachBtn = $("[data-pp-each]", spec);
+    var FRAMES = 120, FPS = 30;
+    var STEP = { 1: "粗建模", 2: "精修", 3: "烘光照", 4: "出视频" };
+    var st = { step: 1, style: "wood", map: "light", lay: "a", each: true, frame: 0, playing: false, draws: 0, on: false };
+    var STYLE = {
+      wood:   { name: "原木", wall: "#EEE7DC", back: "#E9E0D2", ceil: "#F6F3EE", floor: "#C69C6D", plank: "#B08657", base: "#B08A62", sofa: "#9AA58F", cushion: "#B3BDA8", table: "#A97C54", shelf: "#C29D74", rug: "#DCCDB5", frame: "#7A6450", pic: "#C9B79A", lamp: "#F4EFE6" },
+      cream:  { name: "奶油", wall: "#F4ECDF", back: "#F1E7D8", ceil: "#F8F5EF", floor: "#DEC6A3", plank: "#CBB08A", base: "#EDE4D5", sofa: "#E3D5BF", cushion: "#EFE5D4", table: "#D2B48E", shelf: "#EADFCD", rug: "#EFE6D7", frame: "#EFE9E0", pic: "#D8C3A3", lamp: "#F8F4EC" },
+      grey:   { name: "灰白", wall: "#E8E8E6", back: "#E2E2E0", ceil: "#F2F2F1", floor: "#BAB7B1", plank: "#A5A29B", base: "#D4D3D0", sofa: "#8D9298", cushion: "#A4A9AE", table: "#6E6A65", shelf: "#CBCAC7", rug: "#D6D4D0", frame: "#45464A", pic: "#9FA4A8", lamp: "#F3F3F2" },
+      walnut: { name: "胡桃", wall: "#E6DED2", back: "#DFD5C7", ceil: "#F0ECE6", floor: "#74513A", plank: "#5F412E", base: "#5E4331", sofa: "#45514A", cushion: "#5A675F", table: "#4D3628", shelf: "#6B4C37", rug: "#BCA98E", frame: "#30292A", pic: "#A88F6E", lamp: "#F1ECE3" }
+    };
+    var SKY = "#D3E5EE";
+    /* 一点透视：逻辑画面 400×250，房间宽 -1..1、高 0..1.25、进深 0..2（2 是后墙），相机在 (0, .62, -1.6) */
+    var LW = 400, LH = 250, RH = 1.25, CAMY = 0.62, CAMZ = -1.6, FOC = 320;
+    function P(x, y, z) { var d = z - CAMZ; return [200 + FOC * x / d, 125 - FOC * (y - CAMY) / d]; }
+    var SUN = [0.8, -0.75, 0.15];                     /* 从窗进来的光：往右、往下、略往里 */
+    var WIN = { z0: 0.7, z1: 1.5, y0: 0.38, y1: 1.0 }; /* 左墙上的窗 */
+    function B(x0, x1, y0, y1, z0, z1, m) { return { x0: x0, x1: x1, y0: y0, y1: y1, z0: z0, z1: z1, m: m }; }
+    function legs(x0, x1, z0, z1, h, m) {
+      var t = 0.025;
+      return [B(x0, x0 + t, 0, h, z1 - t, z1, m), B(x1 - t, x1, 0, h, z1 - t, z1, m), B(x0, x0 + t, 0, h, z0, z0 + t, m), B(x1 - t, x1, 0, h, z0, z0 + t, m)];
+    }
+    /* 两套布置 × 两档细节。rough＝第一步的方块，fine＝第二步起；两份都按画的先后排好（远的、垫在下面的先画），不另排序。
+       烘出来的影子按 rough 算：一件家具一块，影子不会因为零件叠在一起而深浅不一 */
+    var LAY = {
+      a: {
+        rough: [B(-0.55, 0.55, 0, 0.42, 1.6, 1.98, "sofa"), B(-0.28, 0.28, 0, 0.2, 1.0, 1.32, "table"), B(0.8, 0.98, 0, 0.62, 0.95, 1.55, "shelf")],
+        fine: [].concat(
+          [B(-0.55, 0.55, 0.03, 0.44, 1.86, 1.98, "sofa"), B(-0.46, 0.46, 0.03, 0.2, 1.62, 1.86, "sofa"),
+           B(-0.55, -0.46, 0.03, 0.3, 1.62, 1.86, "sofa"), B(0.46, 0.55, 0.03, 0.3, 1.62, 1.86, "sofa"),
+           B(-0.46, -0.005, 0.2, 0.25, 1.64, 1.86, "cushion"), B(0.005, 0.46, 0.2, 0.25, 1.64, 1.86, "cushion"),
+           B(0.8, 0.98, 0, 0.62, 0.95, 1.55, "shelf"), B(0.785, 0.8, 0.2, 0.215, 0.95, 1.55, "frame"), B(0.785, 0.8, 0.41, 0.425, 0.95, 1.55, "frame")],
+          legs(-0.28, 0.28, 1.02, 1.3, 0.17, "table"),
+          [B(-0.3, 0.3, 0.17, 0.2, 1.0, 1.32, "table")]),
+        rug: B(-0.62, 0.62, 0, 0.004, 0.9, 1.75, "rug"),
+        focus: [0, 0.3, 1.8]
+      },
+      b: {
+        rough: [B(-0.9, -0.35, 0, 0.62, 1.82, 1.98, "shelf"), B(0.6, 0.98, 0, 0.42, 0.85, 1.75, "sofa"), B(0.15, 0.42, 0, 0.2, 1.05, 1.45, "table")],
+        fine: [].concat(
+          [B(-0.9, -0.35, 0, 0.62, 1.82, 1.98, "shelf"), B(-0.9, -0.35, 0.2, 0.215, 1.8, 1.82, "frame"), B(-0.9, -0.35, 0.41, 0.425, 1.8, 1.82, "frame"),
+           B(0.86, 0.98, 0.03, 0.44, 0.85, 1.75, "sofa"), B(0.62, 0.86, 0.03, 0.3, 1.66, 1.75, "sofa"),
+           B(0.62, 0.86, 0.03, 0.2, 0.94, 1.66, "sofa"),
+           B(0.64, 0.86, 0.2, 0.25, 1.305, 1.66, "cushion"), B(0.64, 0.86, 0.2, 0.25, 0.94, 1.295, "cushion"),
+           B(0.62, 0.86, 0.03, 0.3, 0.85, 0.94, "sofa")],
+          legs(0.16, 0.41, 1.07, 1.43, 0.17, "table"),
+          [B(0.14, 0.43, 0.17, 0.2, 1.05, 1.45, "table")]),
+        rug: B(-0.1, 0.7, 0, 0.004, 0.85, 1.7, "rug"),
+        focus: [0.75, 0.3, 1.3]
+      }
+    };
+    var LAMP = B(-0.12, 0.12, 1.2, 1.25, 1.1, 1.3, "lamp");
+    var PIC = { x0: -0.25, x1: 0.25, y0: 0.62, y1: 0.9 };
+
+    /* ---------- 画图小件 ---------- */
+    function poly(c, pts) { c.beginPath(); for (var i = 0; i < pts.length; i++) { var p = pts[i]; if (i) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); } c.closePath(); }
+    function fillP(c, pts, col) { poly(c, pts); c.fillStyle = col; c.fill(); }
+    function gray(v) { var n = Math.round(clamp(v, 0, 1) * 255); return "rgb(" + n + "," + n + "," + n + ")"; }
+    /* 柔边：把形状挪到画面外画，只让阴影（shadowBlur）落回来，各浏览器都认 */
+    function soft(c, pts, col, blur) {
+      c.save();
+      c.shadowColor = col; c.shadowBlur = blur * c.__k; c.shadowOffsetX = 10000 * c.__k;
+      c.translate(-10000, 0);
+      poly(c, pts); c.fillStyle = "#000"; c.fill();
+      c.restore();
+    }
+    function softLine(c, a, b, col, w, blur) {
+      c.save();
+      c.shadowColor = col; c.shadowBlur = blur * c.__k; c.shadowOffsetX = 10000 * c.__k;
+      c.translate(-10000, 0);
+      c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]);
+      c.strokeStyle = "#000"; c.lineWidth = w; c.lineCap = "round"; c.stroke();
+      c.restore();
+    }
+    var ROOM = {
+      floor: [P(-1, 0, 0), P(1, 0, 0), P(1, 0, 2), P(-1, 0, 2)],
+      ceil: [P(-1, RH, 0), P(1, RH, 0), P(1, RH, 2), P(-1, RH, 2)],
+      back: [P(-1, 0, 2), P(1, 0, 2), P(1, RH, 2), P(-1, RH, 2)],
+      left: [P(-1, 0, 0), P(-1, 0, 2), P(-1, RH, 2), P(-1, RH, 0)],
+      right: [P(1, 0, 0), P(1, 0, 2), P(1, RH, 2), P(1, RH, 0)]
+    };
+    var WINP = [P(-1, WIN.y0, WIN.z0), P(-1, WIN.y0, WIN.z1), P(-1, WIN.y1, WIN.z1), P(-1, WIN.y1, WIN.z0)];
+    /* 一个盒子此刻看得见的面：[名字, 角点]（相机在 x=0、高.62、房间前方） */
+    function faces(b) {
+      var o = [];
+      if (b.y1 < CAMY) o.push(["top", [P(b.x0, b.y1, b.z0), P(b.x1, b.y1, b.z0), P(b.x1, b.y1, b.z1), P(b.x0, b.y1, b.z1)]]);
+      if (b.y0 > CAMY) o.push(["bottom", [P(b.x0, b.y0, b.z0), P(b.x1, b.y0, b.z0), P(b.x1, b.y0, b.z1), P(b.x0, b.y0, b.z1)]]);
+      if (b.x0 > 0) o.push(["west", [P(b.x0, b.y0, b.z0), P(b.x0, b.y0, b.z1), P(b.x0, b.y1, b.z1), P(b.x0, b.y1, b.z0)]]);
+      if (b.x1 < 0) o.push(["east", [P(b.x1, b.y0, b.z0), P(b.x1, b.y0, b.z1), P(b.x1, b.y1, b.z1), P(b.x1, b.y1, b.z0)]]);
+      o.push(["front", [P(b.x0, b.y0, b.z0), P(b.x1, b.y0, b.z0), P(b.x1, b.y1, b.z0), P(b.x0, b.y1, b.z0)]]);
+      return o;
+    }
+    var FACE_LIGHT = { top: 0.93, bottom: 0.62, west: 0.9, east: 0.68, front: 0.8 };   /* 实时光：朝窗（西）的亮 */
+    function boxesFor(lay, step) { var L = LAY[lay]; return step >= 2 ? [L.rug].concat(L.fine) : L.rough; }
+    /* 平行投影到地面（沿 SUN）：凸包 */
+    function hull(pts) {
+      pts = pts.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+      function cross(o, a, b) { return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); }
+      var lo = [], up = [], i;
+      for (i = 0; i < pts.length; i++) { while (lo.length >= 2 && cross(lo[lo.length - 2], lo[lo.length - 1], pts[i]) <= 0) lo.pop(); lo.push(pts[i]); }
+      for (i = pts.length - 1; i >= 0; i--) { while (up.length >= 2 && cross(up[up.length - 2], up[up.length - 1], pts[i]) <= 0) up.pop(); up.push(pts[i]); }
+      return lo.slice(0, -1).concat(up.slice(0, -1));
+    }
+    function onFloor(x, y, z) { var t = y / -SUN[1]; return [x + SUN[0] * t, z + SUN[2] * t]; }   /* → 地面上的 [x, z] */
+    function sunShadow(b) {
+      var xz = [], xs = [b.x0, b.x1], ys = [b.y0, b.y1], zs = [b.z0, b.z1];
+      xs.forEach(function (x) { ys.forEach(function (y) { zs.forEach(function (z) { xz.push(onFloor(x, y, z)); }); }); });
+      return hull(xz).map(function (q) { return P(q[0], 0, q[1]); });
+    }
+    function pool() {
+      return [[WIN.y0, WIN.z0], [WIN.y0, WIN.z1], [WIN.y1, WIN.z1], [WIN.y1, WIN.z0]].map(function (q) { var f = onFloor(-1, q[0], q[1]); return P(f[0], 0, f[1]); });
+    }
+
+    /* ---------- 颜色层：roomStyle 管墙地顶，furnStyle 管家具（反例里两者不同） ---------- */
+    function albedo(c, step, lay, roomStyle, furnStyle) {
+      var R = STYLE[roomStyle], F = STYLE[furnStyle];
+      fillP(c, ROOM.ceil, R.ceil); fillP(c, ROOM.back, R.back); fillP(c, ROOM.left, R.wall); fillP(c, ROOM.right, R.wall); fillP(c, ROOM.floor, R.floor);
+      if (step >= 2) {
+        c.strokeStyle = R.plank; c.lineWidth = 0.7;
+        for (var x = -1 + 0.16; x < 1; x += 0.16) { var a = P(x, 0, 0), b = P(x, 0, 2); c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke(); }
+        var bh = 0.04;
+        fillP(c, [P(-1, 0, 2), P(1, 0, 2), P(1, bh, 2), P(-1, bh, 2)], R.base);
+        fillP(c, [P(-1, 0, 0), P(-1, 0, 2), P(-1, bh, 2), P(-1, bh, 0)], R.base);
+        fillP(c, [P(1, 0, 0), P(1, 0, 2), P(1, bh, 2), P(1, bh, 0)], R.base);
+        fillP(c, [P(PIC.x0 - 0.02, PIC.y0 - 0.02, 1.995), P(PIC.x1 + 0.02, PIC.y0 - 0.02, 1.995), P(PIC.x1 + 0.02, PIC.y1 + 0.02, 1.995), P(PIC.x0 - 0.02, PIC.y1 + 0.02, 1.995)], R.frame);
+        fillP(c, [P(PIC.x0, PIC.y0, 1.99), P(PIC.x1, PIC.y0, 1.99), P(PIC.x1, PIC.y1, 1.99), P(PIC.x0, PIC.y1, 1.99)], R.pic);
+      }
+      fillP(c, WINP, SKY);
+      if (step >= 2) {
+        var fw = 0.035, zm = (WIN.z0 + WIN.z1) / 2;
+        c.fillStyle = R.frame;
+        [[WIN.y0, WIN.y0 + fw, WIN.z0, WIN.z1], [WIN.y1 - fw, WIN.y1, WIN.z0, WIN.z1], [WIN.y0, WIN.y1, WIN.z0, WIN.z0 + fw], [WIN.y0, WIN.y1, WIN.z1 - fw, WIN.z1], [WIN.y0, WIN.y1, zm - fw / 2, zm + fw / 2]].forEach(function (r) {
+          fillP(c, [P(-1, r[0], r[2]), P(-1, r[0], r[3]), P(-1, r[1], r[3]), P(-1, r[1], r[2])], R.frame);
+        });
+        fillP(c, [P(-1, WIN.y0 - 0.02, WIN.z0 - 0.03), P(-1, WIN.y0 - 0.02, WIN.z1 + 0.03), P(-0.95, WIN.y0, WIN.z1 + 0.03), P(-0.95, WIN.y0, WIN.z0 - 0.03)], R.frame);
+        faces(LAMP).forEach(function (f) { fillP(c, f[1], F.lamp); });
+      }
+      boxesFor(lay, step).forEach(function (b) { faces(b).forEach(function (f) { fillP(c, f[1], F[b.m]); }); });
+    }
+
+    /* ---------- 光照层：baked 时墙地顶带柔影、墙角暗、窗下一片光；家具的面一直是实时光 ---------- */
+    function lightLayer(c, step, lay, baked, bakeLay) {
+      var V = baked ? { ceil: 0.64, back: 0.72, left: 0.62, right: 0.8, floor: 0.7 } : { ceil: 0.8, back: 0.84, left: 0.72, right: 0.9, floor: 0.86 };
+      fillP(c, ROOM.ceil, gray(V.ceil)); fillP(c, ROOM.back, gray(V.back)); fillP(c, ROOM.left, gray(V.left)); fillP(c, ROOM.right, gray(V.right)); fillP(c, ROOM.floor, gray(V.floor));
+      if (baked) {
+        var wc = P(-1, (WIN.y0 + WIN.y1) / 2, (WIN.z0 + WIN.z1) / 2);
+        c.save(); poly(c, [[0, 0], [LW, 0], [LW, LH], [0, LH]]); c.clip();
+        var g = c.createRadialGradient(wc[0], wc[1], 10, wc[0], wc[1], 330);
+        g.addColorStop(0, "rgba(255,252,244,.3)"); g.addColorStop(0.45, "rgba(255,252,244,0)"); g.addColorStop(1, "rgba(30,26,22,.22)");
+        c.fillStyle = g; c.fillRect(0, 0, LW, LH); c.restore();
+        var pl = pool();
+        soft(c, pl, "rgba(255,250,238,.9)", 6);
+        var shadowOf = LAY[bakeLay].rough;
+        /* 窗下那片光里，家具挡出来的影子（只在光里） */
+        c.save(); poly(c, pl); c.clip();
+        shadowOf.forEach(function (b) { soft(c, sunShadow(b), "rgba(70,60,50,.45)", 4); });
+        c.restore();
+        /* 家具贴地的一圈暗（接触阴影） */
+        shadowOf.forEach(function (b) {
+          var e = 0.05;
+          soft(c, [P(b.x0 - e, 0, b.z0 - e), P(b.x1 + e, 0, b.z0 - e), P(b.x1 + e, 0, b.z1 + e), P(b.x0 - e, 0, b.z1 + e)], "rgba(45,38,32,.55)", 6);
+          if (b.z1 > 1.9) soft(c, [P(b.x0 - 0.03, 0, 1.999), P(b.x1 + 0.03, 0, 1.999), P(b.x1 + 0.03, b.y1 + 0.06, 1.999), P(b.x0 - 0.03, b.y1 + 0.06, 1.999)], "rgba(45,38,32,.3)", 8);
+          if (b.x1 > 0.94) soft(c, [P(0.999, 0, b.z0 - 0.03), P(0.999, 0, b.z1 + 0.03), P(0.999, b.y1 + 0.06, b.z1 + 0.03), P(0.999, b.y1 + 0.06, b.z0 - 0.03)], "rgba(45,38,32,.3)", 8);
+        });
+        /* 墙角、墙脚、顶角暗一圈 */
+        var ao = "rgba(40,34,28,.5)";
+        [[P(-1, 0, 2), P(1, 0, 2)], [P(-1, RH, 2), P(1, RH, 2)], [P(-1, 0, 2), P(-1, RH, 2)], [P(1, 0, 2), P(1, RH, 2)],
+         [P(-1, 0, 0), P(-1, 0, 2)], [P(1, 0, 0), P(1, 0, 2)], [P(-1, RH, 0), P(-1, RH, 2)], [P(1, RH, 0), P(1, RH, 2)]].forEach(function (e) { softLine(c, e[0], e[1], ao, 3, 10); });
+        soft(c, WINP, "rgba(255,252,244,.6)", 10);
+        c.fillStyle = "#FFF3E2"; c.globalCompositeOperation = "multiply"; c.fillRect(0, 0, LW, LH); c.globalCompositeOperation = "source-over";
+      }
+      fillP(c, WINP, "#FFFFFF");
+      if (step >= 2) {
+        faces(LAMP).forEach(function (f) { fillP(c, f[1], "#FFFFFF"); });
+        fillP(c, [P(-1, WIN.y0 - 0.02, WIN.z0 - 0.03), P(-1, WIN.y0 - 0.02, WIN.z1 + 0.03), P(-0.95, WIN.y0, WIN.z1 + 0.03), P(-0.95, WIN.y0, WIN.z0 - 0.03)], gray(0.95));
+      }
+      /* 地毯算地面的一部分，吃地面那份光（烘了就带着窗下的光和影子），不另涂 */
+      boxesFor(lay, step).forEach(function (b) {
+        if (b.m !== "rug") faces(b).forEach(function (f) { fillP(c, f[1], gray(FACE_LIGHT[f[0]])); });
+      });
+    }
+    /* 第一步的方块描边：一看就是代码搭的 */
+    function outline(c, lay) {
+      c.save(); c.strokeStyle = "rgba(28,28,30,.42)"; c.lineWidth = 0.8; c.lineJoin = "round";
+      [ROOM.back, WINP].forEach(function (p) { poly(c, p); c.stroke(); });
+      [[P(-1, 0, 2), P(-1, 0, 0)], [P(1, 0, 2), P(1, 0, 0)], [P(-1, RH, 2), P(-1, RH, 0)], [P(1, RH, 2), P(1, RH, 0)]].forEach(function (e) { c.beginPath(); c.moveTo(e[0][0], e[0][1]); c.lineTo(e[1][0], e[1][1]); c.stroke(); });
+      boxesFor(lay, 1).forEach(function (b) { faces(b).forEach(function (f) { poly(c, f[1]); c.stroke(); }); });
+      c.restore();
+    }
+
+    /* ---------- 合成一张「场景」：返回画好的画布 ---------- */
+    var bufA = doc.createElement("canvas"), bufL = doc.createElement("canvas");
+    function sceneState() {
+      var baked = st.step >= 3 && st.map !== "off";
+      return {
+        step: st.step >= 3 ? 2 : st.step,          /* 第三、四步的几何就是精修后的那份 */
+        lay: st.lay,
+        roomStyle: st.step >= 3 && st.map === "color" ? "wood" : st.style,
+        furnStyle: st.step >= 3 ? st.style : "wood",
+        baked: baked,
+        bakeLay: st.each ? st.lay : "a"          /* 只烘了一份时，那一份是布置一 */
+      };
+    }
+    function compose(out, W, H, s) {
+      var k = W / LW;
+      [bufA, bufL].forEach(function (b) { if (b.width !== W || b.height !== H) { b.width = W; b.height = H; } });
+      var a = bufA.getContext("2d"), l = bufL.getContext("2d");
+      [a, l].forEach(function (c) { c.setTransform(k, 0, 0, k, 0, 0); c.__k = k; c.clearRect(0, 0, LW, LH); });
+      albedo(a, s.step, s.lay, s.roomStyle, s.furnStyle);
+      lightLayer(l, s.step, s.lay, s.baked, s.bakeLay);
+      var o = out.getContext("2d");
+      o.setTransform(1, 0, 0, 1, 0, 0);
+      o.globalCompositeOperation = "source-over"; o.drawImage(bufA, 0, 0);
+      o.globalCompositeOperation = "multiply"; o.drawImage(bufL, 0, 0);
+      o.globalCompositeOperation = "source-over";
+      if (s.step === 1) { o.setTransform(k, 0, 0, k, 0, 0); o.__k = k; outline(o, s.lay); o.setTransform(1, 0, 0, 1, 0, 0); }
+    }
+
+    /* ---------- 第四步：按帧号算镜头，从场景里截横版、竖版 ---------- */
+    var film = doc.createElement("canvas"), filmKey = "";
+    function ease(x) { return x * x * (3 - 2 * x); }
+    function crop(f, aspect, z0, z1, from, to) {
+      var e = ease(f / (FRAMES - 1));
+      var zoom = z0 + (z1 - z0) * e;
+      var w, h;
+      if (aspect >= LW / LH) { w = LW / zoom; h = w / aspect; } else { h = LH / zoom; w = h * aspect; }
+      var cx = from[0] + (to[0] - from[0]) * e, cy = from[1] + (to[1] - from[1]) * e;
+      return { x: clamp(cx - w / 2, 0, LW - w), y: clamp(cy - h / 2, 0, LH - h), w: w, h: h };
+    }
+    function rrect(c, x, y, w, h, r) {
+      c.beginPath();
+      if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h);
+    }
+    function drawVideo(o, W, H) {
+      var cs = getComputedStyle(cv), sc = W / (cv.clientWidth || W);   /* 缓冲比 CSS 大几倍（像素比封在2）；别叫 px，下面竖版那格的横坐标叫 px */
+      o.setTransform(1, 0, 0, 1, 0, 0);
+      o.fillStyle = cs.backgroundColor || "#EEF0F4"; o.fillRect(0, 0, W, H);
+      var m = 0.035 * W, lw = 0.6 * W, lh = lw * 9 / 16, ph = 0.78 * H, pw = ph * 9 / 16;
+      var top = (H - ph) / 2 - 0.03 * H, lx = m, ly = top + (ph - lh) / 2, px = m + lw + m + (W - (m + lw + m + pw + m)) / 2, py = top;
+      var FW = Math.min(1600, Math.round(lw * 1.7)), FH = Math.round(FW * LH / LW);
+      var s = sceneState(), key = [FW, s.step, s.lay, s.roomStyle, s.furnStyle, s.baked, s.bakeLay].join("|");
+      if (key !== filmKey) { film.width = FW; film.height = FH; compose(film, FW, FH, s); filmKey = key; }
+      var kk = FW / LW, fz = LAY[st.lay].focus, foc = P(fz[0], fz[1], fz[2]);
+      var land = crop(st.frame, 16 / 9, 1, 1.55, [200, 125], foc);
+      var winc = P(-1, 0.6, 1.1);
+      var port = crop(st.frame, 9 / 16, 1, 1.3, [winc[0] + 40, 125], foc);
+      [[land, lx, ly, lw, lh], [port, px, py, pw, ph]].forEach(function (q) {
+        var r = q[0];
+        o.save(); rrect(o, q[1], q[2], q[3], q[4], 6 * sc); o.clip();
+        o.drawImage(film, r.x * kk, r.y * kk, r.w * kk, r.h * kk, q[1], q[2], q[3], q[4]);
+        o.restore();
+        o.save(); rrect(o, q[1], q[2], q[3], q[4], 6 * sc); o.strokeStyle = cs.color; o.globalAlpha = 0.18; o.lineWidth = 1; o.stroke(); o.restore();
+      });
+      var fs = Math.max(11 * sc, 0.038 * H);
+      o.fillStyle = cs.color; o.globalAlpha = 0.72; o.textAlign = "center"; o.textBaseline = "top";
+      o.font = "600 " + fs + "px " + (getComputedStyle(root).getPropertyValue("--font-cjk") || "sans-serif");
+      o.fillText("横版", lx + lw / 2, ly + lh + 0.025 * H);
+      o.fillText("竖版", px + pw / 2, py + ph + 0.025 * H);
+      o.globalAlpha = 1; o.textAlign = "start";
+    }
+
+    /* ---------- 文字与画 ---------- */
+    function texts() {
+      var s = st, T = { who: "", what: "", out: "", read: "" };
+      if (s.step === 1) {
+        T.who = "代码（Three.js）"; T.what = "按图纸尺寸写出墙、窗洞和家具的大形，都是方块";
+        T.out = "能在网页里走的毛坯场景，示例里是墙、地、顶加3件家具";
+        T.read = "尺寸都写在代码里，改尺寸就改代码。";
+      } else if (s.step === 2) {
+        T.who = "大模型"; T.what = "一轮补一类细节，示例里补了踢脚线、窗框、沙发扶手和靠垫、桌腿、地毯、挂画和地板缝。每轮改完先跑检查再并入";
+        T.out = "还是同一份代码，光照仍是网页里的实时光";
+        T.read = "改的是第一步那份代码，尺寸都还在。";
+      } else if (s.step === 3) {
+        var nm = STYLE[s.style].name;
+        if (s.map === "light") { T.who = "Blender"; T.what = "墙、地、顶只烘光照，颜色不进贴图。家具不烘，还是实时光"; T.out = "每套布置一张光照贴图，换风格不用重烘"; T.read = "现在是" + nm + "。换风格只换颜色，光照贴图不动。"; }
+        else if (s.map === "color") { T.who = "Blender"; T.what = "墙、地、顶把光照和颜色一起烘进贴图（反例）"; T.out = "贴图里带着原木的颜色，四种风格要各烘一份"; T.read = s.style === "wood" ? "现在是原木，看不出问题。换一种风格试试。" : "换成了" + nm + "，墙、地、顶还是原木的颜色，只有家具变了。"; }
+        else { T.who = "网页自己"; T.what = "不用贴图，只有网页里的实时光"; T.out = "墙角不暗，家具下面没有柔影"; T.read = "关掉贴图，墙角和家具底下都是平的。玺院网址后面加?\u2060bake=0，看到的就是这样。"; }
+        if (s.map !== "off" && !s.each && s.lay === "b") T.read = "这张贴图是布置一时烘的。沙发挪走以后，旧影子还在原地，新位置下面没有影子。布置一变就要重烘。";
+        else if (s.map !== "off" && !s.each) T.read += "只烘了布置一，现在看的正好是布置一。";
+      } else {
+        T.who = "Remotion"; T.what = "在网页里按导览镜头一帧一帧截图，再拼成视频。镜头按帧号走，每帧等画完再截";
+        T.out = "横版主片和竖版，无声。示例共120帧，每秒30帧";
+        T.read = "第" + (s.frame + 1) + "帧，共" + FRAMES + "帧，镜头从门口往沙发推近。";
+      }
+      return T;
+    }
+    function label() {
+      var s = st;
+      if (s.step === 4) return "示例小屋的视频截格，第" + (s.frame + 1) + "帧，左边横版、右边竖版（示意）";
+      var t = "示例小屋，第" + s.step + "步" + STEP[s.step];
+      if (s.step === 3) t += "，" + STYLE[s.style].name + "，" + { light: "只存光照", color: "光照连颜色（反例）", off: "不用贴图" }[s.map] + "，布置" + (s.lay === "a" ? "一" : "二");
+      return t + "（示意）";
+    }
+    function paint() {
+      var W = Math.max(1, Math.round((cv.clientWidth || 400) * Math.min(dpr(), 2))), H = Math.round(W * LH / LW);
+      if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; filmKey = ""; }
+      var o = cv.getContext("2d");
+      if (st.step === 4) drawVideo(o, W, H); else compose(cv, W, H, sceneState());
+      st.draws++;
+      var T = texts();
+      $('[data-k="who"]', dl).textContent = T.who;
+      $('[data-k="what"]', dl).textContent = T.what;
+      $('[data-k="out"]', dl).textContent = T.out;
+      read.textContent = T.read;
+      cv.setAttribute("aria-label", label());
+      return T;
+    }
+    var raf = 0;
+    function request() { if (!st.on || raf) return; raf = window.requestAnimationFrame(function () { raf = 0; paint(); }); }
+    function say() { var T = texts(); announce(STEP[st.step] + "，" + T.read); }
+
+    /* ---------- 播放 ---------- */
+    var playRaf = 0, t0 = 0;
+    function setFrame(f) { st.frame = clamp(f, 0, FRAMES - 1); range.value = String(st.frame); fOut.textContent = String(st.frame + 1); request(); }
+    function stopPlay() {
+      st.playing = false;
+      if (playRaf) window.cancelAnimationFrame(playRaf);
+      playRaf = 0;
+      playBtn.textContent = "播放"; setPressed(playBtn, false);
+    }
+    function tick(now) {
+      playRaf = 0;
+      if (!st.playing) return;
+      var f = Math.min(FRAMES - 1, Math.floor((now - t0) * FPS / 1000));
+      if (f !== st.frame) setFrame(f);
+      if (f >= FRAMES - 1) { stopPlay(); Heavy.release("pipeline"); announce("播完了，共" + FRAMES + "帧"); return; }
+      playRaf = window.requestAnimationFrame(tick);
+    }
+    function play() {
+      if (st.step !== 4) return;
+      if (reduced()) { setFrame(FRAMES - 1); announce("已跳到最后一帧，第" + FRAMES + "帧"); return; }
+      if (st.frame >= FRAMES - 1) setFrame(0);
+      Heavy.claim("pipeline", stopPlay);
+      st.playing = true; playBtn.textContent = "暂停"; setPressed(playBtn, true);
+      t0 = performance.now() - st.frame * 1000 / FPS;
+      playRaf = window.requestAnimationFrame(tick);
+    }
+    playBtn.addEventListener("click", function () { if (st.playing) { stopPlay(); Heavy.release("pipeline"); announce("暂停在第" + (st.frame + 1) + "帧"); } else play(); });
+    range.addEventListener("input", function () { if (st.playing) { stopPlay(); Heavy.release("pipeline"); } setFrame(+range.value); });
+    range.addEventListener("change", function () { announce("第" + (st.frame + 1) + "帧"); });
+
+    /* ---------- 选项 ---------- */
+    radios($("[data-pp-step]", spec), function (v) {
+      if (st.playing) { stopPlay(); Heavy.release("pipeline"); }
+      st.step = +v;
+      boxBake.hidden = st.step !== 3;
+      boxVideo.hidden = st.step !== 4;
+      request(); say();
+    });
+    radios($("[data-pp-style]", spec), function (v) { st.style = v; request(); say(); });
+    radios($("[data-pp-map]", spec), function (v) { st.map = v; request(); say(); });
+    radios($("[data-pp-lay]", spec), function (v) { st.lay = v; request(); say(); });
+    toggle(eachBtn, function (on) { st.each = on; request(); say(); });
+
+    (function fill() { var T = texts(); $('[data-k="who"]', dl).textContent = T.who; $('[data-k="what"]', dl).textContent = T.what; $('[data-k="out"]', dl).textContent = T.out; read.textContent = T.read; })();
+    Heavy.watch(spec, function () { st.on = true; request(); }, function () { st.on = false; if (st.playing) { stopPlay(); Heavy.release("pipeline"); } });
+    if (window.ResizeObserver) new ResizeObserver(function () { request(); }).observe(cv);
+    if (window.StarTheme && window.StarTheme.onChange) window.StarTheme.onChange(function () { request(); });
+    ppProbe = { state: function () { return { step: st.step, style: st.style, map: st.map, lay: st.lay, each: st.each, frame: st.frame, playing: st.playing, draws: st.draws, read: texts().read }; }, scene: sceneState };
+  })();
+
   /* ---------- 量具接口 ---------- */
   window.StarThreeD = {
     running: function () { return Heavy.running(); },
     ondemand: function () { return odProbe ? { calls: odProbe.calls(), running: odProbe.running() } : null; },
     contexts: function () { return GL.live(); },
+    pipeline: function () { return ppProbe ? ppProbe.state() : null; },
     views: function () { return views.map(function (v) { return { name: v.name, live: !!v.ctx, stage: v.stage, soft: v.soft, w: v.w, h: v.h, ratio: v.ratio, failed: v.failed, draws: v.draws }; }); }
   };
 })();
