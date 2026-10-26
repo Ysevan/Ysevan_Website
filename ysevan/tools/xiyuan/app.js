@@ -630,6 +630,12 @@ const wet=createWetRooms({M,clipPlane,envMap,owner:leftB,arch,walls:layoutWalls,
 finishes.relief(scene);
 let savedQuality='auto';try{savedQuality=localStorage.getItem('xiyuan-quality-v2')||'auto';}catch{}if(!qualityConfigs[savedQuality])savedQuality='auto';
 if(renderTier==='soft')scene.traverse(o=>{for(const m of o.isMesh?[].concat(o.material):[])if(m.isMeshStandardMaterial&&(m.metalness>0||m.roughness<.3)&&!reflective.includes(m)){m.envMap=envMap;m.envMapIntensity=ambient.env;m.needsUpdate=true;reflective.push(m);}});
+// Baked lighting, every tier (bake-layer.js): at eye level the owner's walls, floors and ceilings take their light from the Blender
+// lightmap of the current layout and lighting (npm run bake). A/B switch: ?bake=0 never loads it; xiyuanBake(false) / (true).
+if(new URLSearchParams(location.search).get('bake')!=='0')import('./bake-layer.js?v=0e8020d481').then(({installBake})=>{window.xiyuanBake=installBake({scene,tier:renderTier,region:unitBFootprint,invalidate,
+ surfaces:[{root:house,material:M.floor,kind:'floor'},{root:house,material:M.tile,kind:'floor'},{root:house,material:M.outdoor,kind:'floor'},{root:arch,material:M.wall,kind:'wall'},{root:arch,material:wet.materials.tile,kind:'wall'},{root:roof,material:M.white,kind:'ceiling'},{root:leftB,material:wet.materials.tint,kind:'ceiling'}],
+ suppress:[{root:arch,material:shadeMat},{meshes:aoCeilings}],shade:shadeMat,contactRoot:leftB,
+ state:()=>({interior:indoor!==OUTDOOR,layout:activeLayout,lighting:studio.getLighting(),furniture:allFurnishings.visible,level:ambient.hemi/homeLight.hemi})});invalidate(300);}).catch(e=>console.warn('Baked lighting unavailable',e));
 // Round 4, GPU tier only: ambient occlusion (GTAO) at eye level, i.e. walking and the tour's rooms, never in the cut overviews;
 // off at quality 流畅. Phones and software rendering never load gtao-layer.js. A/B switch: ?ao=0 in the address, or
 // xiyuanAO(false) / xiyuanAO(true) in the console (xiyuanAO() reports the state).
