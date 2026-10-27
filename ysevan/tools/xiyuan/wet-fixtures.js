@@ -6,9 +6,12 @@ import {metricBoxUV,WALL_UV} from './metric-uv.js?v=07dab91ffb';
 // and turn is theirs. Their placeholder meshes keep their objects, materials and transforms; only the geometry inside is
 // replaced, within the same outline (toilet() and basin(): each side within 1 cm, see check-wet-fixtures.mjs), before
 // batchStatic() merges the unit. The right-hand B unit is a clone made earlier and keeps the old shapes.
-// - toilets: a compact skirted one-piece (bowl, seat ring and lid with a hinge, cistern with an overhanging lid and a dual
-//   flush button); the locked outline is 0.39 × 0.565 m, shallower than the 0.68–0.72 m of most close-coupled products and the
-//   CAD symbol's 0.65 m: the bowl is not lengthened (that would move it into the room; listed for the owner);
+// - toilets: a skirted one-piece (bowl, seat ring and lid with a hinge, cistern with an overhanging lid and a dual flush
+//   button) in toilet()'s outline. The owner approved on 2026-10-28 moving both toilets onto the CAD blocks (47673A, 476755)
+//   and giving them a product's size: the owner's two calls pass f / b (bowl forward, cistern back), which make the outline
+//   0.39 × 0.68 m centred on the anchor (product nominal 680 × 390 mm, common close-coupled and one-piece toilets are
+//   660–720 deep and 360–400 wide; the CAD symbol is 500 × 650), cistern 10 mm off the wall or pipe chase behind it, cistern
+//   top 0.64 m as before. Without f / b (other units) the old 0.565 m outline;
 // - basins: a vanity on a recessed plinth with two doors (3 mm joint, the home's handles), an integrated ceramic top 90 mm
 //   thick with a 126 mm deep bowl, a single-lever mixer whose body stands where the locked riser stood;
 // - kitchen base runs: carcass fronts set back for 18 mm doors and drawers with 3 mm joints, the home's handles (all three
@@ -83,19 +86,20 @@ const localBox=(group)=>{const b=new THREE.Box3();group.updateMatrixWorld(true);
 const r4=v=>Math.round(v*1e4)/1e4,boxArr=b=>[b.min.x,b.min.y,b.min.z,b.max.x,b.max.y,b.max.z].map(r4);
 
 // --- Products (local frames) --------------------------------------------------------------------------------------------
-// Toilet in toilet()'s frame: width along x, cistern towards −z, outline x ±0.195, z −0.30…+0.265, y 0…0.64.
-function toiletGeos(n){
- const O=(o,y)=>oval({...o,y},n),B={zm:-.03,zb:-.255,pb:6,pf:2.4};
- const body=loft([O({...B,hw:.150,zf:.185},0),O({...B,hw:.158,zf:.200},.05),O({...B,hw:.171,zm:-.02,zf:.228},.22),O({...B,hw:.181,zm:0,zf:.250,pf:2.3},.32),
-  O({...B,hw:.186,zm:0,zf:.257,pf:2.2},.36),O({...B,hw:.182,zm:0,zb:-.25,zf:.252,pf:2.2},.372)],{top:true});
+// Toilet in toilet()'s frame: width along x, cistern towards −z, outline x ±0.195, z −0.30−b…+0.265+f, y 0…0.64 (f moves the
+// bowl and seat forward, b the cistern back: toilet()'s last two arguments).
+function toiletGeos(n,f=0,b=0){
+ const O=(o,y)=>oval({...o,y},n),L=o=>({...o,zm:o.zm+(f-b)/2,zb:o.zb-b,zf:o.zf+f}),K=o=>({...o,zm:o.zm-b,zb:o.zb-b,zf:o.zf-b}),B={zm:-.03,zb:-.255,pb:6,pf:2.4};
+ const body=loft([O(L({...B,hw:.150,zf:.185}),0),O(L({...B,hw:.158,zf:.200}),.05),O(L({...B,hw:.171,zm:-.02,zf:.228}),.22),O(L({...B,hw:.181,zm:0,zf:.250,pf:2.3}),.32),
+  O(L({...B,hw:.186,zm:0,zf:.257,pf:2.2}),.36),O(L({...B,hw:.182,zm:0,zb:-.25,zf:.252,pf:2.2}),.372)],{top:true});
  const S={zm:.03,pb:3,pf:2.2};
- const seat=merge([loft([O({...S,hw:.172,zb:-.13,zf:.254},.372),O({...S,hw:.180,zb:-.134,zf:.261},.381),O({...S,hw:.177,zb:-.132,zf:.258},.39)],{top:true,bottom:true}),
-  loft([O({...S,hw:.170,zb:-.122,zf:.251},.392),O({...S,hw:.177,zb:-.126,zf:.258},.403),O({...S,hw:.169,zb:-.12,zf:.249},.413)],{top:true,bottom:true}),
-  box(-.1,.372,-.152,-.05,.396,-.118),box(.05,.372,-.152,.1,.396,-.118)]);
+ const seat=merge([loft([O(L({...S,hw:.172,zb:-.13,zf:.254}),.372),O(L({...S,hw:.180,zb:-.134,zf:.261}),.381),O(L({...S,hw:.177,zb:-.132,zf:.258}),.39)],{top:true,bottom:true}),
+  loft([O(L({...S,hw:.170,zb:-.122,zf:.251}),.392),O(L({...S,hw:.177,zb:-.126,zf:.258}),.403),O(L({...S,hw:.169,zb:-.12,zf:.249}),.413)],{top:true,bottom:true}),
+  box(-.1,.372,-.152-b,-.05,.396,-.118-b),box(.05,.372,-.152-b,.1,.396,-.118-b)]);
  const T={zm:-.21,pb:7,pf:7};
- const tank=merge([loft([O({...T,hw:.176,zb:-.288,zf:-.132},.3),O({...T,hw:.182,zb:-.291,zf:-.129},.56),O({...T,hw:.18,zb:-.289,zf:-.131},.612)],{top:true}),
-  loft([O({...T,hw:.183,zb:-.294,zf:-.125,pb:8,pf:8},.611),O({...T,hw:.188,zb:-.297,zf:-.121,pb:8,pf:8},.626),O({...T,hw:.186,zb:-.295,zf:-.123,pb:8,pf:8},.636),O({...T,hw:.179,zb:-.289,zf:-.129,pb:8,pf:8},.64)],{top:true,bottom:true})]);
- const button=merge([cylY(-.0115,.637,-.21,.0105,.005,10),cylY(.0115,.637,-.21,.0105,.005,10)]);
+ const tank=merge([loft([O(K({...T,hw:.176,zb:-.288,zf:-.132}),.3),O(K({...T,hw:.182,zb:-.291,zf:-.129}),.56),O(K({...T,hw:.18,zb:-.289,zf:-.131}),.612)],{top:true}),
+  loft([O(K({...T,hw:.183,zb:-.294,zf:-.125,pb:8,pf:8}),.611),O(K({...T,hw:.188,zb:-.297,zf:-.121,pb:8,pf:8}),.626),O(K({...T,hw:.186,zb:-.295,zf:-.123,pb:8,pf:8}),.636),O(K({...T,hw:.179,zb:-.289,zf:-.129,pb:8,pf:8}),.64)],{top:true,bottom:true})]);
+ const button=merge([cylY(-.0115,.637,-.21-b,.0105,.005,10),cylY(.0115,.637,-.21-b,.0105,.005,10)]);
  return {body,seat,tank,button};
 }
 // Basin in basin()'s frame (w wide along x, the faucet towards −z): outline x ±(w+0.03)/2, z ±0.245, y 0…1.04.
@@ -178,16 +182,18 @@ export function refineWetFixtures({M,owner,collisions,tier='gpu'}){
  const add=(name,geo,m,parent=owner)=>{if(!geo||!m)return null;const q=new THREE.Mesh(geo,m);q.name=name;q.castShadow=q.receiveShadow=true;parent.add(q);rep.added.push(name);return q;};
  const handleMats={bar:M.handleBar,knob:M.handleKnob,pull:M.handlePull};
 
- // Toilets and basins: the groups toilet() and basin() put in the unit (three white parts; oak, white and two metal rods).
- const groups=owner.children.filter(g=>g.isGroup);
- const toilets=groups.filter(g=>g.children.length===3&&is(g.children[0],M.white,WHD(.35,.35,.48),[0,.175,0])&&is(g.children[1],M.white,WHD(.39,.055,.53),[0,.3675,0])&&is(g.children[2],M.white,WHD(.37,.48,.16),[0,.4,-.22]));
+ // Toilets and basins: the groups toilet() and basin() put in the unit (three white parts, bowl and seat moved forward by f and
+ // the cistern back by b; oak, white and two metal rods).
+ const groups=owner.children.filter(g=>g.isGroup),fb=g=>[g.children[0]?.position.z??0,-.22-(g.children[2]?.position.z??-.22)];
+ const toilets=groups.filter(g=>{if(g.children.length!==3)return false;const [f,b]=fb(g);return is(g.children[0],M.white,WHD(.35,.35,.48),[0,.175,f])&&is(g.children[1],M.white,WHD(.39,.055,.53),[0,.3675,f])&&is(g.children[2],M.white,WHD(.37,.48,.16),[0,.4,-.22-b]);});
  const basins=groups.filter(g=>g.children.length===4&&g.children[0].material===M.oak&&near(par(g.children[0]).height,.75)&&near(par(g.children[0]).depth,.46)&&g.children[1].material===M.white&&near(par(g.children[1]).height,.09)&&g.children[2].material===M.metal&&g.children[3].material===M.metal);
  if(toilets.length!==2)rep.missing.push(`toilets (${toilets.length} found, 2 expected)`);
  if(basins.length!==2)rep.missing.push(`basins (${basins.length} found, 2 expected)`);
- const T=toiletGeos(n);
- for(const g of toilets){const id=`toilet@${r4(g.position.x)},${r4(g.position.z)}`,before=boxArr(localBox(g));
+ const geos=new Map();
+ for(const g of toilets){const id=`toilet@${r4(g.position.x)},${r4(g.position.z)}`,before=boxArr(localBox(g)),[f,b]=fb(g).map(r4),k=f+','+b;
+  if(!geos.has(k))geos.set(k,toiletGeos(n,f,b));const T=geos.get(k);
   swap(g.children[0],T.body.clone());swap(g.children[1],T.seat.clone());swap(g.children[2],T.tank.clone());add('toilet-button',T.button.clone(),M.metal,g);
-  rep.outline[id]={rot:r4(g.rotation.y),before,after:boxArr(localBox(g))};rep.found.push(id);}
+  rep.outline[id]={rot:r4(g.rotation.y),f,b,before,after:boxArr(localBox(g))};rep.found.push(id);}
  for(const g of basins){const w=par(g.children[0]).width,id=`basin@${r4(g.position.x)},${r4(g.position.z)}`,before=boxArr(localBox(g)),B=basinGeos(w,n);
   swap(g.children[0],B.carcass);swap(g.children[1],B.top);swap(g.children[2],B.riser);swap(g.children[3],B.spout);
   add('basin-door',B.doors,M.door,g);add('basin-joint',B.joint,M.dark,g);add('basin-drain',B.drain,M.metal,g);for(const [k,m] of Object.entries(handleMats))add('basin-handle-'+k,B.handles[k],m,g);
@@ -250,6 +256,7 @@ export function refineWetFixtures({M,owner,collisions,tier='gpu'}){
  // One mesh per bathroom and finish (batchStatic merges them; kept apart here so each can be checked where it stands).
  add('shower-fittings-bath1',showerGeos({riser:[.25,6.08],y0:1.2,y1:2.1,head:[.25,6.2],wallAxis:'z',wall:5.95}),M.metalCut);
  add('shower-fittings-bath2',showerGeos({riser:[6.83,3.38],y0:1.25,y1:2.05,head:[6.73,3.38],wallAxis:'x',wall:7}),M.metalCut);
- for(const [id,spec] of [['bath1',{wallAxis:'x',wall:1.7,u:6.7,dir:-1}],['bath2',{wallAxis:'z',wall:4.85,u:6.41,dir:-1}]]){const r=rollGeos(spec);add('roll-holder-'+id,r.holder,M.metal);add('toilet-roll-'+id,r.roll,M.white);}
+ // Roll holders on the wall beside each toilet, the outer one 90 mm past the toilet's front (z 6.84), as before the move.
+ for(const [id,spec] of [['bath1',{wallAxis:'x',wall:1.7,u:6.93,dir:-1}],['bath2',{wallAxis:'z',wall:4.85,u:6.41,dir:-1}]]){const r=rollGeos(spec);add('roll-holder-'+id,r.holder,M.metal);add('toilet-roll-'+id,r.roll,M.white);}
  return rep;
 }

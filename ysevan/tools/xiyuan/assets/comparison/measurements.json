@@ -1283,7 +1283,7 @@
       "note": "方案尺寸"
     }
   ],
-  "wallSourceSHA256": "9f0584f807c6581531c91d8049802eb130ef2db4ff8ba8570afe5ac2d48cef06",
+  "wallSourceSHA256": "98a348678c2fffa2d5634b22b2c47ead4820190a78719a8052f4ff949b6fc23c",
   "withdrawnLayout": "old redesign",
   "notThreeDImplementation": false,
   "threeDImplemented": true

@@ -4,13 +4,16 @@
 // 本模块看 body[data-mode] 变成 plan 时接手镜头和画面，离开时把借用的东西还回去。
 // ?plan=classic 回到旧的平面俯视（正上方俯视，0.35 米剖切，房间标签进漫游），对照截图或屋主想换回来时用。
 import * as THREE from 'three';
-import {CUT, LAYERS, PART_LAYER, COLORS, SOURCES, loadData, buildScene, markerSpecs, placeLabels, unitRooms, boxOf, shortName} from './plan3d-layers.js?v=ade4aab7de';
-import {exportDrawing} from './plan3d-export.js?v=7dfcf36dc9';
-import {LAYOUTS} from './layout-data.js?v=177b5128ed';
-import {PRESETS} from './design-presets.js?v=d747850719';
+import {CUT, LAYERS, PART_LAYER, COLORS, SOURCES, ELEC_LAYERS, loadData, buildScene, markerSpecs, placeLabels, unitRooms, boxOf, shortName, elecPoints, pointLayouts, pointDetail} from './plan3d-layers.js?v=ec1c126436';
+import {exportDrawing} from './plan3d-export.js?v=637c5d0670';
+import {LAYOUTS} from './layout-data.js?v=3e32bfce2c';
+import {PRESETS} from './design-presets.js?v=63f9cf8b59';
 
 const FOV = 16, POLAR = 38 * Math.PI / 180, TOP = .002, STORE = 'xiyuan-plan3d-v1';
 const icon = (n, cls = 'i') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+// A symbol the sprite lacks (plan3d-layers.js GLYPHS), drawn inline with the same line-icon class.
+const glyphSvg = markup => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${markup}</svg>`;
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 // Plain names: the middle-dot separators in the layout and style names become a space (UI text keeps to ，。、（）).
 const plain = s => String(s || '').replace(/\s*·\s*/g, ' ').trim();
 
@@ -40,8 +43,9 @@ function install(ctx) {
   kit.innerHTML = `<div class="p3-chips" role="group" aria-label="图层">${LAYERS.map(l => `<button type="button" class="p3-chip" data-layer="${l.id}" aria-pressed="false">${icon(l.icon)}<span>${l.label}</span></button>`).join('')}</div>
 <div class="p3-actions" role="group" aria-label="视角与导出"><button type="button" data-p3="left" aria-label="向左转90度" title="向左转90度（Q）">${icon('rotate-ccw')}</button><button type="button" data-p3="right" aria-label="向右转90度" title="向右转90度（E）">${icon('rotate-cw')}</button><button type="button" data-p3="tilt" aria-pressed="false" title="正上方看，或斜着看（T）">${icon('plan')}<span>正上方</span></button><button type="button" data-p3="reset" title="回到全户">${icon('maximize')}<span>全户</span></button><span class="p3-north" aria-label="指北"><i>${icon('north')}</i><small>北</small></span><button type="button" class="primary p3-export" data-p3="export">${icon('download')}<span>导出图纸</span></button></div>
 <div class="p3-room-actions" hidden><button type="button" class="outline small" data-p3="walk">${icon('footprints')}<span>走进这个房间</span></button><button type="button" class="outline small" data-p3="back">${icon('maximize')}<span>回到全户</span></button></div>
-<ul class="p3-legend" aria-label="图例"><li><i class="sw sw-bearing"></i>承重墙，不可拆改</li><li><i class="sw sw-cap"></i>其他墙，1.2米处剖开</li><li><i class="sw sw-bay"></i>飘窗台，不可拆</li><li><i class="sw sw-water"></i>水点，坐标已锁定</li><li><i class="sw sw-dim"></i>尺寸 mm，以 DWG 为准</li></ul>
-<p class="p3-note">开关插座、灯位、空调是设计示意，不是强弱电图。</p>`;
+<ul class="p3-points" hidden aria-label="这个房间的建议点位"></ul>
+<ul class="p3-legend" aria-label="图例"><li><i class="sw sw-bearing"></i>承重墙，不可拆改</li><li><i class="sw sw-cap"></i>其他墙，1.2米处剖开</li><li><i class="sw sw-bay"></i>飘窗台，不可拆</li><li><i class="sw sw-dim"></i>尺寸 mm，以 DWG 为准</li><li class="p3-wide"><i class="sw sw-water"></i>水点，坐标已锁定，地漏和排污口以现场为准</li><li><i class="sw sw-power"></i>强电，插座和电箱</li><li><i class="sw sw-weak"></i>弱电，网络和电视</li><li><i class="sw sw-lights"></i>灯位和开关</li><li class="p3-wide p3-legend-note">强电、弱电、灯位是建议点位，以电工现场为准</li></ul>
+<p class="p3-note">强电、弱电、灯位是建议点位，以电工现场为准，点开房间可以看每个点的备注和依据。地漏和排污口以现场为准。空调是占位示意。</p>`;
   $('roomLabel')?.append(kit);
   const bar = document.createElement('div'); bar.id = 'p3Bar'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', '平面俯视');
   bar.innerHTML = `<button type="button" data-p3="layers" aria-label="图层">${icon('layers')}<small>图层</small></button><button type="button" data-p3="left" aria-label="向左转90度">${icon('rotate-ccw')}<small>左转</small></button><button type="button" data-p3="right" aria-label="向右转90度">${icon('rotate-cw')}<small>右转</small></button><button type="button" data-p3="tilt" aria-pressed="false" aria-label="正上方看">${icon('plan')}<small>正上方</small></button><button type="button" data-p3="reset" aria-label="回到全户">${icon('maximize')}<small>全户</small></button><button type="button" data-p3="export" aria-label="导出图纸">${icon('download')}<small>导出</small></button><span class="p3-north" aria-label="指北"><i>${icon('north')}</i><small>北</small></span>`;
@@ -49,6 +53,8 @@ function install(ctx) {
   const overlay = document.createElement('div'); overlay.id = 'p3Overlay'; overlay.setAttribute('aria-label', '平面图标注');
   const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg'), leaders = document.createElementNS(NS, 'path'), dots = document.createElementNS(NS, 'path');
   svg.setAttribute('class', 'p3-leaders'); leaders.setAttribute('class', 'p3-leader'); dots.setAttribute('class', 'p3-dot'); svg.append(leaders, dots);
+  // Suggested points get a dot in their layer's colour, also when their label had no room (the position always shows).
+  const elecDots = Object.fromEntries(ELEC_LAYERS.map(l => {const d = document.createElementNS(NS, 'path'); d.setAttribute('class', 'p3-dot p3-dot-' + l); svg.append(d); return [l, d];}));
   const labelBox = document.createElement('div'); labelBox.className = 'p3-labels'; overlay.append(svg, labelBox);
   ($('roomPins') || document.body).after(overlay);
 
@@ -155,9 +161,33 @@ function install(ctx) {
   function applyLayerVisibility() {
     if (!S.built) return;
     for (const [k, m] of Object.entries(S.built.parts)) m.visible = !PART_LAYER[k] || !!S.layers[PART_LAYER[k]];
+    const noPoints = pointsMissing();
     for (const b of kit.querySelectorAll('[data-layer]')) {const id = b.dataset.layer, ownOnly = !['rooms', 'dims', 'doors'].includes(id), off = ownOnly && !owner();
-      b.setAttribute('aria-pressed', String(!!S.layers[id])); b.disabled = off || (focusUnit() === 'floor' && id !== 'rooms'); b.title = b.disabled ? '这一层只做了我的 B 户型' : '';}
-    S.dirty = true; ctx.invalidate(300);
+      b.setAttribute('aria-pressed', String(!!S.layers[id])); b.disabled = off || (focusUnit() === 'floor' && id !== 'rooms'); b.title = b.disabled ? '这一层只做了我的 B 户型' : '';
+      if (!b.disabled && ELEC_LAYERS.includes(id) && noPoints) {b.disabled = true; b.title = noPoints;}}
+    syncPoints(); S.dirty = true; ctx.invalidate(300);
+  }
+
+  // The suggested points cover the layouts listed in electrical-points.json (01 and 04); elsewhere their three chips are grey.
+  function pointsMissing() {
+    if (!S.data) return '';
+    if (!S.data.points) return '建议点位数据没能读到，请刷新再试';
+    const have = pointLayouts(S.data.points); if (have.has(ctx.layout)) return '';
+    return '建议点位只做了 ' + [...have].map(id => (plain(LAYOUTS[id]?.name || id).match(/^\d+/) || [id])[0]).sort().join(' 和 ');
+  }
+  // A room in focus lists its suggested points (of the layers that are on) with the note and the basis of each, in the card.
+  function syncPoints() {
+    const ul = kit.querySelector('.p3-points'), r = S.focusRoom;
+    const list = r && owner() && S.data?.points && !pointsMissing() ? elecPoints(S.data.points, ctx.layout).filter(p => p.room === r && S.layers[p.layer]) : [];
+    list.sort((a, b) => ELEC_LAYERS.indexOf(a.layer) - ELEC_LAYERS.indexOf(b.layer) || String(a.id).localeCompare(String(b.id)));
+    // Identical lines (the downlights of one ceiling) are listed once with their count.
+    const rows = new Map(); for (const p of list) {const t = pointDetail(p), k = p.layer + '|' + t, r = rows.get(k); if (r) r.n++; else rows.set(k, {p, t, n: 1});}
+    ul.hidden = !list.length; ul.innerHTML = [...rows.values()].map(({p, t, n}) => `<li data-point="${esc(p.id)}"><i class="sw sw-${p.layer}"></i><span>${esc(t + (n > 1 ? `（${n}处）` : ''))}</span></li>`).join('');
+  }
+  // The basis of the suggested points: the standards the file names.
+  function syncNote() {
+    const st = (S.data?.points?.standards || []).map(x => plain(x.name)).filter(Boolean), n = kit.querySelector('.p3-note');
+    if (n && st.length && !n.dataset.basis) {n.dataset.basis = '1'; n.textContent += `建议点位依据 ${st.join('、')}和常见做法。`;}
   }
 
   // --- the card text ------------------------------------------------------------------------------------------------------------
@@ -169,7 +199,7 @@ function install(ctx) {
     $('roomDesc').textContent = r ? [dx && dz ? `净宽${dx.mm}，净深${dz.mm}（mm）` : '', plain(r.desc || '')].filter(Boolean).join('。').replace(/。。/g, '。')
       : owner() ? `${layoutName()}，${styleName()}。墙体在1.2米高处剖开，点房间可以放大。` : focusUnit() === 'floor' ? '四户住宅和公区。点户型名字放大，施工图层只做了我的 B 户型。' : '邻居户型按 CAD 复建，施工图层只做了我的 B 户型。';
     kit.querySelector('.p3-room-actions').hidden = !r; kit.classList.toggle('focused', !!r);
-    syncButtons();
+    syncPoints(); syncButtons();
   }
   function syncButtons() {
     for (const b of document.querySelectorAll('[data-p3="tilt"]')) {b.setAttribute('aria-pressed', String(S.top)); b.innerHTML = S.top ? `${icon('box')}<${b.closest('#p3Bar') ? 'small' : 'span'}>斜着看</${b.closest('#p3Bar') ? 'small' : 'span'}>` : `${icon('plan')}<${b.closest('#p3Bar') ? 'small' : 'span'}>正上方</${b.closest('#p3Bar') ? 'small' : 'span'}>`; b.setAttribute('aria-label', S.top ? '斜着看' : '正上方看');}
@@ -190,7 +220,7 @@ function install(ctx) {
     // A room in focus: only what is in it (and just around it) gets a label.
     const fb = S.focusRoom ? scopeBox() : null, inF = ([x, , z]) => !fb || (x >= fb.x0 && x <= fb.x1 && z >= fb.z0 && z <= fb.z1);
     if (S.layers.dims) for (const d of S.built.dims) if (inF([(d.a[0] + d.b[0]) / 2, 0, (d.a[1] + d.b[1]) / 2])) out.push({kind: 'dim', key: `dim.${d.room || 'fit'}.${d.axis || ''}.${d.a}.${d.b}`, text: d.text || String(d.mm), at: [(d.a[0] + d.b[0]) / 2, CUT + .02, (d.a[1] + d.b[1]) / 2], prio: d.fitout ? 4 : 3, tight: d.tight});
-    if (owner()) for (const m of S.marks || []) if (S.layers[m.layer] && m.anchors.some(inF)) out.push({...m, kind: 'mark', key: m.id, prio: m.prio ?? ({water: 3, ac: 4, sockets: 5, lights: 6}[m.layer] ?? 5)});
+    if (owner()) for (const m of S.marks || []) if (S.layers[m.layer] && m.anchors.some(inF)) out.push({...m, kind: 'mark', key: m.id, prio: m.prio ?? ({water: 3, ac: 4, power: 5, weak: 5, lights: 6}[m.layer] ?? 5)});
     return out;
   }
   function el(it) {
@@ -198,7 +228,7 @@ function install(ctx) {
     if (!e) {
       if (it.kind === 'room') {e = document.createElement('button'); e.type = 'button'; e.className = 'p3-room'; e.addEventListener('click', () => it.unit ? ctx.selectUnit(it.unit) : focusRoomTo(it.room));}
       else if (it.kind === 'dim') {e = document.createElement('span'); e.className = 'p3-dim';}
-      else {e = document.createElement('div'); e.className = 'p3-mark'; e.dataset.layer = it.layer; if (it.tone) e.dataset.tone = it.tone; e.innerHTML = `<span class="p3-ic">${it.badge ? `<b>${it.badge}</b>` : it.icon ? icon(it.icon) : ''}</span><span class="p3-tx"></span>`; if (!it.icon && !it.badge) e.classList.add('p3-flag');}
+      else {e = document.createElement('div'); e.className = 'p3-mark'; e.dataset.layer = it.layer; if (it.tone) e.dataset.tone = it.tone; e.innerHTML = `<span class="p3-ic">${it.badge ? `<b>${it.badge}</b>` : it.glyph ? glyphSvg(it.glyph) : it.icon ? icon(it.icon) : ''}${it.tag ? `<i class="p3-tag">${it.tag}</i>` : ''}</span><span class="p3-tx"></span>`; if (!it.icon && !it.badge && !it.glyph) e.classList.add('p3-flag');}
       e.dataset.key = it.key; els.set(it.key, e); labelBox.append(e);
     }
     return e;
@@ -227,21 +257,23 @@ function install(ctx) {
     }
     const u = S.u ??= parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--u')) || 1;
     const res = placeLabels(items, {W, H, scale: u, obstacles: obstacles(), merge: phone() ? 26 : 24, measure: c => measure(c).w});
-    const live = new Set();let dl = '', dd = '';
+    const live = new Set(), ed = Object.fromEntries(ELEC_LAYERS.map(l => [l, '']));let dl = '', dd = '';
+    const dot = (ax, ay, r) => `M${(ax - r).toFixed(1)} ${ay.toFixed(1)}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
     for (const p of res.placed) {
       const e = el(p); live.add(p.key);
       if (p.kind === 'mark') {e.querySelector('.p3-tx').textContent = p.text; e.classList.toggle('icon-only', !!p.iconOnly);}
       else e.textContent = p.text;
       e.style.transform = `translate(${Math.round(p.box.x)}px,${Math.round(p.box.y)}px)`; e.hidden = false; e.dataset.placed = '1';
       e.dataset.box = [p.box.x, p.box.y, p.box.w, p.box.h].map(n => n.toFixed(1)).join(',');
-      if (p.kind === 'mark') {const cx = p.box.x + p.wIcon / 2, cy = p.box.y + p.box.h / 2; for (const [ax, ay] of p.anchors) {dl += `M${ax.toFixed(1)} ${ay.toFixed(1)}L${cx.toFixed(1)} ${cy.toFixed(1)}`; dd += `M${(ax - 2.4).toFixed(1)} ${ay.toFixed(1)}a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0 -4.8 0`;}}
+      if (p.kind === 'mark') {const cx = p.box.x + p.wIcon / 2, cy = p.box.y + p.box.h / 2; for (const [ax, ay] of p.anchors) {dl += `M${ax.toFixed(1)} ${ay.toFixed(1)}L${cx.toFixed(1)} ${cy.toFixed(1)}`; if (p.layer in ed) ed[p.layer] += dot(ax, ay, 3.2 * u); else dd += dot(ax, ay, 2.4);}}
     }
+    for (const h of res.hidden) if (h.layer in ed) for (const [ax, ay] of h.anchors) ed[h.layer] += dot(ax, ay, 3.2 * u);
     for (const [k, e] of els) if (!live.has(k)) {e.hidden = true; e.dataset.placed = '';}
-    leaders.setAttribute('d', dl); dots.setAttribute('d', dd);
+    leaders.setAttribute('d', dl); dots.setAttribute('d', dd); for (const l of ELEC_LAYERS) elecDots[l].setAttribute('d', ed[l]);
     S.stats = {placed: res.placed.length, hidden: res.hidden.length, hiddenKeys: res.hidden.map(h => h.key)};
     S.last = res;
   }
-  function clearOverlay() {for (const e of els.values()) e.hidden = true; leaders.setAttribute('d', ''); dots.setAttribute('d', '');}
+  function clearOverlay() {for (const e of els.values()) e.hidden = true; leaders.setAttribute('d', ''); dots.setAttribute('d', ''); for (const d of Object.values(elecDots)) d.setAttribute('d', '');}
 
   // --- room focus ---------------------------------------------------------------------------------------------------------------
   function focusRoomTo(id) {S.focusRoom = id || null; rebuild(true); syncCard(); frameScope(800);}
@@ -257,7 +289,7 @@ function install(ctx) {
       S.saved = {near: camera.near, mouse: {...controls.mouseButtons}, touches: {...controls.touches}, shadow: ctx.sun?.shadow.intensity ?? 1, screenSpacePanning: controls.screenSpacePanning};
       controls.mouseButtons = {LEFT: T.MOUSE.PAN, MIDDLE: T.MOUSE.DOLLY, RIGHT: T.MOUSE.PAN}; controls.touches = {ONE: T.TOUCH.PAN, TWO: T.TOUCH.DOLLY_PAN};
       if (ctx.sun) ctx.sun.shadow.intensity = .38;
-      if (!S.data) loadData().then(d => {S.data = d; if (S.active) {rebuild(true); syncCard();}}).catch(() => ctx.toast?.('承重墙和水点数据没能读到，请刷新再试'));
+      if (!S.data) loadData().then(d => {S.data = d; syncNote(); if (S.active) {rebuild(true); syncCard();}}).catch(() => ctx.toast?.('承重墙和水点数据没能读到，请刷新再试'));
     }
     swapFurniture(true); ctx.stopTween?.(); ctx.setCut(CUT);
     hideFitoutSprites();

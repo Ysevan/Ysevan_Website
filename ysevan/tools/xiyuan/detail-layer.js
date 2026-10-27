@@ -54,6 +54,8 @@ function windowOf(q){
 
 // Switches at 1.30 m (centre) by the latch side of each owner door; sockets by beds, desks, the TV wall, sofa and counter.
 // [x, y, z, facing]: the plate's back is on the wall (or wainscot / splashback) face, facing = room direction.
+// Layouts 01 (original) and 04 (central) take their plates from assets/electrical-points.json instead (2026-10-28, the
+// suggested points the plan view and the points table show): see ELEC_TYPES and elecFixtures() below. 02 and 03 keep these.
 const SW=[[10.35,1.3,1.2,'z'],[3.0,1.3,7.05,'-z'],[1.8,1.3,6.15,'x'],[4.1,1.3,5.85,'-z'],[6.6,1.3,5.95,'z']];
 const LIVING=[[10.55,.58,7.95,'-x'],[10.55,.58,10.15,'-x'],[6.7,.3,7.55,'x'],[6.7,.3,10.55,'x'],[6.6175,1.12,2.55,'x'],[6.6175,1.12,.75,'x']];
 const MASTER=[[.108,.55,8.67,'x'],[.108,.55,10.93,'x']];
@@ -63,6 +65,16 @@ export const FIXTURES={
  family:[...SW,[5.5,1.3,7.35,'x'],...LIVING,...MASTER,[3.5,.9,9.45,'x']],
  central:[...SW,[4.8,1.3,7.05,'-z'],...LIVING,...MASTER,[6.492,.55,8.75,'-x'],[6.492,.55,11.05,'-x'],[6.38,.9,7.15,'z']]
 };
+// Points of electrical-points.json that get a wall plate: sockets of every kind, switches, TV and network outlets; not the
+// distribution boxes (open-kit.js builds them from the DWG) and not the lights. Only points marked modelled (the ones inside
+// cabinets stay plan-only). wall = the side the wall is on, so the plate faces the other way.
+export const ELEC_TYPES=['socket','ac-wall','ac-floor','counter','fridge','hood','washer','dryer','water-heater','toilet','bath','tv-wall','bedside','desk','data','tv','switch'];
+const FACING={'+x':'-x','-x':'x','+z':'-z','-z':'z'};
+export const ELEC_LAYOUTS=['original','central'];
+export function elecFixtures(elec,layout){
+ if(!elec||!Array.isArray(elec.points)||!ELEC_LAYOUTS.includes(layout))return null;
+ return elec.points.filter(p=>p.modelled&&FACING[p.wall]&&ELEC_TYPES.includes(p.type)&&(p.layouts||[]).includes(layout)).map(p=>[p.x,p.y,p.z,FACING[p.wall],p.id]);
+}
 // Owner's ceiling: downlights in living, dining, entry, corridor and bedrooms (none over a pillow), a cove line round the living room.
 export const DOWNLIGHTS=[[7.25,7.75],[7.25,9.25],[7.25,10.75],[10,7.75],[10,9.25],[10,10.75],[9.9,3.75],[9.9,5.3],[7.65,6.4],[9.15,6.4],[9.75,1.75],[9.75,2.65],
  [2.75,6.5],[4.1,6.5],[5.45,6.5],[2.3,7.6],[.65,8.65],[2.35,8.65],[.65,11],[2.35,11],[4,8.45],[6,8.45],[4,10.95],[6,10.95],[4.15,3.9],[4.15,5.15],[.8,4.5],[2.1,4.5],[1.45,3.2]];
@@ -125,8 +137,9 @@ export function createDetailLayer({mat,M,clipPlane,footprint,floorHoles,wallSets
  const drape=(list,parent)=>{for(const [a,b,y0,y1] of list){const q=mesh(curtainGeo(a,b,y0,y1),D.curtain,{cast:true});q.name='curtain';parent.add(q);}};
  drape(CURTAINS.all.filter((q,i)=>i!==2&&i!==3),owner);for(const [id,g] of Object.entries(layouts))drape([CURTAINS.all[2],CURTAINS.all[3]],g);for(const id of ['balanced','family','central'])if(layouts[id])drape(CURTAINS.northWest,layouts[id]);
  // Switches and sockets: one InstancedMesh per layout fit-out (only the active one is visible). Call after batchStatic(), which would flatten instances.
- out.fixtures=()=>{const geo=fixtureGeo(),R={x:Math.PI/2,'-x':-Math.PI/2,z:0,'-z':Math.PI},m=new THREE.Matrix4(),q=new THREE.Quaternion(),one=new THREE.Vector3(1,1,1);
-  for(const [id,list] of Object.entries(FIXTURES)){if(!layouts[id])continue;const im=new THREE.InstancedMesh(geo,D.fixture,list.length);im.name='switches-sockets';im.receiveShadow=true;
-   list.forEach(([x,y,z,f],i)=>im.setMatrixAt(i,m.compose(new THREE.Vector3(x,y,z),q.setFromAxisAngle(new THREE.Vector3(0,1,0),R[f]),one)));im.computeBoundingSphere();layouts[id].add(im);}};
+ // elec: assets/electrical-points.json (app.js loads it); 01 and 04 read their plates from it, userData.pointIds = the point id per instance.
+ out.fixtures=(elec=null)=>{const geo=fixtureGeo(),R={x:Math.PI/2,'-x':-Math.PI/2,z:0,'-z':Math.PI},m=new THREE.Matrix4(),q=new THREE.Quaternion(),one=new THREE.Vector3(1,1,1);
+  for(const [id,own] of Object.entries(FIXTURES)){if(!layouts[id])continue;const list=elecFixtures(elec,id)||own;const im=new THREE.InstancedMesh(geo,D.fixture,list.length);im.name='switches-sockets';im.receiveShadow=true;
+   list.forEach(([x,y,z,f],i)=>im.setMatrixAt(i,m.compose(new THREE.Vector3(x,y,z),q.setFromAxisAngle(new THREE.Vector3(0,1,0),R[f]),one)));if(list!==own)im.userData.pointIds=list.map(f=>f[4]);im.computeBoundingSphere();layouts[id].add(im);}};
  out.materials=D;return out;
 }

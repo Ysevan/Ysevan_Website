@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {GAMING_MODES,STUDY_UPPER_DISPLAYS} from './design-data.js?v=0d48267e23';
-import {deskFrame,monitorArm,officeChair,sofaDay,sofaGuest} from './bedroom-kit.js?v=91fb07a8ba';
+import {deskFrame,monitorArm,officeChair,sofaDay,sofaGuest} from './bedroom-kit.js?v=9d047206ec';
 // One laptop + one 27-inch display. Hardware cases are size allowances, not product CAD.
 export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlane,materials,south=false}){
  const room=new THREE.Group(),day=new THREE.Group(),guest=new THREE.Group(),chair=new THREE.Group(),shade=new THREE.Group();room.add(day,guest,chair,shade);guest.visible=false;
@@ -27,7 +27,7 @@ export function createGamingRoom({box,cyl,rod,woodTexture,fabricTexture,clipPlan
  const laptop=B(.95,.85,2.84,.40,.26,.017,device);laptop.rotation.x=-.12;
  const screenMaterial=()=>new THREE.MeshBasicMaterial({color:'white',toneMapped:false});
  const screens=[B(1.95,.977,2.791,.591,.334,.004,screenMaterial()),B(.95,.867,2.853,.37,.224,.004,screenMaterial())];screens.forEach(q=>{q.castShadow=false;q.geometry.setAttribute('uv',new THREE.BoxGeometry().getAttribute('uv'));});// wallpapers fill the face: 0–1 UVs, not box()'s metres
- function wallpaper(kind){const c=document.createElement('canvas');c.width=640;c.height=360;const ctx=c.getContext('2d'),g=ctx.createLinearGradient(0,0,640,360);g.addColorStop(0,'#6c7e72');g.addColorStop(1,'#bbae91');ctx.fillStyle=g;ctx.fillRect(0,0,640,360);ctx.fillStyle='#ded9c7';ctx.beginPath();ctx.arc(455,130,95,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f7f3e7';ctx.font='28px sans-serif';ctx.fillText(kind==='game'?'PLAY AT HOME':'HOME STUDIO',36,285);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;}
+ function wallpaper(kind){const c=document.createElement('canvas');c.width=640;c.height=360;const ctx=c.getContext('2d'),g=ctx.createLinearGradient(0,0,640,360);g.addColorStop(0,'#6c7e72');g.addColorStop(1,'#bbae91');ctx.fillStyle=g;ctx.fillRect(0,0,640,360);ctx.fillStyle='#ded9c7';ctx.beginPath();ctx.arc(455,130,95,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f7f3e7';ctx.font='28px sans-serif';ctx.fillText(kind==='game'?'':'',36,285);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;}
  const wallpapers={game:wallpaper('game'),focus:wallpaper('focus')};
  B(1.79,.765,3.105,.8,.006,.34,G.olive,work,.018);
  B(1.76,.777,3.13,.35,.021,.15,device,work,.01);

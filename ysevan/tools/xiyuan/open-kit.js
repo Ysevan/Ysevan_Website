@@ -125,7 +125,7 @@ export function dwgRail({rod,box,M,parent,a,b,header}){
 //  - South bedroom, behind its door (east wall x 6.50, facing west): E_EQUIPMENT 476790 distribution board (z 7.15–7.63,
 //    flush, lid 300 high, bottom at 1.80 m) and 476791 low-voltage box (z 7.63–8.13, 60 proud in the DWG; lid 400 high,
 //    bottom at 0.30 m).
-export const SERVICES={wallAC:{box:[3.5,10.65,3.71,11.45],y:[2.34,2.63],src:'TTFDWW 4766FC'},outdoor:[{box:[3.78,12.24,4.08,12.94],face:-1,src:'476707'},{box:[9.9,12.22,10.2,12.92],face:-1,src:'4767A6'}],
+export const SERVICES={wallAC:{box:[3.5,10.65,3.71,11.45],y:[2.34,2.63],src:'TTFDWW 4766FC',central:{dx:-.15}},outdoor:[{box:[3.78,12.24,4.08,12.94],face:-1,src:'476707'},{box:[9.9,12.22,10.2,12.92],face:-1,src:'4767A6'}],
  stack:{x:3.634,z:11.838,r:.0375,src:'K_EQUIPMENT 4767AA'},boards:[{z:[7.15,7.63],y:[1.8,2.1],proud:.02,src:'E_EQUIPMENT 476790'},{z:[7.63,8.13],y:[.3,.7],proud:.03,src:'E_EQUIPMENT 476791'}],boardWall:6.5};
 // One vertex-coloured material for all of it (white plastic, dark grilles and slots), cut with the walls: each cluster below is a
 // single draw call, frustum-culled on its own, and kept out of the unit's big batches (merged into them, a part in view would make
@@ -133,7 +133,7 @@ export const SERVICES={wallAC:{box:[3.5,10.65,3.71,11.45],y:[2.34,2.63],src:'TTF
 // Lambert on the software tier (no environment there, and the cheapest shading).
 const servicesMat=new WeakMap();
 const WHITE='#eeede5',DARK='#394338';
-export function buildServices({box,clipPlane,parent,soft=false}){
+export function buildServices({box,clipPlane,parent,soft=false,walls=null}){
  const g=new THREE.Group();g.name='dwg-services';parent.add(g);
  if(!servicesMat.has(clipPlane))servicesMat.set(clipPlane,soft?new THREE.MeshLambertMaterial({vertexColors:true,clippingPlanes:[clipPlane]}):new THREE.MeshStandardMaterial({vertexColors:true,roughness:.6,clippingPlanes:[clipPlane]}));
  const m=servicesMat.get(clipPlane),S=SERVICES,clusters={ac:new THREE.Group(),balcony:new THREE.Group(),boards:new THREE.Group()};
@@ -155,5 +155,8 @@ export function buildServices({box,clipPlane,parent,soft=false}){
   c.traverse(o=>{if(!o.isMesh)return;let q=o.geometry.clone();if(q.index)q=q.toNonIndexed();q.applyMatrix4(o.matrixWorld);
    const col=new THREE.Color(o.userData.hex),n=q.attributes.position.count,a=new Float32Array(n*3);for(let i=0;i<n;i++)a.set([col.r,col.g,col.b],i*3);q.setAttribute('color',new THREE.BufferAttribute(a,3));list.push(q);});
   const q=new THREE.Mesh(mergeGeometries(list,false),m);list.forEach(x=>x.dispose());q.name='dwg-'+name;q.castShadow=true;q.receiveShadow=true;g.add(q);}
+ // 04 (layout-central.json) moves the south bedroom's west partition 0.15 m west (wall face x 3.35, 3.50 in the others): the
+ // indoor unit goes with its wall, one copy in each layout's wall group so it switches with the walls.
+ if(walls){const ac=g.getObjectByName('dwg-ac'),c=ac.clone();walls.original.add(ac);c.position.x+=SERVICES.wallAC.central.dx;walls.central.add(c);}
  return g;
 }

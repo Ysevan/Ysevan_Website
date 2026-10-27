@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {BAKE_DATA} from './bake-data.js?v=37702a6e10';
+import {BAKE_DATA} from './bake-data.js?v=d1ea38aa42';
 // Baked lighting (2026-10-26): Blender (Cycles) bakes the daylight of the owner's B unit, sun through the windows, sky, every
 // bounce and the occlusion of that layout's furniture, into lightmaps for the unit's walls, floors and ceilings. Light only,
 // never colour: a texel is the light that reaches the surface, so the four finish styles (and any custom colour) still apply.

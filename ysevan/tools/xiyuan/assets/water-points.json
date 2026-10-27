@@ -1,7 +1,7 @@
 {
- "note": "屋主户型（左 B）全部用水点，从 dist/app.js 锁定段（services-lock.json）和 dist/wet-rooms.js 实际建出的场景里取；平面米（x 向东、z 向南），0.1 mm。洗手盆记盆的位置，龙头随盆朝 CAD 靠的那面墙，不另记。2026-10-24 屋主批准改锁定段（马桶朝向、补砖、剖切、龙头朝向），条件是水点一个不挪；check-wetfix.mjs 断言场景里的水点等于这里登记的值。",
+ "note": "屋主户型（左 B）全部用水点，从 dist/app.js 锁定段（services-lock.json）和 dist/wet-rooms.js 实际建出的场景里取；平面米（x 向东、z 向南），0.1 mm。洗手盆记盆的位置，龙头随盆朝 CAD 靠的那面墙，不另记；马桶记外廓中心。2026-10-24 屋主批准改锁定段（马桶朝向、补砖、剖切、龙头朝向），当时水点一个没挪。2026-10-28 屋主批准地漏和马桶照户型 DWG 图块改位（地漏照 A-EQUIPMENT 圆，马桶照 A-LVTRY 图块，外廓 0.39×0.68 米），外卫马桶背后加包管（A-LVTRY 476740、476741），包里两根排水立管（wD2 476C46、476C48）一并登记；洗手盆、淋浴、花洒、厨房三点、洗衣柜仍是原位，没有动。check-wetfix.mjs 断言场景里的水点等于这里登记的值，并核地漏、马桶、立管和图块的距离。",
  "source": "scripts/export-water-points.mjs",
- "count": 16,
+ "count": 18,
  "points": [
   {
    "id": "bath1.basin",
@@ -16,15 +16,15 @@
    "kind": "drain",
    "room": "bath1",
    "x": 0.5,
-   "z": 6.25,
+   "z": 6.05,
    "from": "wet-rooms.js BATHS bath1.drains[0]"
   },
   {
    "id": "bath1.drain2",
    "kind": "drain",
    "room": "bath1",
-   "x": 0.4,
-   "z": 7.08,
+   "x": 0.25,
+   "z": 7,
    "from": "wet-rooms.js BATHS bath1.drains[1]"
   },
   {
@@ -44,12 +44,28 @@
    "from": "app.js bathrooms segment: flat metal disc over 1.8 m"
   },
   {
+   "id": "bath1.stack1",
+   "kind": "drain-stack",
+   "room": "bath1",
+   "x": 1.4,
+   "z": 6.05,
+   "from": "wet-rooms.js BATHS bath1.ducts[0].stacks[0] (CAD wD2)"
+  },
+  {
+   "id": "bath1.stack2",
+   "kind": "drain-stack",
+   "room": "bath1",
+   "x": 1.6,
+   "z": 6.05,
+   "from": "wet-rooms.js BATHS bath1.ducts[0].stacks[1] (CAD wD2)"
+  },
+  {
    "id": "bath1.toilet",
    "kind": "toilet",
    "room": "bath1",
-   "x": 1.37,
-   "z": 6.35,
-   "from": "app.js toilet(1.37, 6.35, …)"
+   "x": 1.325,
+   "z": 6.5,
+   "from": "app.js toilet(1.325, 6.5, …)"
   },
   {
    "id": "bath2.basin",
@@ -63,8 +79,8 @@
    "id": "bath2.drain1",
    "kind": "drain",
    "room": "bath2",
-   "x": 6.55,
-   "z": 3.45,
+   "x": 6.6,
+   "z": 3.534,
    "from": "wet-rooms.js BATHS bath2.drains[0]"
   },
   {
@@ -95,9 +111,9 @@
    "id": "bath2.toilet",
    "kind": "toilet",
    "room": "bath2",
-   "x": 6.6,
-   "z": 4.48,
-   "from": "app.js toilet(6.6, 4.48, …)"
+   "x": 6.65,
+   "z": 4.5,
+   "from": "app.js toilet(6.65, 4.5, …)"
   },
   {
    "id": "kitchen.faucet",

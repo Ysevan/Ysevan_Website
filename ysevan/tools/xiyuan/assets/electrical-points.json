@@ -1,0 +1,263 @@
+{
+ "version": 1,
+ "title": "建议点位",
+ "note": "建议点位，以电工现场为准。地漏和排污口以现场为准。坐标是平面米，与户型平面同一原点，x 向东，z 向南，y 是离地高度（插座、开关是面板中心，灯是安装面，箱子是箱底）。挂墙的点贴墙面，离墙线不超过3厘米，有墙板、贴砖时落在其面上，厨房挡水板离墙较远，台面插座按墙面给坐标，挡水板开孔。户型 DWG 上本户只有强电箱、弱电箱两个电气图元，标「图纸」，另有空调、冰箱、灶具的位置符号，对应插座也标「图纸」并写明句柄，插座本身的高度和左右位置是建议。其余都是建议，按规范下限和常见安装高度定，低位插座面板中心离地0.35米（底边约0.30米）。贴在承重墙面的点线盒浅装，不横向开槽，开槽前核对。灯位以模型现有的灯为底，模型没有的卧室主灯和阳台灯另补，只在平面上示意。只做布置01和04，02和03的面板仍是原示意。",
+ "standards": [
+  {
+   "id": "GB50096",
+   "name": "GB 50096-2011 住宅设计规范",
+   "clause": "8.7.4、8.7.6、8.7.7",
+   "summary": "8.7.4 套内装在1.8米及以下的插座用安全型。8.7.6 按房间给出电源插座的最少数量（表 8.7.6），起居室、卧室、厨房、卫生间各有下限，厨房和卫生间用防溅水型，洗衣机、冰箱、排油烟机、排风机、空调、电热水器等位置设专用插座。8.7.7 对电视和网络插座作了规定，起居室和主卧要有电视插座，起居室、卧室要有网络插座。以上是大意，以原文为准。"
+  },
+  {
+   "id": "JGJ242",
+   "name": "JGJ 242-2011 住宅建筑电气设计规范",
+   "clause": "8.5.1、8.5.4、8.5.5、8.5.6",
+   "summary": "8.5.1 按房间给出套内插座的最少数量（表 8.5.1），比 GB 50096 多列了书房。8.5.4、8.5.5 对插座的型式、电流等级和专用回路作了规定，厨房、卫生间插座要防溅。8.5.6 卫生间插座按分区设置，淋浴区及其周边0.6米内不设普通插座。以上是大意，以原文为准。"
+  },
+  {
+   "id": "GB50303",
+   "name": "GB 50303-2015 建筑电气工程施工质量验收规范",
+   "clause": "",
+   "summary": "开关装在门开启侧，离门框边常见0.15至0.20米，本表开关位置按这个做法，条号未核，只写规范名。"
+  }
+ ],
+ "layers": {
+  "power": "强电",
+  "weak": "弱电",
+  "lights": "灯位"
+ },
+ "types": {
+  "socket": {
+   "label": "普通五孔",
+   "layer": "power"
+  },
+  "ac-wall": {
+   "label": "空调挂机",
+   "layer": "power"
+  },
+  "ac-floor": {
+   "label": "空调柜机",
+   "layer": "power"
+  },
+  "counter": {
+   "label": "厨房台面上方",
+   "layer": "power"
+  },
+  "fridge": {
+   "label": "冰箱",
+   "layer": "power"
+  },
+  "hood": {
+   "label": "烟机",
+   "layer": "power"
+  },
+  "washer": {
+   "label": "洗衣",
+   "layer": "power"
+  },
+  "dryer": {
+   "label": "烘干",
+   "layer": "power"
+  },
+  "water-heater": {
+   "label": "热水器",
+   "layer": "power"
+  },
+  "toilet": {
+   "label": "智能马桶预留",
+   "layer": "power"
+  },
+  "bath": {
+   "label": "卫生间防溅",
+   "layer": "power"
+  },
+  "tv-wall": {
+   "label": "电视墙",
+   "layer": "power"
+  },
+  "bedside": {
+   "label": "床头",
+   "layer": "power"
+  },
+  "desk": {
+   "label": "书桌和电竞位",
+   "layer": "power"
+  },
+  "panel": {
+   "label": "强电箱",
+   "layer": "power"
+  },
+  "data": {
+   "label": "网络",
+   "layer": "weak"
+  },
+  "tv": {
+   "label": "电视",
+   "layer": "weak"
+  },
+  "weak-panel": {
+   "label": "弱电箱",
+   "layer": "weak"
+  },
+  "switch": {
+   "label": "开关",
+   "layer": "lights"
+  },
+  "main-light": {
+   "label": "主灯",
+   "layer": "lights"
+  },
+  "downlight": {
+   "label": "筒灯",
+   "layer": "lights"
+  },
+  "strip": {
+   "label": "灯带",
+   "layer": "lights"
+  },
+  "ceiling-light": {
+   "label": "吸顶灯",
+   "layer": "lights"
+  }
+ },
+ "rooms": {
+  "living": "客厅",
+  "dining": "餐厅",
+  "kitchen": "厨房",
+  "master": {
+   "original": "主卧",
+   "central": "原主卧"
+  },
+  "south": {
+   "original": "南次卧",
+   "central": "南侧主卧（电竞）"
+  },
+  "north": {
+   "original": "北卧",
+   "central": "衣帽间"
+  },
+  "child": {
+   "original": "电竞书房",
+   "central": "北西卧"
+  },
+  "bath1": "卫生间（避难间）",
+  "bath2": "卫生间（内侧）",
+  "balcony": "阳台",
+  "hall": "过道与玄关"
+ },
+ "points": [
+  {"id": "hall-01", "room": "hall", "type": "switch", "x": 10.548, "z": 2.8, "y": 1.3, "wall": "+x", "gang": 3, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "入户门开启侧（南侧），离门框约0.18米，控制玄关筒灯、餐厅筒灯、餐厅吊灯"},
+  {"id": "hall-02", "room": "hall", "type": "socket", "x": 8.952, "z": 2.7, "y": 0.35, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "玄关西墙下方，扫地机器人基站或鞋柜烘干"},
+  {"id": "hall-03", "room": "hall", "type": "switch", "x": 8.952, "z": 2.95, "y": 1.3, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "玄关西墙南端，厨房门东侧，厨房灯"},
+  {"id": "hall-04", "room": "hall", "type": "switch", "x": 1.802, "z": 6.3, "y": 1.3, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "过道西端，卫生间（避难间）外墙上，过道灯双控"},
+  {"id": "hall-05", "room": "hall", "type": "socket", "x": 3.6, "z": 5.952, "y": 0.35, "wall": "-z", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "过道北墙下方，北卧门西侧约0.7米，吸尘器"},
+  {"id": "hall-06", "room": "hall", "type": "switch", "x": 6.6, "z": 5.952, "y": 1.3, "wall": "-z", "gang": 2, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "过道北墙东端，卫生间（内侧）入口东侧，控制卫生间（内侧）灯和过道灯（过道双控）"},
+  {"id": "hall-07", "room": "hall", "type": "downlight", "x": 9.75, "z": 1.75, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "玄关筒灯，模型现有"},
+  {"id": "hall-08", "room": "hall", "type": "downlight", "x": 9.75, "z": 2.65, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "玄关筒灯，模型现有"},
+  {"id": "hall-09", "room": "hall", "type": "downlight", "x": 2.75, "z": 6.5, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "过道筒灯，模型现有"},
+  {"id": "hall-10", "room": "hall", "type": "downlight", "x": 4.1, "z": 6.5, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "过道筒灯，模型现有"},
+  {"id": "hall-11", "room": "hall", "type": "downlight", "x": 5.45, "z": 6.5, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "过道筒灯，模型现有"},
+  {"id": "hall-12", "room": "hall", "type": "downlight", "x": 2.3, "z": 7.6, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "主卧门内小过厅筒灯，模型现有"},
+  {"id": "living-01", "room": "living", "type": "tv-wall", "x": 10.548, "z": 8.5, "y": 1.1, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "柜内预留，电视收纳墙留空处背板开孔，电视背后偏北"},
+  {"id": "living-02", "room": "living", "type": "tv", "x": 10.548, "z": 8.75, "y": 1.1, "wall": "+x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.7，常见做法", "layouts": ["original", "central"], "modelled": true, "note": "柜内预留，电视背后，电视信号，从弱电箱穿线"},
+  {"id": "living-03", "room": "living", "type": "tv-wall", "x": 10.548, "z": 8.95, "y": 0.35, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "柜内预留，电视墙中部开放格背板开孔，机顶盒、路由器、游戏机"},
+  {"id": "living-04", "room": "living", "type": "data", "x": 10.548, "z": 9.15, "y": 0.35, "wall": "+x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.7，常见做法", "layouts": ["original", "central"], "modelled": true, "note": "柜内预留，开放格内网络，从弱电箱穿线"},
+  {"id": "living-05", "room": "living", "type": "socket", "x": 6.702, "z": 7.65, "y": 0.35, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "沙发北端西墙下方，墙板北边，落地灯和充电"},
+  {"id": "living-06", "room": "living", "type": "socket", "x": 6.702, "z": 10.55, "y": 0.35, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "沙发南端西墙下方（承重墙面，线盒浅装，不横向开槽）"},
+  {"id": "living-07", "room": "living", "type": "ac-floor", "x": 10.548, "z": 10.8, "y": 0.35, "wall": "+x", "gang": 1, "basis": "图纸", "ref": "A-EQUIPMENT 4766FB（柜机符号），插座高度常见做法", "layouts": ["original", "central"], "circuit": "空调（柜机）", "protect": ["安全型"], "modelled": true, "note": "柜机背后东墙上，16A三孔，图上是柜机位置"},
+  {"id": "living-08", "room": "living", "type": "switch", "x": 6.702, "z": 7.3, "y": 1.3, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "客厅西墙北端，客厅筒灯和灯带"},
+  {"id": "living-09", "room": "living", "type": "switch", "x": 6.702, "z": 11.2, "y": 1.3, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "客厅西墙南端，阳台门西侧，阳台灯"},
+  {"id": "living-10", "room": "living", "type": "downlight", "x": 7.25, "z": 7.75, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "客厅筒灯，模型现有"},
+  {"id": "living-11", "room": "living", "type": "downlight", "x": 7.25, "z": 9.25, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "客厅筒灯，模型现有"},
+  {"id": "living-12", "room": "living", "type": "downlight", "x": 7.25, "z": 10.75, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "客厅筒灯，模型现有"},
+  {"id": "living-13", "room": "living", "type": "downlight", "x": 10.0, "z": 7.75, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "客厅筒灯，模型现有"},
+  {"id": "living-14", "room": "living", "type": "downlight", "x": 10.0, "z": 9.25, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "客厅筒灯，模型现有"},
+  {"id": "living-15", "room": "living", "type": "downlight", "x": 10.0, "z": 10.75, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "客厅筒灯，模型现有"},
+  {"id": "living-16", "room": "living", "type": "strip", "x": 8.625, "z": 7.3, "y": 2.777, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "灯带沿吊顶四边一圈，外框 x 6.95 至 10.30，z 7.30 至 11.20，模型现有，点在北边中点"},
+  {"id": "dining-01", "room": "dining", "type": "socket", "x": 7.202, "z": 4.6, "y": 0.9, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "餐桌西端墙上，高出桌面，电火锅和电烤盘"},
+  {"id": "dining-02", "room": "dining", "type": "socket", "x": 10.548, "z": 4.6, "y": 0.35, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "餐厅东墙下方（承重墙面，线盒浅装），净水器或扫地机"},
+  {"id": "dining-03", "room": "dining", "type": "main-light", "x": 8.05, "z": 4.6, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "餐桌上方三盏吊灯，x 7.45、8.05、8.65，模型现有"},
+  {"id": "dining-04", "room": "dining", "type": "downlight", "x": 9.9, "z": 3.75, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "餐厅筒灯，模型现有"},
+  {"id": "dining-05", "room": "dining", "type": "downlight", "x": 9.9, "z": 5.3, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "餐厅筒灯，模型现有"},
+  {"id": "dining-06", "room": "dining", "type": "downlight", "x": 7.65, "z": 6.4, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "餐厅南侧筒灯，模型现有"},
+  {"id": "dining-07", "room": "dining", "type": "downlight", "x": 9.15, "z": 6.4, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "餐厅南侧筒灯，模型现有"},
+  {"id": "kitchen-01", "room": "kitchen", "type": "counter", "x": 6.552, "z": 0.75, "y": 1.15, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "厨房", "protect": ["防溅", "安全型"], "modelled": false, "note": "西侧台面北段，备餐区，离水槽约0.65米，线盒在墙面上，挡水板（离墙约7厘米）开孔，模型里被挡水板盖住，没建面板"},
+  {"id": "kitchen-02", "room": "kitchen", "type": "counter", "x": 6.552, "z": 2.55, "y": 1.15, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "厨房", "protect": ["防溅", "安全型"], "modelled": false, "note": "西侧台面南段，灶台南边约0.7米，线盒在墙面上，挡水板（离墙约7厘米）开孔，模型里被挡水板盖住，没建面板"},
+  {"id": "kitchen-03", "room": "kitchen", "type": "counter", "x": 8.848, "z": 1.35, "y": 1.15, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "厨房", "protect": ["防溅", "安全型"], "modelled": false, "note": "东侧台面中段，小家电，线盒在墙面上，挡水板（厚约3.5厘米）开孔，模型里被挡水板盖住，没建面板"},
+  {"id": "kitchen-04", "room": "kitchen", "type": "hood", "x": 6.552, "z": 1.45, "y": 2.15, "wall": "-x", "gang": 1, "basis": "图纸", "ref": "B-平面-洁、厨具 476783（灶具和烟机位），插座高度常见做法", "layouts": ["original", "central"], "circuit": "厨房", "protect": ["防溅"], "modelled": false, "note": "柜内预留，烟机上方吊柜内西墙上，图上是灶具和烟机位置"},
+  {"id": "kitchen-05", "room": "kitchen", "type": "fridge", "x": 8.848, "z": 2.65, "y": 0.35, "wall": "+x", "gang": 1, "basis": "图纸", "ref": "A-LVTRY 47670B（冰箱位），插座高度常见做法", "layouts": ["original", "central"], "circuit": "厨房", "protect": ["防溅", "安全型"], "modelled": true, "note": "冰箱背后东墙下方，专用，图上是冰箱位置"},
+  {"id": "kitchen-06", "room": "kitchen", "type": "socket", "x": 8.848, "z": 2.0, "y": 1.4, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "厨房", "protect": ["防溅", "安全型"], "modelled": false, "note": "柜内预留，东侧高柜内，蒸烤箱和微波炉，16A"},
+  {"id": "kitchen-07", "room": "kitchen", "type": "socket", "x": 7.05, "z": 0.302, "y": 0.5, "wall": "-z", "gang": 2, "basis": "建议", "ref": "常见做法", "layouts": ["original", "central"], "circuit": "厨房", "protect": ["防溅", "安全型"], "modelled": false, "note": "柜内预留，水槽西侧角柜内北墙上，净水器和小厨宝"},
+  {"id": "kitchen-08", "room": "kitchen", "type": "water-heater", "x": 8.848, "z": 0.75, "y": 1.85, "wall": "+x", "gang": 1, "basis": "建议", "ref": "常见做法", "layouts": ["original", "central"], "circuit": "热水器", "protect": ["防溅"], "modelled": true, "note": "图上无热水器，模型未建，按燃气热水器挂东墙北端台面上方预留，插座在机身南侧，若改电热水器移到卫生间，以选型为准"},
+  {"id": "kitchen-09", "room": "kitchen", "type": "ceiling-light", "x": 7.7, "z": 1.7, "y": 2.4, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "厨房吸顶灯，吊顶高2.40，模型现有"},
+  {"id": "bath1-01", "room": "bath1", "type": "toilet", "x": 1.698, "z": 6.3, "y": 0.38, "wall": "+x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1、8.5.6，常见做法", "layouts": ["original", "central"], "circuit": "卫生间", "protect": ["防溅", "安全型"], "modelled": true, "note": "马桶（新位置，中心约 x 1.325、z 6.50）东侧后方东墙上，在包管南面以南约0.15米，离淋浴区0.9米以上"},
+  {"id": "bath1-02", "room": "bath1", "type": "bath", "x": 0.4, "z": 8.048, "y": 1.3, "wall": "+z", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1、8.5.6，常见做法", "layouts": ["original", "central"], "circuit": "卫生间", "protect": ["防溅", "安全型"], "modelled": true, "note": "洗手台南侧墙上，镜柜东南，吹风机，在淋浴区0.6米以外"},
+  {"id": "bath1-03", "room": "bath1", "type": "switch", "x": 1.698, "z": 6.98, "y": 1.3, "wall": "+x", "gang": 1, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "protect": ["防溅"], "modelled": true, "note": "门内东墙北端（门开启侧），中心离门框外沿约0.15米，毛巾杆上方，防溅盒，门外过厅墙面不够"},
+  {"id": "bath1-04", "room": "bath1", "type": "ceiling-light", "x": 0.95, "z": 7.0, "y": 2.4, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "吸顶灯，吊顶高2.40，模型现有，浴霸或排风扇接照明回路"},
+  {"id": "bath2-01", "room": "bath2", "type": "toilet", "x": 6.996, "z": 4.78, "y": 0.38, "wall": "+x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1、8.5.6，常见做法", "layouts": ["original", "central"], "circuit": "卫生间", "protect": ["防溅", "安全型"], "modelled": true, "note": "马桶（新位置，中心约 x 6.65、z 4.50，水箱贴东墙）南侧后方东墙上，离淋浴玻璃0.8米"},
+  {"id": "bath2-02", "room": "bath2", "type": "bath", "x": 6.7, "z": 4.952, "y": 1.2, "wall": "-z", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1、8.5.6，常见做法", "layouts": ["original", "central"], "circuit": "卫生间", "protect": ["防溅", "安全型"], "modelled": true, "note": "洗手台北侧隔墙上，镜柜北边，吹风机"},
+  {"id": "bath2-03", "room": "bath2", "type": "ceiling-light", "x": 6.2, "z": 4.4, "y": 2.4, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "吸顶灯，吊顶高2.40，模型现有，浴霸或排风扇接照明回路"},
+  {"id": "master-01", "room": "master", "type": "bedside", "x": 0.11, "z": 8.68, "y": 0.55, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "床头北侧，墙板面上"},
+  {"id": "master-02", "room": "master", "type": "bedside", "x": 0.11, "z": 10.93, "y": 0.55, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "床头南侧，墙板面上"},
+  {"id": "master-03", "room": "master", "type": "data", "x": 0.11, "z": 8.585, "y": 0.55, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.7，常见做法", "layouts": ["original", "central"], "modelled": true, "note": "床头北侧插座旁，网络"},
+  {"id": "master-04", "room": "master", "type": "switch", "x": 0.11, "z": 10.93, "y": 0.95, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "床头南侧双控"},
+  {"id": "master-05", "room": "master", "type": "switch", "x": 1.75, "z": 8.152, "y": 1.3, "wall": "-z", "gang": 2, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "从小过厅进主卧右手，主卧北墙东端"},
+  {"id": "master-06", "room": "master", "type": "ac-wall", "x": 0.6, "z": 11.448, "y": 2.2, "wall": "+z", "gang": 1, "basis": "图纸", "ref": "A-EQUIPMENT 4766FD（挂机符号），插座位置和高度常见做法", "layouts": ["original", "central"], "circuit": "空调", "modelled": true, "note": "挂机在南侧飘窗上方（图上 x 2.0 至 2.8），飘窗上方没有墙面，插座放在飘窗西侧墙上，离机身西端约1.4米，线不够长就改到梁侧面"},
+  {"id": "master-07", "room": "master", "type": "tv", "x": 3.398, "z": 9.7, "y": 1.1, "wall": "+x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.7，常见做法", "layouts": ["original"], "modelled": false, "note": "柜内预留，对着床的东墙被衣柜占满，电视点留在衣柜中段背板后，要装电视得在衣柜中段留开放格，待屋主定"},
+  {"id": "master-08", "room": "master", "type": "tv-wall", "x": 3.398, "z": 9.95, "y": 1.1, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original"], "circuit": "普通插座", "protect": ["安全型"], "modelled": false, "note": "柜内预留，电视插座，和电视点同在衣柜中段背板后，待屋主定"},
+  {"id": "master-09", "room": "master", "type": "downlight", "x": 0.65, "z": 8.65, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "主卧筒灯，模型现有"},
+  {"id": "master-10", "room": "master", "type": "downlight", "x": 2.35, "z": 8.65, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "主卧筒灯，模型现有"},
+  {"id": "master-11", "room": "master", "type": "downlight", "x": 0.65, "z": 11.0, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "主卧筒灯，模型现有"},
+  {"id": "master-12", "room": "master", "type": "downlight", "x": 2.35, "z": 11.0, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "主卧筒灯，模型现有"},
+  {"id": "master-13", "room": "master", "type": "main-light", "x": 1.5, "z": 9.83, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": false, "note": "卧室主灯，仅平面示意，模型未建"},
+  {"id": "south-01", "room": "south", "type": "tv", "x": 3.352, "z": 9.85, "y": 1.1, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.7，常见做法", "layouts": ["central"], "modelled": true, "note": "对着床的西墙中段，电视信号"},
+  {"id": "south-02", "room": "south", "type": "tv-wall", "x": 3.352, "z": 10.1, "y": 1.1, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "对着床的西墙中段，电视插座"},
+  {"id": "south-03", "room": "south", "type": "panel", "x": 6.498, "z": 7.39, "y": 1.8, "wall": "+x", "gang": 1, "basis": "图纸", "ref": "E_EQUIPMENT 476790", "layouts": ["original", "central"], "modelled": true, "note": "强电箱，南次卧门后东墙，暗装，图上 z 7.15 至 7.63，高度图上无，按常见做法底边1.80，04 电竞桌上方展示柜在箱位处要留检修门或断开，待屋主定"},
+  {"id": "south-04", "room": "south", "type": "weak-panel", "x": 6.498, "z": 7.88, "y": 0.3, "wall": "+x", "gang": 1, "basis": "图纸", "ref": "E_EQUIPMENT 476791", "layouts": ["original", "central"], "modelled": true, "note": "弱电箱，强电箱南侧，图上 z 7.63 至 8.13，凸出墙面0.06，高度图上无，按常见做法底边0.30"},
+  {"id": "south-05", "room": "south", "type": "bedside", "x": 3.502, "z": 8.8, "y": 0.55, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "床头北侧西墙上"},
+  {"id": "south-06", "room": "south", "type": "bedside", "x": 3.502, "z": 10.8, "y": 0.55, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "床头南侧西墙上"},
+  {"id": "south-07", "room": "south", "type": "data", "x": 3.502, "z": 8.68, "y": 0.55, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.7，常见做法", "layouts": ["original"], "modelled": true, "note": "床头北侧插座旁，网络"},
+  {"id": "south-08", "room": "south", "type": "switch", "x": 5.502, "z": 7.35, "y": 1.3, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original"], "circuit": "照明", "modelled": true, "note": "门开启侧（西侧）门洞侧壁上，离房间一侧墙角0.20米。走廊凹口补实后这面侧壁没变（10-28复核）"},
+  {"id": "south-09", "room": "south", "type": "ac-wall", "x": 3.502, "z": 10.55, "y": 2.2, "wall": "-x", "gang": 1, "basis": "图纸", "ref": "A-EQUIPMENT 4766FC（挂机符号），插座高度常见做法", "layouts": ["original"], "circuit": "空调", "modelled": true, "note": "挂机在西墙南端，插座在机身北端旁"},
+  {"id": "south-10", "room": "south", "type": "ac-wall", "x": 3.352, "z": 10.55, "y": 2.2, "wall": "-x", "gang": 1, "basis": "图纸", "ref": "A-EQUIPMENT 4766FC（挂机符号），插座高度常见做法", "layouts": ["central"], "circuit": "空调", "modelled": true, "note": "挂机在西墙南端，插座在机身北端旁，04 隔墙西移0.15米，挂机跟墙走"},
+  {"id": "south-11", "room": "south", "type": "switch", "x": 4.75, "z": 7.152, "y": 1.3, "wall": "-z", "gang": 1, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["central"], "circuit": "照明", "modelled": true, "note": "进门右手（门开启侧），北墙上离门框约0.18米"},
+  {"id": "south-12", "room": "south", "type": "bedside", "x": 6.49, "z": 9.02, "y": 0.55, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "床头北侧东墙上，电竞桌南端旁"},
+  {"id": "south-13", "room": "south", "type": "bedside", "x": 6.49, "z": 11.05, "y": 0.55, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "床头南侧东墙上"},
+  {"id": "south-14", "room": "south", "type": "desk", "x": 6.498, "z": 7.55, "y": 1.1, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "电竞桌北段桌面以上东墙上"},
+  {"id": "south-15", "room": "south", "type": "desk", "x": 6.498, "z": 8.55, "y": 1.1, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "电竞桌南段桌面以上东墙上，显示器背后"},
+  {"id": "south-16", "room": "south", "type": "data", "x": 6.498, "z": 8.05, "y": 1.1, "wall": "+x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.7，常见做法", "layouts": ["central"], "modelled": true, "note": "电竞桌中部，网络，弱电箱就在下方"},
+  {"id": "south-17", "room": "south", "type": "downlight", "x": 4.0, "z": 8.45, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "筒灯，模型现有"},
+  {"id": "south-18", "room": "south", "type": "downlight", "x": 6.0, "z": 8.45, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "筒灯，模型现有"},
+  {"id": "south-19", "room": "south", "type": "downlight", "x": 4.0, "z": 10.95, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "筒灯，模型现有"},
+  {"id": "south-20", "room": "south", "type": "downlight", "x": 6.0, "z": 10.95, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "筒灯，模型现有"},
+  {"id": "south-21", "room": "south", "type": "main-light", "x": 5.0, "z": 9.7, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": false, "note": "卧室主灯，仅平面示意，模型未建"},
+  {"id": "north-01", "room": "north", "type": "bedside", "x": 3.25, "z": 3.152, "y": 0.7, "wall": "-z", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "床头北墙上，高出床面"},
+  {"id": "north-02", "room": "north", "type": "desk", "x": 3.002, "z": 5.3, "y": 0.9, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "书桌南段桌面以上西墙上（承重墙面，线盒浅装）"},
+  {"id": "north-03", "room": "north", "type": "data", "x": 3.002, "z": 5.05, "y": 0.9, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.7，常见做法", "layouts": ["original"], "modelled": true, "note": "书桌中段，网络"},
+  {"id": "north-04", "room": "north", "type": "ac-wall", "x": 5.298, "z": 3.5, "y": 2.2, "wall": "+x", "gang": 1, "basis": "图纸", "ref": "A-EQUIPMENT 476703（挂机符号），插座高度常见做法", "layouts": ["original"], "circuit": "空调", "modelled": true, "note": "挂机在北墙飘窗上方东段，插座在东墙上机身东端旁"},
+  {"id": "north-05", "room": "north", "type": "socket", "x": 3.75, "z": 5.848, "y": 0.35, "wall": "+z", "gang": 1, "basis": "建议", "ref": "常见做法", "layouts": ["central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "衣帽间南墙，西柜东侧，挂烫机或除湿机"},
+  {"id": "north-06", "room": "north", "type": "switch", "x": 4.1, "z": 5.848, "y": 1.3, "wall": "+z", "gang": 1, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "进门右手（门开启侧）南墙上"},
+  {"id": "north-07", "room": "north", "type": "downlight", "x": 4.15, "z": 3.9, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "筒灯，模型现有"},
+  {"id": "north-08", "room": "north", "type": "downlight", "x": 4.15, "z": 5.15, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "筒灯，模型现有"},
+  {"id": "north-09", "room": "north", "type": "main-light", "x": 4.15, "z": 4.53, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": false, "note": "主灯，仅平面示意，模型未建"},
+  {"id": "child-01", "room": "child", "type": "desk", "x": 2.798, "z": 2.9, "y": 0.9, "wall": "+x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "电竞桌东端东墙上，桌面以上"},
+  {"id": "child-02", "room": "child", "type": "desk", "x": 0.102, "z": 2.9, "y": 0.9, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "电竞桌西端西墙上，桌面以上"},
+  {"id": "child-03", "room": "child", "type": "data", "x": 2.798, "z": 3.1, "y": 0.9, "wall": "+x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.7，常见做法", "layouts": ["original"], "modelled": true, "note": "电竞桌东端，网络，电竞位走网线"},
+  {"id": "child-04", "room": "child", "type": "socket", "x": 0.102, "z": 3.8, "y": 0.35, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["original"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "沙发北端西墙下方"},
+  {"id": "child-05", "room": "child", "type": "bedside", "x": 0.102, "z": 2.9, "y": 0.55, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "床头北侧西墙上"},
+  {"id": "child-06", "room": "child", "type": "bedside", "x": 0.102, "z": 4.68, "y": 0.55, "wall": "-x", "gang": 2, "basis": "建议", "ref": "GB 50096-2011 8.7.6、JGJ 242-2011 8.5.1，常见做法", "layouts": ["central"], "circuit": "普通插座", "protect": ["安全型"], "modelled": true, "note": "床头南侧西墙上（承重墙面，线盒浅装）"},
+  {"id": "child-07", "room": "child", "type": "data", "x": 0.102, "z": 4.78, "y": 0.55, "wall": "-x", "gang": 1, "basis": "建议", "ref": "GB 50096-2011 8.7.7，常见做法", "layouts": ["central"], "modelled": true, "note": "床头南侧插座旁，网络"},
+  {"id": "child-08", "room": "child", "type": "ac-wall", "x": 2.798, "z": 3.75, "y": 2.2, "wall": "+x", "gang": 1, "basis": "图纸", "ref": "A-EQUIPMENT 476704（挂机符号），插座高度常见做法", "layouts": ["original", "central"], "circuit": "空调", "modelled": true, "note": "挂机在 z 3.95 梁下东段，插座在东墙上机身北端旁"},
+  {"id": "child-09", "room": "child", "type": "switch", "x": 1.62, "z": 5.848, "y": 1.3, "wall": "+z", "gang": 1, "basis": "建议", "ref": "GB 50303-2015，常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "进门右手（门开启侧）南墙上，中心离门框外沿约0.16米"},
+  {"id": "child-10", "room": "child", "type": "downlight", "x": 0.8, "z": 4.5, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "筒灯，模型现有"},
+  {"id": "child-11", "room": "child", "type": "downlight", "x": 2.1, "z": 4.5, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "筒灯，模型现有"},
+  {"id": "child-12", "room": "child", "type": "downlight", "x": 1.45, "z": 3.2, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "模型现有", "layouts": ["original", "central"], "circuit": "照明", "modelled": true, "note": "筒灯，模型现有"},
+  {"id": "child-13", "room": "child", "type": "main-light", "x": 1.45, "z": 4.07, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": false, "note": "主灯，仅平面示意，模型未建"},
+  {"id": "balcony-01", "room": "balcony", "type": "washer", "x": 3.502, "z": 11.9, "y": 1.2, "wall": "-x", "gang": 1, "basis": "建议", "ref": "图上洗衣机位在阳台东端（A-LVTRY 47677B），现方案在西侧洗烘台，常见做法", "layouts": ["original", "central"], "circuit": "洗衣", "protect": ["防溅", "安全型"], "modelled": true, "note": "阳台西墙上，洗烘台西北方向约1米，高于台面，线从台后走"},
+  {"id": "balcony-02", "room": "balcony", "type": "dryer", "x": 3.502, "z": 12.15, "y": 1.2, "wall": "-x", "gang": 1, "basis": "建议", "ref": "常见做法", "layouts": ["original", "central"], "circuit": "洗衣", "protect": ["防溅", "安全型"], "modelled": true, "note": "阳台西墙上，洗衣插座南侧"},
+  {"id": "balcony-03", "room": "balcony", "type": "socket", "x": 7.05, "z": 11.652, "y": 0.35, "wall": "-z", "gang": 1, "basis": "建议", "ref": "常见做法", "layouts": ["original", "central"], "circuit": "普通插座", "protect": ["防溅", "安全型"], "modelled": true, "note": "阳台北墙下方，茶桌西侧"},
+  {"id": "balcony-04", "room": "balcony", "type": "ceiling-light", "x": 5.0, "z": 12.55, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": false, "note": "阳台灯，洗烘台上方，仅平面示意，模型未建"},
+  {"id": "balcony-05", "room": "balcony", "type": "ceiling-light", "x": 8.4, "z": 12.75, "y": 2.78, "wall": null, "gang": 1, "basis": "建议", "ref": "常见做法", "layouts": ["original", "central"], "circuit": "照明", "modelled": false, "note": "阳台灯，茶桌上方，仅平面示意，模型未建"}
+ ]
+}

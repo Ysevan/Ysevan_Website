@@ -1,16 +1,22 @@
 import * as THREE from 'three';
 import {mergeGeometries} from './utils/BufferGeometryUtils.js?v=fda7e946b8';
 import {metricBoxUV} from './metric-uv.js?v=07dab91ffb';
-// Kitchen and bathroom fit-out (scene detail round 3). The water points, worktops, sanitaryware and shower screens stay
-// exactly as app.js builds them (hashed in services-lock.json); this module only adds around them, after they exist,
-// on the owner's CAD walls (layout-original.json; the central set is identical in these rooms):
+// Kitchen and bathroom fit-out (scene detail round 3). The worktops, sanitaryware, shower screens and the water points they
+// carry stay as app.js's locked segments build them (hashed in services-lock.json); this module adds around them, after they
+// exist, on the owner's CAD walls (layout-original.json; the central set is identical in these rooms). Its own water points
+// are the floor drains and drain stacks in BATHS and KITCHEN.pipe (registered in assets/water-points.json like the others):
 // - kitchen: integrated ceiling at 2.40 m with its bulkhead to the dining side, the drain stack (CAD wD2) boxed in,
 //   wall cabinets on the hob wall up to that ceiling (the existing white cabinet joins the run behind their doors),
 //   a hood over the hob, LED strips under the cabinets, a tall oven / microwave column beside the fridge, a few things
 //   on the worktop;
 // - both bathrooms: the same ceiling, a mirror cabinet over the basin (on the wall the CAD basin backs onto) with a light
-//   bar, a towel rail clear of the door, the floor drains at the CAD points, wall tiles (retile(): the faces of the
-//   batched walls that look into a bathroom move to a tile material, so tiling adds no overdraw).
+//   bar, a towel rail clear of the door, the floor drains at the CAD points (A-EQUIPMENT circles; the owner approved moving
+//   three of them onto the drawing on 2026-10-28), wall tiles (retile(): the faces of the batched walls that look into a
+//   bathroom move to a tile material, so tiling adds no overdraw);
+// - the outer bathroom's pipe chase behind the toilet (CAD A-LVTRY 476740 / 476741, approved with the toilet on 2026-10-28):
+//   a prism on its plan up to the wall top, tiled like the walls (only its faces into the room), a collision box, and its cut
+//   face added to the walls' cut caps (so it reads solid in the cut views and costs no draw call there). The two drain stacks
+//   inside it (wD2 476C46 / 476C48, 160 mm) are not drawn; they are water points (scripts/export-water-points.mjs).
 // Parts are batched per room and material with app.js batchStatic() (each room's meshes frustum-cull on their own, and a room
 // out of sight behind walls is not drawn while walking), cut with the walls above 1.28 m, and lit only by emissive (unlit,
 // not tone-mapped) strips: no light sources. Cabinet doors and handles take the home's finishes when given (materials).
@@ -22,12 +28,14 @@ const TOP=.895,UP=1.51;
 export const KITCHEN={rect:[6.55,.3,8.85,3.1],wall:6.55,front:6.88,pipe:[6.55,.3,6.72,.46],uppers:[[.46,1.15]],hood:[1.15,1.75],
  locked:[6.6,1.75,6.86,2.89],tall:[8.22,1.7,8.85,2.31],opening:[7.2,3.07,8.8,3.13]};
 // Wet rooms: the bathrooms (and the vanity niche outside the inner bathroom's door) whose walls are tiled, ceiling boxes, the
-// mirror cabinet (on the wall line x facing dir, centre z, width w), towel rail [from, to] and drains (CAD points).
+// mirror cabinet (on the wall line x facing dir, centre z, width w), towel rail [from, to], drains (CAD points) and pipe
+// chases (ducts: plan outline, the edges that face the room, the drain stacks inside as [x, z, radius], CAD handles).
 export const BATHS=[
  {id:'bath1',rooms:[[.1,5.95,1.7,8.05],[0,5.95,.1,6.75]],ceiling:[[.08,5.95,1.7,8.05]],mirror:{x:.1,dir:1,z:7.55,w:.7},
-  rail:[[1.635,1.2,6.45],[1.635,1.2,7]],railWall:[1.7,'x'],drains:[[.5,6.25],[.4,7.08]],light:[.95,7]},
+  rail:[[1.635,1.2,6.45],[1.635,1.2,7]],railWall:[1.7,'x'],drains:[[.5,6.05],[.25,7]],light:[.95,7],
+  ducts:[{plan:[[1.3,5.95],[1.7,5.95],[1.7,6.15],[.95,6.15]],room:[2,3],stacks:[[1.4,6.05,.08],[1.6,6.05,.08]],cad:'A-LVTRY 476740/476741, wD2 476C46/476C48'}]},
  {id:'bath2',rooms:[[5.4,3.15,7,4.85],[5.4,2.55,6.35,3.15],[6.3,4.95,7,5.75]],ceiling:[[5.4,3.15,7,4.85],[5.4,2.55,6.35,3.15]],mirror:{x:7,dir:-1,z:5.37,w:.7},
-  rail:[[6.42,1.15,4.785],[6.95,1.15,4.785]],railWall:[4.85,'z'],drains:[[6.55,3.45],[6.95,4.8]],light:[6.2,4.4]}
+  rail:[[6.42,1.15,4.785],[6.95,1.15,4.785]],railWall:[4.85,'z'],drains:[[6.6,3.534],[6.95,4.8]],light:[6.2,4.4]}
 ];
 const C={white:'#ecebe4',wood:'#c8ae8a',grey:'#a6aaa6',dark:'#1d2322',glass:'#2a3231',face:'#c9d3d2',board:'#c8a576',plinth:'#7d817c',cream:'#e7e1d3',amber:'#a97a45',cap:'#2c2e2b',red:'#9e4a3b',steel:'#c3c6c2',joint:'#76736b'};
 
@@ -40,6 +48,21 @@ const onX=(x,dir)=>(z0,z1,d0,d1,y0,y1)=>box(Math.min(x+dir*d0,x+dir*d1),y0,z0,Ma
 // Drops one face of a box (behind doors it would be shaded for nothing on a software rasteriser): px nx py ny pz nz.
 const shut=(g,face)=>{const n=['px','nx','py','ny','pz','nz'].indexOf(face),i=[...g.index.array];g.setIndex(i.filter((_,k)=>Math.floor(k/6)!==n));return g;};
 const onZ=(z,dir)=>(x0,x1,d0,d1,y0,y1)=>box(x0,y0,Math.min(z+dir*d0,z+dir*d1),x1,y1,Math.max(z+dir*d0,z+dir*d1));
+// A prism on a convex plan outline (x, z) from y0 to y1: the upright faces of the edges listed (edge i runs from point i to the
+// next), each facing out, with metre UVs as the walls' (along the edge, height), and the top when asked; non-indexed.
+export function prismGeo(plan,edges,y0,y1,top=true){
+ const pos=[],nor=[],uv=[],n=plan.length,c=plan.reduce((s,p)=>[s[0]+p[0]/n,s[1]+p[1]/n],[0,0]);
+ const tri=(P,N,U)=>{for(const p of P)pos.push(...p);for(let k=0;k<3;k++){nor.push(...N);uv.push(...U[k]);}};
+ for(const i of edges){const a=plan[i],b=plan[(i+1)%n],l=Math.hypot(b[0]-a[0],b[1]-a[1]),d=[(b[0]-a[0])/l,(b[1]-a[1])/l];
+  let N=[-d[1],0,d[0]];if(N[0]*(a[0]-c[0])+N[2]*(a[1]-c[1])<0)N=N.map(v=>-v);
+  const u=p=>p[0]*d[0]+p[1]*d[1],A0=[a[0],y0,a[1]],B0=[b[0],y0,b[1]],B1=[b[0],y1,b[1]],A1=[a[0],y1,a[1]];
+  const q=[[A0,[u(a),y0]],[B0,[u(b),y0]],[B1,[u(b),y1]],[A1,[u(a),y1]]],ccw=N[0]*-d[1]+N[2]*d[0]>0,o=ccw?[0,1,2,0,2,3]:[0,2,1,0,3,2];
+  for(const k of [0,3])tri(o.slice(k,k+3).map(j=>q[j][0]),N,o.slice(k,k+3).map(j=>q[j][1]));}
+ if(top)for(let i=1;i+1<n;i++){const [a,b,e]=[plan[0],plan[i],plan[i+1]],up=(b[1]-a[1])*(e[0]-a[0])-(b[0]-a[0])*(e[1]-a[1])>0,t=up?[a,b,e]:[a,e,b];
+  tri(t.map(p=>[p[0],y1,p[1]]),[0,1,0],t.map(p=>[p[0],p[1]]));}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));return g;}
+// The wall sets' height (app.js slab()): pipe chases run up to it, as the walls.
+const WALL_TOP=2.78;
 
 // A cut twin of a home material: the same colour object (palettes apply); maps, finish and visibility follow the source (sync()
 // before each frame), except the keys in `own`. On software rendering the twin is matte (Lambert): there every pixel of these
@@ -123,6 +146,8 @@ export function createWetRooms({M,clipPlane,envMap,owner,arch,walls,plans=[],nei
   for(const s of [0,1]){const t=s?q:p,k=s?-1:1,o=ax==='x'?[t[0],t[1],t[2]+k*.02]:[t[0]+k*.02,t[1],t[2]],wpt=ax==='x'?[w,o[1],o[2]]:[o[0],o[1],w];add('steel','towel-rail',rodGeo(o,wpt,.012));}
   // Floor drains: 100 mm stainless plates 2 mm proud of the floor tiles (top 14 mm) with three raised slot bars.
   for(const [dx,dz] of b.drains){add('steel','drain',box(dx-.05,.012,dz-.05,dx+.05,.016,dz+.05));for(const k of [-1,0,1])add('steel','drain',box(dx-.035,.016,dz+k*.022-.006,dx+.035,.0175,dz+k*.022+.006));}
+  // Pipe chases: tiled faces into the room (cut with the walls), not walkable (their plan box).
+  for(const d of b.ducts||[]){add('tile','duct',prismGeo(d.plan,d.room,0,WALL_TOP));const xs=d.plan.map(p=>p[0]),zs=d.plan.map(p=>p[1]);collisions?.push([Math.min(...xs),Math.min(...zs),Math.max(...xs),Math.max(...zs)]);}
   close();
  }
 
@@ -147,6 +172,17 @@ export function createWetRooms({M,clipPlane,envMap,owner,arch,walls,plans=[],nei
  for(const mesh of hosts){const t=retile(mesh,roomOf);if(t)(inSet(mesh)?taken.get(inSet(mesh)):shared).push(...t);}
  for(const g of sets)for(const b of BATHS){const list=[...taken.get(g),...shared].filter(t=>t.room===b.id).map(t=>t.geometry);if(!list.length)continue;
   const geo=mergeGeometries(list,false);geo.applyMatrix4(g.matrixWorld.clone().invert());const q=new THREE.Mesh(geo,W.tile);q.name='wet-tile';q.castShadow=q.receiveShadow=true;g.add(q);out.tiles.push(q);}
+ // Pipe chases cut with the walls get the walls' cut cap: their outline, level with the cut, in each wall set's caps group (which
+ // follows the cut height and shows only while cutting, app.js setArchitecturalCut()). Batched caps (one mesh) take it into their
+ // mesh, so it costs no draw call; unbatched (node checks) it is a mesh of its own.
+ const ducts=BATHS.flatMap(b=>b.ducts||[]);out.ductCaps=0;
+ for(const v of Object.values(walls||{})){const caps=v.caps,list=caps?.children.filter(q=>q.isMesh)||[];if(!ducts.length||!list.some(q=>q.material===M.cap))continue;
+  caps.updateMatrixWorld(true);const inv=caps.matrixWorld.clone().invert().multiply(new THREE.Matrix4().makeTranslation(0,caps.matrixWorld.elements[13],0));
+  const tops=mergeGeometries(ducts.map(d=>prismGeo(d.plan,[],0,0)),false).applyMatrix4(inv),one=list.length===1?list[0]:null,base=one?.geometry;
+  if(one&&!base.index&&Object.keys(base.attributes).every(k=>tops.attributes[k])){for(const k of Object.keys(tops.attributes))if(!base.attributes[k])tops.deleteAttribute(k);
+   one.geometry=mergeGeometries([base,tops],false);one.geometry.computeBoundingSphere();base.dispose();}
+  else{const q=new THREE.Mesh(tops,M.cap);q.name='duct-cap';q.castShadow=q.receiveShadow=true;caps.add(q);}
+  out.ductCaps++;}
 
  // --- Rooms out of sight ---------------------------------------------------------------------------------------------------
  // Walking (eye below 2.6 m), a room's fittings are drawn only from inside it or with one of its openings in plain sight past

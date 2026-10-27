@@ -6,7 +6,7 @@
 // and any turn already made is undone, and the stick only drives once its finger has been down for `grace` ms. The stick layer
 // takes no pointer events and no event is cancelled, so a short tap still reaches ui-panels.js and panels above stay usable.
 // Mouse and pen input, and devices with a fine primary pointer, keep app.js's own drag-to-look and the buttons.
-export const TOUCH_WALK={query:'(pointer: coarse)',radius:56,dead:10,grace:120,slop:6,smooth:.08,hintMs:3600,hintKey:'xiyuan-touch-hint-v1',hint:'左手拖动走 · 右手拖动看'};
+export const TOUCH_WALK={query:'(pointer: coarse)',radius:56,dead:10,grace:120,slop:6,smooth:.08,hintMs:3600,hintKey:'xiyuan-touch-hint-v1',hint:'左手拖动走，右手拖动看'};
 // Inside #viewport after the canvas and without a z-index, so every panel, label and button paints above it.
 const css=R=>`#touchWalk{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-user-select:none;user-select:none}
 #touchWalk .stick{position:absolute;left:0;top:0;width:${2*R}px;height:${2*R}px;margin:${-R}px 0 0 ${-R}px;border-radius:50%;background:rgba(248,247,241,.18);border:1.5px solid rgba(255,255,255,.8);box-shadow:0 4px 18px rgba(48,58,50,.18);opacity:0;transition:opacity .15s}

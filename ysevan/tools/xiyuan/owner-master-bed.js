@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {bedding} from './furnish-layer.js?v=bc9ae48c34';
-import {slimBedParts,groundOf,toWorld} from './bedroom-kit.js?v=91fb07a8ba';
+import {slimBedParts,groundOf,toWorld} from './bedroom-kit.js?v=9d047206ec';
 // Removable platform bed. The mattress remains 1.80 x 2.00; outer frame 1.88 x 2.10. Fit-out round: the frame stands on four
 // legs (on the rug's top where the rug lies under it), the 30 mm headboard is a walnut backing board under channel padding.
 export function createOwnerMasterBed({cx,cz,width,length=2,rotation,layout='original'},{box,materials:M,parent}){

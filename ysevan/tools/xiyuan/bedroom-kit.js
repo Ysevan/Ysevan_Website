@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {ROOM_DECOR} from './layout-data.js?v=177b5128ed';
+import {ROOM_DECOR} from './layout-data.js?v=3e32bfce2c';
 import {BEDROOMS} from './furnish-layer.js?v=bc9ae48c34';
 // Bedroom furniture after real products (fit-out round, 2026-10-26): beds, headboards, nightstands, freestanding wardrobes,
 // desks, chairs and the sofa bed, built inside the outlines the layouts already give them (footprints, collision boxes and

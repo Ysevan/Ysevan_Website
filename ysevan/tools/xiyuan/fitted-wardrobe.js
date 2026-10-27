@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {WARDROBE_FULL} from './layout-data.js?v=177b5128ed';
+import {WARDROBE_FULL} from './layout-data.js?v=3e32bfce2c';
 
 // Built-in wardrobe with sliding doors (DWG A-家具 block 2222: 600 deep, 31 mm sides, 20 mm back, two door tracks), every part
 // inside the measured cabinet footprint used by navigation. Local frame: length along x, the doors face +z.

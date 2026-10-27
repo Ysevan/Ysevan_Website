@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {BAY} from './layout-data.js?v=177b5128ed';
+import {BAY} from './layout-data.js?v=3e32bfce2c';
 import {cutFabric} from './detail-kit.js?v=95ac5fde41';
 // Master-bedroom bay window after the owner's reference video (2026-10-20), fitted to the DWG-derived room.
 // The sill and the wall under it are not cut: the desk rests on the sill, the shelf stands on the floor.

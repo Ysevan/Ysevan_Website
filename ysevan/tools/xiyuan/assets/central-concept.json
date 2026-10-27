@@ -2,7 +2,7 @@
   "version": "18-two-straight-walls-and-continuous-nw-floor",
   "created": "2026-10-23",
   "sourceSHA256": "87c258e615f533e6e89cd4e60507886ca0e199d280f68a480775ecf24f2a1a76",
-  "wallSourceSHA256": "9f0584f807c6581531c91d8049802eb130ef2db4ff8ba8570afe5ac2d48cef06",
+  "wallSourceSHA256": "98a348678c2fffa2d5634b22b2c47ead4820190a78719a8052f4ff949b6fc23c",
   "northWallLocked": true,
   "waterPointsUnchanged": true,
   "newWallChanges": [
