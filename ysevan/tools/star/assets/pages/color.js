@@ -88,7 +88,7 @@
       var r = result();
       var shown = r.ratio.toFixed(2);
       ratioEl.textContent = shown;
-      mixEl.textContent = state.a < 1 ? "合成后：" + r.mixed : "不透明：" + state.fg;
+      mixEl.textContent = state.a < 1 ? "合成色" + r.mixed : "字色" + state.fg + "（不透明）";
       preview.style.background = state.bg;
       preview.style.color = r.mixed;
       alphaOut.textContent = state.a < 1 ? String(state.a.toFixed(2)).replace(/^0/, "") : "1";
@@ -131,14 +131,14 @@
         var a = btn.getAttribute("data-stage-accent");
         stage.setAttribute("data-accent", a);
         each(doc.querySelectorAll("[data-stage-accent]"), function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
-        announce("舞台底强调色：" + names[a]);
+        announce("舞台底换成" + names[a] + "色");
       });
     });
   }
 })();
 
 /*
- * 「用起来」：每条补的真实元素演示（2026-10-08）
+ * 示例框：每条补的真实元素演示（2026-10-08）
  *   6. 中性底：现行 / 反例「靠边框分层」切换（radiogroup，方向键由 star.js 统一处理）
  *   7. 六强调色：样例自己的强调色（默认跟全站走，全站一换这里跟着换）、选中标签、做一题 / 重来、进度条
  *   8. 语义色：红绿色弱模拟（SVG feColorMatrix）
@@ -197,11 +197,11 @@
     radios(group, function (b) {
       var v = b.getAttribute("data-ug");
       pair.setAttribute("data-ug", v);
-      announce(v === "border" ? "已换成反例：靠边框分层，光晕、玻璃和投影都去掉了" : "已换回现行：玻璃、投影和分隔线");
+      announce(v === "border" ? "已换成反例，靠边框分层，没有光晕、玻璃和投影" : "已换回现行做法，用玻璃、投影和分隔线分层");
     });
   });
 
-  /* ---- 7. 六强调色「用起来」 ---- */
+  /* ---- 7. 六强调色示例框 ---- */
   var ua = doc.querySelector("[data-ua]");
   if (ua) {
     var pick = ua.querySelector(".ua-pick");
@@ -211,7 +211,7 @@
       each(panels, function (p) { p.setAttribute("data-accent", a); });
       var b = pick.querySelector('[data-ua-accent="' + a + '"]');
       if (b) select(pick, b);
-      if (speak) announce("样例强调色：" + ACCENT_NAME[a]);
+      if (speak) announce("示例换成" + ACCENT_NAME[a] + "色");
     };
     radios(pick, function (b) { setAccent(b.getAttribute("data-ua-accent"), true); });
     var globalAccent = root.getAttribute("data-accent") || "blue";
@@ -224,7 +224,7 @@
       chip.addEventListener("click", function () {
         var on = chip.getAttribute("aria-pressed") !== "true";
         chip.setAttribute("aria-pressed", on ? "true" : "false");
-        announce(chip.textContent.trim() + (on ? "：已选" : "：未选"));
+        announce(chip.textContent.trim() + (on ? "，已选" : "，未选"));
       });
     });
 
@@ -239,7 +239,7 @@
         bar.style.transform = "scaleX(" + (n / max) + ")";
         num.textContent = n + "/" + max + "题";
         track.setAttribute("aria-valuenow", String(n));
-        if (speak) announce(tag + "样例：已完成" + n + "/" + max + "题");
+        if (speak) announce(tag + "示例，已完成" + n + "题，共" + max + "题");
       };
       p.querySelector("[data-ua-next]").addEventListener("click", function () { n = Math.min(max, n + 1); paint(true); });
       p.querySelector("[data-ua-reset]").addEventListener("click", function () { n = 0; paint(true); });
@@ -255,7 +255,7 @@
       var on = btn.getAttribute("aria-pressed") !== "true";
       btn.setAttribute("aria-pressed", on ? "true" : "false");
       stage.classList.toggle("is-sim", on);
-      announce(on ? "已打开红绿色弱模拟：带字的标签照样读得出，只靠色点的那组红绿分不清" : "已关掉红绿色弱模拟");
+      announce(on ? "已打开红绿色弱模拟，带文字的标签照样能读，只有色点的那组分不清红绿" : "已关掉红绿色弱模拟");
     });
   });
 
@@ -290,7 +290,7 @@
       var rd = ratio(text, over(solid, solid[3], under));
       verdict(semiEl, rs);
       verdict(solidEl, rd);
-      if (speak) announce("光晕" + Math.round(s * 100) + "%：半透明底" + rs.toFixed(2) + "，实色底" + rd.toFixed(2));
+      if (speak) announce("光晕" + Math.round(s * 100) + "%，半透明底" + rs.toFixed(2) + "，实色底" + rd.toFixed(2));
     };
     range.addEventListener("input", function () { paint(false); });
     range.addEventListener("change", function () { paint(true); });
@@ -306,7 +306,7 @@
         if (x.getAttribute("data-up-nav") === v) x.setAttribute("aria-current", "page");
         else x.removeAttribute("aria-current");
       });
-      announce("顶栏当前项：" + b.textContent.trim());
+      announce("顶栏当前项换成" + b.textContent.trim());
     });
   });
 
@@ -319,8 +319,8 @@
       var on = btn.getAttribute("aria-pressed") !== "true";
       btn.setAttribute("aria-pressed", on ? "true" : "false");
       stage.classList.toggle("is-off", !on);
-      label.textContent = on ? "雾与灯晕：开" : "雾与灯晕：关";
-      announce(on ? "雾与灯晕已打开" : "雾与灯晕已关掉，只剩纸底");
+      label.textContent = on ? "雾和灯晕已开" : "雾和灯晕已关";
+      announce(on ? "雾和灯晕已打开" : "雾和灯晕已关掉，只剩纸底");
     });
   });
 
@@ -390,10 +390,10 @@
           (it.tag ? '<span class="urg-tag">' + esc(it.tag) + "</span>" : "") + chip + "</li>";
       }).join("");
       each(lists, function (ul) { ul.innerHTML = html; });
-      urgSum.innerHTML = "<b>" + esc(label) + "</b>：逾期" + n.overdue + "项、今天截止" + n.today + "项、两天内" + n.soon + "项、其余" + n.normal + "项；已完成" + n.done + "项一律灰";
+      urgSum.innerHTML = "<b>" + esc(label) + "</b>，逾期" + n.overdue + "项，今天截止" + n.today + "项，两天内到期" + n.soon + "项，其余" + n.normal + "项。已完成" + n.done + "项，显示为灰色。";
       if (speak) {
         clearTimeout(urgTimer);
-        urgTimer = setTimeout(function () { announce(label + "：逾期" + n.overdue + "项，今天截止" + n.today + "项，两天内" + n.soon + "项"); }, 350);
+        urgTimer = setTimeout(function () { announce(label + "，逾期" + n.overdue + "项，今天截止" + n.today + "项，两天内到期" + n.soon + "项"); }, 350);
       }
     };
     day.addEventListener("input", function () { paintUrg(true); });
@@ -401,7 +401,7 @@
       var on = before.getAttribute("aria-pressed") !== "true";
       before.setAttribute("aria-pressed", on ? "true" : "false");
       urg.classList.toggle("is-before", on);
-      announce(on ? "改版前（示意）：日期一律强调色" : "现行：只有急的带颜色");
+      announce(on ? "改版前的样子（示意），日期全用强调色" : "现行做法，只有快到期的日期有颜色");
     });
     paintUrg(false);
   }

@@ -227,8 +227,8 @@
     function pick(b, speak) {
       pressGroup(group, ".rj-var", b);
       if (target) target.setAttribute("data-v", b.getAttribute("data-v"));
-      if (read) read.textContent = "左边：" + b.getAttribute("data-note");
-      if (speak) announce("左边换成：" + b.textContent.replace(/\s+/g, " ").trim());
+      if (read) read.textContent = "左边是" + b.getAttribute("data-note");
+      if (speak) announce("左边换成" + b.textContent.replace(/\s+/g, " ").trim());
       spec.dispatchEvent(new CustomEvent("rj-vars", { detail: b.getAttribute("data-v") }));
     }
     group.addEventListener("click", function (e) {
@@ -284,7 +284,7 @@
         if (cmp && cmp.rjSetCut) cmp.rjSetCut(100, false);
       }
       each(oldPane.querySelectorAll(".mk-spot"), function (s) { s.classList.toggle("is-on", on && s.getAttribute("data-spot-box") === n); });
-      announce(on ? "第" + n + "处，屋主说：" + b.getAttribute("data-said") : "收起第" + n + "处");
+      announce(on ? "第" + n + "处，屋主" + b.getAttribute("data-said") : "收起第" + n + "处");
     });
   })();
 
@@ -351,7 +351,7 @@
       out.textContent = w + "px";
       cur.setAttribute("transform", "translate(" + x(w).toFixed(1) + " 0)");
       each(cur.querySelectorAll("[data-big-pt]"), function (c) { c.setAttribute("cy", y(F[c.getAttribute("data-big-pt")](w)).toFixed(1)); });
-      var t = w + "px：现行" + n.toFixed(3) + "；线性爬坡" + l.toFixed(3) + (n / l > 1.005 ? "（现行是它的" + (n / l).toFixed(2) + "倍）" : "") + "；初版正文只涨到" + v.toFixed(2);
+      var t = w + "px，现行" + n.toFixed(3) + "，线性爬坡" + l.toFixed(3) + (n / l > 1.005 ? "（现行是它的" + (n / l).toFixed(2) + "倍）" : "") + "，初版正文只涨到" + v.toFixed(2);
       read.textContent = t;
       // 严格等比：1440 构图 × scale，超出的部分两边留白；填满：没有白边
       var comp = Math.min(w, 1440 * n);
@@ -493,8 +493,8 @@
     function say(speak) {
       var d = dirs[st.front];
       var lat = Math.round(d.lat * 180 / Math.PI);
-      var t = "正前：第" + (st.front + 1) + "张，纬度" + lat + "°";
-      if (Math.abs(d.lat) > LIMIT) t += "——超过俯仰限63°，转不到正面";
+      var t = "正前方是第" + (st.front + 1) + "张，纬度" + lat + "°";
+      if (Math.abs(d.lat) > LIMIT) t += "，超过俯仰限63°，转不到正面";
       else if (st.spinning) t += "，正在自转";
       read.textContent = t;
       if (speak) announce(t);
@@ -587,7 +587,7 @@
         c.style.zIndex = String(20 - a);
         c.classList.toggle("is-cur", k === 0);
       });
-      var txt = "正中：第" + (cur + 1) + "张，端正（rotate 0）";
+      var txt = "正中是第" + (cur + 1) + "张，端正（rotate 0）";
       read.textContent = txt;
       if (speak) announce(txt);
     }
@@ -629,11 +629,11 @@
       c.rjDim = dim;
     });
     var NOTE = {
-      A: "A Cover Flow（Apple iTunes经典）：正中一张端正朝你，两侧侧立排开、越远越暗。屋主选的这一种。",
-      B: "B弧形展架（Apple TV货架）：每张都端正立着，排成一条浅弧，中间最大最近、两端略小略远。",
-      C: "C手牌扇形：像手里握着一把牌，选中那张端正地抽高出来；其余每张都是斜的。",
-      D: "D钱包叠卡（Apple Wallet）：往后叠，最前一张完整，后面只露顶边，越往后越暗。",
-      E: "E玻璃展柜墙：不做3D，13张端端正正铺成一面墙，选中那张抬起来一点。"
+      A: "A Cover Flow（Apple iTunes的经典样式）。正中一张端正朝你，两侧侧立排开，越远越暗。屋主选的是这一种。",
+      B: "B弧形展架（Apple TV的货架）。每张都端正立着，排成一条浅弧，中间最大最近，两端略小略远。",
+      C: "C手牌扇形。卡片绕下方一点转开，排成扇形，选中那张端正地抽高出来，其余每张都是斜的。",
+      D: "D钱包叠卡（Apple Wallet）。往后叠，最前一张完整，后面只露顶边，越往后越暗。",
+      E: "E玻璃展柜墙。不做3D，13张端端正正铺成一面墙，选中那张抬起来一点。"
     };
     var BX = [0, 44, 102, 162, 220, 276, 330], BZ = [40, -4, -14, -35, -60, -90, -120], BR = [0, 1, 3, 6, 9, 12, 14], BS = [1.05, 1, 1, 0.95, 0.9, 0.85, 0.8];
     var DS = [0.98, 0.96, 0.93, 0.9, 0.87, 0.84, 0.81, 0.78], DB = [0.9, 0.8, 0.72, 0.66, 0.6, 0.55, 0.5, 0.45];
@@ -686,7 +686,7 @@
         c.classList.toggle("is-cur", i === sel);
       });
       refl.hidden = mode !== "A";
-      flag.textContent = mode === "A" ? "现行" : "示意 · 被否";
+      flag.textContent = mode === "A" ? "现行" : "被否（示意）";
       flag.className = "rj-flag " + (mode === "A" ? "rj-flag-new" : "rj-flag-old");
       read.textContent = NOTE[mode] + "选中第" + (sel + 1) + "张。";
       if (speak) announce(read.textContent);
@@ -719,9 +719,9 @@
         var r = ratio(a, b);
         return lbl + '<span class="' + (r < 4.5 ? "is-bad" : "is-ok") + '">' + r.toFixed(2) + "</span>";
       }
-      return "<b>" + n.name + "</b>：" + one("正文／底", n.body, n.bg) + " · " + one("链接／底", n.link, n.bg) + " · " + one("日期橙／卡", n.lava, n.card);
+      return "<b>" + n.name + "</b>，" + one("正文对底", n.body, n.bg) + "，" + one("链接对底", n.link, n.bg) + "，" + one("日期橙对卡", n.lava, n.card);
     }
-    function paint(v) { read.innerHTML = "对比度（低于4.5标红）　左：" + part(v) + "；右：" + part("now"); }
+    function paint(v) { read.innerHTML = "对比度（低于4.5标红）。左边" + part(v) + "。右边" + part("now") + "。"; }
     spec.addEventListener("rj-vars", function (e) { paint(e.detail); });
     paint("v1");
   })();
@@ -741,12 +741,12 @@
     var room = "hall", version = "veil", gen = 0, timers = [], anims = [];
     var NAME = { split: "中缝展开", solid: "实心色板门", paper: "纸色格心门", veil: "洇一层纸" };
     var PLAN = {
-      split: "出0.3秒推近淡出 → 进0.55秒从中缝展开（clip-path）",
-      solid: "合门0.45秒 → 门后换房间 → 开门0.75秒（外摆96°）",
-      paper: "合门0.45秒 → 门后换房间 → 开门0.75秒（纸色格心）",
-      veil: "洇开0.55秒 → 纸下换房间 → 干去0.6秒"
+      split: "出场0.3秒推近淡出，进场0.55秒从中缝展开（clip-path）",
+      solid: "合门0.45秒，门后换房间，开门0.75秒（外摆96°）",
+      paper: "合门0.45秒，门后换房间，开门0.75秒（纸色格心）",
+      veil: "洇开0.55秒，纸下换房间，干去0.6秒"
     };
-    function label() { go.textContent = room === "hall" ? "换房间：去随笔" : "换房间：回小屋"; }
+    function label() { go.textContent = room === "hall" ? "换房间去随笔" : "换房间回小屋"; }
     function swapRoom() {
       room = room === "hall" ? "notes" : "hall";
       each(spec.querySelectorAll("[data-room]"), function (r) { r.hidden = r.getAttribute("data-room") !== room; });
@@ -763,22 +763,22 @@
     }
     function done() {
       reset();
-      read.textContent = NAME[version] + "：到了" + (room === "hall" ? "小屋" : "随笔") + "。" + PLAN[version] + "。";
+      read.textContent = NAME[version] + "，到了" + (room === "hall" ? "小屋" : "随笔") + "。" + PLAN[version] + "。";
       announce("到了" + (room === "hall" ? "小屋" : "随笔"));
     }
-    function phase(t) { read.textContent = NAME[version] + "：" + t; }
+    function phase(t) { read.textContent = NAME[version] + "，" + t; }
     function run() {
       reset();
-      if (reduced() || !canAnimate) { swapRoom(); read.textContent = "减弱动效：直接换房间（" + NAME[version] + "整段不播）。"; announce("到了" + (room === "hall" ? "小屋" : "随笔")); return; }
+      if (reduced() || !canAnimate) { swapRoom(); read.textContent = "减弱动效下直接换房间，" + NAME[version] + "整段不播。"; announce("到了" + (room === "hall" ? "小屋" : "随笔")); return; }
       announce("播放" + NAME[version]);
       var E_EXIT = "cubic-bezier(0.4, 0, 1, 1)";
       if (version === "split") {
-        phase("出——推近、淡出0.3秒");
+        phase("出场，推近并淡出0.3秒");
         anim(main, [{ opacity: 1, transform: "none", filter: "brightness(1)" }, { opacity: 0, transform: "scale(1.045)", filter: "brightness(1.08)" }], { duration: 300, easing: E_EXIT, fill: "forwards" });
         later(function () {
           anims.forEach(function (a) { a.cancel(); }); anims = [];
           swapRoom();
-          phase("进——从中缝向两侧展开0.55秒");
+          phase("进场，从中缝向两侧展开0.55秒");
           var E = "cubic-bezier(0.22, 0.61, 0.36, 1)";
           anim(main, [
             { clipPath: "inset(0 49.5% 0 49.5%)", transform: "scale(1.02)", filter: "brightness(0.7)", opacity: 0.9, offset: 0, easing: E },
@@ -834,7 +834,7 @@
     radios(pickV, function (b) {
       reset();
       version = b.getAttribute("data-door-v");
-      read.textContent = (version === "veil" ? "现行：" : "被否：") + NAME[version] + "。" + PLAN[version] + "。";
+      read.textContent = NAME[version] + (version === "veil" ? "（现行）" : "（被否）") + "。" + PLAN[version] + "。";
       announce(read.textContent);
     });
     // 白天 / 夜里：默认跟着全站的明暗；点过之后只改这一块（样例自己的 data-mode）

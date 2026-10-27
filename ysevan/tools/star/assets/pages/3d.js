@@ -163,7 +163,7 @@
       gl.shaderSource(s, src);
       gl.compileShader(s);
       if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-        if (!gl.isContextLost() && window.console) console.warn("3d.js 着色器编不过：", gl.getShaderInfoLog(s));
+        if (!gl.isContextLost() && window.console) console.warn("3d.js 着色器编不过", gl.getShaderInfoLog(s));
         return null;
       }
       return s;
@@ -202,7 +202,7 @@
       if (v.canvas.width !== W) v.canvas.width = W;
       if (v.canvas.height !== H) v.canvas.height = H;
       v.w = W; v.h = H; v.cssW = cw; v.cssH = ch; v.ratio = r;
-      if (v.badge) v.badge.textContent = (v.soft ? "宽参数 · 精简档" : "严参数拿到") + " · 像素比" + f2(r);
+      if (v.badge) v.badge.textContent = (v.soft ? "宽参数，精简档" : "严参数拿到") + "，像素比" + f2(r);
       return true;
     }
     function draw() { raf = 0; if (v.ctx && !v.gl.isContextLost() && size()) { v.draws++; opts.draw(v); } }
@@ -218,7 +218,7 @@
     function enter() {
       if (v.ctx || v.failed) return;
       var ctx = GL.open();
-      if (!ctx) { fail("这台浏览器拿不到WebGL（严、宽两段都不给），演示停在这句说明——这正是降级的终点。"); return; }
+      if (!ctx) { fail("这台浏览器拿不到WebGL，严参数和宽参数两段都不给，示例停在这句说明上，这正是降级的终点。"); return; }
       v.ctx = ctx; v.gl = ctx.gl; v.canvas = ctx.canvas; v.soft = ctx.soft; v.stage = ctx.stage;
       v.canvas.setAttribute("aria-hidden", "true");
       v.canvas.addEventListener("webglcontextlost", function (e) { e.preventDefault(); });
@@ -228,7 +228,7 @@
       v.badge.setAttribute("aria-hidden", "true");
       host.appendChild(v.badge);
       v.k = opts.setup(v);
-      if (!v.k) { leave(); fail("着色器在这台浏览器上编不过，演示停在说明。"); return; }
+      if (!v.k) { leave(); fail("着色器在这台浏览器上编译不过，示例停在这句说明上。"); return; }
       msg.hidden = true;
       if (label) host.setAttribute("aria-label", label);
       now();
@@ -243,7 +243,7 @@
       if (v.canvas.parentNode) v.canvas.parentNode.removeChild(v.canvas);
       if (v.badge && v.badge.parentNode) v.badge.parentNode.removeChild(v.badge);
       v.ctx = v.gl = v.canvas = v.badge = v.k = null;
-      if (!v.failed) { msg.textContent = "滚走了：WebGL上下文已还给浏览器，回来再建。"; msg.hidden = false; }
+      if (!v.failed) { msg.textContent = "已滚走，WebGL上下文还给了浏览器，滚回来再建。"; msg.hidden = false; }
     }
     v.request = request; v.now = now; v.size = size;
     Heavy.watch(spec, enter, leave);
@@ -484,7 +484,7 @@
       row("styles.css", "首屏");
       row("app.js", "首屏");
       row("effects.js", "判定与调度，几KB");
-      sum.textContent = "3D字节：0（首屏）";
+      sum.textContent = "3D字节为0（首屏）";
       slot.classList.remove("is-live", "is-replaced");
       stack.style.transform = "";
       btn.disabled = false;
@@ -496,29 +496,29 @@
       btn.disabled = true;
       before = textTop();   /* 「3D前」在这一刻量：开页之后窗口可能改过宽（版面跟着变），不能拿开页时的数比 */
       if (dev === "rm" || dev === "none") {
-        sum.textContent = "3D字节：0——" + (dev === "rm" ? "减弱动效" : "两段都拿不到WebGL") + "，不够格，一个字节都不下";
-        read.textContent = "停在静态版：海报就是完整的一格，下面那段字还在" + textTop() + "px。";
-        announce("不够格：一个3D字节都不下，停在静态版");
+        sum.textContent = "3D字节为0，" + (dev === "rm" ? "开了减弱动效" : "两段都拿不到WebGL") + "，不够格，一个字节都不下载";
+        read.textContent = "停在静态版，海报就是完整的一格，下面那段字还在" + textTop() + "px。";
+        announce("不够格，一个3D字节都不下载，停在静态版");
         return;
       }
-      sum.textContent = "第一次滚动了，等浏览器空闲……";
+      sum.textContent = "第一次滚动了，等浏览器空闲";
       timers.push(setTimeout(function () {
         row("effects-3d.bundle.js", "626KB（gzip 172KB）", true, true);
-        sum.textContent = "3D字节：gzip 172KB（第一次滚动之后、空闲时）";
+        sum.textContent = "3D字节，gzip后172KB（第一次滚动之后、空闲时）";
         timers.push(setTimeout(function () {
           phase = "live";
-          tag.textContent = dev === "soft" ? "3D · 精简档（不跟指针）" : "3D · 完整档";
+          tag.textContent = dev === "soft" ? "3D精简档（不跟指针）" : "3D完整档";
           slot.classList.add(bad ? "is-replaced" : "is-live");
           var after = textTop();
           var d = after - before;
           read.textContent = bad
-            ? "反例：海报被摘掉、换成更高的画布，下面那段字从" + before + "px跳到" + after + "px（跳了" + d + "px）。"
-            : "3D叠在海报上面：下面那段字" + before + "px → " + after + "px，" + (d === 0 ? "一像素没动。" : "动了" + d + "px。");
-          announce(bad ? "反例：下面那段字跳了" + d + "像素" : "3D接管，下面那段字一像素没动");
+            ? "反例，海报被摘掉，换成更高的画布，下面那段字从" + before + "px跳到" + after + "px（跳了" + d + "px）。"
+            : "3D叠在海报上面，下面那段字从" + before + "px到" + after + "px，" + (d === 0 ? "一像素没动。" : "动了" + d + "px。");
+          announce(bad ? "反例，下面那段字跳了" + d + "像素" : "3D接管，下面那段字一像素没动");
         }, 520));
       }, 380));
     }
-    radios($("[data-ov-dev]", spec), function (v) { dev = v; reset(); announce("这台机器：" + NAME[v] + "，从头来"); });
+    radios($("[data-ov-dev]", spec), function (v) { dev = v; reset(); announce("这台机器换成" + NAME[v] + "，从头来"); });
     toggle($("[data-ov-bad]", spec), function (on) { bad = on; reset(); });
     btn.addEventListener("click", function () { if (phase === "first") afterScroll(); });
     $("[data-ov-reset]", spec).addEventListener("click", reset);
@@ -560,8 +560,8 @@
       return res;
     }
     var SIM = {
-      gpu: { strict: true, loose: null, gl1: null, renderer: "（示意）Apple M5 Pro（Metal）——岗岗实测时那台的名字", ms: null },
-      soft: { strict: false, loose: true, gl1: null, renderer: "（示意）ANGLE (Microsoft, Microsoft Basic Render Driver … D3D11)——屋主那台虚拟机报的", ms: null },
+      gpu: { strict: true, loose: null, gl1: null, renderer: "Apple M5 Pro（Metal），岗岗实测时那台的名字（示意）", ms: null },
+      soft: { strict: false, loose: true, gl1: null, renderer: "「ANGLE (Microsoft, Microsoft Basic Render Driver … D3D11)」，屋主那台虚拟机报的名字（示意）", ms: null },
       none: { strict: false, loose: false, gl1: false, renderer: null, ms: null }
     };
     function pill(li, txt, tone) { var p = $("[data-st]", li); p.textContent = txt; p.setAttribute("data-tone", tone); }
@@ -573,13 +573,13 @@
       var tier, why, tone;
       if (r.strict) {
         var low = live && ((mem && mem <= 4) || (cores && cores <= 4));
-        tier = live ? (low ? "完整档·均衡" : "完整档·高") : "完整档";
-        why = "严参数拿到：有显卡，之后一字不变；再按内存、核数起步（≤4 → 均衡）。";
+        tier = live ? (low ? "完整档，均衡" : "完整档，高") : "完整档";
+        why = "严参数拿到，说明有显卡，之后的行为一字不变。再按内存和核数起步，有一项在4以下就走均衡档。";
         tone = "ok";
       } else if (r.loose) {
-        tier = "精简档soft"; why = "严参数被拒、宽参数拿到：只有软件渲染。一律精简档，不看内存核数。"; tone = "soft";
+        tier = "精简档"; why = "严参数被拒、宽参数拿到，说明只有软件渲染，一律走精简档，不看内存和核数。"; tone = "soft";
       } else {
-        tier = "静态"; why = "两段都拿不到" + (r.gl1 ? "（WebGL1倒是有，只记进诊断）" : "") + "：安静回静态，零请求、零报错。"; tone = "off";
+        tier = "静态"; why = "两段都拿不到" + (r.gl1 ? "（WebGL1倒是有，只记进诊断）" : "") + "，安静回静态版，不发请求，不报错。"; tone = "off";
       }
       pill(steps.tier, tier, tone);
       $("[data-pr-why]", flow).textContent = why;
@@ -587,30 +587,30 @@
       var softName = r.renderer ? SOFT_RE.test(r.renderer) : false;
       $('[data-k="renderer"]', dl).textContent = name;
       $('[data-k="software"]', dl).textContent = (r.strict ? "否（严参数拿到）" : r.loose ? "是（只拿到宽参数）" : "无从判断") +
-        (r.renderer ? "；名字" + (softName ? "命中" : "不命中") + "软件渲染正则（岗岗会据此判soft，小屋只记诊断）" : "");
-      $('[data-k="hw"]', dl).textContent = live ? (mem === undefined ? "浏览器不报" : mem + "G") + " · " + (cores === undefined ? "浏览器不报" : cores + "核") : "（示意不算）";
+        (r.renderer ? "，名字" + (softName ? "命中" : "不命中") + "软件渲染的正则（岗岗会据此判成精简档，小屋只记进诊断）" : "");
+      $('[data-k="hw"]', dl).textContent = live ? (mem === undefined ? "浏览器不报" : mem + "G") + "，" + (cores === undefined ? "浏览器不报" : cores + "核") : "（示意不算）";
       $('[data-k="ms"]', dl).textContent = r.ms == null ? "（示意）" : f1(r.ms) + "ms（三块临时画布，探完都已loseContext）";
       return tier;
     }
     function showStar() {
       var T = window.StarTheme;
-      if (!T) { star.textContent = "本站外壳：读不到外观设置。"; return; }
+      if (!T) { star.textContent = "本站外壳读不到外观设置。"; return; }
       var g = T.gpu(), pref = T.blurPref(), tier = T.blur();
       var gtxt = g === true ? "有显卡" : g === false ? "没显卡" : "还没测（先按没显卡）";
       var ttxt = { full: "full（糊开）", lite: "lite（只压暗、不模糊）", off: "off（连常驻磨砂也关）" }[tier] || tier;
       star.textContent = pref === "auto"
-        ? "本站外壳：显卡探测缓存star-gpu＝" + gtxt + " → 背景模糊「自动」落" + ttxt + "。外壳只探一段WebGL1严参数：它只需要知道有没有显卡。"
-        : "本站外壳：背景模糊被设成「" + (pref === "on" ? "开" : "关") + "」，不看探测，现在是" + ttxt + "（显卡探测缓存：" + gtxt + "）。";
+        ? "本站外壳的显卡探测缓存star-gpu是" + gtxt + "，背景模糊的自动档落在" + ttxt + "。外壳只探一段WebGL1严参数，它只需要知道有没有显卡。"
+        : "本站外壳的背景模糊设成了" + (pref === "on" ? "开" : "关") + "，不看探测，现在是" + ttxt + "（显卡探测缓存是" + gtxt + "）。";
     }
     function render(user) {
       var tier;
       if (mode === "live") {
         if (!last) last = probeLive();
         tier = show(last, true);
-        if (user) announce("现场探测：" + (last.strict ? "严参数拿到" : last.loose ? "严参数被拒、宽参数拿到" : "两段都拿不到") + "，落在" + tier);
+        if (user) announce("现场探测，" + (last.strict ? "严参数拿到" : last.loose ? "严参数被拒、宽参数拿到" : "两段都拿不到") + "，落在" + tier);
       } else {
         tier = show(SIM[mode], false);
-        if (user) announce("示意：落在" + tier);
+        if (user) announce("示意，落在" + tier);
       }
       runBtn.disabled = mode !== "live";
       showStar();
@@ -643,35 +643,35 @@
       var area = o.slot[0] * o.slot[1];
       if (who === "tools") {
         if (!d.gpu) {
-          o.tier = "精简soft"; o.tone = "soft";
+          o.tier = "精简档"; o.tone = "soft";
           o.r = Math.min(1, d.dpr, 640 / Math.max(o.slot[0], o.slot[1]));
-          o.rWhy = "像素比≤1，再按物理长边≤640压";
+          o.rWhy = "像素比1以下，再把物理长边压到640以内";
           o.fps = "限30帧（按到期时刻跳帧）"; o.aa = "关"; o.ptr = "不跟指针、不随滚动"; o.q = "同均衡档，不另砍";
         } else if (dev === "phone") {
           o.tier = "均衡（触屏起步）"; o.tone = "accent";
-          o.r = Math.min(d.dpr, 1.25); o.rWhy = "均衡档像素比≤1.25";
+          o.r = Math.min(d.dpr, 1.25); o.rWhy = "均衡档像素比上限1.25";
           o.fps = "不限（跟rAF）"; o.aa = "开"; o.ptr = "跟指针"; o.q = "关纸纹、细分4";
-          o.note = "岗岗窄屏不出3D；刷刷首页牌堆要≥1180，手机上只有做题、结算两处。";
+          o.note = "岗岗窄屏不出3D。刷刷首页牌堆要视口1180以上才出，手机上只有做题和结算两处。";
         } else {
           o.tier = "高"; o.tone = "ok";
-          o.r = Math.min(d.dpr, 1.75); o.rWhy = "高档像素比≤1.75";
+          o.r = Math.min(d.dpr, 1.75); o.rWhy = "高档像素比上限1.75";
           o.fps = "不限（跟rAF）"; o.aa = "开"; o.ptr = "跟指针轻倾、随滚动后仰"; o.q = "全部效果";
         }
       } else {
         if (!d.gpu) {
-          o.tier = "精简soft"; o.tone = "soft";
+          o.tier = "精简档"; o.tone = "soft";
           var r0 = Math.min(d.dpr, 1.5), rc = Math.sqrt(800000 / area);
-          o.r = Math.min(r0, rc); o.rWhy = "min(dpr, 1.5)＝" + f2(r0) + "，再按80万像素压到" + f2(rc) + "，两者取小";
-          o.fps = "限30帧（按到期时刻，lib/frame-pacer.ts）"; o.aa = "关（无MSAA）"; o.ptr = "—"; o.q = "关纸纹、各向异性1、几何同均衡";
+          o.r = Math.min(r0, rc); o.rWhy = "min(dpr, 1.5)是" + f2(r0) + "，再按80万像素压到" + f2(rc) + "，两者取小";
+          o.fps = "限30帧（按到期时刻，lib/frame-pacer.ts）"; o.aa = "关（无MSAA）"; o.ptr = "不跟指针"; o.q = "关纸纹、各向异性1、几何同均衡";
         } else if (dev === "phone") {
           o.tier = "手机版面（随笔球）"; o.tone = "accent";
           var rp = Math.min(d.dpr, 2), rpc = Math.sqrt(1300000 / area);
-          o.r = Math.min(rp, rpc); o.rWhy = "min(dpr, 2) 与130万像素取小";
+          o.r = Math.min(rp, rpc); o.rWhy = "min(dpr, 2)与130万像素取小";
           o.fps = "限30帧（拖动中不限）"; o.aa = "开"; o.ptr = "拖动"; o.q = "什么都不砍";
-          o.note = "工具页展品、走进小屋在≤900一律静态，只有随笔球有手机版面。";
+          o.note = "走进小屋在900以下一律静态。随笔球有手机版面，工具页展品和漂浮层2026-10-11起也有，像素比同样按2和130万像素封顶。";
         } else {
           o.tier = "高"; o.tone = "ok";
-          o.r = Math.min(d.dpr, 1.75); o.rWhy = "工具页高档像素比≤1.75";
+          o.r = Math.min(d.dpr, 1.75); o.rWhy = "工具页高档像素比上限1.75";
           o.fps = "不限（跟rAF）"; o.aa = "开"; o.ptr = "随滚动"; o.q = "全部效果";
         }
       }
@@ -694,7 +694,7 @@
       c.strokeStyle = "#3E3C35"; c.lineWidth = 0.75;
       for (var i = 0; i < 6; i++) { c.beginPath(); c.moveTo(cssW * 0.6, cssH * (0.28 + i * 0.08)); c.lineTo(cssW * (0.9 - (i % 3) * 0.05), cssH * (0.28 + i * 0.08)); c.stroke(); }
       c.fillStyle = "#3E3C35"; c.font = "9px " + getComputedStyle(doc.body).fontFamily;
-      c.fillText("留言板 · 9px的字", cssW * 0.6, cssH * 0.84);
+      c.fillText("留言板，9px的字", cssW * 0.6, cssH * 0.84);
       c.strokeStyle = "#B4232C"; c.lineWidth = 2; c.lineCap = "round"; c.lineJoin = "round";
       c.beginPath(); c.moveTo(cssW * 0.22, cssH * 0.56); c.lineTo(cssW * 0.29, cssH * 0.65); c.lineTo(cssW * 0.42, cssH * 0.44); c.stroke();
       return [W, H];
@@ -714,8 +714,8 @@
       if (o.note) rows.push(["另外", esc(o.note)]);
       dl.innerHTML = rows.map(function (r) { return "<div><dt>" + r[0] + "</dt><dd>" + r[1] + "</dd></div>"; }).join("");
       var wh = drawPreview(o.r);
-      cap.textContent = "这一块按像素比" + f2(o.r) + "画成" + wh[0] + "×" + wh[1] + "，再拉伸到同样大小（你这块屏的像素比是" + f2(dpr()) + "）。";
-      if (user) announce(DEV[dev].name + "、" + (who === "tools" ? "刷刷岗岗" : "小屋") + "口径：" + o.tier + "，像素比" + f2(o.r) + "，缓冲" + o.W + "×" + o.H);
+      cap.textContent = "这一块按像素比" + f2(o.r) + "画成" + wh[0] + "×" + wh[1] + "，再拉伸到同样大小（你这块屏的像素比是" + f2(dpr()) + "）";
+      if (user) announce(DEV[dev].name + "、" + (who === "tools" ? "刷刷岗岗" : "小屋") + "口径，" + o.tier + "，像素比" + f2(o.r) + "，缓冲" + o.W + "×" + o.H);
     }
     radios($("[data-so-dev]", spec), function (v) { dev = v; render(true); });
     radios($("[data-so-who]", spec), function (v) { who = v; render(true); });
@@ -795,17 +795,17 @@
       if (history.length > 8) history.shift();
       var li = doc.createElement("li");
       if (slowNew) li.className = "is-down";
-      li.innerHTML = "<b>" + TIER[from] + "</b>：送出" + f1(delivered) + "帧/秒；目标" + (capped ? "30（限帧）" : "≈" + Math.round(screenFps) + "Hz（第5百分位估）") +
-        "×" + ratio + "＝" + f1(line) + " → " + (slowNew ? "降到" + TIER[to] : "不降") +
-        "。旧判据：中位间隔" + f1(median) + "ms" + (slowOld ? "＞" : "≤") + oldLine + "ms → " + (slowOld ? "会降" : "说正常") + "。";
+      li.innerHTML = "<b>" + TIER[from] + "</b>，送出" + f1(delivered) + "帧每秒，线是" + (capped ? "30（限帧）" : "约" + Math.round(screenFps) + "Hz（按第5百分位估）") +
+        "乘" + ratio + "，等于" + f1(line) + "，新判据" + (slowNew ? "降到" + TIER[to] : "不降") +
+        "。旧判据看中位间隔" + f1(median) + "ms，" + (slowOld ? "大于" : "不超过") + oldLine + "ms，" + (slowOld ? "会降" : "说正常") + "。";
       log.insertBefore(li, log.firstChild);
       while (log.children.length > 5) log.removeChild(log.lastChild);
       drawChart();
-      announce(TIER[from] + "：送出" + f1(delivered) + "帧，线" + f1(line) + "，" + (slowNew ? "降到" + TIER[to] : "不降") + "；旧判据" + (slowOld ? "会降" : "说正常"));
+      announce(TIER[from] + "档，送出" + f1(delivered) + "帧，线" + f1(line) + "，" + (slowNew ? "降到" + TIER[to] : "不降") + "，旧判据" + (slowOld ? "会降" : "说正常"));
       s.activeMs = 0; s.activeFrames = 0; s.ivs = [];
       if (to !== from) {
         s.tier = to;
-        $('[data-k="tier"]', dl).textContent = TIER[to] + (to === "balanced" ? "（耗时减半：像素比1.75→1.25）" : to === "static" ? "（本会话记住，下次进页面直接静态）" : "");
+        $('[data-k="tier"]', dl).textContent = TIER[to] + (to === "balanced" ? "（耗时减半，像素比从1.75降到1.25）" : to === "static" ? "（本会话记住，下次进页面直接静态）" : "");
         s.last = 0;
         if (to === "static") { stop(); draw(performance.now()); }
       }
@@ -906,9 +906,9 @@
     var I = 1000 / 30;
     var cfg = { hz: 45, jit: false, stall: false };
     var LIM = [
-      { id: "interval", name: "按间隔", sub: "离上一帧≥29ms才画（小屋四处2026-10-09以前）" },
-      { id: "debt", name: "按到期时刻·累积欠账", sub: "画了就next += 33.3，从不重排" },
-      { id: "due", name: "按到期时刻·不累积", sub: "落后超过一个间隔就从当下重排（刷刷、岗岗，小屋2026-10-09起）" }
+      { id: "interval", name: "按间隔", sub: "离上一帧29ms以上才画（小屋四处2026-10-09以前）" },
+      { id: "debt", name: "按到期时刻，累积欠账", sub: "画了就next += 33.3，从不重排" },
+      { id: "due", name: "按到期时刻，不累积", sub: "落后超过一个间隔就从当下重排（刷刷、岗岗，小屋2026-10-09起）" }
     ];
     var sim = null, raf = 0, t0 = 0;
     function rnd(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
@@ -952,14 +952,14 @@
         r.draws.forEach(function (t) { if (t < 1000) svg += '<rect x="' + (t - 2).toFixed(1) + '" y="6" width="4" height="30" rx="1" fill="var(--accent)"/>'; });
         svg += "</svg>";
         return '<div class="td-cp-row" data-row="' + l.id + '"><div><b>' + l.name + "</b><small>" + l.sub + '</small></div><div class="td-cp-strip">' + svg + '<span class="td-cp-dot"></span></div>' +
-          '<div class="td-cp-fps">' + f1(r.fps) + "<small>帧/秒</small><small>最短" + Math.round(r.minGap) + "ms</small></div></div>";
+          '<div class="td-cp-fps">' + f1(r.fps) + "<small>帧每秒</small><small>最短" + Math.round(r.minGap) + "ms</small></div></div>";
       }).join("");
       var top = Math.max(sim.res.interval.fps, sim.res.debt.fps, sim.res.due.fps);
       $('[data-row="due"]', rows).classList.toggle("is-best", sim.res.due.fps >= top - 0.4);
       return sim;
     }
     function summary() {
-      return "rAF " + cfg.hz + "拍" + (cfg.stall ? "、插一次200ms卡顿" : "") + "：按间隔" + f1(sim.res.interval.fps) + "帧，累积欠账" + f1(sim.res.debt.fps) + "帧（最短间隔" + Math.round(sim.res.debt.minGap) + "ms），到期不累积" + f1(sim.res.due.fps) + "帧";
+      return "rAF " + cfg.hz + "拍" + (cfg.stall ? "、插一次200ms卡顿" : "") + "，按间隔" + f1(sim.res.interval.fps) + "帧，累积欠账" + f1(sim.res.debt.fps) + "帧（最短间隔" + Math.round(sim.res.debt.minGap) + "ms），到期不累积" + f1(sim.res.due.fps) + "帧";
     }
     function stopPlay() {
       if (raf) { window.cancelAnimationFrame(raf); raf = 0; }
@@ -980,7 +980,7 @@
       else { Heavy.release("cap"); }
     }
     function play() {
-      if (reduced()) { announce("减弱动效：不慢放。" + summary()); return; }
+      if (reduced()) { announce("减弱动效下不慢放。" + summary()); return; }
       stopPlay();
       $$(".td-cp-strip", rows).forEach(function (s) { s.classList.add("is-playing"); });
       Heavy.claim("cap", stopPlay);
@@ -1077,19 +1077,19 @@
       }
       draw();
       drawn.push(now);
-      if (wants()) { raf = window.requestAnimationFrame(odFrame); readout(bad ? "反例：一直在要帧" : spin ? "自转：一直在动" : "阻尼没收敛：在动"); }
-      else { last = 0; Heavy.release("ondemand"); readout(gatesOpen() ? "静止·零帧" : "闸关着·零帧"); settleSoon(); }
+      if (wants()) { raf = window.requestAnimationFrame(odFrame); readout(bad ? "反例，一直在要帧" : spin ? "自转，一直在动" : "阻尼没收敛，还在动"); }
+      else { last = 0; Heavy.release("ondemand"); readout(gatesOpen() ? "静止，零帧" : "闸关着，零帧"); settleSoon(); }
     }
     /* 停下来以后「这一秒画了几帧」要回到0：只在停下那一刻排一次，不常驻计时器 */
     function settleSoon() { clearTimeout(idleTimer); idleTimer = setTimeout(function () { if (!raf) readout(); }, 1050); }
     /* 别的演示把「正在跑」拿走、或页面藏起时：只暂停（取消这一帧），开关状态留着；
        回到可见 / 进视口这类被动事件只在没有别人在跑时才接着跑，不抢；用户自己动它才抢过来 */
-    function pause() { if (raf) { window.cancelAnimationFrame(raf); raf = 0; } last = 0; readout("被叫停·零帧"); settleSoon(); }
+    function pause() { if (raf) { window.cancelAnimationFrame(raf); raf = 0; } last = 0; readout("被叫停，零帧"); settleSoon(); }
     function kick(user) {
       showGates();
-      if (raf || !wants()) { if (!raf) readout(gatesOpen() ? "静止·零帧" : "闸关着·零帧"); return; }
+      if (raf || !wants()) { if (!raf) readout(gatesOpen() ? "静止，零帧" : "闸关着，零帧"); return; }
       var other = Heavy.running();
-      if (!user && other && other !== "ondemand") { readout("别的演示在跑·零帧"); return; }
+      if (!user && other && other !== "ondemand") { readout("别的示例在跑，零帧"); return; }
       Heavy.claim("ondemand", pause);
       last = 0;
       raf = window.requestAnimationFrame(odFrame);
@@ -1113,7 +1113,7 @@
       e.preventDefault();
       kick(true);
     });
-    toggle($("[data-od-spin]", spec), function (on) { spin = on; if (on && reduced()) announce("减弱动效：不自转"); kick(true); });
+    toggle($("[data-od-spin]", spec), function (on) { spin = on; if (on && reduced()) announce("减弱动效下不自转"); kick(true); });
     toggle($("[data-od-bad]", spec), function (on) { bad = on; kick(true); });
     sheetBtn.addEventListener("click", function () {
       var K = window.StarKit;
@@ -1122,14 +1122,14 @@
         sheet = K.sheet({
           title: "弹层开着",
           build: function (body) {
-            body.innerHTML = "<p>弹层开着时，后面那张纸卡的循环一次都不跑：<code>running()</code> 第三道闸 <code>!kitOpen()</code> 关着。</p><p>关掉弹层，回去看「rAF累计」从这一刻起有没有涨。</p>";
+            body.innerHTML = "<p>弹层开着时，后面那张纸卡的循环一次都不跑，<code>running()</code>的第三道闸<code>!kitOpen()</code>关着。</p><p>关掉弹层，回去看rAF累计从这一刻起有没有涨。</p>";
           },
           onOpen: function () { showGates(); readout(); },
           onClosed: function () { kick(false); }
         });
       }
       sheet.open(sheetBtn);
-      setTimeout(function () { showGates(); readout(gatesOpen() ? null : "闸关着·零帧"); }, 0);
+      setTimeout(function () { showGates(); readout(gatesOpen() ? null : "闸关着，零帧"); }, 0);
     });
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (list) {
@@ -1139,7 +1139,7 @@
     doc.addEventListener("visibilitychange", function () { kick(false); });
     draw();
     showGates();
-    readout("静止·零帧");
+    readout("静止，零帧");
     odProbe = { calls: function () { return calls; }, running: function () { return !!raf; } };
   })();
 
@@ -1152,10 +1152,10 @@
     var code = $("[data-bd-code]", spec), bars = $("[data-bd-bars]", spec), checks = $("[data-bd-checks]", spec);
     var st = { ssr: "guard", imp: "named", lic: "legal" };
     var SSR = {
-      guard: { code: 'const loadScene = import.meta.env.SSR ? null : () => import("./scene");', kib: 11, label: "+11KiB（只有守卫本身）", leak: false },
-      "var": { code: 'const env = import.meta.env;\nconst loadScene = env.SSR ? null : () => import("./scene");', kib: 622, label: "+622KiB（three、gsap又打了一份）", leak: true },
-      effect: { code: 'useEffect(() => { import("./scene").then(start); }, []);', kib: 690, label: "+660–690KiB", leak: true },
-      dynamic: { code: 'const Scene = dynamic(() => import("./scene"), { ssr: false });', kib: 690, label: "+660–690KiB", leak: true }
+      guard: { code: 'const loadScene = import.meta.env.SSR ? null : () => import("./scene");', kib: 11, label: "11KiB（只有守卫本身）", leak: false },
+      "var": { code: 'const env = import.meta.env;\nconst loadScene = env.SSR ? null : () => import("./scene");', kib: 622, label: "622KiB（three和gsap又打了一份）", leak: true },
+      effect: { code: 'useEffect(() => { import("./scene").then(start); }, []);', kib: 690, label: "660到690KiB", leak: true },
+      dynamic: { code: 'const Scene = dynamic(() => import("./scene"), { ssr: false });', kib: 690, label: "660到690KiB", leak: true }
     };
     var IMP = { named: 'import { WebGLRenderer, PerspectiveCamera, Mesh } from "three";', star: 'import * as THREE from "three";' };
     var LIC = { legal: "comments: { legal: true, annotation: false, jsdoc: false }", "default": "// 默认压缩：/*! @license … */ 被删掉" };
@@ -1176,7 +1176,7 @@
       checks.innerHTML =
         check(!s.leak, "dist/server里搜不到WebGLRenderer、ScrollTrigger") +
         check(st.ssr === "guard", "runtime:check认得出原样那一行") +
-        check(st.imp === "named", "没有import * as THREE；只有scene/能import three") +
+        check(st.imp === "named", "没有import * as THREE，只有scene目录能import three") +
         check(st.lic === "legal", "3D包里GSAP与three两份许可注释都在" + (st.lic === "legal" ? "" : "（GSAP许可证禁止删）"));
       if (user) announce(nBad ? "门禁红" + nBad + "条" : "门禁全绿");
     }
@@ -1195,33 +1195,33 @@
     var list = $("[data-ro-list]", spec), note = $("[data-ro-note]", spec);
     var DEV = { gpu: "有显卡", soft: "屋主台式（只有软件渲染）", none: "拿不到WebGL", phone: "屋主手机417" };
     var RO = [
-      { id: "shua", name: "刷刷 · 纸闪卡", what: "首页牌堆、做题小牌堆、结算落堆", src: "tools/shua/design-proposal.md:259、:280–282、:290",
+      { id: "shua", name: "刷刷的纸闪卡", what: "首页牌堆、做题小牌堆、结算落堆", src: "tools/shua/design-proposal.md:259、:280–282、:290",
         st: { gpu: ["ok", "完整档"], soft: ["soft", "精简档"], none: ["off", "原来的2D"], phone: ["accent", "均衡档"] },
-        why: { gpu: "严参数拿到WebGL2，按内存、核数起步：高档像素比≤1.75，均衡≤1.25。", soft: "严参数被拒、宽参数拿到：精简档，像素比≤1、长边≤640、限30帧、不跟指针不随滚动。", none: "两段都拿不到：三个槽位不占位，界面和今天逐像素相同。", phone: "触屏起步就是均衡档（像素比≤1.25、关纸纹）；首页牌堆要视口≥1180才出，手机上只有做题、结算两处。" } },
-      { id: "gang", name: "岗岗 · 案头手册", what: "宽屏右栏末尾一本摊开的书", src: "tools/gang/design-proposal.md:411、:442、:446、:468；memory/ship-staged-not-perfect.md:8",
+        why: { gpu: "严参数拿到WebGL2，按内存和核数起步，高档像素比上限1.75，均衡档1.25。", soft: "严参数被拒、宽参数拿到，走精简档，像素比1以下，长边640以内，限30帧，不跟指针，不随滚动。", none: "两段都拿不到，三个槽位不占位，界面和今天逐像素相同。", phone: "触屏起步就是均衡档，像素比上限1.25，关纸纹。首页牌堆要视口1180以上才出，手机上只有做题和结算两处。" } },
+      { id: "gang", name: "岗岗的案头手册", what: "宽屏右栏末尾一本摊开的书（岗岗2026-10-26下线，档位照下线前写）", src: "tools/gang/design-proposal.md:411、:442、:446、:468；memory/ship-staged-not-perfect.md:8",
         st: { gpu: ["ok", "完整档"], soft: ["soft", "精简档"], none: ["off", "不出现"], phone: ["off", "不出"] },
-        why: { gpu: "严参数拿到：内存或核数≤4走均衡，其余高档。", soft: "判出软件渲染一律soft，不看内存核数：像素比1、长边≤640、限30帧、关抗锯齿、不跟鼠标。", none: "两段都拿不到：安静回静态，状态记webgl2-unavailable，控制台一个字都不打。", phone: "窗口≤1120不出（右栏不是常驻栏）；手机3D屋主嫌代价大：「岗可以不管」。" } },
-      { id: "plan", name: "plan · 台历", what: "侧栏空白处的纸台历、甘特板落位、纸条飞进台历", src: "tools/plan/docs/3d-decor-proposal.md:14、:36、:40、:46、:52；控制室10-08定（软件渲染照四家样板）；plan 93f8d72（2026-10-09）",
+        why: { gpu: "严参数拿到，内存或核数在4以下走均衡档，其余走高档。", soft: "判出软件渲染一律走精简档，不看内存和核数，像素比1，长边640以内，限30帧，关抗锯齿，不跟鼠标。", none: "两段都拿不到，安静回静态，状态记成webgl2-unavailable，控制台一个字都不打。", phone: "窗口1120以下不出，因为右栏不是常驻栏。手机3D屋主嫌代价大，原话是「岗可以不管」。" } },
+      { id: "plan", name: "plan的台历", what: "侧栏空白处的纸台历、甘特板落位、纸条飞进台历", src: "tools/plan/docs/3d-decor-proposal.md:14、:36、:40、:46、:52；控制室10-08定（软件渲染照四家样板）；plan 93f8d72（2026-10-09）",
         st: { gpu: ["ok", "完整档"], soft: ["soft", "精简档"], none: ["off", "不出"], phone: ["off", "不出"] },
-        why: { gpu: "严参数拿到、渲染器名不是软件渲染：硬件档，和加软件档之前一字不变。", soft: "严参数被拒、放宽拿到，或渲染器名是软件渲染（SwiftShader、WARP）：plan叫软件档，像素比1、关抗锯齿、关纸纹、几何细分减半（2026-10-09起，93f8d72；此前这一档不出）。", none: "两段都拿不到：不下载3D代码，侧栏和改版前逐字相同。", phone: "视口≤900不出：这一档侧栏改成顶栏，本来就没有那块空白。" } },
-      { id: "card", name: "card · 卡集", what: "画廊Cover Flow（纯CSS 3D）；单卡查看器（three）", src: "tools/card/CLAUDE.md:160、:193、:194；tools/card/collection/shared/viewer.js:189、:220（card 537d878，2026-10-08）",
-        st: { gpu: ["ok", "画廊＋查看器3D"], soft: ["soft", "画廊照常·查看器省力档"], none: ["off", "画廊照常·查看器原图"], phone: ["accent", "玻璃列表·查看器3D"] },
-        why: { gpu: "画廊不靠WebGL；查看器严参数拿到、渲染器名不是软件渲染就走满档，画面和改前逐像素相同。", soft: "查看器两段（2026-10-08起）：严参数被拒、或渲染器名是软件渲染，就关抗锯齿走省力档；像素比不压，画不许为性能牺牲（2040×1019@1.25帧耗时约40→19ms）。", none: "两段都拿不到：查看器安静回原图，不下载three、控制台不报错。", phone: "选卡台只在视口＞600出现，≤600是玻璃列表；查看器照常。" } },
-      { id: "shelf", name: "小屋 · 工具页展品", what: "/projects右栏四件纸物件，three＋GSAP（ScrollTrigger）", src: "Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「视口 ≤900px」「只拿到宽松那一段」「工具页展品」）",
-        st: { gpu: ["ok", "完整档"], soft: ["soft", "精简档"], none: ["off", "静态海报"], phone: ["off", "静态"] },
-        why: { gpu: "严参数拿到：按内存、核数、精确指针起步。", soft: "精简档：min(dpr, 1.5)与80万像素取小、限30帧、关纸纹。", none: "静态版：日程安排三张界面图，刷刷、岗岗、card三张海报（3D终态那一帧）。", phone: "视口≤900一律静态，连3D包都不下。" } },
-      { id: "walk", name: "小屋 · 走进小屋", what: "门厅第一次往下滚，5秒走进两幅画围成的墙角", src: "Ysevan_web/docs/xiaowu-ui-spec.md「4.9.3 什么时候有跑道（分档与降级）」、「6.9.5 分档与降级」（「走进小屋」）",
+        why: { gpu: "严参数拿到、渲染器名也不是软件渲染，走硬件档，和加软件档之前一字不变。", soft: "严参数被拒、放宽后拿到，或者渲染器名是软件渲染（SwiftShader、WARP），走plan叫软件档的那一档，像素比1，关抗锯齿，关纸纹，几何细分减半。2026-10-09起这样（93f8d72），之前这一档不出3D。", none: "两段都拿不到，不下载3D代码，侧栏和改版前逐字相同。", phone: "视口900以下不出，这时侧栏改成顶栏，本来就没有那块空白。" } },
+      { id: "card", name: "card的卡集", what: "画廊Cover Flow（纯CSS 3D）和单卡查看器（three）", src: "tools/card/CLAUDE.md:160、:193、:194；tools/card/collection/shared/viewer.js:189、:220（card 537d878，2026-10-08）",
+        st: { gpu: ["ok", "画廊和查看器3D"], soft: ["soft", "画廊照常，查看器省力档"], none: ["off", "画廊照常，查看器原图"], phone: ["accent", "玻璃列表，查看器3D"] },
+        why: { gpu: "画廊不靠WebGL。查看器严参数拿到、渲染器名也不是软件渲染，就走满档，画面和改前逐像素相同。", soft: "查看器从2026-10-08起分两段，严参数被拒或渲染器名是软件渲染，就关抗锯齿走省力档。像素比不压，画不许为性能牺牲，2040×1019@1.25下每帧从约40ms降到19ms。", none: "两段都拿不到，查看器安静回到原图，不下载three，控制台不报错。", phone: "选卡台只在视口宽于600时出现，600以下是玻璃列表，查看器照常。" } },
+      { id: "shelf", name: "小屋的工具页展品", what: "工具页卡上那一格的三件物件，three加GSAP", src: "Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「视口 ≤900px」「只拿到宽松那一段」「工具页展品」）、「6.9.9 一格一件」（「只有软件渲染 → 静态，不下载场景」「手机预算」）、「6.9.4 静态版」（「海报 = 3D 停留帧」）、「6.9.3 滚动编排」（「不用 ScrollTrigger」）、「6.9.1 四件物件」（「不再渲染、不进场景那一包」）",
+        st: { gpu: ["ok", "完整档"], soft: ["off", "静态海报"], none: ["off", "静态海报"], phone: ["accent", "均衡档"] },
+        why: { gpu: "严参数拿到，按内存、核数和有没有精确指针定起步档。", soft: "只有软件渲染时，在下载场景之前就判静态，卡上是静帧海报（2026-10-21起，控制室定没显卡的电脑不放宽）。2026-09-23到10-21宽屏轨道上走的是精简档。", none: "静态版是日程安排、刷刷、card三张海报，都是3D停留姿态那一帧。", phone: "2026-10-11起手机上也一格一件转出来，粗指针从均衡档起步，像素比按2和130万像素封顶，限30帧。" } },
+      { id: "walk", name: "小屋门厅的走进小屋", what: "门厅第一次往下滚，5秒走进两幅画围成的墙角", src: "Ysevan_web/docs/xiaowu-ui-spec.md「4.9.3 什么时候有跑道（分档与降级）」、「6.9.5 分档与降级」（「走进小屋」）",
         st: { gpu: ["ok", "完整档"], soft: ["soft", "精简档"], none: ["off", "一屏名片"], phone: ["off", "静态"] },
-        why: { gpu: "严参数拿到：标上跑道，第一次滚动起播。", soft: "精简档：走动60万像素、停稳后重画一帧325万（见本页「停稳重画」）。", none: "没有跑道：门厅就是今天那一屏名片。", phone: "视口≤900不标跑道。" } },
-      { id: "globe", name: "小屋 · 随笔球", what: "/notes/globe，随笔排在球面上慢慢转", src: "Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「随笔球·手机版面」）、「7.5.5 分档与降级」（「网格」）",
+        why: { gpu: "严参数拿到，标上跑道，第一次滚动时开始播。", soft: "精简档，走动时60万像素，停稳后重画一帧325万，见本页的停稳重画一条。", none: "没有跑道，门厅就是今天那一屏名片。", phone: "视口900以下不标跑道。" } },
+      { id: "globe", name: "小屋的随笔球", what: "随笔页的球面视图，随笔排在球面上慢慢转", src: "Ysevan_web/docs/xiaowu-ui-spec.md「6.9.5 分档与降级」（「随笔球·手机版面」）、「7.5.5 分档与降级」（「网格」）",
         st: { gpu: ["ok", "完整档"], soft: ["soft", "精简档"], none: ["off", "卡片网格"], phone: ["ok", "手机版面"] },
-        why: { gpu: "严参数拿到：高档像素比≤1.75。", soft: "精简档：min(dpr, 1.5)与100万像素取小、限30帧。", none: "两段都拿不到：普通卡片网格，内容一张不少。", phone: "2026-09-23起有手机版面：像素比min(dpr, 2)与130万取小，自转限30帧、拖动不限。" } },
-      { id: "plate", name: "小屋 · 画内景深", what: "门厅与两处门面画上的视差，手写WebGL约3.4KB", src: "Ysevan_web/docs/xiaowu-ui-spec.md「4.6.1 视差层只在真显卡上挂」（「做不好就别做」「不挂之后走的是已经上线的那条路」）",
-        st: { gpu: ["ok", "挂上"], soft: ["off", "不挂"], none: ["off", "不挂"], phone: ["off", "不挂"] },
-        why: { gpu: "严参数拿到才挂画布。", soft: "只要严参数、不做第二段：「做不好就别做」——它盖在一张已经好看的图上，软件渲染只会把画变差。", none: "不挂，就是那张图。", phone: "触摸屏上这一层本来就不挂。" } },
-      { id: "float", name: "小屋 · 漂浮层", what: "卡片后十几片从画里取下的叶子，手写WebGL", src: "Ysevan_web/docs/xiaowu-ui-spec.md「4.8.4 触发与降级」（「拿到宽松那一遍」）、「6.9.5 分档与降级」（「三页漂浮层」）",
-        st: { gpu: ["ok", "完整档"], soft: ["soft", "精简档"], none: ["off", "不挂"], phone: ["off", "不挂"] },
-        why: { gpu: "第一次动鼠标之后，空闲时探WebGL再下载。", soft: "精简档：min(dpr, 1.5)、60万像素、限30帧、片数减半；至今没有看门狗。", none: "严、宽两遍都拿不到：今天的这一页。", phone: "触摸屏、没有精确指针就不挂。" } }
+        why: { gpu: "严参数拿到，高档像素比上限1.75。", soft: "精简档，像素比取min(dpr, 1.5)和100万像素里小的那个，限30帧。", none: "两段都拿不到，显示普通卡片网格，内容一张不少。", phone: "2026-09-23起有手机版面，像素比取min(dpr, 2)和130万像素里小的那个，自转限30帧，拖动时不限。" } },
+      { id: "plate", name: "小屋的画内景深", what: "门厅和两处门面画上的视差，手写WebGL，约3.4KB", src: "Ysevan_web/docs/xiaowu-ui-spec.md「4.6.1 视差层只在真显卡上挂」（「做不好就别做」「不挂之后走的是已经上线的那条路」「2026-10-11 起触摸屏上也挂」）",
+        st: { gpu: ["ok", "挂上"], soft: ["off", "不挂"], none: ["off", "不挂"], phone: ["ok", "挂上"] },
+        why: { gpu: "严参数拿到才挂画布。", soft: "只要严参数，不做第二段，按规格的说法是「做不好就别做」。它盖在一张已经好看的图上，软件渲染只会把画变差。", none: "不挂，就是那张图。", phone: "2026-10-11起触摸屏上也挂，没有细指针时靠滚动和触碰唤醒，严参数拿到才挂。" } },
+      { id: "float", name: "小屋的漂浮层", what: "卡片后十几片从画里取下的叶子，手写WebGL", src: "Ysevan_web/docs/xiaowu-ui-spec.md「4.8.4 触发与降级」（「拿到宽松那一遍」）、「4.8.7 手机形态」（「这一轮只做漂浮层与画内深度，三页都要」）、「6.9.5 分档与降级」（「三页漂浮层」「三页漂浮层·手机」）",
+        st: { gpu: ["ok", "完整档"], soft: ["soft", "精简档"], none: ["off", "不挂"], phone: ["ok", "手机版面"] },
+        why: { gpu: "第一次动鼠标之后，空闲时探WebGL再下载。", soft: "精简档，像素比min(dpr, 1.5)，60万像素，限30帧，片数减半。至今没有看门狗。", none: "严参数和宽参数两遍都拿不到，就是今天的这一页。", phone: "2026-10-11起手机上也挂，没有细指针时靠滚动和触碰唤醒，像素比按2和130万像素封顶，限30帧。" } }
     ];
     var dev = "gpu", sel = null;
     function render(user) {
@@ -1234,14 +1234,14 @@
       if (user) {
         var c = { ok: 0, soft: 0, other: 0 };
         RO.forEach(function (r) { var t = r.st[dev][0]; if (t === "ok") c.ok++; else if (t === "soft") c.soft++; else c.other++; });
-        announce(DEV[dev] + "：完整" + c.ok + "处、精简" + c.soft + "处、其余" + c.other + "处");
+        announce(DEV[dev] + "，完整" + c.ok + "处、精简" + c.soft + "处、其余" + c.other + "处");
       }
     }
     function showNote() {
       var r = null;
       RO.forEach(function (x) { if (x.id === sel) r = x; });
       if (!r) { note.innerHTML = "点一行看依据。"; return; }
-      note.innerHTML = "<b>" + esc(r.name) + " · " + esc(DEV[dev]) + "</b>：" + esc(r.why[dev]) + "<small>出处：" + esc(r.src) + "</small>";
+      note.innerHTML = "<b>" + esc(r.name) + "，" + esc(DEV[dev]) + "</b>，" + esc(r.why[dev]) + "<small>出处：" + esc(r.src) + "</small>";
     }
     list.addEventListener("click", function (e) {
       var b = e.target.closest ? e.target.closest("[data-ro]") : null;
@@ -1287,7 +1287,7 @@
       look.mode = m;
       $$("[data-pa]", spec).forEach(function (b) { if (b.getAttribute("data-pa") !== "night") b.disabled = m === "cg"; });
       v.request();
-      announce(m === "cg" ? "CG画法：平滑漫反射、镜面高光、硬黑投影" : "水彩画法");
+      announce(m === "cg" ? "CG画法，平滑漫反射、镜面高光、硬黑投影" : "水彩画法");
     });
     $$("[data-pa]", spec).forEach(function (b) {
       var key = b.getAttribute("data-pa");
@@ -1357,7 +1357,7 @@
       if (say) announce("交接进度" + Math.round(st.p * 100) + "%");
     }
     pIn.addEventListener("input", function () { setP(+pIn.value / 100, false); });
-    radios($("[data-di-mode]", spec), function (m) { st.mode = m; v.request(); announce(m === "blend" ? "半透明混合：后画的那件在前一件后面的部分被深度挡掉" : "屏幕门抖动"); });
+    radios($("[data-di-mode]", spec), function (m) { st.mode = m; v.request(); announce(m === "blend" ? "半透明混合，后画的那件在前一件后面的部分被深度挡掉" : "屏幕门抖动"); });
     radios($("[data-di-dpr]", spec), function (r) { st.ratio = +r; v.request(); });
     toggle($("[data-di-flip]", spec), function (on) { st.flip = on; v.request(); });
     function stopPlay() { if (raf) { window.cancelAnimationFrame(raf); raf = 0; } Heavy.release("dither"); }
@@ -1366,7 +1366,7 @@
       var t = clamp((now - t0) / 1600, 0, 1);
       setP(t, false);
       if (t < 1) raf = window.requestAnimationFrame(diFrame);
-      else { Heavy.release("dither"); announce("交接完：台历完全接管"); }
+      else { Heavy.release("dither"); announce("交接完，台历完全接管"); }
     }
     playBtn.addEventListener("click", function () {
       if (!v.ctx) return;
@@ -1422,10 +1422,10 @@
       poster = { at: at, w: v.w, h: v.h, dark: isDark(spec), bytes: Math.round((url.length - url.indexOf(",") - 1) * 3 / 4), webp: webp };
       img.src = url;
       img.hidden = false;
-      cap.textContent = "槽位：静态海报（" + (at === "end" ? "终态那一帧" : "进度0.6那一帧") + "，" + (webp ? "WebP" : "PNG") + "约" + f1(poster.bytes / 1024) + "KB）";
+      cap.textContent = "槽位里是静态海报（" + (at === "end" ? "终态那一帧" : "进度0.6那一帧") + "，" + (webp ? "WebP" : "PNG") + "约" + f1(poster.bytes / 1024) + "KB）";
       ["p8", "max", "mean"].forEach(function (k) { $('[data-k="' + k + '"]', dl).textContent = "—"; });
       diff.getContext("2d").clearRect(0, 0, diff.width, diff.height);
-      if (say) announce("截好海报：" + (at === "end" ? "终态那一帧" : "进度0.6那一帧"));
+      if (say) announce("截好海报，" + (at === "end" ? "终态那一帧" : "进度0.6那一帧"));
     }
     function compare() {
       if (!v.ctx) return;
@@ -1436,7 +1436,7 @@
       v.now();
       var live = grab(v);
       img.hidden = true;
-      cap.textContent = "槽位：3D接管（活的终态）";
+      cap.textContent = "槽位已由3D接管（活的终态）";
       var ready = img.decode ? img.decode() : Promise.resolve();
       ready.then(function () {
         var w = poster.w, h = poster.h;
@@ -1461,7 +1461,7 @@
         $('[data-k="p8"]', dl).textContent = f2(p8) + "%";
         $('[data-k="max"]', dl).textContent = mx + "（满量程255）";
         $('[data-k="mean"]', dl).textContent = f2(mean);
-        announce("3D接管：通道差大于8的像素" + f2(p8) + "%，最大差" + mx + (poster.at === "end" ? "，只剩有损压缩的噪点" : "，姿态跳了"));
+        announce("3D接管，通道差大于8的像素" + f2(p8) + "%，最大差" + mx + (poster.at === "end" ? "，只剩有损压缩的噪点" : "，姿态跳了"));
       }, function () { announce("海报还没解出来，再点一次"); });
     }
     function stopPlay() { if (raf) { window.cancelAnimationFrame(raf); raf = 0; } Heavy.release("poster"); }
@@ -1470,7 +1470,7 @@
       t = clamp((now - t0) / 2400, 0, 1);
       v.now();
       if (t < 1) raf = window.requestAnimationFrame(poFrame);
-      else { Heavy.release("poster"); cap.textContent = "槽位：3D（播完停在终态）"; announce("播完：停在终态，和终态海报是同一帧"); }
+      else { Heavy.release("poster"); cap.textContent = "槽位里是3D，播完停在终态"; announce("播完，停在终态，和终态海报是同一帧"); }
     }
     radios($("[data-po-at]", spec), function (x) { at = x; shoot(true); });
     shotBtn.addEventListener("click", function () { shoot(true); });
@@ -1478,10 +1478,10 @@
     playBtn.addEventListener("click", function () {
       if (!v.ctx) return;
       img.hidden = true;
-      if (reduced()) { t = 1; v.now(); cap.textContent = "槽位：3D（减弱动效，直接到终态）"; return; }
+      if (reduced()) { t = 1; v.now(); cap.textContent = "槽位里是3D，减弱动效下直接到终态"; return; }
       stopPlay();
       Heavy.claim("poster", stopPlay);
-      cap.textContent = "槽位：3D（从头播）";
+      cap.textContent = "槽位里是3D，从头播";
       t0 = performance.now();
       raf = window.requestAnimationFrame(poFrame);
     });
@@ -1571,7 +1571,7 @@
         v.k.frame();
         if (st.settled && !st.walking) { st.after++; show(); }
       },
-      entered: function () { st.walking = false; st.settled = false; st.after = 0; show("刚建好：按屏幕像素比画了一帧"); },
+      entered: function () { st.walking = false; st.settled = false; st.after = 0; show("刚建好，按屏幕像素比画了一帧"); },
       stop: function () { clearTimeout(restTimer); if (settleRaf) { window.cancelAnimationFrame(settleRaf); settleRaf = 0; } if (walkRaf) { window.cancelAnimationFrame(walkRaf); walkRaf = 0; } st.walking = false; }
     });
     function show(state) {
@@ -1585,7 +1585,7 @@
       Heavy.claim("rest", function () { clearTimeout(restTimer); st.walking = false; });
       st.settled = false; st.after = 0;
       if (!st.walking) { st.walking = true; }
-      show("走动：按" + WALK + "画");
+      show("走动中，按像素比" + WALK + "画");
       v.request();
       clearTimeout(restTimer);
       restTimer = setTimeout(settle, 160);
@@ -1604,10 +1604,10 @@
         v.gl.readPixels(0, 0, 1, 1, v.gl.RGBA, v.gl.UNSIGNED_BYTE, px);
         var ms = performance.now() - t0;
         st.settled = true; st.after = 0;
-        $('[data-k="cost"]', dl).textContent = st.bad ? "（反例：没有这一帧）" : f1(ms) + "ms（readPixels强制同步量，不进看门狗）";
-        show(st.bad ? "停下了，但不分档：还是" + WALK + "，一直糊" : "停稳：按像素比" + f2(v.ratio) + "重画了一帧，之后一帧不画");
+        $('[data-k="cost"]', dl).textContent = st.bad ? "（反例里没有这一帧）" : f1(ms) + "ms（readPixels强制同步量，不进看门狗）";
+        show(st.bad ? "停下了，但不分档，还是" + WALK + "，一直糊" : "停稳了，按像素比" + f2(v.ratio) + "重画了一帧，之后一帧不画");
         Heavy.release("rest");
-        announce(st.bad ? "反例：停下来还是走动那一档" : "停稳重画：" + v.w + "×" + v.h + "，" + f1(ms) + "毫秒");
+        announce(st.bad ? "反例，停下来还是走动那一档" : "停稳重画，" + v.w + "×" + v.h + "，" + f1(ms) + "毫秒");
       });
     }
     var drag = null;
@@ -1950,7 +1950,7 @@
         var nm = STYLE[s.style].name;
         if (s.map === "light") { T.who = "Blender"; T.what = "墙、地、顶只烘光照，颜色不进贴图。家具不烘，还是实时光"; T.out = "每套布置一张光照贴图，换风格不用重烘"; T.read = "现在是" + nm + "。换风格只换颜色，光照贴图不动。"; }
         else if (s.map === "color") { T.who = "Blender"; T.what = "墙、地、顶把光照和颜色一起烘进贴图（反例）"; T.out = "贴图里带着原木的颜色，四种风格要各烘一份"; T.read = s.style === "wood" ? "现在是原木，看不出问题。换一种风格试试。" : "换成了" + nm + "，墙、地、顶还是原木的颜色，只有家具变了。"; }
-        else { T.who = "网页自己"; T.what = "不用贴图，只有网页里的实时光"; T.out = "墙角不暗，家具下面没有柔影"; T.read = "关掉贴图，墙角和家具底下都是平的。玺院网址后面加?\u2060bake=0，看到的就是这样。"; }
+        else { T.who = "网页自己"; T.what = "不用贴图，只有网页里的实时光"; T.out = "墙角不暗，家具下面没有柔影"; T.read = "关掉贴图，墙角和家具底下都是平的。玺院网址带上bake=0参数，看到的就是这样。"; }
         if (s.map !== "off" && !s.each && s.lay === "b") T.read = "这张贴图是布置一时烘的。沙发挪走以后，旧影子还在原地，新位置下面没有影子。布置一变就要重烘。";
         else if (s.map !== "off" && !s.each) T.read += "只烘了布置一，现在看的正好是布置一。";
       } else {

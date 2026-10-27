@@ -65,13 +65,13 @@
  *            data-over-hero / data-hero-checked（顶栏压在大图上 / 已经判过）、类 vt-reveal / vt-fade / vt-nav / hero-live（过渡期间的钩子）
  *
  * ── 页面可以用的外壳钩子（第二阶段加）────────────────────────────────────
- *   data-spot="名字 名字2"  「本站这里在用」的落点：地址 页面.html#spot-名字 打开（或 hashchange）时，star.js 找
+ *   data-spot="名字 名字2"  「本站用在」的落点：地址 页面.html#spot-名字 打开（或 hashchange）时，star.js 找
  *                          [data-spot~="名字"] 里第一个看得见的，瞬间滚到视口中间、一圈强调色光环亮两下（1.2s；
  *                          减弱动效静态描边2秒）。看不见但在「更多」面板里的先打开面板。外壳内置、不用写属性的名字：
  *                          copy（第一个 [data-copy]）/ pull（第一个可下拉的长代码）/ trap（第一个 .fact.trap）/
  *                          theme / accent / blur / reset（外观控件）/ search / nav / brand / skip / more。
  *                          JS：StarShell.spot("名字") 不改地址直接点亮。
- *   <p class="used-here"><span class="used-label">本站这里在用</span><a href="collection.html#spot-filter-multi">收藏 · 标签多选</a>…</p>
+ *   <p class="used-here"><span class="used-label">本站用在</span><a href="collection.html#spot-filter-multi">标签多选（收藏页）</a>…</p>
  *                          条目里放在 .entry-head 的 .entry-tags 下面（总览原则卡放在卡片说明下面）；链接是小胶囊带「→」，可多个、窄屏换行。
  *   data-press              按压倾斜（ix-press）：a.row、.list .row 自动吃；别的元素写 data-press（默认按卡片那套数：7°、.96），
  *                          写 data-press="row" 按宽行那套（鼠标1°/.985、触屏3°/.97、左右倾角按行宽压）。按下期间 WAAPI 接管
@@ -1121,7 +1121,7 @@ html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
   100% { opacity: 0; transform: scale(1); }
 }
 
-/* ---------- 17. 长代码下拉展开（ix-sheet-pull）、「本站这里在用」 ---------- */
+/* ---------- 17. 长代码下拉展开（ix-sheet-pull）、「本站用在」 ---------- */
 /* 超过14行的 pre 包进 .code-clip 只露前8行；下沿 .code-pull 一条虚线 + 把手。
    例外：动的是 .code-clip 的 height——代码块在正文流里，展开要把下面的内容推下去（理由见 star.js 第15条）。 */
 .codebox.is-pull .code-clip {
@@ -1155,7 +1155,7 @@ html.vt-fade::view-transition-new(root) { animation-duration: 260ms; }
 .code-handle i { display: block; width: calc(36 * var(--u)); height: calc(4 * var(--u)); border-radius: 999px; background: var(--label3); }
 .code-handle:focus-visible { outline-offset: -4px; }
 
-/* 「本站这里在用」：小、不抢标题；链接是小胶囊带一个「→」线条图标，可多个、窄屏换行 */
+/* 「本站用在」：小、不抢标题；链接是小胶囊带一个「→」线条图标，可多个、窄屏换行 */
 .used-here {
   display: flex; flex-wrap: wrap; align-items: center; gap: calc(6 * var(--u)) calc(8 * var(--u));
   margin: calc(10 * var(--u)) 0 0; font-size: var(--fs-xs); line-height: 1.4;

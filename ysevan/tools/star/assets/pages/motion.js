@@ -298,11 +298,11 @@
       var li = doc.createElement("li");
       li.className = "moc-row";
       li.innerHTML =
-        '<button type="button" class="mo-tog moc-pick" aria-pressed="false"><span>勾上：' + c.name + "</span></button>" +
+        '<button type="button" class="mo-tog moc-pick" aria-pressed="false"><span>勾上' + c.name + "</span></button>" +
         '<svg class="moc-thumb" viewBox="0 0 46 34" aria-hidden="true" focusable="false"><path class="ax" d="M2 30H44M2 6H44"/><path class="cv" d="' + d + '"/></svg>' +
-        '<span class="moc-meta"><b>' + c.name + "</b><code>" + c.css + "</code><small>" + c.ms + "ms · " + c.use + "</small></span>" +
+        '<span class="moc-meta"><b>' + c.name + "</b><code>" + c.css + "</code><small>" + c.ms + "ms，" + c.use + "</small></span>" +
         '<span class="moc-lane" aria-hidden="true"><i class="moc-dot"></i></span>' +
-        '<button type="button" class="moc-run" aria-label="走一遍：' + c.name + "，" + c.ms + '毫秒">走一遍</button>';
+        '<button type="button" class="moc-run" aria-label="走一遍' + c.name + "，" + c.ms + '毫秒">走一遍</button>';
       list.appendChild(li);
       return { c: c, li: li, pick: $(".moc-pick", li), dot: $(".moc-dot", li), lane: $(".moc-lane", li), anim: null };
     });
@@ -328,7 +328,7 @@
           { duration: msOf(r.c), easing: curveEasing(r.c), fill: "forwards" });
       });
       var names = sel.map(function (r) { return r.c.name + msOf(r.c) + "ms"; }).join("、");
-      var msg = (sel.length > 1 ? "同一刻出发：" : "走一遍：") + names + (reduced() ? "（减弱动效：直接到终点）" : "");
+      var msg = (sel.length > 1 ? "同时出发，" : "走一遍，") + names + (reduced() ? "（开了减弱动效，直接到终点）" : "");
       out.textContent = msg;
       announce(msg);
     }
@@ -386,7 +386,7 @@
       if (mode === "jump" || reduced() || !canAnimate) {
         cancelAll(items);
         mutate();
-        report(label + "：" + (reduced() ? "减弱动效，只改不动" : "直接跳，布局一次到位、没有中间帧") + "。");
+        report(label + "，" + (reduced() ? "开了减弱动效，只改布局不动画" : "直接跳，布局一次到位，没有中间帧") + "。");
         return;
       }
       var bad = pressed(badBtn);
@@ -414,13 +414,13 @@
         if (running) running.set(added, a2);
       }
       var probe = moved.length ? moved[0].el : null;
-      var head = label + "：" + moved.length + "块从旧位置滑回0（240ms" + (stag ? "，依次晚30ms" : "") + "）" + (bad ? "；反例按布局量，连点时会跳一截" : "");
+      var head = label + "，" + moved.length + "块从旧位置滑回0（240ms" + (stag ? "，依次晚30ms" : "") + "）" + (bad ? "。这是反例，按布局量，连点时会跳一截" : "");
       report(head + "。");
       if (probe) {
         setTimeout(function () {
           var inline = probe.style.transform || "";
           var comp = getComputedStyle(probe).transform;
-          report(head + "；第80ms读el.style.transform得「" + inline + "」，读getComputedStyle得" + (comp === "none" ? "none（已走完）" : comp) + "。");
+          report(head + "。第80ms读el.style.transform得「" + inline + "」，读getComputedStyle得" + (comp === "none" ? "none（已走完）" : comp) + "。");
         }, 80);
       }
     }
@@ -440,14 +440,14 @@
       var items = $$(".mof-tile", grid);
       if (items.length <= 3) { report("至少留3块。"); return; }
       var victim = items[Math.floor(Math.random() * items.length)];
-      act(function () { grid.removeChild(victim); }, null, "删掉「" + victim.textContent + "」");
+      act(function () { grid.removeChild(victim); }, null, "删掉" + victim.textContent);
     });
     $("[data-f='add']", root).addEventListener("click", function () {
       var items = $$(".mof-tile", grid);
       if (items.length >= 12) { report("最多12块。"); return; }
       var t = tile();
       var at = Math.floor(Math.random() * (items.length + 1));
-      act(function () { grid.insertBefore(t, items[at] || null); }, t, "加上「" + t.textContent + "」");
+      act(function () { grid.insertBefore(t, items[at] || null); }, t, "加上" + t.textContent);
     });
     radios($(".mo-seg", root), function (b) { mode = b.getAttribute("data-mode"); });
     toggle(staggerBtn, function () {});
@@ -516,18 +516,18 @@
       boxA.classList.remove("is-lift");
       boxB.classList.remove("is-lift");
       heavy.claim("cheap");
-      out.textContent = "在量A（3秒，别切走页面）…";
+      out.textContent = "正在量A，要3秒，别切走页面。";
       runSide(boxA, 3000, function (sa, la, ha) {
         fill("a", sa, la);
-        out.textContent = "在量B（3秒）…";
+        out.textContent = "正在量B，要3秒。";
         runSide(boxB, 3000, function (sb, lb, hb) {
           fill("b", sb, lb);
           var td = $$("tr[data-row] td", root);
           td[3].className = sa.long > sb.long ? "is-bad" : "";
           td[7].className = sb.long <= sa.long ? "is-ok" : "";
           var msg = (ha || hb) ? "中途切到了后台，帧间隔不可信，再量一次。"
-            : "量完：A超过25ms的帧" + sa.long + "个、P95 " + sa.p95.toFixed(1) + "ms；B " + sb.long + "个、P95 " + sb.p95.toFixed(1) + "ms。" +
-              (reduced() ? "（减弱动效下没有过渡，两边都是瞬间跳，差不出来）" : (sa.long > sb.long + 2 ? "动box-shadow的那边长帧多。" : "帧间隔看不出差别：光栅在别的线程上，这么小的卡还压不垮帧；差在A每一帧都在重画（实测次数见下面「为什么」）。"));
+            : "量完了。A超过25ms的帧有" + sa.long + "个，P95是" + sa.p95.toFixed(1) + "ms。B有" + sb.long + "个，P95是" + sb.p95.toFixed(1) + "ms。" +
+              (reduced() ? "（减弱动效下没有过渡，两边都是瞬间跳，差不出来）" : (sa.long > sb.long + 2 ? "动box-shadow的那边长帧多。" : "帧间隔看不出差别，因为光栅在别的线程上，这么小的卡还不至于拖慢帧。差别在A每一帧都在重画，实测次数见下面的为什么。"));
           out.textContent = msg;
           announce(msg);
           busy = false;
@@ -566,15 +566,15 @@
       clear();
       var sim = pressed(simBtn);
       var isReduced = sim || reduced();
-      if (reduced() && !sim) log("你的系统开着减弱动效：外壳已把动画全关成none，这里两种写法看起来一样。", "is-warn");
-      if (pressed(gateBtn) && isReduced) { log("第二道：组件判到减弱动效，整段不渲染——门厅直接露出来，没有闪一下。", "is-ok"); announce("第二道保险：遮罩不渲染"); return; }
-      if (pressed(gateBtn) && !isReduced) log("第二道只在减弱动效下起作用；现在没开（模拟关着），照常播。");
+      if (reduced() && !sim) log("你的系统开着减弱动效，外壳已经把动画全关成none，这里两种写法看起来一样。", "is-warn");
+      if (pressed(gateBtn) && isReduced) { log("第二道生效，组件判断出减弱动效，整段不渲染，门厅直接露出来，没有闪一下。", "is-ok"); announce("第二道保险生效，遮罩不渲染"); return; }
+      if (pressed(gateBtn) && !isReduced) log("第二道只在减弱动效下起作用，现在模拟关着，照常播。");
       veil = doc.createElement("div");
       veil.className = "mor-veil";
       veil.setAttribute("aria-hidden", "true");
       veil.textContent = "开场（示例）";
       stage.appendChild(veil);
-      log("渲染遮罩，停0.6秒后起淡出" + (sim ? "（模拟：第一道写" + (cssMode === "tiny" ? "0.01ms" : "none") + "）" : "") + "。");
+      log("渲染遮罩，停0.6秒后开始淡出" + (sim ? "（模拟减弱动效，第一道写" + (cssMode === "tiny" ? "0.01ms" : "none") + "）" : "") + "。");
       timers.push(setTimeout(function () {
         if (my !== gen || !veil) return;
         var v = veil, t0 = now();
@@ -582,15 +582,15 @@
           if (my !== gen || veil !== v) return;
           if (v.parentNode) v.parentNode.removeChild(v);
           veil = null;
-          log("收尾：拆掉遮罩（" + how + "，起淡出后" + Math.round(now() - t0) + "ms）。", "is-ok");
-          announce("收尾：遮罩拆掉了");
+          log("遮罩拆掉了，由" + how + "收尾，开始淡出后" + Math.round(now() - t0) + "ms。", "is-ok");
+          announce("遮罩拆掉了");
         }
         v.addEventListener("animationend", function () { finish("animationend"); });
         v.classList.add("is-out");
         if (endMode === "timer") timers.push(setTimeout(function () { finish("兜底计时器"); }, 500 + 120));
         /* 演示用的看门狗（不是组件的一部分）：1.5秒后还盖着就报卡住 */
         timers.push(setTimeout(function () {
-          if (my === gen && veil === v) { log("1.5秒了animationend还没来：遮罩一直盖着，底下的门厅点不到（卡住了）。", "is-bad"); announce("卡住了：遮罩一直盖着"); }
+          if (my === gen && veil === v) { log("过了1.5秒animationend还没来，遮罩一直盖着，底下的门厅点不到，卡住了。", "is-bad"); announce("卡住了，遮罩一直盖着"); }
         }, 1500));
       }, 600));
     }
@@ -637,12 +637,12 @@
       function done() {
         if (once) return;
         once = true;
-        if (!pressed(noGen) && my !== gen) { log("第" + my + "代的收尾来了：代数不对，作废。", "is-ok"); return; }
+        if (!pressed(noGen) && my !== gen) { log("第" + my + "代的收尾来了，代数不对，作废。", "is-ok"); return; }
         if (cur === anim) cur = null;
         setRest(open);
         var ok = show();
-        log("第" + my + "代收尾：状态改成" + st + (ok ? "" : "——可按钮说的是" + (want ? "开着" : "关着") + "，被旧收尾改回来了"), ok ? "" : "is-bad");
-        if (!ok) announce("状态错了：被旧一代的收尾改回来了");
+        log("第" + my + "代收尾，状态改成" + st + (ok ? "。" : "，可按钮说的是" + (want ? "开着" : "关着") + "，状态被旧的收尾改回来了。"), ok ? "" : "is-bad");
+        if (!ok) announce("状态错了，被上一代的收尾改回来了");
       }
       if (!pressed(stuck)) anim.finished.then(done, done);
       if (!pressed(noTimer)) setTimeout(done, ms + 120);
@@ -650,17 +650,17 @@
     function start(open) {
       gen += 1;
       var my = gen;
-      if (reduced() || !canAnimate) { setRest(open); show(); log("减弱动效：直接到终态" + st + "。"); return; }
+      if (reduced() || !canAnimate) { setRest(open); show(); log("开了减弱动效，直接到终态" + st + "。"); return; }
       panel.classList.remove("is-open");
       panel.classList.add("is-moving");
       cur = panel.animate(KF, { duration: MS, easing: open ? EASE_OUT : EASE_IN, fill: "forwards", direction: open ? "normal" : "reverse" });
       st = open ? "opening" : "closing";
       show();
-      log("第" + my + "代：开始" + (open ? "打开" : "关上") + "（900ms，慢放）。");
+      log("第" + my + "代开始" + (open ? "打开" : "关上") + "（900ms，慢放）。");
       attach(cur, MS, open, my);
       if (pressed(stuck) && pressed(noTimer)) {
         setTimeout(function () {
-          if (my === gen && (st === "opening" || st === "closing")) { show(); log("画面早走完了，状态还停在" + st + "：事件没来、又没有计时器兜底。", "is-bad"); }
+          if (my === gen && (st === "opening" || st === "closing")) { show(); log("画面早走完了，状态还停在" + st + "，因为事件没来，又没有计时器兜底。", "is-bad"); }
         }, MS + 400);
       }
     }
@@ -675,7 +675,7 @@
           try { old.cancel(); } catch (e) { /* 已结束 */ }
           setRest(want);
           show();
-          log("打断：直接到终态（" + st + "），cancel()让上一代的finished走reject。", "is-warn");
+          log("被打断，直接到终态（" + st + "），cancel()让上一代的finished走reject。", "is-warn");
         } else {
           gen += 1;
           var my = gen;
@@ -683,10 +683,10 @@
           cur.reverse();
           st = want ? "opening" : "closing";
           show();
-          log("打断：从这一帧倒着走回去（第" + my + "代，还要约" + Math.round(t) + "ms）。", "is-warn");
+          log("被打断，从这一帧倒着走回去（第" + my + "代，还要约" + Math.round(t) + "ms）。", "is-warn");
           attach(cur, t, want, my);
         }
-        announce("打断：" + (want ? "打开" : "关上"));
+        announce("被打断，改成" + (want ? "打开" : "关上"));
         return;
       }
       start(want);
@@ -724,14 +724,14 @@
       if (reduced() || !canAnimate) {
         frame.classList.remove("mox-each");
         apply();
-        out.textContent = what + "：减弱动效，直接切。";
+        out.textContent = what + "，开了减弱动效，直接切。";
         announce(out.textContent);
         return;
       }
       if (way === "each") {
         frame.classList.add("mox-each");
         apply();
-        out.textContent = what + "：各写transition——底150ms、卡片350ms、侧栏500ms、标题600ms、导航1秒、图标1.2秒才到位；按钮、品牌方块和光晕没写过渡，直接跳。";
+        out.textContent = what + "。各写transition时，底150ms、卡片350ms、侧栏500ms、标题600ms才到位，导航要1秒，图标要1.2秒。按钮、品牌方块和光晕没写过渡，直接跳。";
       } else {
         frame.classList.remove("mox-each");
         var snap = live.cloneNode(true);
@@ -744,7 +744,7 @@
           if (cur === stop) cur = null;
         });
         cur = stop;
-        out.textContent = what + "：快照交叉淡化——整块在" + ms + "ms里一起淡过去。";
+        out.textContent = what + "。快照交叉淡化，整块在" + ms + "ms里一起淡过去。";
       }
       announce(what);
     }
@@ -829,10 +829,10 @@
       }
       statsEl.innerHTML =
         "<div><dt>阻尼c = 2ζ√k</dt><dd>" + (2 * z * w).toFixed(1) + "</dd></div>" +
-        "<div><dt>ω = √k</dt><dd>" + w.toFixed(1) + " rad/s · 周期" + (2 * Math.PI / w).toFixed(2) + "s</dd></div>" +
+        "<div><dt>ω = √k</dt><dd>" + w.toFixed(1) + " rad/s，周期" + (2 * Math.PI / w).toFixed(2) + "s</dd></div>" +
         "<div><dt>过冲</dt><dd>" + (over > 0.0005 ? pct(over, 1) : "无（临界或过阻尼）") + "</dd></div>" +
         "<div><dt>落定（±1%）</dt><dd>" + s01.toFixed(2) + "s</dd></div>" +
-        "<div><dt>积分</dt><dd>" + (coarse ? "一步0.06秒" + (sim.diverged ? "：发散" : "：还没散") : "1/240秒细分") + "</dd></div>" + cardDiff;
+        "<div><dt>积分</dt><dd>" + (coarse ? "一步0.06秒" + (sim.diverged ? "，发散" : "，还没散") : "1/240秒细分") + "</dd></div>" + cardDiff;
     }
     function syncPresets() {
       presets.forEach(function (b) {
@@ -868,7 +868,7 @@
       if (loop) { caf(loop); loop = 0; }
       placeGoal();
       var tr = travel(), coarse = pressed(coarseBtn);
-      if (reduced() || !window.requestAnimationFrame) { ball.style.transform = "translateX(" + tr.toFixed(1) + "px)"; announce("减弱动效：直接到终点"); return; }
+      if (reduced() || !window.requestAnimationFrame) { ball.style.transform = "translateX(" + tr.toFixed(1) + "px)"; announce("开了减弱动效，直接到终点"); return; }
       var a = 0, v = 0, last = 0, c = 2 * z * Math.sqrt(k), t0 = 0, kk = k;
       function frame(t) {
         loop = 0;
@@ -887,7 +887,7 @@
       }
       ball.style.transform = "translateX(0)";
       loop = raf(frame);
-      announce("松手：刚度" + Math.round(k) + "，阻尼比" + z.toFixed(2));
+      announce("松手，刚度" + Math.round(k) + "，阻尼比" + z.toFixed(2));
     }
     $("[data-p='go']", root).addEventListener("click", go);
     window.addEventListener("resize", function () { placeGoal(); ball.style.transform = ""; });
@@ -944,7 +944,7 @@
       var R0 = Math.sqrt(Math.pow(Math.max(x, w - x), 2) + Math.pow(Math.max(y, h - y), 2));
       var rows = [0.25, 0.5, 0.75].map(function (t) {
         var r = f(t);
-        return "<div><dt>" + (t === 0.25 ? "1/4" : t === 0.5 ? "一半" : "3/4") + "时长</dt><dd>圆面积" + pct(r * r) + " · 这块屏盖住" + pct(coverage(r * R0, x, y, w, h)) + "</dd></div>";
+        return "<div><dt>" + (t === 0.25 ? "1/4" : t === 0.5 ? "一半" : "3/4") + "时长</dt><dd>圆面积" + pct(r * r) + "，这块屏盖住" + pct(coverage(r * R0, x, y, w, h)) + "</dd></div>";
       }).join("");
       statsEl.innerHTML = rows + "<div><dt>圆心</dt><dd>" + (origin ? Math.round(x) + ", " + Math.round(y) + "px" : "（还没点）") + "</dd></div>";
     }
@@ -960,7 +960,7 @@
           dot.setAttribute("cx", (X0 + t * (X1 - X0)).toFixed(1));
           dot.setAttribute("cy", (Y0 - a * (Y0 - Y1)).toFixed(1));
         },
-        onDone: function (mode, instant) { if (instant) announce("减弱动效：直接切到" + (mode === "dark" ? "深色" : "浅色")); }
+        onDone: function (mode, instant) { if (instant) announce("开了减弱动效，直接切到" + (mode === "dark" ? "深色" : "浅色")); }
       });
       announce("示例小页面切到" + (R.mode() === "dark" ? "浅色" : "深色") + "，从" + how + "圆形揭开");
     }
@@ -1014,8 +1014,8 @@
       stopAll();
       var oldPage = $(".mg-page", main), next = page(i);
       var hash = pressed(hashBtn), vt = pressed(vtBtn);
-      var name = "切到「" + PAGES[i].t + "」：";
-      if (reduced() || !canAnimate) { main.replaceChild(next, oldPage); log(name + "减弱动效，直接换，没有进场。"); return; }
+      var name = "切到" + PAGES[i].t + "页，";
+      if (reduced() || !canAnimate) { main.replaceChild(next, oldPage); log(name + "开了减弱动效，直接换，没有进场。"); return; }
       if (mode === "all") {
         main.replaceChild(next, oldPage);
         running.push(win.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 260, easing: EASE_OUT }));
@@ -1026,12 +1026,12 @@
       if (!vt) {
         main.replaceChild(next, oldPage);
         running.push(next.animate(inKf, { duration: 260, easing: EASE_OUT, fill: "backwards" }));
-        log(name + "只有CSS进场（lite档的样子）：正文260ms" + (hash ? "只淡入、不上移（带#锚点，落点不偏8px）" : "淡入上移8px") + "，侧栏不动。");
+        log(name + "只有CSS进场，lite档就是这样，正文用260ms" + (hash ? "只淡入、不上移（带#锚点，落点不偏8px）" : "淡入上移8px") + "，侧栏不动。");
         return;
       }
       if (bug === "abort") {
         main.replaceChild(next, oldPage);
-        log(name + "过渡被中止：新页判开关时外部样式表还没到，一下就换了；控制台留一条InvalidStateError（示意）。", "is-bad");
+        log(name + "过渡被中止，新页判断开关时外部样式表还没到，一下就换了，控制台留下一条InvalidStateError（示意）。", "is-bad");
         return;
       }
       main.appendChild(next);
@@ -1040,9 +1040,9 @@
       settle(aOut, 320, function () { if (oldPage.parentNode) oldPage.parentNode.removeChild(oldPage); });
       if (bug === "noside") {
         running.push(side.animate([{ opacity: 1 }, { opacity: 0, offset: 0.77 }, { opacity: 0 }], { duration: 260, easing: "linear" }));
-        log(name + "首帧早于侧栏：新画面里没有侧栏，旧侧栏淡出、过渡完新侧栏才冒出来。", "is-bad");
+        log(name + "首帧早于侧栏，新画面里没有侧栏，旧侧栏淡出，过渡完新侧栏才出现。", "is-bad");
       } else {
-        log(name + "跨页过渡：侧栏起了名、原地不动；旧页200ms淡出，新页260ms淡入上移8px" + (hash ? "（带#锚点也照常上移：位移在快照上，不影响落点）" : "") + "。", "is-ok");
+        log(name + "跨页过渡，侧栏起了名，原地不动，旧页200ms淡出，新页260ms淡入上移8px" + (hash ? "（带#锚点也照常上移，位移在快照上，不影响落点）" : "") + "。", "is-ok");
       }
     }
     side.addEventListener("click", function (e) {
@@ -1073,21 +1073,21 @@
       var why = [];
       if (pressed(nos)) why.push("浏览器没有startViewTransition");
       if (pressed(rm)) why.push("开了减弱动效");
-      if (tier === "unknown") why.push("自动档还没测过显卡：先按lite（误判成full的代价是没显卡那台卡一下）");
+      if (tier === "unknown") why.push("自动档还没测过显卡，先按lite（误判成full的代价是没显卡的那台卡一下）");
       else if (tier !== "full") why.push("模糊档位是" + tier + "（没显卡，或者关了模糊）");
       if (pressed(hid)) why.push("页面在后台（浏览器本来也会跳过，还会让ready走reject）");
       var origin = segCenter(frame);
       if (why.length) {
         R.run(origin, { instant: true });
-        verdict.innerHTML = '<b class="is-skip">直接切</b>：' + esc(why.join("；")) + "。换色照样发生，只是不拍快照。跨页那两侧在pageswap / pagereveal里调skipTransition()，三个promise先接住。";
-        announce("直接切：" + why[0]);
+        verdict.innerHTML = '<b class="is-skip">直接切</b>。' + esc(why.join("。")) + "。换色照样发生，只是不拍快照。跨页时在旧页的pageswap和新页的pagereveal里调skipTransition()，先接住三个promise。";
+        announce("直接切，" + why[0]);
       } else if (reduced() || !canAnimate) {
         R.run(origin, { instant: true });
         verdict.innerHTML = "<b>四个条件都过了</b>，可你的系统本身开着减弱动效，所以这里也直接切。";
         announce("系统开着减弱动效，直接切");
       } else {
         R.run(origin, { ms: 420, ease: REVEAL.now.css });
-        verdict.innerHTML = "<b>圆形揭开</b>：full档、没开减弱动效、页面看得见、支持startViewTransition，四个都过了，从主题控件那一点420ms揭开。跨页时挂vt-nav，侧栏原地不动。";
+        verdict.innerHTML = "<b>圆形揭开</b>。full档、没开减弱动效、页面可见、支持startViewTransition，四个条件都过了，从主题控件那一点用420ms揭开。跨页时加vt-nav，侧栏原地不动。";
         announce("圆形揭开");
       }
     });
@@ -1146,8 +1146,8 @@
         if (loop) { caf(loop); loop = 0; }
         headAt(skipped ? (now() - t0) : 2800);
       }, skipped ? 300 : 560));
-      out.textContent = skipped ? "跳过（" + how + "）：在" + at + "秒处收起，走0.26秒快速淡出。" : "播完：2.35秒起淡出，2.8秒收起，门厅跟着浮上来落定。";
-      announce(skipped ? "开场跳过：" + how : "开场播完");
+      out.textContent = skipped ? "跳过（" + how + "），在第" + at + "秒收起，用0.26秒快速淡出。" : "播完，第2.35秒开始淡出，第2.8秒收起，门厅跟着浮上来落定。";
+      announce(skipped ? "开场跳过（" + how + "）" : "开场播完");
     }
     function play() {
       gen += 1;
@@ -1158,7 +1158,7 @@
       if (reduced()) {
         intro.hidden = true;
         hall.classList.remove("is-settle");
-        out.textContent = "减弱动效：开场整段不渲染（原物就是这样），门厅直接露出来。";
+        out.textContent = "开了减弱动效，开场整段不渲染，门厅直接露出来，原物也是这样。";
         announce(out.textContent);
         return;
       }
@@ -1178,7 +1178,7 @@
         t0 = now();
         loop = raf(tick);
         timers.push(setTimeout(function () { if (my === gen) finish(false); }, 2350));
-        out.textContent = pressed(badBtn) ? "在播（反例：遮罩0.5秒就拉完了，后面的字还没轮到，笔画先露头）…" : "在播：0.12秒起笔，1.75秒写完…";
+        out.textContent = pressed(badBtn) ? "正在播放。这是反例，遮罩0.5秒就拉完了，后面的字还没轮到，笔画就先露了出来。" : "正在播放，第0.12秒起笔，用1.75秒写完。";
       }
       /* 字体门控：等 fonts.ready，1200ms 兜底 */
       if (doc.fonts && doc.fonts.ready) { doc.fonts.ready.then(start, start); timers.push(setTimeout(start, 1200)); }
@@ -1230,7 +1230,7 @@
       if (busy || i === cur) return;
       cur = i;
       navBtns.forEach(function (b, n) { if (n === i) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); });
-      if (reduced() || !canAnimate) { render(i); out.textContent = "减弱动效：不播转场，直接换（原物也是这样）。"; announce("换到" + ROOM_NAME[i]); return; }
+      if (reduced() || !canAnimate) { render(i); out.textContent = "开了减弱动效，不播转场，直接换，原物也是这样。"; announce("换到" + ROOM_NAME[i]); return; }
       busy = true;
       var k = pressed(slowBtn) ? 3 : 1;
       if (tr === "veil") {
@@ -1239,7 +1239,7 @@
         var w1 = track(wash.animate(grow, { duration: 550 * k, easing: "cubic-bezier(.3, 0, .16, 1)", fill: "both" }));
         track(rim.animate(grow, { duration: 550 * k, delay: 50 * k, easing: "cubic-bezier(.34, 0, .22, 1)", fill: "both" }));
         track(main.animate([{ opacity: 1, transform: "none" }, { opacity: 0.45, transform: "scale(.985)" }], { duration: 550 * k, easing: EASE_IN, fill: "both" }));
-        out.textContent = "洇开" + 550 * k + "ms：纸色从中间洇开，颜料边晚" + 50 * k + "ms，旧房间退到.45、缩到.985…";
+        out.textContent = "洇开" + 550 * k + "ms，纸色从中间洇开，颜料边晚" + 50 * k + "ms，旧房间退到.45的不透明度，缩到.985。";
         settle(w1, 550 * k + 120, function () {
           anims.forEach(function (a) { if (a !== w1) { try { a.cancel(); } catch (e) { /* 已结束 */ } } });
           render(i);
@@ -1247,7 +1247,7 @@
           var o1 = track(wash.animate(dry, { duration: 600 * k, easing: "cubic-bezier(.3, .1, .3, 1)", fill: "both" }));
           track(rim.animate(dry, { duration: 600 * k, easing: "cubic-bezier(.3, .1, .3, 1)", fill: "both" }));
           try { w1.cancel(); } catch (e) { /* 已结束 */ }
-          out.textContent = "纸下换到「" + ROOM_NAME[i] + "」，纸" + 600 * k + "ms干去（scale 1→1.06、opacity 1→0）。";
+          out.textContent = "在纸下换到" + ROOM_NAME[i] + "，纸用" + 600 * k + "ms干去，scale从1到1.06，opacity从1到0。";
           settle(o1, 600 * k + 120, cleanup);
         });
       } else {
@@ -1256,14 +1256,14 @@
         var c1 = track(leafL.animate([{ transform: "translateX(-100%)" }, { transform: "none" }], { duration: 450 * k, easing: EASE_STD, fill: "both" }));
         track(leafR.animate([{ transform: "translateX(100%)" }, { transform: "none" }], { duration: 450 * k, easing: EASE_STD, fill: "both" }));
         track(main.animate([{ opacity: 1, transform: "none" }, { opacity: 0.6, transform: "scale(1.03)" }], { duration: 450 * k, easing: EASE_IN, fill: "both" }));
-        out.textContent = (tr === "door" ? "被否的双开门板" : "被否的纸色格心门") + "（示意）：合门" + 450 * k + "ms…";
+        out.textContent = (tr === "door" ? "被否的双开门板" : "被否的纸色格心门") + "（示意），合门" + 450 * k + "ms。";
         settle(c1, 450 * k + 120, function () {
           anims.forEach(function (a) { try { a.cancel(); } catch (e) { /* 已结束 */ } });
           anims = [];
           render(i);
           var o1 = track(leafL.animate([{ transform: "none", opacity: 1 }, { transform: "rotateY(-100deg)", opacity: 0 }], { duration: 750 * k, easing: EASE_OUT, fill: "both" }));
           track(leafR.animate([{ transform: "none", opacity: 1 }, { transform: "rotateY(100deg)", opacity: 0 }], { duration: 750 * k, easing: EASE_OUT, fill: "both" }));
-          out.textContent = "门后换到「" + ROOM_NAME[i] + "」，开门" + 750 * k + "ms、铰链在外侧朝人外摆。屋主裁定：不够优雅——转场造了一个新物件。";
+          out.textContent = "在门后换到" + ROOM_NAME[i] + "，开门" + 750 * k + "ms，铰链在外侧，门朝人外摆。屋主觉得不够优雅，转场造了一个新物件。";
           settle(o1, 750 * k + 120, cleanup);
         });
       }
@@ -1308,7 +1308,7 @@
       room.style.opacity = p >= 0.30 ? "1" : "0";
       room.style.transform = "translateY(" + ((1 - so) * 8).toFixed(2) + "%) scale(" + (1.5 - 0.5 * so).toFixed(4) + ")";
     }
-    function phase(p) { return p <= 0 ? "顶上：门厅名片" : p < 0.17 ? "画放大" : p < 0.30 ? "推近、纸从门那一点洇开" : p < 0.31 ? "纸底下穿门" : p < 0.39 ? "纸干去、进屋" : p < 1 ? "屋里那一段" : "墙角，页面到底"; }
+    function phase(p) { return p <= 0 ? "顶上的门厅名片" : p < 0.17 ? "画放大" : p < 0.30 ? "推近、纸从门那一点洇开" : p < 0.31 ? "纸底下穿门" : p < 0.39 ? "纸干去、进屋" : p < 1 ? "屋里那一段" : "墙角，页面到底"; }
     /* 进度随时间：三种走法各画一条（擦洗按「每0.42秒滚一格、140ms 阻尼」画） */
     var X0 = 26, X1 = 212, Y0 = 122, Y1 = 14;
     function curveOf(m) {
@@ -1341,11 +1341,11 @@
       }
       return 2;
     }
-    statsEl.innerHTML = "<div><dt>起播后放大到1.03倍</dt><dd>定时" + firstMove("timed").toFixed(3) + "秒 · 叠ease-in-out " + firstMove("eased").toFixed(2) + "秒</dd></div>" +
-      "<div><dt>擦洗一格</dt><dd>8.5%，顶上到墙角12格</dd></div><div><dt>现在</dt><dd data-k2=\"now\">p=0.00 · 顶上</dd></div>";
+    statsEl.innerHTML = "<div><dt>起播后放大到1.03倍</dt><dd>定时" + firstMove("timed").toFixed(3) + "秒，叠ease-in-out " + firstMove("eased").toFixed(2) + "秒</dd></div>" +
+      "<div><dt>擦洗一格</dt><dd>8.5%，顶上到墙角12格</dd></div><div><dt>现在</dt><dd data-k2=\"now\">p=0.00，顶上的门厅名片</dd></div>";
     var nowEl = $("[data-k2='now']", statsEl);
     function showNow(p, tsec) {
-      nowEl.textContent = "p=" + p.toFixed(2) + " · " + phase(p);
+      nowEl.textContent = "p=" + p.toFixed(2) + "，" + phase(p);
       if (cursor) {
         var tt = mode === "scrub" ? clamp(tsec, 0, 5) : h * 5;
         cursor.setAttribute("cx", (X0 + tt / 5 * (X1 - X0)).toFixed(1));
@@ -1362,7 +1362,7 @@
         if (Math.abs(target - h) < 0.0005) h = target; else moving = true;
       } else if (dir) {
         h = clamp(h + dir * dt / PLAY, 0, 1);
-        if ((dir > 0 && h >= 1) || (dir < 0 && h <= 0)) { dir = 0; out.textContent = h >= 1 ? "到墙角了：页面到底，停稳。" : "回到顶上：门厅名片，一像素不变。"; announce(out.textContent); }
+        if ((dir > 0 && h >= 1) || (dir < 0 && h <= 0)) { dir = 0; out.textContent = h >= 1 ? "到墙角了，页面到底，停稳。" : "回到顶上，门厅名片一像素不变。"; announce(out.textContent); }
         else moving = true;
       }
       var p = visual();
@@ -1378,37 +1378,37 @@
       loop = raf(frame);
     }
     function down() {
-      if (reduced()) { h = target = 1; dir = 0; pose(visual()); showNow(visual(), 5); out.textContent = "减弱动效：原物没有跑道（静态档），这里直接跳到墙角。"; announce(out.textContent); return; }
+      if (reduced()) { h = target = 1; dir = 0; pose(visual()); showNow(visual(), 5); out.textContent = "开了减弱动效，原物这时是静态档，没有跑道，这里直接跳到墙角。"; announce(out.textContent); return; }
       if (mode === "scrub") {
-        if (target >= 1) { out.textContent = "墙角往下：没有路了，交给原生滚动。"; return; }
+        if (target >= 1) { out.textContent = "已经在墙角，再往下交给原生滚动。"; return; }
         if (h <= 0 && target <= 0) startAt = now();
         target = Math.min(1, target + STEP);
-        out.textContent = "滚一格：进度+8.5%，过140ms阻尼——一格一格地顿。";
+        out.textContent = "滚一格，进度加8.5%，经过140ms的阻尼，一格一格地顿。";
         kick();
         return;
       }
-      if (h >= 1) { out.textContent = "墙角往下：没有路了，交给原生滚动。"; return; }
-      if (dir > 0) { out.textContent = "播放中再往下：不理，不加速、不打断。"; return; }
-      if (dir < 0) { dir = 1; out.textContent = "倒放中往下：再反过来，接着往墙角走。"; announce(out.textContent); kick(); return; }
+      if (h >= 1) { out.textContent = "已经在墙角，再往下交给原生滚动。"; return; }
+      if (dir > 0) { out.textContent = "播放中再往下滚，不理会，不加速也不打断。"; return; }
+      if (dir < 0) { dir = 1; out.textContent = "倒放中往下滚，再反过来，接着往墙角走。"; announce(out.textContent); kick(); return; }
       dir = 1;
       startAt = now() - h * PLAY;
-      out.textContent = mode === "eased" ? "起播（反例：播放头叠了ease-in-out，起步要慢一拍才看得出在动）…" : "起播：固定5秒，和滚多快、滚几下无关。";
+      out.textContent = mode === "eased" ? "起播。这是反例，播放头叠了ease-in-out，起步后要过一阵才看得出在动。" : "起播，固定5秒，和滚多快、滚几下无关。";
       announce("起播");
       kick();
     }
     function up() {
-      if (reduced()) { h = target = 0; dir = 0; pose(0); showNow(0, 0); out.textContent = "减弱动效：直接回到顶上。"; return; }
+      if (reduced()) { h = target = 0; dir = 0; pose(0); showNow(0, 0); out.textContent = "开了减弱动效，直接回到顶上。"; return; }
       if (mode === "scrub") {
-        if (target <= 0) { out.textContent = "顶上往上：没有路了，交给原生滚动。"; return; }
+        if (target <= 0) { out.textContent = "已经在顶上，再往上交给原生滚动。"; return; }
         target = Math.max(0, target - STEP);
-        out.textContent = "往回滚一格：进度−8.5%。";
+        out.textContent = "往回滚一格，进度减8.5%。";
         kick();
         return;
       }
-      if (h <= 0) { out.textContent = "顶上往上：没有路了，交给原生滚动。"; return; }
-      if (dir < 0) { out.textContent = "倒放中再往上：不理。"; return; }
+      if (h <= 0) { out.textContent = "已经在顶上，再往上交给原生滚动。"; return; }
+      if (dir < 0) { out.textContent = "倒放中再往上滚，不理会。"; return; }
       dir = -1;
-      out.textContent = "往上：从这一帧（p=" + visual().toFixed(2) + "）原路倒放，还要" + (h * 5).toFixed(2) + "秒。";
+      out.textContent = "往上滚，从这一帧（p=" + visual().toFixed(2) + "）原路倒放，还要" + (h * 5).toFixed(2) + "秒。";
       announce("从这一帧原路倒放");
       kick();
     }
@@ -1473,7 +1473,7 @@
       w0.style.opacity = a.toFixed(3);
       w1.style.opacity = b.toFixed(3);
       var both = a > 0.08 && b > 0.08;
-      fout.textContent = "工具架" + a.toFixed(2) + "　随笔本" + b.toFixed(2) + (both ? "　——两段同时在，叠成双重曝光" : win === "seq" ? "　——首尾相接，任何时刻只有一段" : "");
+      fout.textContent = "工具架" + a.toFixed(2) + "，随笔本" + b.toFixed(2) + (both ? "，两段同时在，叠成双重曝光。" : win === "seq" ? "，首尾相接，任何时刻只有一段。" : "。");
       dots.forEach(function (d, i) {
         var tr = d.parentNode.clientWidth - d.offsetWidth - 6;
         var v = FN[i](p);
@@ -1487,7 +1487,7 @@
       range.value = String(Math.min(1000, Number(range.value) + 85));
       var after = Number(range.value) / 1000;
       update();
-      var msg = "滚一格（+8.5%）：" + NAMES.map(function (n, i) { return n + "走了" + pct(FN[i](after) - FN[i](before), 1); }).join("，") + "。";
+      var msg = "滚一格，进度加8.5%，" + NAMES.map(function (n, i) { return n + "走了" + pct(FN[i](after) - FN[i](before), 1); }).join("，") + "。";
       live.textContent = msg;
       announce(msg);
     });
@@ -1533,11 +1533,11 @@
       var t = now();
       if (!force && t - lastOut < 150) return;
       lastOut = t;
-      if (reduced()) { out.textContent = "减弱动效：不倾斜（变量默认0，原样）。"; return; }
+      if (reduced()) { out.textContent = "开了减弱动效，不倾斜，变量保持默认的0。"; return; }
       if (!rest) measureRest();
       var s = set.getBoundingClientRect(), p = pot.getBoundingClientRect(), v = vine.getBoundingClientRect();
-      out.textContent = "指针x=" + tx.toFixed(2) + "、y=" + ty.toFixed(2) + "：卡片左缘挪" + (s.left - rest.sl).toFixed(1) + "px、右缘" + (s.right - rest.sr).toFixed(1) +
-        "px；盆栽" + (p.left - rest.pl).toFixed(1) + "px；垂柳" + (v.left - rest.vl).toFixed(1) + "px（这块样框里卡宽" + Math.round(set.offsetWidth) + "px）。";
+      out.textContent = "指针x=" + tx.toFixed(2) + "、y=" + ty.toFixed(2) + "，卡片左缘挪" + (s.left - rest.sl).toFixed(1) + "px、右缘" + (s.right - rest.sr).toFixed(1) +
+        "px，盆栽挪" + (p.left - rest.pl).toFixed(1) + "px，垂柳挪" + (v.left - rest.vl).toFixed(1) + "px，这块框里卡宽" + Math.round(set.offsetWidth) + "px。";
     }
     function frame(t) {
       loop = 0;
@@ -1653,19 +1653,19 @@
         L.el.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px) rotate(" + rot.toFixed(1) + "deg) scale(" + ((1 - 0.5 * L.far) * Math.max(0.6, u * 1.6)).toFixed(3) + ")";
       }
       frames += 1;
-      if (t - secAt >= 500) { meter.textContent = "出帧" + Math.round(frames * 1000 / (t - secAt)) + "/秒"; frames = 0; secAt = t; }
+      if (t - secAt >= 500) { meter.textContent = "每秒" + Math.round(frames * 1000 / (t - secAt)) + "帧"; frames = 0; secAt = t; }
       if (moving && visible) {
         loop = raf(frame);
-        say(wind > 0.99 ? "在漂：指针停" + Math.ceil((IDLE - (now() - lastMove)) / 1000) + "秒后风停。" : "风在停…");
+        say(wind > 0.99 ? "在漂，指针停" + Math.ceil((IDLE - (now() - lastMove)) / 1000) + "秒后风停。" : "风在停。");
       } else {
         lastFrame = 0;
-        meter.textContent = "静止 · 0帧/秒";
-        if (!moving) say("风停了，弹簧也停稳：不再请求下一帧，画面静止。");
+        meter.textContent = "静止，每秒0帧";
+        if (!moving) say("风停了，弹簧也停稳了，不再请求下一帧，画面静止。");
         heavy.release("leaves");
       }
     }
     function kick() {
-      if (reduced()) { meter.textContent = "静止 · 0帧/秒"; say("减弱动效：叶子不动（原物这时整层不加载）。"); return; }
+      if (reduced()) { meter.textContent = "静止，每秒0帧"; say("开了减弱动效，叶子不动，原物这时整层都不加载。"); return; }
       if (loop || !visible) return;
       heavy.claim("leaves");
       lastFrame = 0;
@@ -1673,8 +1673,8 @@
       secAt = now();
       loop = raf(frame);
     }
-    function stop() { if (loop) { caf(loop); loop = 0; } lastFrame = 0; meter.textContent = "暂停 · 0帧/秒"; }
-    heavy.register("leaves", function () { stop(); say("让给了别的演示：暂停。"); }, function () { if (visible) { lastMove = now(); kick(); } });
+    function stop() { if (loop) { caf(loop); loop = 0; } lastFrame = 0; meter.textContent = "暂停，每秒0帧"; }
+    heavy.register("leaves", function () { stop(); say("让给别的示例，先暂停。"); }, function () { if (visible) { lastMove = now(); kick(); } });
     stage.addEventListener("pointermove", function (e) {
       var r = stage.getBoundingClientRect();
       ptx = e.clientX - r.left; pty = e.clientY - r.top; pointerIn = true; lastMove = now();
@@ -1695,7 +1695,7 @@
     /* 先摆好一帧（不跑循环）：没滚到时也是叶子在家的样子 */
     var u0 = unit(), W0 = stage.clientWidth, H0 = stage.clientHeight;
     leaves.forEach(function (L) { L.el.style.transform = "translate(" + (L.hx * W0).toFixed(1) + "px," + (L.hy * H0).toFixed(1) + "px) rotate(" + L.angle + "deg) scale(" + ((1 - 0.5 * L.far) * Math.max(0.6, u0 * 1.6)).toFixed(3) + ")"; });
-    meter.textContent = "静止 · 0帧/秒";
+    meter.textContent = "静止，每秒0帧";
   }
 
   /* ================================================================
@@ -1707,8 +1707,8 @@
     var wall = $("[data-b='wall']", root), glows = [$("[data-b='glow']", root), $("[data-b='glow2']", root)];
     var meterEl = $("[data-b='meter']", root), out = $("[data-b='out']", root), ampBtn = $("[data-b='amp']", root);
     var tier = "full", loop = 0, visible = false, walking = false, walkT0 = 0, redrawn = false, frames = 0, secAt = now(), fps = 0, lastRet = null;
-    meterEl.innerHTML = '<div><dt>render()返回</dt><dd data-m="ret">—</dd></div><div><dt>出帧</dt><dd data-m="fps">0/秒</dd></div>' +
-      '<div><dt>画质</dt><dd data-m="q">走动档（60万像素）</dd></div><div><dt>灯</dt><dd data-m="b">1.000×</dd></div>';
+    meterEl.innerHTML = '<div><dt>render()返回</dt><dd data-m="ret">还没跑</dd></div><div><dt>出帧</dt><dd data-m="fps">每秒0帧</dd></div>' +
+      '<div><dt>画质</dt><dd data-m="q">走动档（60万像素）</dd></div><div><dt>灯</dt><dd data-m="b">1.000倍</dd></div>';
     var m = { ret: $("[data-m='ret']", meterEl), fps: $("[data-m='fps']", meterEl), q: $("[data-m='q']", meterEl), b: $("[data-m='b']", meterEl) };
     wall.classList.add("is-walk");
     function setGlow(v) { glows.forEach(function (g) { g.style.opacity = clamp(0.85 * v, 0, 1).toFixed(3); }); }
@@ -1723,7 +1723,7 @@
       var amp = pressed(ampBtn) ? 0.3 : 0.05;
       var b = breathing ? 1 + amp * Math.sin(t / 1000 * 0.785) : 1;
       setGlow(b);
-      m.b.textContent = b.toFixed(3) + "×";
+      m.b.textContent = b.toFixed(3) + "倍";
       if (!walking && !breathing) {
         if (!redrawn) {
           redrawn = true;
@@ -1739,34 +1739,34 @@
       loop = 0;
       var more = render(t);
       frames += 1;
-      if (t - secAt >= 500) { fps = Math.round(frames * 1000 / (t - secAt)); frames = 0; secAt = t; m.fps.textContent = fps + "/秒"; }
+      if (t - secAt >= 500) { fps = Math.round(frames * 1000 / (t - secAt)); frames = 0; secAt = t; m.fps.textContent = "每秒" + fps + "帧"; }
       if (more !== lastRet) {
         lastRet = more;
         m.ret.textContent = more ? "true（还要下一帧）" : "false（停稳，循环退出）";
         m.ret.className = more ? "is-bad" : "is-ok";
         if (!more) {
-          out.textContent = "精简档：停稳后重画一次清楚的，然后不再出帧。";
+          out.textContent = "精简档停稳后重画一次清楚的画面，然后不再出帧。";
           announce(out.textContent);
         } else if (!walking && tier === "full") {
-          out.textContent = "完整档：灯一直在呼吸，render()永远返回true，循环不退出，「停稳后重画」等不到。";
+          out.textContent = "完整档的灯一直在呼吸，render()一直返回true，循环不退出，等不到停稳后重画。";
         }
       }
       if (more && visible && !doc.hidden) loop = raf(frame);
       else {
-        if (!more) { m.fps.textContent = "0/秒"; frames = 0; }
+        if (!more) { m.fps.textContent = "每秒0帧"; frames = 0; }
         heavy.release("breath");
       }
     }
     function kick() {
-      if (reduced()) { setGlow(1); m.ret.textContent = "—"; m.fps.textContent = "0/秒"; out.textContent = "减弱动效：灯不动（原物整块3D都不加载）。"; return; }
+      if (reduced()) { setGlow(1); m.ret.textContent = "不画"; m.fps.textContent = "每秒0帧"; out.textContent = "开了减弱动效，灯不动，原物这时整块3D都不加载。"; return; }
       if (loop || !visible) return;
-      if (heavy.busy("breath")) { heavy.wait("breath"); out.textContent = "让给了别的演示，等它停了接着跑。"; return; }
+      if (heavy.busy("breath")) { heavy.wait("breath"); out.textContent = "让给别的示例，等它停了再接着跑。"; return; }
       heavy.claim("breath");
       frames = 0;
       secAt = now();
       loop = raf(frame);
     }
-    function stop() { if (loop) { caf(loop); loop = 0; } m.fps.textContent = "0/秒"; }
+    function stop() { if (loop) { caf(loop); loop = 0; } m.fps.textContent = "每秒0帧"; }
     heavy.register("breath", stop, function () { kick(); });
     function walk() {
       walking = true;
@@ -1776,7 +1776,7 @@
       wall.classList.add("is-walk");
       m.q.textContent = "走动档（60万像素）";
       m.q.className = "";
-      out.textContent = "走到墙角（1.5秒）…";
+      out.textContent = "正在走到墙角，用1.5秒。";
       if (loop) { caf(loop); loop = 0; }
       heavy.release("breath");
       kick();

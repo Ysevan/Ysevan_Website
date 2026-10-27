@@ -15,14 +15,14 @@
  * 祖先有 backdrop-filter / filter / transform 时 position:fixed 会改以那个祖先为参照，手机上滚到中途才露馅。
  *
  * 外观控件（侧栏底部、「更多」面板各一份，star.js 同步）：外观分段、六个色点、「背景模糊」分段（自动 / 开 / 关）、
- * 「恢复默认」小按钮。几处带 data-spot（theme / accent / blur / reset / search），给「本站这里在用」的跳转点亮用。
+ * 「恢复默认」小按钮。几处带 data-spot（theme / accent / blur / reset / search），给「本站用在」的跳转点亮用。
  *
  * 当前页取自 <body data-page="...">，对应下面 PAGES 的 id。
  * 新增一页：在 PAGES 里改 ready:true（并确认文件存在）；条目数变了同一轮改 count（star.js 会在控制台提醒对不上）。
  * 同时暴露 window.STAR_NAV（页面清单 + 图标），总览页的章节目录、star.js 的 favicon 都从这里取，不另抄一份。
  */
 (function () {
-  var VERSION = "0.4.4";
+  var VERSION = "0.4.5";
 
   /* 图标：24×24 视窗，线条 stroke 1.9、圆头圆角（SPEC §5b）；颜色一律 currentColor。
      只有本来就是实心的形（「更多」的三个点）用填充。 */
@@ -66,14 +66,14 @@
      收藏页不写 count：它的卡片是 collection.js 按数据画的 .col-card，不是 .entry，写了自检会报假 warn（条数看 data/collection.js）。 */
   var PAGES = [
     { id: "index", file: "index.html", title: "总览", group: "开始", icon: "overview", tint: "#007AFF", sub: "怎么用这本合集、两种气质、屋主的审美原则", ready: true, tab: true },
-    { id: "color", file: "color.html", title: "色彩", group: "做法", icon: "color", tint: "linear-gradient(135deg,#FF9500,#FF2D55 55%,#AF52DE)", sub: "玻璃风色板、强调色两档、光晕、对比度；小屋暖纸与身份色", ready: true, tab: true, count: 17 },
+    { id: "color", file: "color.html", title: "色彩", group: "做法", icon: "color", tint: "linear-gradient(135deg,#FF9500,#FF2D55 55%,#AF52DE)", sub: "玻璃色板、强调色两档、光晕、对比度、小屋暖纸色板、工具身份色", ready: true, tab: true, count: 17 },
     { id: "type", file: "type.html", title: "排版", group: "做法", icon: "type", tint: "#FF9500", sub: "字体栈、字阶、行宽、中英文空格、楷书巨字", ready: true, count: 16 },
     { id: "layout", file: "layout.html", title: "布局与自适应", group: "做法", icon: "layout", tint: "#30B0C7", sub: "骨架、clamp、大屏等比放大、断点、dvh", ready: true, count: 17 },
     { id: "material", file: "material.html", title: "材质", group: "做法", icon: "material", tint: "#8E8E93", sub: "液态玻璃写法与降级、磨砂放在哪、暖墨阴影", ready: true, count: 11 },
     { id: "interaction", file: "interaction.html", title: "交互", group: "做法", icon: "interaction", tint: "#AF52DE", sub: "分组列表、主题切换、自动保存、输入法、Esc、弹窗", ready: true, tab: true, count: 27 },
     { id: "motion", file: "motion.html", title: "动画", group: "做法", icon: "motion", tint: "#00C7BE", sub: "曲线与时长、FLIP、减弱动效、手写开场", ready: true, count: 17 },
     { id: "3d", file: "3d.html", title: "3D与性能", group: "做法", icon: "cube", tint: "#A2845E", sub: "叠加不替换、两段式探测、看门狗、停稳重画", ready: true, count: 13 },
-    { id: "rejected", file: "rejected.html", title: "否掉的方向", group: "避坑", icon: "rejected", tint: "#FF3B30", sub: "按时间线：否掉了什么、原话、为什么不是那样", ready: true, count: 10 },
+    { id: "rejected", file: "rejected.html", title: "否掉的方向", group: "避坑", icon: "rejected", tint: "#FF3B30", sub: "按时间排列的被否方案、屋主原话和原因", ready: true, count: 10 },
     { id: "method", file: "method.html", title: "做网站的方法", group: "避坑", icon: "method", tint: "#34C759", sub: "验收档位、先量后截图、防假信号、测试静音", ready: true, count: 25 },
     { id: "collection", file: "collection.html", title: "收藏", group: "收藏", icon: "heart", tint: "#FF2D55", sub: "好看的skill、有意思的项目、提示词、老站特效", ready: true, tab: true }
   ];
@@ -138,7 +138,7 @@
       '<input class="search-input" id="star-search" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" ' +
       'aria-controls="star-search-list" aria-label="搜索全站" aria-describedby="star-search-help" placeholder="搜索全站" enterkeyhint="search" autocomplete="off" spellcheck="false">' +
       '<kbd class="search-kbd" aria-hidden="true">/</kbd>' +
-      '<span class="sr-only" id="star-search-help">输入#联想标签；上下键选结果，回车打开，Esc一下退一层</span>' +
+      '<span class="sr-only" id="star-search-help">输入#可以联想标签。上下键选择结果，回车打开，每按一次Esc退一层</span>' +
       "</form></div>";
   }
 
@@ -161,7 +161,7 @@
   side += "</nav>";
   side += '<button type="button" class="top-more" data-more-toggle aria-haspopup="dialog" aria-expanded="false" aria-controls="more-panel">' +
     icon("more") + '<span>更多</span></button>';
-  side += '<div class="side-foot">' + themeControls(1, '<span class="side-ver">v' + VERSION + " · Ysevan</span>") + "</div></aside>";
+  side += '<div class="side-foot">' + themeControls(1, '<span class="side-ver">v' + VERSION + " Ysevan</span>") + "</div></aside>";
 
   /* ---- 底部 tab bar ---- */
   var tab = '<nav class="tabbar" aria-label="快捷导航">';
@@ -186,7 +186,7 @@
     if (q.ready) more += '<li><a class="row" href="' + q.file + '"' + (q.id === current ? ' aria-current="page"' : "") + ">" + block + '<span class="chev">' + icon("chevron") + "</span></a></li>";
     else more += '<li><span class="row" role="link" aria-disabled="true">' + block + '<span class="badge">' + PENDING_LABEL + "</span></span></li>";
   }
-  more += '</ul><h3 class="more-sub">外观</h3>' + themeControls(2) + '<p class="more-ver">v' + VERSION + " · Ysevan</p></div>";
+  more += '</ul><h3 class="more-sub">外观</h3>' + themeControls(2) + '<p class="more-ver">v' + VERSION + " Ysevan</p></div>";
 
   /* ---- ≤900 的整页搜索浮层 + 结果列表（两处共用一个列表）---- */
   var search = '<div class="search-scrim scrim-frost" data-search-close></div>' +

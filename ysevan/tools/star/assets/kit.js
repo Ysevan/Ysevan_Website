@@ -650,7 +650,7 @@
     wrap.appendChild(stat);
     var sr = "共" + weeks + "周，今天在第" + now + "周，已过" + (now - 1) + "周，还剩" + (weeks - now) + "周。";
     var markWeeks = Object.keys(marks).map(Number).sort(function (a, b) { return a - b; });
-    if (markWeeks.length) sr += "有记录的周：" + markWeeks.map(function (k) { return "第" + k + "周" + (marks[k].label ? "：" + marks[k].label : ""); }).join("；") + "。";
+    if (markWeeks.length) sr += markWeeks.map(function (k) { return "第" + k + "周有记录" + (marks[k].label ? "，" + marks[k].label : "") + "。"; }).join("");
     wrap.appendChild(make("p", "sr-only", sr));
 
     /* 遮住的编号：每个字一个槽，先占好最终宽高；展开只动 opacity / transform，行高不变 */

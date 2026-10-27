@@ -695,7 +695,7 @@
       close();
       if (!q) return;
       var n = search(q).length;
-      out.textContent = "进结果页：搜「" + q + "」共" + n + "个结果";
+      out.textContent = "进结果页，搜「" + q + "」共" + n + "个结果";
     }
     function activate(opt) {
       if (!opt) return;
@@ -707,7 +707,7 @@
       var name = opt.getAttribute("data-name");
       close();
       input.value = "";
-      out.textContent = "已打开业务：" + name;
+      out.textContent = "已打开业务，" + name;
     }
 
     input.addEventListener("keydown", function (event) {
@@ -866,7 +866,7 @@
     var resetBtn = $(".ixc-reset", root);
     var dialog = $(".ixc-dialog", root);
     var dialogText = $(".ixc-dialog-text", root);
-    var INITIAL = { title: "专项练习·票据", number: 7, total: 20, answered: 6 };
+    var INITIAL = { title: "专项练习", number: 7, total: 20, answered: 6 };
     var pending = null;
     var fresh = false;
 
@@ -874,7 +874,7 @@
       if (pending) {
         statusEl.textContent = "上次的“" + pending.title + "”做到第" + pending.number + "/" + pending.total + "题、已答" + pending.answered + "题。";
       } else if (fresh) {
-        statusEl.textContent = "新的练习：第1/20题、已答0题。";
+        statusEl.textContent = "新的练习，第1/20题，已答0题。";
       }
       resetBtn.hidden = !!pending;
     }
@@ -1022,7 +1022,7 @@
         var on = r.getAttribute("data-value") === pref;
         r.setAttribute("aria-checked", on ? "true" : "false");
         r.setAttribute("tabindex", on ? "0" : "-1");
-        if (r.getAttribute("data-value") === "auto") r.setAttribute("aria-label", "自动，跟随系统：" + LABEL[resolved()]);
+        if (r.getAttribute("data-value") === "auto") r.setAttribute("aria-label", "自动，跟随系统，当前" + LABEL[resolved()]);
       });
       if (modeNote) modeNote.textContent = pref === "auto" ? "跟随系统，当前为" + LABEL[mode] : "已固定为" + LABEL[mode];
     }
@@ -1035,7 +1035,7 @@
       if (next === pref) return;
       pref = next;
       paintMode();
-      if (announce) say(live, pref === "auto" ? "样例外观已切换为自动，跟随系统：" + LABEL[resolved()] : "样例外观已切换为" + LABEL[pref]);
+      if (announce) say(live, pref === "auto" ? "样例外观已切换为自动，跟随系统，当前" + LABEL[resolved()] : "样例外观已切换为" + LABEL[pref]);
     }
     function setAccent(next, announce) {
       if (next === accent) return;
@@ -1144,18 +1144,18 @@
       var enter = event.key === "Enter" || event.code === "Enter" || event.code === "NumpadEnter";
       if (!enter) return;
       if (event.isComposing || event.keyCode === 229) {
-        write("keydown " + event.key + "  isComposing=" + event.isComposing + "  keyCode=" + event.keyCode + "  → 归输入法，不处理", "is-ime");
+        write("keydown " + event.key + "  isComposing=" + event.isComposing + "  keyCode=" + event.keyCode + "，归输入法，不处理", "is-ime");
       } else {
-        write("keydown Enter  isComposing=false  keyCode=" + event.keyCode + "  → 放行给表单");
+        write("keydown Enter  isComposing=false  keyCode=" + event.keyCode + "，放行给表单");
       }
     });
     input.addEventListener("keyup", function () { imeKeyDown = false; });
     input.addEventListener("blur", function () { imeKeyDown = false; });
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      if (imeKeyDown) { write("submit  → 拦下：这一下回车是选词", "is-ime"); return; }
+      if (imeKeyDown) { write("submit，拦下，这一下回车是选词", "is-ime"); return; }
       var v = input.value.trim();
-      write(v ? "submit  → 已提交「" + v + "」" : "submit  → 框里是空的，什么都不做", "is-ok");
+      write(v ? "submit，已提交「" + v + "」" : "submit，框里是空的，什么都不做", "is-ok");
       input.value = "";
     });
   }
@@ -1173,8 +1173,8 @@
     var state = $(".ixn-state", root);
     if (!btn || !stage) return;
     var TEXT = {
-      on: "黑罩开着：半透明白链接对比度中位4.8–5.2，刚过4.5",
-      off: "黑罩去掉：同一批链接中位只剩2.8–4.0，最差5%低到2.35"
+      on: "黑罩开着，半透明白色链接的对比度中位数4.8到5.2，刚过4.5",
+      off: "黑罩去掉了，同一批链接的中位数只剩2.8到4.0，最差的5%低到2.35"
     };
     function paint(bare, announce) {
       btn.setAttribute("aria-pressed", bare ? "true" : "false");
@@ -1361,10 +1361,10 @@
       scrim.hidden = false;
       box.hidden = false;
       closeBtn.focus({ preventScroll: true });
-      announce("已放大截图" + (idx + 1) + "：" + NAMES[idx] + "（示例）");
+      announce("已放大截图" + (idx + 1) + "，" + NAMES[idx] + "（示例）");
       if (instant() || reduced() || !canAnimate) {
         state = "open";
-        r1.textContent = instant() ? "灯箱：整块瞬间出现（改版前，示意）。" : "灯箱：减弱动效，瞬开。";
+        r1.textContent = instant() ? "灯箱整块瞬间出现（改版前的样子，示意）。" : "减弱动效下灯箱直接打开。";
         return;
       }
       state = "opening";
@@ -1372,7 +1372,7 @@
       if (!clip.w || !clip.h || !sameRatio(img, B)) {
         anims = [fade(scrim, 0, 1, OPEN_MS), fade(box, 0, 1, OPEN_MS)];
         finish = settle(anims[1], OPEN_MS + 120, current(function () { cleanup(); state = "open"; }));
-        r1.textContent = "灯箱：比例对不上，只淡入。";
+        r1.textContent = "比例对不上，灯箱只淡入。";
         return;
       }
       ghost = makeGhost(idx);
@@ -1381,7 +1381,7 @@
       var opts = { duration: OPEN_MS, easing: "linear", fill: "forwards" };
       anims = [ghost.animate(f.outer, opts), ghost.firstChild.animate(f.inner, opts), fade(scrim, 0, 1, OPEN_MS), fade(cap, 0, 1, OPEN_MS), fade(closeBtn, 0, 1, OPEN_MS)];
       finish = settle(anims[0], OPEN_MS + 120, current(function () { cleanup(); state = "open"; }));
-      r1.textContent = "灯箱：从缩略图原位放大（" + OPEN_MS + "ms，" + OPEN_FRAMES + "帧，每帧的裁切在脚本里算好）。";
+      r1.textContent = "灯箱从缩略图原位放大（" + OPEN_MS + "ms，" + OPEN_FRAMES + "帧，每帧的裁切在脚本里算好）。";
     }
     function fullyVisible(el) {
       var r = el.getBoundingClientRect(), p = page.getBoundingClientRect();
@@ -1393,19 +1393,19 @@
       announce("已关闭大图");
       if (state === "opening" || state === "closing") {
         hideNow();
-        r1.textContent = "灯箱：动画中途又关，直接到终态，不倒着缩回去。";
+        r1.textContent = "动画中途又关，灯箱直接到终态，不倒着缩回去。";
         return;
       }
       if (instant() || reduced() || !canAnimate) {
         hideNow();
-        r1.textContent = instant() ? "灯箱：整块瞬间消失（改版前，示意），焦点回到缩略图。" : "灯箱：减弱动效，瞬关，焦点回到缩略图。";
+        r1.textContent = instant() ? "灯箱整块瞬间消失（改版前的样子，示意），焦点回到缩略图。" : "减弱动效下灯箱直接关上，焦点回到缩略图。";
         return;
       }
       state = "closing";
       if (!opener || !fullyVisible(opener)) {
         anims = [fade(box, 1, 0, CLOSE_MS), fade(scrim, 1, 0, CLOSE_MS)];
         finish = settle(anims[0], CLOSE_MS + 120, current(hideNow));
-        r1.textContent = "灯箱：缩略图看不全，只淡出（" + CLOSE_MS + "ms），焦点回到缩略图。";
+        r1.textContent = "缩略图看不全，灯箱只淡出（" + CLOSE_MS + "ms），焦点回到缩略图。";
         return;
       }
       var clip = rel(opener), img = rel($(".ixlb-shot", opener));
@@ -1415,7 +1415,7 @@
       var opts = { duration: CLOSE_MS, easing: "linear", fill: "forwards" };
       anims = [ghost.animate(f.outer, opts), ghost.firstChild.animate(f.inner, opts), fade(scrim, 1, 0, CLOSE_MS), fade(cap, 1, 0, CLOSE_MS), fade(closeBtn, 1, 0, CLOSE_MS)];
       finish = settle(anims[0], CLOSE_MS + 120, current(hideNow));
-      r1.textContent = "灯箱：缩回原位（" + CLOSE_MS + "ms，" + CLOSE_FRAMES + "帧），焦点回到缩略图。";
+      r1.textContent = "灯箱缩回原位（" + CLOSE_MS + "ms，" + CLOSE_FRAMES + "帧），焦点回到缩略图。";
     }
     page.addEventListener("click", function (e) {
       var t = e.target.closest ? e.target.closest(".ixlb-thumb") : null;
@@ -1431,7 +1431,7 @@
     window.addEventListener("resize", function () { if (state === "open") layoutBig(); });
     instantBtn.addEventListener("click", function () {
       var on = togglePressed(instantBtn);
-      announce(on ? "改版前：整块瞬间出现（示意）" : "现行：原位放大、缩回原位");
+      announce(on ? "已换成改版前的样子，整块瞬间出现（示意）" : "已换回现行做法，原位放大、缩回原位");
     });
 
     /* 复制气泡：插入后量一次；左右离裁切它的祖先边不足4px就整体平移回来，箭头按同一个量反向移、仍指着徽章中心；
@@ -1465,8 +1465,8 @@
       if (below) el.classList.add("is-below");
       bub = el;
       var s = Math.round(Math.abs(shift));
-      r2.textContent = "气泡：" + (s ? (shift > 0 ? "往右" : "往左") + "躲了" + s + "px，箭头反向移" + s + "px、仍指着「" + btn.getAttribute("data-code") + "」" : "居中，不用躲") +
-        (below ? "；上方被吸顶栏挡住，翻到下方。" : "；在上方。");
+      r2.textContent = "气泡" + (s ? (shift > 0 ? "往右" : "往左") + "躲了" + s + "px，箭头反向移" + s + "px，仍指着「" + btn.getAttribute("data-code") + "」" : "居中，不用躲") +
+        (below ? "，上方被吸顶栏挡住，翻到下方。" : "，在上方。");
       var reduce = reduced();
       bubTimer = setTimeout(function () {
         if (bub !== el) return;
@@ -1529,13 +1529,13 @@
       if (current < 0) {
         colEmpty.hidden = false;
         colBody.hidden = true;
-        readout.textContent = "右侧第三栏（示意）：点一行任务，详情挤进右边这条窄栏。";
+        readout.textContent = "右侧第三栏（示意），点一行任务，详情会挤进右边这条窄栏。";
         return;
       }
       colEmpty.hidden = true;
       colBody.hidden = false;
       colBody.innerHTML = detail(TASKS[current], true);
-      readout.textContent = "右侧第三栏（示意）：「" + TASKS[current].name + "」的名字被截断" + cut(colBody) + "处，主区右边空着一大片。";
+      readout.textContent = "右侧第三栏（示意），「" + TASKS[current].name + "」的名字被截断" + cut(colBody) + "处，主区右边空着一大片。";
     }
     function closeDlg(silent) {
       if (dlg.hidden) return;
@@ -1545,7 +1545,7 @@
       timer = setTimeout(function () { dlg.hidden = true; scrim.hidden = true; }, 260);
       if (opener) opener.focus({ preventScroll: true });
       if (!silent && current >= 0) {
-        readout.textContent = "居中对话框：关上了，焦点回到「" + TASKS[current].name + "」那一行。";
+        readout.textContent = "居中对话框已关上，焦点回到「" + TASKS[current].name + "」那一行。";
         announce("已关闭详情，焦点回到「" + TASKS[current].name + "」");
       }
     }
@@ -1561,8 +1561,8 @@
       scrim.classList.add("is-on");
       dlg.classList.add("is-on");
       xBtn.focus({ preventScroll: true });
-      readout.textContent = "居中对话框：「" + TASKS[i].name + "」的名字截断" + cut(dlgBody) + "处，长名字可以折行；正文分两列，只有正文区滚动。";
-      announce("已打开详情：" + TASKS[i].name);
+      readout.textContent = "居中对话框，「" + TASKS[i].name + "」的名字截断" + cut(dlgBody) + "处，长名字可以折行。正文分两列，只有正文区滚动。";
+      announce("已打开详情，" + TASKS[i].name);
     }
     radios($(".ixd-seg", root), function (v) {
       closeDlg(true);
@@ -1574,7 +1574,7 @@
         else r.removeAttribute("aria-current");
       });
       if (v === "column") paintCol();
-      else readout.textContent = "居中对话框：点一行任务看详情。";
+      else readout.textContent = "居中对话框，点一行任务看详情。";
       announce(v === "column" ? "已切到右侧第三栏（示意）" : "已切到居中对话框");
     });
     rows.forEach(function (row, i) {
@@ -1590,7 +1590,7 @@
     xBtn.addEventListener("click", function () { closeDlg(); });
     scrim.addEventListener("click", function () { closeDlg(); });
     doneBtn.addEventListener("click", function () {
-      announce("示例：「" + TASKS[current].name + "」标记完成");
+      announce("示例，「" + TASKS[current].name + "」已标记完成");
       closeDlg();
     });
     root.addEventListener("keydown", function (e) {
@@ -1624,7 +1624,7 @@
     function paint() {
       count.textContent = String(pass.length);
       count.classList.toggle("is-many", pass.length > 1);
-      trail.textContent = pass.length ? "停过：" + pass.join(" → ") : "停过：还没开始";
+      trail.textContent = pass.length ? "依次停在" + pass.join("、") : "还没开始";
     }
     radios($(".ixts-seg", root), function (v) {
       var many = v === "many";
@@ -1633,7 +1633,7 @@
       else { art.setAttribute("aria-hidden", "true"); art.removeAttribute("role"); art.removeAttribute("aria-label"); }
       pass = [];
       paint();
-      announce(many ? "反例：整张卡多个可聚焦（示意）" : "现行：只有「打开刷刷」可聚焦");
+      announce(many ? "已换成反例，整张卡上多处可聚焦（示意）" : "已换回现行做法，只有打开刷刷那条链接可聚焦");
     });
     start.addEventListener("click", function () {
       start.focus();
@@ -1652,7 +1652,7 @@
     });
     openLink.addEventListener("click", function (e) {
       e.preventDefault();
-      announce("示例链接：真的小屋会在新标签页打开刷刷");
+      announce("这是示例链接，不跳转。真的小屋会在同一个标签页打开刷刷");
     });
     paint();
   }
@@ -1703,10 +1703,10 @@
     }
     function setSpin(t) { if (t !== spinText) { spinText = t; out.spin.textContent = t; } }
     function stopReason() {
-      if (reduced()) return "减弱动效：不自转";
-      if (pressed) return "停了：手按着";
-      if (focusIn) return "停了：键盘焦点在球里";
-      if (hovering) return "停了：鼠标停在卡上";
+      if (reduced()) return "减弱动效，不自转";
+      if (pressed) return "停了，手按着";
+      if (focusIn) return "停了，键盘焦点在球里";
+      if (hovering) return "停了，鼠标停在卡上";
       return "";
     }
     function verdict(text, cls) { out.verdict.textContent = text; out.verdict.className = cls || ""; }
@@ -1787,7 +1787,7 @@
       var d = Math.hypot(e.clientX - pressed.x0, e.clientY - pressed.y0);
       var thr = pressed.type === "touch" ? 8 : 4;
       out.dist.textContent = Math.round(d) + "px";
-      verdict(d > thr ? "拖动中（已超过" + thr + "px）" : "还算点击（≤" + thr + "px）", d > thr ? "is-drag" : "is-click");
+      verdict(d > thr ? "拖动中（已超过" + thr + "px）" : "还算点击（不超过" + thr + "px）", d > thr ? "is-drag" : "is-click");
       apply();
     });
     function end(e, cancelled) {
@@ -1802,14 +1802,14 @@
       suppress = true;
       setTimeout(function () { suppress = false; }, 0);
       if (d <= thr) {
-        if (p.card) { verdict("点击（位移" + Math.round(d) + "px ≤ " + thr + "px）", "is-click"); openCard(p.card); }
+        if (p.card) { verdict("点击（位移" + Math.round(d) + "px，不超过" + thr + "px）", "is-click"); openCard(p.card); }
         else verdict("点在空白处（位移" + Math.round(d) + "px），不打开");
       } else {
         var s = p.samples, a = s[0], b = s[s.length - 1];
         var span = (b.t - a.t) / 1000;
         vel = !reduced() && span > 0.01 ? clamp((b.x - a.x) * K / span, -6, 6) : 0;
-        verdict("拖动（位移" + Math.round(d) + "px ＞ " + thr + "px），不算点击", "is-drag");
-        announce("拖动：位移" + Math.round(d) + "像素，超过" + thr + "像素，不算点击");
+        verdict("拖动（位移" + Math.round(d) + "px，超过" + thr + "px），不算点击", "is-drag");
+        announce("拖动，位移" + Math.round(d) + "像素，超过" + thr + "像素，不算点击");
       }
       kick();
     }
@@ -1855,7 +1855,7 @@
     ball.addEventListener("click", function (e) {
       var c = e.target.closest ? e.target.closest(".ixg-card") : null;
       if (!c || suppress) return;
-      verdict("键盘：回车／空格打开", "is-click");
+      verdict("键盘，回车或空格打开", "is-click");
       openCard(c);
     });
     if ("IntersectionObserver" in window) {
@@ -1980,17 +1980,17 @@
       say("选了「" + o.textContent + "」，浮层收起");
     }
     function escOnce() {
-      if (drawerOn()) { closeDrawer(); say("Esc → 关目录抽屉，焦点还给「目录」按钮"); return; }
-      if (!pop.hidden) { closePop(); say("Esc → 收起联想浮层，框里的字留着"); return; }
-      if (!row.hidden && input.value) { input.value = ""; paintStack(); say("Esc → 清空框里的字"); return; }
-      if (!row.hidden) { closeRow(); say("Esc → 收起整行搜索，焦点还给「搜索」按钮"); return; }
-      say("Esc → 没有可退的了，什么都不做");
+      if (drawerOn()) { closeDrawer(); say("按Esc关目录抽屉，焦点还给目录按钮"); return; }
+      if (!pop.hidden) { closePop(); say("按Esc收起联想浮层，框里的字留着"); return; }
+      if (!row.hidden && input.value) { input.value = ""; paintStack(); say("按Esc清空框里的字"); return; }
+      if (!row.hidden) { closeRow(); say("按Esc收起整行搜索，焦点还给搜索按钮"); return; }
+      say("按Esc，已经没有可退的，什么都不做");
     }
     root.addEventListener("keydown", function (e) {
       if (e.key !== "Escape") return;
       if (composing(e) || sim) {
         if (sim) setSim(false);
-        say("Esc（组字中）→ 只取消选词，什么都不关", "is-warn");
+        say("组字中按Esc，只取消选词，什么都不关", "is-warn");
         return;
       }
       e.preventDefault();
@@ -2004,7 +2004,7 @@
       if (drawerOn()) closeDrawer();
       else { openDrawer(); logTo(log, "打开目录抽屉"); }
     });
-    scrim.addEventListener("click", function () { closeDrawer(); logTo(log, "点遮罩 → 关目录抽屉"); });
+    scrim.addEventListener("click", function () { closeDrawer(); logTo(log, "点遮罩关目录抽屉"); });
     input.addEventListener("input", renderPop);
     input.addEventListener("keydown", function (e) {
       if (composing(e) || sim) return;
@@ -2046,11 +2046,11 @@
       input.value = "存";
       renderPop();
       openDrawer();
-      say("摆好了四层：整行搜索、框里的「存」、联想浮层、目录抽屉。现在连按Esc");
+      say("摆好了四层，整行搜索、框里的「存」、联想浮层、目录抽屉。现在连按Esc");
     });
     imeBtn.addEventListener("click", function () {
       setSim(!sim);
-      logTo(log, sim ? "开始组字：拼音「cun」还没上屏" : "不再模拟组字", sim ? "is-warn" : "");
+      logTo(log, sim ? "开始组字，拼音「cun」还没上屏" : "不再模拟组字", sim ? "is-warn" : "");
     });
     paintStack();
   }
@@ -2098,8 +2098,8 @@
         if (t && !(onlyWhenShown && scatterBox.hidden)) hear(prefix + t, cls);
       }).observe(region, { childList: true, characterData: true, subtree: true });
     }
-    watch(live, "播报：", "is-say", false);
-    scat.forEach(function (p) { watch(p, "播报：", "is-noise", true); });
+    watch(live, "播报，", "is-say", false);
+    scat.forEach(function (p) { watch(p, "播报，", "is-noise", true); });
     function speak(region, text) {
       region.textContent = "";
       setTimeout(function () { region.textContent = text; }, 40);
@@ -2119,11 +2119,11 @@
       if (el.hasAttribute("aria-pressed")) return "切换按钮「" + name + "」，" + (el.getAttribute("aria-pressed") === "true" ? "已按下" : "未按下");
       return "按钮「" + name + "」";
     }
-    page.addEventListener("focusin", function (e) { hear("焦点：" + describe(e.target), "is-focus"); });
+    page.addEventListener("focusin", function (e) { hear("焦点落在" + describe(e.target), "is-focus"); });
     start.addEventListener("click", function () {
       ear.innerHTML = "";
       start.focus();
-      hear("准备好了：现在按Tab", "is-focus");
+      hear("准备好了，现在按Tab", "is-focus");
     });
     function toMain(e) { e.preventDefault(); main.focus({ preventScroll: true }); }
     skip.addEventListener("click", toMain);
@@ -2133,7 +2133,7 @@
         filter = c.getAttribute("data-f");
         chips.forEach(function (x) { x.setAttribute("aria-pressed", x === c ? "true" : "false"); });
         render();
-        hear("状态：「" + NAMES[filter] + "」已按下", "is-focus");
+        hear("「" + NAMES[filter] + "」变为已按下", "is-focus");
         if (!scatterBox.hidden) scat.forEach(function (p) { var k = p.getAttribute("data-k"); speak(p, NAMES[k] + count(k) + "项"); });
         else speak(live, "显示" + count(filter) + "项");
       });
@@ -2158,13 +2158,13 @@
         f[e.shiftKey ? (i <= 0 ? f.length - 1 : i - 1) : (i + 1) % f.length].focus({ preventScroll: true });
       }
     });
-    check.addEventListener("change", function () { hear("状态：" + (check.checked ? "已勾选" : "未勾选"), "is-focus"); });
+    check.addEventListener("change", function () { hear("状态变为" + (check.checked ? "已勾选" : "未勾选"), "is-focus"); });
     sw.setAttribute("aria-checked", doc.documentElement.getAttribute("data-mode") === "dark" ? "true" : "false");
     sw.addEventListener("click", function () {
       var on = sw.getAttribute("aria-checked") !== "true";
       sw.setAttribute("aria-checked", on ? "true" : "false");
       page.setAttribute("data-mode", on ? "dark" : "light");
-      speak(live, "外观：" + (on ? "深色" : "浅色"));
+      speak(live, "外观已切换为" + (on ? "深色" : "浅色"));
     });
     markBtn.addEventListener("click", function () {
       var on = togglePressed(markBtn);
@@ -2174,7 +2174,7 @@
     scatterBtn.addEventListener("click", function () {
       var on = togglePressed(scatterBtn);
       scatterBox.hidden = !on;
-      announce(on ? "反例：每个筛选按钮各播各的（示意），点一下筛选看看" : "现行：播报集中在一条");
+      announce(on ? "已换成反例，每个筛选按钮各播各的（示意），点一下筛选看看" : "已换回现行做法，播报集中在一条");
     });
     render();
   }
@@ -2204,7 +2204,7 @@
     function signature(ids) {
       var h = 0x811c9dc5, s = ids.join(",");
       for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
-      return ids.length + "题·" + ids[0] + "–" + ids[ids.length - 1] + "·" + ("0000000" + h.toString(16)).slice(-8);
+      return ids.length + ":" + ids[0] + ":" + ids[ids.length - 1] + ":" + ("0000000" + h.toString(16)).slice(-8);
     }
     function paintSave() {
       saveEl.textContent = save ? "{ index: " + save.index + ", signature: \"" + save.signature + "\" }（「" + NAMES[save.set] + "」第" + (save.index + 1) + "题）" : "还没有存档";
@@ -2222,7 +2222,7 @@
           badge.className = "ixr-badge";
         }
       });
-      note.textContent = mode === "resume" ? (save ? "胶囊写着点进去会到哪：同一套题续上，换了范围从第1题开始。" : "还没做过，点进去从第1题开始。") : "反例（示意）：入口上什么都不写，点进去一律从第1题开始。";
+      note.textContent = mode === "resume" ? (save ? "胶囊上写着点进去会到哪里，同一套题接着做，换了范围从第1题开始。" : "还没做过，点进去从第1题开始。") : "反例（示意），入口上什么都不写，点进去一律从第1题开始。";
       paintSave();
     }
     function saveState() {
@@ -2231,7 +2231,7 @@
     }
     function paintQuiz() {
       qno.textContent = "第" + (cur.index + 1) + "/" + cur.ids.length + "题";
-      stem.textContent = "第" + cur.ids[cur.index] + "题（假题）：" + STEMS[cur.ids[cur.index] - 1];
+      stem.textContent = "第" + cur.ids[cur.index] + "题（假题），" + STEMS[cur.ids[cur.index] - 1];
     }
     function enter(set) {
       var ids = SETS[set], sig = signature(ids), idx = 0, msg = "", warn = false;
@@ -2240,7 +2240,7 @@
         else { msg = "题目范围和上次不一样，从第1题开始"; warn = true; }
         if (save.signature === sig) idx = save.index;
       } else if (mode === "restart" && save && save.index > 0) {
-        logTo(log, "静默丢了进度：上次在「" + NAMES[save.set] + "」做到第" + (save.index + 1) + "题，这次又从第1题开始（示意）", "is-bad");
+        logTo(log, "进度被悄悄丢掉了，上次在「" + NAMES[save.set] + "」做到第" + (save.index + 1) + "题，这次又从第1题开始（示意）", "is-bad");
       }
       cur = { set: set, ids: ids, index: idx };
       saveState();
@@ -2251,14 +2251,14 @@
       toast.className = "ixr-toast" + (warn ? " is-warn" : "");
       paintQuiz();
       qno.focus({ preventScroll: true });
-      logTo(log, "进入「" + NAMES[set] + "」：第" + (idx + 1) + "/" + ids.length + "题", msg ? (warn ? "is-warn" : "is-ok") : "");
+      logTo(log, "进入「" + NAMES[set] + "」，第" + (idx + 1) + "/" + ids.length + "题", msg ? (warn ? "is-warn" : "is-ok") : "");
       announce((msg ? msg + "。" : "") + "第" + (idx + 1) + "/" + ids.length + "题");
     }
     function exit() {
       quiz.hidden = true;
       home.hidden = false;
       paintHome();
-      logTo(log, "退出：存档停在第" + (save ? save.index + 1 : 1) + "题");
+      logTo(log, "退出，存档停在第" + (save ? save.index + 1 : 1) + "题");
       var back = entries.filter(function (b) { return b.getAttribute("data-set") === cur.set; })[0];
       if (back) back.focus({ preventScroll: true });
       announce("已退出，回到练习方式");
@@ -2287,7 +2287,7 @@
       mode = v;
       if (!quiz.hidden) { quiz.hidden = true; home.hidden = false; }
       paintHome();
-      announce(v === "resume" ? "现行：默认续上" : "反例：默认从头（示意）");
+      announce(v === "resume" ? "已换回现行做法，默认接着做" : "已换成反例，默认从头（示意）");
     });
     paintHome();
   }
@@ -2307,12 +2307,12 @@
     var R6 = "没有一个项目有语音输入，不为它新造麦克风功能";
     var R4 = "各家都没做";
     var PROJ = [
-      ["plan", [["d", "只做手感、保持单选：全部任务的状态筛选、笔记页的标签筛选"], ["d", "挪到笔记标签（任务没有标签字段）"], ["d", "挪到笔记标签（任务没有标签字段）"],
-        ["n", "正文编辑区有，但工具条和字号偏好都得新造，桌面上也没有「键盘顶部」"], ["n", "全仓没有任务卡片，整行倾斜会让「按的是哪个」变模糊；回顾页的格子点了没反应，给按压反馈等于让不能点的东西看起来能点"], ["n", R6]]],
+      ["plan", [["d", "只做手感，保持单选，用在全部任务的状态筛选和笔记页的标签筛选"], ["d", "挪到笔记标签（任务没有标签字段）"], ["d", "挪到笔记标签（任务没有标签字段）"],
+        ["n", "正文编辑区有，但工具条和字号偏好都得新造，桌面上也没有「键盘顶部」"], ["n", "全仓没有任务卡片，整行倾斜会让人分不清按的是哪个。回顾页的格子点了没反应，给按压反馈等于让不能点的东西看起来能点"], ["n", R6]]],
       ["刷刷", [["b", "专项练习做过，屋主看后撤回"], ["d", "搜题框"], ["d", "搜题框"], ["n", R4], ["d", "首页「练习方式」列表行"], ["n", R6]]],
       ["岗岗", [["n", "分类只是单选切换"], ["n", "没有标签输入"], ["d", "顶栏搜索联想（「以标签插入正文」那一半不做）"], ["n", "没有字号调节，字号靠clamp()随窗口变"], ["n", "没有首页，目录是列表不是卡片"], ["n", R6]]],
       ["card", [["n", null], ["n", null], ["n", null], ["n", R4], ["d", "Cover Flow正中那张和查看器里的卡（两侧侧立的卡不做）"], ["n", R6]]],
-      ["old", [["n", null], ["n", null], ["d", "首页搜索"], ["n", R4], ["d", "素材卡；老站友链、ACGN横条、游戏入口。只接有真实去处的卡：链接是#的模板占位卡点了哪也不去，加反馈只会让人以为坏了"], ["n", R6]]],
+      ["old", [["n", null], ["n", null], ["d", "首页搜索"], ["n", R4], ["d", "素材卡，老站友链、ACGN横条、游戏入口。只接有真实去处的卡，链接是#的模板占位卡点了哪里也不去，加了反馈只会让人以为坏了"], ["n", R6]]],
       ["小屋", [["n", "随笔和归档没有筛选，新造一排等于把禁掉的标签云补回来"], ["n", null], ["n", null], ["n", R4], ["n", "工具页每个工具只有一个Tab位，做按压等于多造入口"], ["n", R6]]]
     ];
     var WORD = { d: "做了", b: "撤回", n: "没做" };
@@ -2342,8 +2342,8 @@
           (c[1] ? "<span>" + esc(c[1]) + "</span>" : '<span class="is-quiet">没单列理由</span>') + "</li>";
       }).join("");
       var sum = "做了" + done + "家" + (back ? "、撤回" + back + "家" : "") + "、没做" + no + "家";
-      detail.innerHTML = '<p class="ixu-dh"><b>' + MARK[i] + esc(COMP[i]) + "</b>：" + sum + '</p><ul class="ixu-list">' + items + "</ul>";
-      if (speak) announce(MARK[i] + COMP[i] + "：" + sum);
+      detail.innerHTML = '<p class="ixu-dh"><b>' + MARK[i] + esc(COMP[i]) + "</b>，" + sum + '</p><ul class="ixu-list">' + items + "</ul>";
+      if (speak) announce(MARK[i] + COMP[i] + "，" + sum);
     }
     thead.addEventListener("click", function (e) {
       var b = e.target.closest ? e.target.closest("button[data-col]") : null;

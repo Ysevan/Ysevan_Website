@@ -115,8 +115,8 @@
         c.style.zIndex = String(z);
       });
       read.textContent = mode === "flow"
-        ? "正中第" + (sel + 1) + "张：rotateX 0°、rotateY 0°，端正。"
-        : "正中第" + (sel + 1) + "张：跟着球面倾了" + TILT + "°，正对你的这张是歪的。";
+        ? "正中是第" + (sel + 1) + "张，rotateX 0°、rotateY 0°，摆得端正。"
+        : "正中是第" + (sel + 1) + "张，跟着球面倾斜了" + TILT + "°，正对的这张是歪的。";
     }
     function step(k) {
       var next = Math.max(0, Math.min(n - 1, sel + k));
@@ -129,7 +129,7 @@
       mode = b.getAttribute("data-up-mode");
       box.setAttribute("data-v", mode);
       layout();
-      announce(mode === "flow" ? "Cover Flow：正中那张端正" : "球形选卡（示意）：正中那张跟着球面倾着");
+      announce(mode === "flow" ? "已换成Cover Flow，正中那张端正" : "已换成球形选卡（示意），正中那张跟着球面倾斜");
     });
     $$("[data-up-step]").forEach(function (b) {
       b.addEventListener("click", function () { step(parseInt(b.getAttribute("data-up-step"), 10)); });
@@ -165,9 +165,9 @@
     var veil = $(".me-ol-veil", stage);
     var PAGES = [{ t: "小屋", l: "这是谁的地方，可以随便逛。" }, { t: "随笔", l: "写写随笔，按日子往下排。" }];
     var READ = {
-      slab: "实心双开门：门板、把手、中缝都是新造的物件，站里别处没有它们。",
-      lattice: "纸色格心门：换了纸色，还是一扇门——格心、黄铜圆钮照样是外来的。",
-      veil: "洇一层纸：用的是小屋自己的水彩——纸、水痕、颜料边，没有多出一件东西。"
+      slab: "实心双开门，门板、把手和中缝都是新造的物件，站里别处没有。",
+      lattice: "纸色格心门，换成了纸色，但还是一扇门，格心和黄铜圆钮仍是站里原本没有的东西。",
+      veil: "洇一层纸，用的是小屋本来就有的水彩元素，纸、水痕和颜料边，没有新加任何物件。"
     };
     var kind = "veil";
     var page = 0;
@@ -187,7 +187,7 @@
       return function () {
         if (my !== gen) return;     /* 换了一代（中途又点了）：旧的收尾作废 */
         clear();
-        announce("已换到：" + PAGES[page].t);
+        announce("已换到" + PAGES[page].t);
       };
     }
     radios($('[aria-label="换页转场"]'), function (b) {
@@ -200,7 +200,7 @@
       gen++;
       var my = gen;
       clear();
-      if (reduced() || !canAnimate) { swap(); announce("已换到：" + PAGES[page].t); return; }
+      if (reduced() || !canAnimate) { swap(); announce("已换到" + PAGES[page].t); return; }
       var fin = done(my);
       if (kind === "veil") {
         var W = stage.clientWidth;
@@ -243,8 +243,8 @@
       var v = b.getAttribute("data-ds");
       box.setAttribute("data-v", v);
       read.textContent = v === "keep"
-        ? "原样：三张都是屋主画的，少色、几笔线——这就是小屋的手作气质。"
-        : "当成占位（示意）：评审单上多了三条「待换图」，下一个人照单换掉，屋主那只手就从站上没了。";
+        ? "原样，三张都是屋主画的，颜色少，线条少，这就是小屋的手作气质。"
+        : "当成占位图（示意），评审单上多了三条待换图，下一个人会照单换掉，站上就没有屋主自己画的东西了。";
       announce(read.textContent);
     });
   })();
@@ -263,7 +263,7 @@
         if (part) part.hidden = !on;
         if (on) n++;
       });
-      read.textContent = n === 0 ? "名片：只交付一件事。" : "多了" + n + "件：按「明确不存在的元素」清单，这" + n + "件都要删。";
+      read.textContent = n === 0 ? "名片只告诉访客一件事。" : "多了" + n + "件，按「明确不存在的元素」清单，这" + n + "件都要删。";
       if (speak) announce(read.textContent);
     }
     chips.forEach(function (c) { c.addEventListener("click", function () { toggle(c); paint(true); }); });
@@ -279,8 +279,8 @@
     var v = "paper";
     function paintRead() {
       read.textContent = v === "paper"
-        ? "借结构：纸底、橄榄墨；身份色只落在序号、主操作这类小面积上。"
-        : "连视觉一起借（示意）：大黑底、戏剧化渐变、发光的「产品照」——和暖纸是两套语言。";
+        ? "只借结构，纸底、橄榄墨，身份色只用在序号、主操作这类小面积上。"
+        : "连视觉一起借（示意），大黑底、戏剧化渐变和发光的产品照，和暖纸底是两种风格。";
     }
     radios($('[aria-label="借什么"]'), function (b) {
       v = b.getAttribute("data-bs");
@@ -294,7 +294,7 @@
         var list = chips.filter(function (x) { return x.getAttribute("aria-pressed") === "true"; })
           .map(function (x) { return x.getAttribute("data-bs-hl"); });
         box.setAttribute("data-hl", list.join(" "));
-        announce(c.textContent + (on ? "：已标出" : "：取消标出"));
+        announce(c.textContent + (on ? "，已标出" : "，取消标出"));
       });
     });
     paintRead();
@@ -314,17 +314,17 @@
     var extra = $("[data-six-extra]");
     var read = $("[data-six-read]");
     var P = {
-      1: { n: "名片优先", t: "门厅只交付一件事：「这是谁的地方，可以随便逛」。不放任何列表、预览、统计、引导按钮。", b: "加了随笔预览和「开始探索」引导按钮。" },
-      2: { n: "少即是真", t: "每个元素要么承载内容，要么承载导航。唯一的例外是四处绿植装饰（右下角那株）：不占布局、不接事件、不带动画。", b: "加了什么都不承载的角标和装饰串。" },
-      3: { n: "手作气质，工程克制", t: "楷 / 行楷 / 宋只出现在少数标题与数字上，正文一律黑体；饱和色严格限量、限位置。", b: "正文也用楷书，句子刷成饱和的红，色块换成亮渐变。" },
-      4: { n: "零固定高度", t: "内容多就往下长，内容少就居中留白。点「多写两行」看卡片往下长；再看反例。", b: "卡片写死了高度，多出来的字被裁掉。" },
+      1: { n: "名片优先", t: "门厅只告诉访客一件事，「这是谁的地方，可以随便逛」。不放任何列表、预览、统计和引导按钮。", b: "加了随笔预览和开始探索引导按钮。" },
+      2: { n: "少即是真", t: "每个元素要么承载内容，要么承载导航。唯一的例外是四处绿植装饰（右下角那株），不占布局，不响应事件，不带动画。", b: "加了什么都不承载的角标和装饰串。" },
+      3: { n: "手作气质，工程克制", t: "楷体、行楷和宋体只用在少数标题和数字上，正文一律用黑体。饱和色严格限制用量和位置。", b: "正文也用楷书，句子刷成饱和的红，色块换成亮渐变。" },
+      4: { n: "零固定高度", t: "内容多就往下长，内容少就居中留白。点多写两行看卡片变高，再看反例。", b: "卡片写死了高度，多出来的字被裁掉。" },
       5: { n: "不阻塞", t: "开场动画、自托管字体、装饰SVG，三者都不能挡住内容首屏，也不能延迟数据获取。", b: "等字体、等开场动画，首屏先白着。" },
-      6: { n: "两个时辰，一间屋子", t: "夜里不是反相，是同一间屋子的夜里：底沉进冷夜，字和灯仍是暖的。切换入口是顶栏的墙壁开关。", b: "" }
+      6: { n: "两个时辰，一间屋子", t: "夜里不做反相，是同一间屋子的夜晚，底色换成冷色，字和灯仍是暖色。切换入口是顶栏的墙壁开关。", b: "" }
     };
     var cur = 1;
     function paintRead() {
       var isBad = scene.classList.contains("is-bad") || scene.classList.contains("is-invert");
-      read.textContent = P[cur].n + "：" + (isBad ? "反例（示意）——" + (cur === 6 ? "整块反相，暖纸成了冷灰、橄榄成了紫。" : P[cur].b) : "现行。");
+      read.textContent = P[cur].n + "，" + (isBad ? "反例（示意），" + (cur === 6 ? "整块反相，暖纸成了冷灰、橄榄成了紫。" : P[cur].b) : "现行做法。");
     }
     function setTab(k, focus) {
       cur = k;
@@ -382,7 +382,7 @@
       scene.setAttribute("data-mode", m === "night" ? "dark" : "light");
       scene.classList.toggle("is-invert", m === "invert");
       paintRead();
-      announce(m === "night" ? "夜里：冷夜暖灯" : m === "invert" ? "反相（示意）" : "白天");
+      announce(m === "night" ? "夜里，冷夜暖灯" : m === "invert" ? "反相（示意）" : "白天");
     });
     setTab(1, false);
   })();
@@ -440,8 +440,8 @@
       d.putImageData(out, 0, 0);
       box.setAttribute("data-diff", String(diff));
       read.textContent = diff === 0
-        ? "差异像素0：降级的终点就是今天那一页。"
-        : "差异像素" + diff.toLocaleString("en-US") + "（共" + (W * H).toLocaleString("en-US") + "）：降级档的页面不等于今天那一页，不合格。";
+        ? "差异像素0，降级后和改动前的页面完全相同。"
+        : "差异像素" + diff.toLocaleString("en-US") + "（共" + (W * H).toLocaleString("en-US") + "），降级档的页面和改动前不一样，不合格。";
       if (speak) announce(read.textContent);
     }
     radios($('[aria-label="降级怎么写"]'), function (b) { run(b.getAttribute("data-de"), true); });
@@ -460,7 +460,7 @@
     var WORK = [["周二", "交季度报表"], ["周四", "评审会纪要"], ["周五", "更新柜面手册"]];
     var mode = "own";
     function li(day, txt, work) {
-      return '<li class="' + (work ? "is-work" : "") + '"><i aria-hidden="true"></i><span>' + esc(txt) + "</span><small>" + esc(day) + (work ? " · 工作" : "") + "</small></li>";
+      return '<li class="' + (work ? "is-work" : "") + '"><i aria-hidden="true"></i><span>' + esc(txt) + "</span><small>" + esc(day) + (work ? "（工作）" : "") + "</small></li>";
     }
     function paint(speak) {
       var locked = past.getAttribute("aria-pressed") === "true";
@@ -468,14 +468,14 @@
       LIFE.forEach(function (x) { html += li(x[0], x[1], false); });
       if (mode === "merge") {
         if (!locked) WORK.forEach(function (x) { html += li(x[0], x[1], true); });
-        else html += '<li class="is-trace"><i aria-hidden="true"></i><span>工作库已上锁，3件看不了</span><small>示意：这也是痕迹</small></li>';
+        else html += '<li class="is-trace"><i aria-hidden="true"></i><span>工作库已上锁，3件看不了</span><small>示意，这也是痕迹</small></li>';
       }
       listEl.innerHTML = html;
-      if (mode === "merge" && !locked) sum.textContent = "本周完成：工作" + WORK.length + " · 生活" + LIFE.length;
+      if (mode === "merge" && !locked) sum.textContent = "本周完成工作" + WORK.length + "件，生活" + LIFE.length + "件";
       else sum.textContent = "本周完成" + LIFE.length + "件";
-      if (mode === "own") read.textContent = "只看当前库：往事怎么变，回顾页都一样，也没有另一个库存在过的痕迹。";
-      else if (locked) read.textContent = "被否的设计：因为三个月前设过口令，这次回顾里没有工作，还多了一行「看不了」——你想得起为什么吗？";
-      else read.textContent = "被否的设计：因为工作库从没设过口令，回顾里混进了工作。哪天设了口令，它们就悄悄消失。";
+      if (mode === "own") read.textContent = "只看当前库，往事怎么变，回顾页都一样，也看不出另一个库存在过。";
+      else if (locked) read.textContent = "被否的设计。因为三个月前设过口令，这次回顾里没有工作，还多了一行看不了，用户很难想起是为什么。";
+      else read.textContent = "被否的设计。因为工作库从没设过口令，回顾里混进了工作。哪天设了口令，这些工作就会从回顾里消失。";
       box.setAttribute("data-v", mode);
       if (speak) announce(read.textContent);
     }
@@ -491,10 +491,10 @@
     var stage = $("[data-dv-stage]", box);
     var facts = $("[data-dv-facts]", box);
     var DEV = {
-      laptop: { name: "笔记本", w: 2552, h: 1274, dpr: 1.5, gpu: "RTX 4060 Laptop", scale: "1.45（封顶；1440×1.45＝2088起就封顶）", d3: "严格探测直接通过，走完整档", use: "只有这档看得出1.45封顶后的样子；比Mac紧18%是封顶的代价，不许写成「一致」。带工具栏的真实高度测2552×1180。" },
-      desk: { name: "台式", w: 2040, h: 1019, dpr: 1.25, gpu: "Microsoft Basic Render Driver（WARP软件渲染，没显卡）", scale: "1.417（2040÷1440，未封顶）", d3: "严格探测拿不到，宽松拿得到", use: "带软件渲染旗标测，量长帧；磨砂在这台是瓶颈。物理2560宽×缩放125%。带工具栏的真实高度测2040×930。" },
-      mac: { name: "Mac（开发机）", w: 1440, h: 900, dpr: null, gpu: "—", scale: "1（基准）", d3: "—", use: "等比基准：1440及以下一个数都不许变。" },
-      phone: { name: "手机", w: 417, h: 750, h2: 903, dpr: 3.5, gpu: "Adreno 750", scale: "1", d3: "严格探测通过", use: "判装不装得下用750（地址栏露着，最坏）；判会不会显得空用903（地址栏收起）。390也要跑，但别拿它代替417。" }
+      laptop: { name: "笔记本", w: 2552, h: 1274, dpr: 1.5, gpu: "RTX 4060 Laptop", scale: "1.45（视口2088起封顶，2088是1440的1.45倍）", d3: "严格探测直接通过，走完整档", use: "只有这一档看得出1.45封顶后的样子。比Mac紧18%是封顶的代价，不能写成和Mac一致。带工具栏的真实高度测2552×1180。" },
+      desk: { name: "台式", w: 2040, h: 1019, dpr: 1.25, gpu: "Microsoft Basic Render Driver（WARP软件渲染，没显卡）", scale: "1.417（2040÷1440，未封顶）", d3: "严格探测拿不到，宽松拿得到", use: "带软件渲染旗标测，量长帧。这台机器上最慢的是磨砂。物理宽2560，缩放125%。带工具栏的真实高度测2040×930。" },
+      mac: { name: "Mac（开发机）", w: 1440, h: 900, dpr: null, gpu: "没记", scale: "1（基准）", d3: "没记", use: "等比基准，1440及以下的数值一个都不能变。" },
+      phone: { name: "手机", w: 417, h: 750, h2: 903, dpr: 3.5, gpu: "Adreno 750", scale: "1", d3: "严格探测通过", use: "判断装不装得下用750（地址栏露着，最坏的情况），判断会不会显得空用903（地址栏收起）。390也要跑，但不能拿它代替417。" }
     };
     var unit = "css";
     var bar = 750;
@@ -529,7 +529,7 @@
         ["设备", d.name],
         ["视口", d.w + "×" + vh + " CSS像素"],
         ["DPR", d.dpr ? String(d.dpr) : "没记"],
-        ["物理像素", d.dpr ? Math.round(d.w * d.dpr) + "×" + Math.round(vh * d.dpr) : "—"],
+        ["物理像素", d.dpr ? Math.round(d.w * d.dpr) + "×" + Math.round(vh * d.dpr) : "没记DPR，算不出"],
         ["--scale", d.scale],
         ["渲染器", d.gpu],
         ["3D", d.d3],
@@ -539,9 +539,9 @@
       box.setAttribute("data-pick", pick);
       return s;
     }
-    radios($('[aria-label="按什么像素画"]', box.parentNode), function (b) { unit = b.getAttribute("data-dv-unit"); paint(); announce(unit === "css" ? "按CSS像素画" : "按物理像素画：Mac没记DPR，不画"); });
+    radios($('[aria-label="按什么像素画"]', box.parentNode), function (b) { unit = b.getAttribute("data-dv-unit"); paint(); announce(unit === "css" ? "按CSS像素画" : "按物理像素画，Mac没记DPR，不画"); });
     radios($('[aria-label="手机地址栏"]', box.parentNode), function (b) { bar = parseInt(b.getAttribute("data-dv-bar"), 10); paint(); announce("手机视口高" + bar); });
-    radios($('[aria-label="选一台设备"]', box), function (b) { pick = b.getAttribute("data-dv-pick"); paint(); announce(DEV[pick].name + "：" + DEV[pick].w + "×" + (pick === "phone" ? bar : DEV[pick].h)); });
+    radios($('[aria-label="选一台设备"]', box), function (b) { pick = b.getAttribute("data-dv-pick"); paint(); announce(DEV[pick].name + "，" + DEV[pick].w + "×" + (pick === "phone" ? bar : DEV[pick].h)); });
     paint();
   })();
 
@@ -552,18 +552,18 @@
     var note = $("[data-tr-note]");
     var CHECK = { ovf: "横向溢出", bp: "版面档", con: "对比度", fps: "卡不卡", fit: "装不装得下", cap: "等比与封顶" };
     var TIERS = [
-      { n: "1440×900@1浅", s: "Mac · 等比基准", c: ["ovf", "bp", "con", "cap"], t: "等比基准：1440及以下数值一个都不许变；对比度按最不利角两法验收（色彩页「对比度两法」）。" },
-      { n: "1440×900@1深", s: "同一档的深色", c: ["con"], t: "深色的最不利角和浅色不是同一角（深色取光晕最亮那角），要单独算。" },
+      { n: "1440×900@1浅", s: "Mac，等比基准", c: ["ovf", "bp", "con", "cap"], t: "等比基准，1440及以下的数值一个都不能变。对比度按最不利的底色用两种方法验收（见色彩页对比度怎么算）。" },
+      { n: "1440×900@1深", s: "同一档的深色", c: ["con"], t: "深色最不利的底和浅色不在同一处（深色取光晕最亮的那一角），要单独算。" },
       { n: "1100", s: "侧栏还在的窄桌面", c: ["ovf", "bp"], t: "侧栏还在、内容区最窄的桌面档。" },
-      { n: "768", s: "顶栏档", c: ["ovf", "bp"], t: "900以下侧栏收成顶栏，600以上还没换底部tab bar。" },
-      { n: "390@3", s: "窄手机", c: ["ovf", "bp"], t: "更窄，但会掩盖「417才刚好放不下」那一类，所以417也要跑。" },
-      { n: "417×750@3.5触摸", s: "屋主手机 · 地址栏露着", c: ["ovf", "bp", "fit"], t: "屋主手机。750是地址栏露着的最坏高度：判装不装得下、会不会挤破用它。触屏点一下会粘上:hover，悬停效果只写在(hover: hover)里。" },
-      { n: "417×903@3.5", s: "地址栏收起", c: ["fit"], t: "同一台手机地址栏收起后：判「会不会显得空」用它。" },
-      { n: "2040×1019@1.25软件渲染", s: "屋主台式 · 没显卡", c: ["fps", "cap", "ovf"], t: "带--disable-gpu --use-gl=swiftshader --enable-unsafe-swiftshader；磨砂在这台是瓶颈，量整页rAF的长帧个数。--scale 1.417，还没封顶。" },
-      { n: "2040×930", s: "台式 · 带浏览器工具栏", c: ["fit"], t: "浏览器工具栏、任务栏、远程桌面都在吃高度：断言scrollHeight === clientHeight，「刚好装下」不合格。" },
-      { n: "2552×1274@1.5", s: "屋主笔记本", c: ["cap", "ovf"], t: "1.45封顶只在这档显形：比Mac紧18%是封顶的主动代价，不许写成「一致」。" },
-      { n: "2552×1180", s: "笔记本 · 带工具栏", c: ["fit"], t: "同上，真实可用高度。" },
-      { n: "⌘+ 150%", s: "浏览器缩放", c: ["ovf", "bp"], t: "缩放等价视口变窄：不许出横向滚动条，不许固定像素布局把内容挤出去。" }
+      { n: "768", s: "顶栏档", c: ["ovf", "bp"], t: "900以下侧栏收成顶栏，600以上还没换成底部标签栏。" },
+      { n: "390@3", s: "窄手机", c: ["ovf", "bp"], t: "更窄，但会掩盖417宽才刚好放不下的那一类问题，所以417也要跑。" },
+      { n: "417×750@3.5触摸", s: "屋主手机，地址栏露着", c: ["ovf", "bp", "fit"], t: "屋主的手机。750是地址栏露着时的最坏高度，判断装不装得下、会不会挤破用它。触屏点一下会留下悬停状态，所以悬停效果只写在(hover: hover)里。" },
+      { n: "417×903@3.5", s: "地址栏收起", c: ["fit"], t: "同一台手机收起地址栏后的高度，判断会不会显得空用它。" },
+      { n: "2040×1019@1.25软件渲染", s: "屋主台式机，没有显卡", c: ["fps", "cap", "ovf"], t: "带--disable-gpu --use-gl=swiftshader --enable-unsafe-swiftshader三个旗标。这台机器上最慢的是磨砂，量整页rAF的长帧个数。--scale是1.417，还没封顶。" },
+      { n: "2040×930", s: "台式机，带浏览器工具栏", c: ["fit"], t: "浏览器工具栏、任务栏和远程桌面都会占掉高度。断言scrollHeight === clientHeight，而且刚好装下也不算合格。" },
+      { n: "2552×1274@1.5", s: "屋主笔记本", c: ["cap", "ovf"], t: "1.45封顶只在这一档看得出来。比Mac紧18%是封顶有意付出的代价，不能写成和Mac一致。" },
+      { n: "2552×1180", s: "笔记本，带工具栏", c: ["fit"], t: "同上，真实可用高度。" },
+      { n: "⌘+ 150%", s: "浏览器缩放", c: ["ovf", "bp"], t: "缩放相当于视口变窄，不能出现横向滚动条，也不能让固定像素的布局把内容挤出去。" }
     ];
     var chips = $$("[data-tr-check]");
     var cur = -1;
@@ -581,10 +581,10 @@
         $$("[data-k]", li).forEach(function (s) { s.classList.toggle("is-hit", !!check && s.getAttribute("data-k") === check); });
       });
       chips.forEach(function (c) { c.setAttribute("aria-pressed", c.getAttribute("data-tr-check") === check ? "true" : "false"); });
-      if (cur >= 0) note.textContent = TIERS[cur].n + "：" + TIERS[cur].t;
+      if (cur >= 0) note.textContent = TIERS[cur].n + "，" + TIERS[cur].t;
       else if (check) {
         var hits = TIERS.filter(function (t) { return t.c.indexOf(check) >= 0; }).map(function (t) { return t.n; });
-        note.textContent = "「" + CHECK[check] + "」由这" + hits.length + "档管：" + hits.join("、") + "。";
+        note.textContent = CHECK[check] + "由这" + hits.length + "档负责，" + hits.join("、") + "。";
       } else note.textContent = "点一档看说明。";
     }
     listEl.addEventListener("click", function (e) {
@@ -632,8 +632,8 @@
       var onShot = (r.right - d.right);
       tag.textContent = "右缘差" + fix(right, 1) + "px";
       box.setAttribute("data-gap", fix(right, 1));
-      read.textContent = "探针：停靠栏左缘离行" + fix(left, 1) + "px、右缘差" + fix(right, 1) + "px" +
-        (right > 0.5 ? "（这张缩略图上只有" + fix(onShot, 1) + "个像素，看不出来）。" : "：真贴着行的右缘。");
+      read.textContent = "探针量到停靠栏左缘离行" + fix(left, 1) + "px，右缘差" + fix(right, 1) + "px" +
+        (right > 0.5 ? "（在这张缩略图上只有" + fix(onShot, 1) + "个像素，看不出来）。" : "，确实贴着行的右缘。");
       if (speak) announce(read.textContent);
     }
     radios($('[aria-label="版式"]', box.parentNode), function (b) { vp.setAttribute("data-v", b.getAttribute("data-mf")); measure(true); });
@@ -651,10 +651,10 @@
     var out = $("[data-vw-out]", box);
     var assertBtn = $("[data-vw-assert]");
     var C = {
-      window: { pw: 500, dpr: 1, png: "390×844", reads: 500, why: "设的是窗口：macOS最小宽度把它夹到500，不报错。" },
-      override: { pw: 390, dpr: 3, png: "1170×2532", reads: 390, why: "设的是视口：渲染层覆盖，不受窗口限制，DPR也对。" },
+      window: { pw: 500, dpr: 1, png: "390×844", reads: 500, why: "设的是窗口，macOS的最小窗口宽度把它夹到500，不报错。" },
+      override: { pw: 390, dpr: 3, png: "1170×2532", reads: 390, why: "设的是视口，在渲染层覆盖，不受窗口限制，DPR也对。" },
       blank: { pw: 390, dpr: 3, png: "1170×2532", reads: 980, why: "页面其实排对了，可断言在还没navigate的about:blank上读，读到980。读之前先navigate。" },
-      meta: { pw: 980, dpr: 3, png: "1170×2532", reads: 980, why: "mobile:true又没有viewport meta：Chrome给980的默认布局视口，手机版面整个没出现。" }
+      meta: { pw: 980, dpr: 3, png: "1170×2532", reads: 980, why: "开了mobile:true又没有viewport meta，Chrome给980的默认布局视口，手机版面完全没出现。" }
     };
     var cur = "window";
     function paint(speak) {
@@ -668,12 +668,12 @@
       var verdict;
       if (!on) verdict = badge("没报错", "gray") + " 截图照样出" + (c.pw !== 390 ? "，可版面是按" + c.pw + "排的" : "");
       else if (ok) verdict = badge("通过", "green") + " innerWidth 390、DPR " + c.dpr;
-      else verdict = badge("抛错", "red") + " 读到" + c.reads + " ≠ 390" + (cur === "blank" ? "（这次是冤枉：顺序错了）" : "");
+      else verdict = badge("抛错", "red") + " 读到" + c.reads + "，不是390" + (cur === "blank" ? "（这次是冤枉，错在顺序）" : "");
       var rows = [
         ["截图PNG", c.png],
         ["页面里的innerWidth", String(c.pw)],
         ["断言读到", on ? String(c.reads) : "（没读）"],
-        ["(max-width:430px)", phone ? "true · 手机版面" : "false · 桌面版面"],
+        ["(max-width:430px)", phone ? "true，手机版面" : "false，桌面版面"],
         ["对账断言", verdict]
       ];
       out.innerHTML = rows.map(function (r, i) { return "<dt>" + esc(r[0]) + "</dt><dd>" + (i === 4 ? r[1] : esc(r[1])) + "</dd>"; }).join("") +
@@ -685,7 +685,7 @@
     radios($('[aria-label="怎么设手机档"]'), function (b) { cur = b.getAttribute("data-vw"); paint(true); });
     assertBtn.addEventListener("click", function () {
       var on = toggle(assertBtn);
-      assertBtn.textContent = on ? "对账断言：开" : "对账断言：关";
+      assertBtn.textContent = on ? "对账断言已开" : "对账断言已关";
       paint(true);
     });
     onResize(shot, function () { paint(false); });
@@ -721,18 +721,18 @@
       var newOk = Math.max(sw, iw) === TARGET;
       var elOk = right <= TARGET;
       var rows = [
-        ["旧：scrollWidth === innerWidth", sw + " === " + iw, oldOk ? (iw > TARGET ? ["绿（假的）", "warn"] : ["绿", "green"]) : ["红", "red"]],
-        ["新：max(scrollWidth, innerWidth) === 417", Math.max(sw, iw) + (newOk ? " === " : " ≠ ") + TARGET, newOk ? ["绿", "green"] : ["红", "red"]],
-        ["逐元素：右缘 ≤ 417", on ? "注入块右缘" + right : "没有越界的元素", elOk ? ["绿", "green"] : ["红", "red"]]
+        ["旧判据，scrollWidth === innerWidth", sw + " === " + iw, oldOk ? (iw > TARGET ? ["绿（假的）", "warn"] : ["绿", "green"]) : ["红", "red"]],
+        ["新判据，max(scrollWidth, innerWidth) === 417", Math.max(sw, iw) + (newOk ? " === " : " ≠ ") + TARGET, newOk ? ["绿", "green"] : ["红", "red"]],
+        ["逐元素，右缘不超过417", on ? "注入块右缘" + right : "没有越界的元素", elOk ? ["绿", "green"] : ["红", "red"]]
       ];
-      if (on) rows.push(["注入物自己越界了吗", right > TARGET ? "是：这次的红才算数" : "否：被页面的max-width夹住了，这次的绿不算数", right > TARGET ? ["是", "green"] : ["没越界", "red"]]);
+      if (on) rows.push(["注入物自己越界了吗", right > TARGET ? "是，这次的红才算数" : "否，被页面的max-width夹住了，这次的绿不算数", right > TARGET ? ["是", "green"] : ["没越界", "red"]]);
       out.innerHTML = rows.map(function (r) { return "<li><span>" + esc(r[0]) + "<small>" + esc(r[1]) + "</small></span>" + badge(r[2][0], r[2][1]) + "</li>"; }).join("");
       box.setAttribute("data-iw", String(iw));
       box.setAttribute("data-right", String(right));
       if (speak) {
-        if (!on) announce("拿掉了撑破块：三条都绿");
-        else if (right > TARGET) announce("塞了477px的块：innerWidth被撑到" + iw + "，旧判据照样绿，新判据和逐元素都红");
-        else announce("注入块被夹到" + (right - 14) + "px宽，没越界：判据全绿，但这次不算数");
+        if (!on) announce("拿掉了撑破块，三条都绿");
+        else if (right > TARGET) announce("塞了477px的块，innerWidth被撑到" + iw + "，旧判据照样绿，新判据和逐元素都红");
+        else announce("注入块被夹到" + (right - 14) + "px宽，没越界，判据全绿，但这次不算数");
       }
     }
     add.addEventListener("click", function () { toggle(add); paint(true); });
@@ -749,28 +749,28 @@
     var next = $("[data-q-next]", q), score = $("[data-q-score]", q);
     var opts = $$("[data-q-pick]", q);
     var S = {
-      1: "判「保存成功」看的是按钮上那行字有没有变成「已保存」。后来文案改成「已存好」，测试一直红；更糟的是别处碰巧也有这三个字，它就一直绿。",
+      1: "判断保存成功，看的是按钮上那行字有没有变成「已保存」。后来文案改成「已存好」，测试一直红。更糟的是别处碰巧也有这三个字时，它就一直绿。",
       2: "输入法回车的测试写完第一次跑就是绿的。没人试过把保护代码拿掉，看它会不会红。",
-      3: "回归套件跑到一半，另一个窗口还在往仓库里写文件；跑完全绿，就交了。",
-      4: "3D看门狗量帧间隔，间隔里掺着自己加的29ms限帧；阈值50ms，同一份构建三次量到47.7 / 49.7 / 59.6。",
+      3: "回归套件跑到一半，另一个窗口还在往仓库里写文件。跑完全绿，就交了。",
+      4: "3D看门狗量帧间隔，间隔里掺着自己加的29ms限帧。阈值是50ms，同一份构建三次量到47.7、49.7、59.6。",
       5: "门禁检查refreshFpsRange、screenFps这几个名字在不在。有人把screenFps直接改成「= 60」，门禁照样绿。",
-      6: "汇报「进程都清干净了」，用的是查监听端口；残留的那个是个客户端，挂在已关掉的服务上42分钟。",
-      7: "「软件渲染下动画帧间隔中位≤18ms」这条红了——拿去量改动前的树，同样是33.3ms。"
+      6: "汇报进程都清干净了，用的是查监听端口。残留的那个是客户端，挂在已关掉的服务上42分钟。",
+      7: "软件渲染下动画帧间隔中位数不超过18ms这条判据红了，拿去量改动前的树，同样是33.3ms。"
     };
     var WHY = {
-      1: "可变的显示文案不当判据：判据要读状态本身。",
-      2: "先让它红一次：拿掉保护它必须红，否则是假护栏。",
-      3: "门禁跑在验证过的稳定快照上：连续两轮、每轮3秒源树无变化才放行。",
-      4: "判据不掺自己加的量：阈值写成承诺帧率的倍数，量均值。",
-      5: "断言零件接没接上：断言完整的赋值形状、按规则算出来的结果。",
-      6: "阴性结论附阳性证据：先问量具看不看得见要否认的东西；查进程按名字。",
-      7: "判据先在改前的树上跑：改前也红，它量的是环境。改成改前改后同机轮流各跑3轮比。"
+      1: "可变的显示文案不当判据，判据要读状态本身。",
+      2: "先让它红一次，拿掉保护代码它必须红，否则就是假护栏。",
+      3: "门禁跑在验证过的稳定快照上，连续两轮、每轮3秒源树都没变化才放行。",
+      4: "判据不掺自己加的量，阈值写成承诺帧率的倍数，量均值。",
+      5: "断言零件接没接上，断言完整的赋值形状和按规则算出来的结果。",
+      6: "阴性结论附阳性证据，先确认量具看得见要否认的东西，查进程按名字查。",
+      7: "判据先在改前的树上跑，改前也红，说明它量的是环境。后来改成改前改后在同一台机器上轮流各跑3轮再比。"
     };
     var ORDER = [4, 1, 6, 2, 7, 3, 5];
     var i = 0, right = 0, answered = false;
     function show() {
       var k = ORDER[i];
-      no.textContent = "第" + (i + 1) + " / " + ORDER.length + "题";
+      no.textContent = "第" + (i + 1) + "题，共" + ORDER.length + "题";
       text.textContent = S[k];
       fb.textContent = "";
       answered = false;
@@ -803,7 +803,7 @@
       if (i < ORDER.length - 1) { i++; show(); opts[0].focus(); return; }
       if (next.getAttribute("data-done") === "1") { i = 0; right = 0; score.textContent = "答对0题"; next.removeAttribute("data-done"); show(); opts[0].focus(); return; }
       no.textContent = "做完了";
-      text.textContent = "七题答对" + right + "题。这七种错都长得像成功：全绿、零错误、一片安静。";
+      text.textContent = "七题答对" + right + "题。这七种错看起来都像成功，全绿，零错误，没有任何报警。";
       fb.textContent = "";
       next.textContent = "再来一遍";
       next.setAttribute("data-done", "1");
@@ -862,7 +862,7 @@
         listEl.appendChild(li);
         while (listEl.children.length > 6) listEl.removeChild(listEl.firstChild);
         input.value = "";
-        announce("记下：" + v);
+        announce("已记下" + v);
       });
     });
     radios($('[aria-label="哪棵树"]'), function (b) {
@@ -896,8 +896,8 @@
         cell.setAttribute("data-res", ok ? "green" : "red");
       });
       tab.hidden = false;
-      read.textContent = "行为判据：改前红、改后绿、没接上也红——它看得见这个错，也分得清「接没接上」。" +
-        "找字判据：改前也红（先红一次过了），可没接上那棵照样绿——红一次是必要的，不是充分的。";
+      read.textContent = "行为判据在改前红，改后绿，没接上也红，它看得见这个错，也分得清接没接上。" +
+        "找字判据在改前也红（先红一次这关过了），可没接上那棵照样绿，所以红一次是必要的，但不充分。";
       announce(read.textContent);
     });
     showSrc();
@@ -951,9 +951,9 @@
           requestAnimationFrame(function () {
             var x = cx();
             var early = Math.abs(x) > 0.5;
-            add("立刻读（下一帧）：computed还偏<b>" + fix(x, 1) + "px</b>，终点是0 → " + (early ? badge("读早了", "red") : badge("读到终值", "green")) + (rm ? "（减弱动效关了过渡，这一档读早红不了）" : ""));
+            add("立刻读（下一帧），computed还偏<b>" + fix(x, 1) + "px</b>，终点是0，结果" + (early ? badge("读早了", "red") : badge("读到终值", "green")) + (rm ? "（减弱动效关了过渡，这一档读早红不了）" : ""));
             track.setAttribute("data-last", early ? "early" : "final");
-            announce(early ? "立刻读：读到半路的值，读早了" : "立刻读：已经是终值");
+            announce(early ? "立刻读，读到半路的值，读早了" : "立刻读，已经是终值");
           });
         } else if (how === "settle") {
           var fired = false;
@@ -962,9 +962,9 @@
             fired = true;
             box.removeEventListener("transitionend", onEnd);
             var x = cx();
-            add("等transitionend再读：computed偏<b>" + fix(x, 1) + "px</b> → " + (Math.abs(x) <= 0.5 ? badge("终值", "green") : badge("还在动", "red")));
+            add("等transitionend再读，computed偏<b>" + fix(x, 1) + "px</b>，结果" + (Math.abs(x) <= 0.5 ? badge("终值", "green") : badge("还在动", "red")));
             track.setAttribute("data-last", Math.abs(x) <= 0.5 ? "final" : "early");
-            announce("等稳了读：终值");
+            announce("等稳了读，是终值");
           };
           var onEnd = function (e) { if (e.target === box && e.propertyName === "transform") finish(); };
           box.addEventListener("transitionend", onEnd);
@@ -974,7 +974,7 @@
           var styleVal = box.style.transform;
           requestAnimationFrame(function () {
             var x = cx();
-            add("读el.style.transform：<code>\"" + esc(styleVal) + "\"</code>（空串）；同一刻computed偏<b>" + fix(x, 1) + "px</b> → " + (Math.abs(x) > 0.5 ? badge("拿style判「没在动」是假的", "red") : badge("这一刻刚好不动", "gray")));
+            add("读el.style.transform，得到<code>\"" + esc(styleVal) + "\"</code>（空串），同一刻computed偏<b>" + fix(x, 1) + "px</b>，结果" + (Math.abs(x) > 0.5 ? badge("拿style判断没在动是假的", "red") : badge("这一刻刚好不动", "gray")));
             track.setAttribute("data-last", "style");
             announce("el.style.transform是空串，计算样式还在动");
           });
@@ -1036,12 +1036,12 @@
       seedBase += 3;
       drawHist(last);
       runs.innerHTML = res.map(function (v, i) {
-        return "<li>第" + (i + 1) + "次：中位" + fix(v.md, 1) + "ms · 均值" + fix(v.mn, 1) + "ms（" + fix(v.fps, 1) + "帧/秒）→ " + (v.down ? badge("降档", "red") : badge("不降", "green")) + "</li>";
+        return "<li>第" + (i + 1) + "次，中位数" + fix(v.md, 1) + "ms，均值" + fix(v.mn, 1) + "ms（每秒" + fix(v.fps, 1) + "帧），" + (v.down ? badge("降档", "red") : badge("不降", "green")) + "</li>";
       }).join("");
       var same = res.every(function (v) { return v.down === res[0].down; });
       box.setAttribute("data-consistent", same ? "yes" : "no");
-      read.textContent = (same ? "三次结论一致：" + (res[0].down ? "都降档。" : "都不降。") : "三次结论不一致：同一份构建，降不降档在抛硬币。") +
-        (crit === "median" ? "旧判据看的中位数只能落在33.3 / 50 / 66.7这几个台阶上。" : "新判据看这一窗口真送出去几帧，和承诺的30帧比。");
+      read.textContent = (same ? "三次结论一致，" + (res[0].down ? "都降档。" : "都不降。") : "三次结论不一致，同一份构建，降不降档是随机的。") +
+        (crit === "median" ? "旧判据看的中位数只能落在33.3、50、66.7这几个台阶上。" : "新判据看这一段时间实际送出去几帧，和承诺的30帧比。");
       announce(read.textContent);
     });
   })();
@@ -1073,36 +1073,36 @@
       }).join("");
     }
     function hit(r) { return !r.gone && NAMES.some(function (n) { return r.cmd.indexOf(n) >= 0; }); }
-    radios($('[aria-label="怎么查残留"]'), function (b) { how = b.getAttribute("data-ne"); if (!killed) killBtn.disabled = true; paint(); out.textContent = "还没查。"; read.textContent = "点「查」。"; });
+    radios($('[aria-label="怎么查残留"]'), function (b) { how = b.getAttribute("data-ne"); if (!killed) killBtn.disabled = true; paint(); out.textContent = "还没查。"; read.textContent = "换了查法，点查按钮重新查。"; });
     runBtn.addEventListener("click", function () {
       var marks = {}, lines = [], verdict, state;
       found = [];
       if (how === "port") {
         lines.push("$ lsof -iTCP -sTCP:LISTEN");
         rows.filter(function (r) { return !r.gone && r.listen; }).forEach(function (r) { lines.push(r.pid + "  " + r.cmd); });
-        lines.push("→ 我的量具没有在监听的进程");
+        lines.push("# 量具的进程都没在监听，看起来干净了");
         var leftovers = rows.filter(function (r) { return !r.gone && r.kind === "left"; }).length;
-        verdict = leftovers ? "说「干净了」，其实还剩" + leftovers + "个：残留的渲染进程和客户端都不监听端口，这把尺子天生看不见它们。" : "这次真的干净——但这把尺子看不见客户端，结论照样不能用。";
+        verdict = leftovers ? "说清干净了，其实还剩" + leftovers + "个。残留的渲染进程和客户端都不监听端口，这种查法根本看不见它们。" : "这次确实干净，但这种查法看不见客户端，结论照样不能用。";
         state = "blind";
       } else if (how === "name") {
         lines.push("$ ps -axo pid=,command= | ugrep -e prof-me- -e watchdog.mjs");
         rows.forEach(function (r) { if (hit(r)) { marks[r.pid] = r.kind === "self" ? "is-self" : "is-hit"; lines.push(r.pid + "  " + r.cmd); } });
         var self = rows.filter(function (r) { return hit(r) && r.kind === "self"; }).length;
         var real = rows.filter(function (r) { return hit(r) && r.kind !== "self"; }).length;
-        verdict = "数出" + (self + real) + "个：其中" + self + "个是查进程的命令和外层shell自己（命令行里带着同样的名字）。清了残留以后也永远不是0。";
+        verdict = "数出" + (self + real) + "个，其中" + self + "个是查进程的命令和外层shell自己（命令行里带着同样的名字），所以清掉残留以后也永远不是0。";
         state = "noisy";
       } else {
-        lines.push("# 1、阳性对照：起一个命令行带prof-me-ctrl的空等进程");
-        lines.push("$ node -e 'setTimeout(()=>{},20000)' prof-me-ctrl   → pid 4400");
-        lines.push("  按名字查prof-me-ctrl：命中1（应为1）✓");
-        lines.push("  杀掉4400再查：命中0（应为0）✓  → 这把尺子看得见东西");
+        lines.push("# 1、阳性对照，起一个命令行里带prof-me-ctrl的空等进程");
+        lines.push("$ node -e 'setTimeout(()=>{},20000)' prof-me-ctrl   # pid 4400");
+        lines.push("  按名字查prof-me-ctrl，命中1（应为1）✓");
+        lines.push("  杀掉4400再查，命中0（应为0）✓，这种查法看得见东西");
         lines.push("# 2、存快照、按名字查，排掉自己和整条祖先链");
         rows.forEach(function (r) {
           if (!hit(r)) return;
           if (r.kind === "self") { marks[r.pid] = "is-self"; return; }
           marks[r.pid] = "is-hit"; found.push(r.pid); lines.push("  残留" + r.pid + "  " + r.cmd);
         });
-        verdict = found.length ? "阳性对照通过，查到" + found.length + "个真残留（渲染进程、客户端）。清掉再查一遍。" : "阳性对照通过，残留0：这个「干净了」有证据。";
+        verdict = found.length ? "阳性对照通过，查到" + found.length + "个真残留（渲染进程、客户端）。清掉再查一遍。" : "阳性对照通过，残留0，这次说清干净了有证据。";
         state = found.length ? "found" : "clean";
         if (!killed) killBtn.disabled = !found.length;
       }
@@ -1121,7 +1121,7 @@
         killBtn.disabled = true;
         paint();
         out.textContent = "示例残留放回去了。";
-        read.textContent = "选一种查法，点「查」。";
+        read.textContent = "选一种查法，然后点查按钮。";
         box.removeAttribute("data-state");
         announce("示例残留放回去了");
         return;
@@ -1146,12 +1146,12 @@
     var barEl = $("[data-lc-bar]", box);
     var verdict = $("[data-lc-verdict]");
     var P = {
-      blur: { a: "误判成full（开磨砂）：没显卡那台整页卡", b: "误判成lite（只压暗）：第一次打开少一点景深", av: 9, bv: 2,
-        leanB: "没测过显卡时先按lite——本站boot.js就是这么写的，star.js空闲时测一次再改。", leanA: "没测过时先按full。" },
-      guard: { a: "误判成慢机器：好机器上的3D被关，整个会话记住", b: "漏判：一个匀速偏慢、还能看的画面继续跑", av: 8, bv: 3,
-        leanB: "判据的盲区放在漏判那一侧；丢弃超长卡顿的上限也不放宽。", leanA: "宁可误杀。" },
-      ime: { a: "拦提交也认229：安卓键盘的「搜索」键按了没反应", b: "拦提交只认isComposing：万一有输入法只报229，那一下会提前提交", av: 8, bv: 3,
-        leanB: "拦提交只认isComposing；「提前return不处理」可以两个都认（那边后果轻）。", leanA: "拦提交两个都认。" }
+      blur: { a: "误判成full（开磨砂），没显卡那台整页卡顿", b: "误判成lite（只压暗），第一次打开时少一点景深", av: 9, bv: 2,
+        leanB: "没测过显卡时先按lite，本站boot.js就是这么写的，star.js空闲时测一次再改。", leanA: "没测过时先按full。" },
+      guard: { a: "误判成慢机器，好机器上的3D被关掉，整个会话都记着", b: "漏判，一个匀速偏慢、还能看的画面继续跑", av: 8, bv: 3,
+        leanB: "判据的盲区放在漏判那一侧，丢弃超长卡顿的上限也不放宽。", leanA: "宁可误杀。" },
+      ime: { a: "拦提交也认229，安卓键盘上的搜索键按了没反应", b: "拦提交只认isComposing，万一有输入法只报229，那一下会提前提交", av: 8, bv: 3,
+        leanB: "拦提交只认isComposing，提前return不处理的那一步可以两个都认（那边后果轻）。", leanA: "拦提交两个都认。" }
     };
     var cur = "blur";
     function paint(speak) {
@@ -1163,9 +1163,9 @@
       var tilt = Math.max(-22, Math.min(22, (bv - av) * 2.6));
       barEl.style.setProperty("--tilt", fix(tilt, 1) + "deg");
       var html;
-      if (av === bv) html = "两边一样重：代价对等时这条规矩帮不上忙，按别的理由定。";
-      else if (av > bv) html = "A更重 → 拿不准时往B那边错：<b>" + esc(p.leanB) + "</b>";
-      else html = "B更重 → 拿不准时往A那边错：<b>" + esc(p.leanA) + "</b>（这是你拖出来的假设，不是实际的裁定）";
+      if (av === bv) html = "两边一样重，代价对等时这条规矩用不上，按别的理由定。";
+      else if (av > bv) html = "A更重，拿不准时往B那边错，<b>" + esc(p.leanB) + "</b>";
+      else html = "B更重，拿不准时往A那边错，<b>" + esc(p.leanA) + "</b>（这是拖出来的假设，不是实际的裁定）";
       verdict.innerHTML = html;
       box.setAttribute("data-lean", av === bv ? "even" : av > bv ? "b" : "a");
       if (speak) announce(verdict.textContent);
@@ -1195,7 +1195,7 @@
     function on(k) { return flags[k].getAttribute("aria-pressed") === "true"; }
     function setState(s) {
       box.setAttribute("data-state", s);
-      read.textContent = s === "loud" ? "扬声器：在响（画的）。" : s === "muted" ? "扬声器：静音（页面照样在播）。" : "扬声器：没声音。";
+      read.textContent = s === "loud" ? "扬声器在响（画的）。" : s === "muted" ? "扬声器静音（页面照样在播放）。" : "扬声器没有声音。";
     }
     Object.keys(flags).forEach(function (k) { flags[k].addEventListener("click", function () { toggle(flags[k]); }); });
     runBtn.addEventListener("click", function () {
@@ -1203,16 +1203,16 @@
       var mute = on("mute"), sweep = on("sweep");
       var steps = [
         ["启动无头Chrome" + (mute ? "（带--mute-audio）" : "（没带--mute-audio）"), ""],
-        ["打开带背景音乐的页面：循环播放", "", mute ? "muted" : "loud"],
+        ["打开带背景音乐的页面，循环播放", "", mute ? "muted" : "loud"],
         ["断言audio.paused === false、currentTime在走 ✓（静音不影响这两个值）", "good"],
-        ["chrome.kill()：只杀了主进程", ""]
+        ["chrome.kill()只杀了主进程", ""]
       ];
       if (sweep) {
-        steps.push(["按profile目录名查进程：残留1个（渲染进程）→ 清掉 → 再查0 ✓", "good", "idle"]);
+        steps.push(["按profile目录名查进程，残留1个（渲染进程），清掉后再查是0 ✓", "good", "idle"]);
       } else if (mute) {
-        steps.push(["残留的渲染进程还在后台循环放——静音的，没出声，但它还活着、占着CPU", "bad", "muted"]);
+        steps.push(["残留的渲染进程还在后台循环播放，是静音的，没出声，但它还在运行，占着CPU", "bad", "muted"]);
       } else {
-        steps.push(["残留的渲染进程还在后台循环放：屋主那边在响", "bad", "loud"]);
+        steps.push(["残留的渲染进程还在后台循环播放，屋主那边在响", "bad", "loud"]);
         steps.push(["「电脑播放音乐吵死了」", "bad", "loud"]);
       }
       log.innerHTML = "";
@@ -1247,11 +1247,11 @@
     var probeBtn = $("[data-sr-probe]");
     var probeOut = $("[data-sr-probe-out]");
     var R = {
-      none: { s: ["拿得到", "green"], l: ["拿得到", "green"], tier: "完整档（Mac本机无头也走真显卡：ANGLE Metal）", v: "量的是有显卡的情况，不能代表台式机。" },
-      nogpu: { s: ["拿不到", "red"], l: ["拿不到", "red"], tier: "静态版：安安静静回落，零请求、控制台零输出", v: "这是对的行为（什么都不做），但量不到软件渲染下3D跑得怎样。" },
-      noflag: { s: ["拿不到", "red"], l: ["拿不到", "red"], tier: "静态版", v: "Chrome 122起默认关掉了软件渲染跑WebGL；拿这次说「宽松也拿不到」不能代表Windows（那边多一档WARP）。" },
-      soft: { s: ["拿不到", "red"], l: ["拿得到", "green"], tier: "soft档（岗岗实测29.1帧/秒）", v: "最接近台式机的模拟：严格拒绝、宽松拿到。Windows的WARP只能上真机测（3D诊断.html）。" },
-      angle: { s: ["拿得到（被当成显卡）", "warn"], l: ["拿得到", "green"], tier: "会被当成完整档；要看渲染器名才认得出SwiftShader", v: "严格探测也通过了，别拿它测软件渲染。" }
+      none: { s: ["拿得到", "green"], l: ["拿得到", "green"], tier: "完整档（Mac本机无头也走真显卡，ANGLE Metal）", v: "量的是有显卡的情况，不能代表台式机。" },
+      nogpu: { s: ["拿不到", "red"], l: ["拿不到", "red"], tier: "静态版，安静地回落，零请求，控制台零输出", v: "这是对的行为（什么都不做），但量不到软件渲染下3D跑得怎样。" },
+      noflag: { s: ["拿不到", "red"], l: ["拿不到", "red"], tier: "静态版", v: "Chrome 122起默认不让软件渲染跑WebGL。拿这次的结果说宽松也拿不到，不能代表Windows（那边多一档WARP）。" },
+      soft: { s: ["拿不到", "red"], l: ["拿得到", "green"], tier: "soft档（岗岗实测每秒29.1帧）", v: "最接近台式机的模拟，严格拒绝，宽松拿到。Windows的WARP只能在真机上测（3D诊断.html）。" },
+      angle: { s: ["拿得到（被当成显卡）", "warn"], l: ["拿得到", "green"], tier: "会被当成完整档，要看渲染器名才认得出SwiftShader", v: "严格探测也通过了，别拿它测软件渲染。" }
     };
     function paint(k, speak) {
       var r = R[k];
@@ -1277,9 +1277,9 @@
     probeBtn.addEventListener("click", function () {
       var s = probe({ failIfMajorPerformanceCaveat: true });
       var l = s.ok ? s : probe({ antialias: false });
-      var kind = s.ok ? "这台有显卡（严格探测通过）" : l.ok ? "这台是软件渲染：严格拒绝、宽松拿到——会走soft档" : "这台拿不到WebGL：安安静静回静态版";
-      probeOut.innerHTML = "严格：" + badge(s.ok ? "拿到" : "拿不到", s.ok ? "green" : "red") + " 宽松：" + badge(l.ok ? "拿到" : "拿不到", l.ok ? "green" : "red") +
-        (l.name ? " 渲染器：<code>" + esc(l.name) + "</code>" : "") + "。" + esc(kind) + "。";
+      var kind = s.ok ? "这台有显卡（严格探测通过）" : l.ok ? "这台是软件渲染，严格拒绝，宽松拿到，会走soft档" : "这台拿不到WebGL，安静地回到静态版";
+      probeOut.innerHTML = "严格探测" + badge(s.ok ? "拿到" : "拿不到", s.ok ? "green" : "red") + "，宽松探测" + badge(l.ok ? "拿到" : "拿不到", l.ok ? "green" : "red") +
+        (l.name ? "，渲染器<code>" + esc(l.name) + "</code>" : "") + "。" + esc(kind) + "。";
       probeOut.setAttribute("data-probe", s.ok ? "gpu" : l.ok ? "soft" : "none");
       announce(kind);
     });
@@ -1327,8 +1327,8 @@
     });
     bgBtn.addEventListener("click", function () {
       simBg = toggle(bgBtn);
-      if (simBg) { stop(); add("模拟：标签页进后台——rAF停了，监听照样在跑"); announce("模拟进后台：rAF停了"); }
-      else { add("模拟：回到前台"); schedule(); announce("模拟回到前台"); }
+      if (simBg) { stop(); add("模拟标签页进后台，rAF停了，监听照样在跑"); announce("模拟进后台，rAF停了"); }
+      else { add("模拟回到前台"); schedule(); announce("模拟回到前台"); }
       paintHidden();
     });
     shotBtn.addEventListener("click", function () {
@@ -1338,17 +1338,17 @@
       paintHidden();
       schedule();
       requestAnimationFrame(function () {
-        add(was ? "模拟截图：标签页被顶到前台，rAF恢复，数字一下跳到" + ev + "（「截图之后就好了」）" : "模拟截图：本来就在前台，没变化");
+        add(was ? "模拟截图，标签页被顶到前台，rAF恢复，数字一下跳到" + ev + "，截图之后就好了就是这样来的" : "模拟截图，本来就在前台，没变化");
       });
       announce(was ? "截图把标签页顶到前台，rAF恢复" : "本来就在前台");
     });
     doc.addEventListener("visibilitychange", function () {
       paintHidden();
       if (!started) return;          /* 没开始计数时记不出「期间几帧」，那句话就是没证据的阴性结论 */
-      if (doc.hidden) { hiddenAt = Date.now(); framesAt = frames; stop(); add("页面隐藏（真的）：rAF暂停"); }
+      if (doc.hidden) { hiddenAt = Date.now(); framesAt = frames; stop(); add("页面隐藏（真的），rAF暂停"); }
       else {
         var sec = hiddenAt ? (Date.now() - hiddenAt) / 1000 : 0;
-        add("回到前台（真的）：隐藏了" + fix(sec, 1) + "秒，这期间rAF跑了" + (frames - framesAt) + "帧（隐藏前一共跑了" + framesAt + "帧）");
+        add("回到前台（真的），隐藏了" + fix(sec, 1) + "秒，这期间rAF跑了" + (frames - framesAt) + "帧（隐藏前一共跑了" + framesAt + "帧）");
         schedule();
       }
     });
@@ -1376,11 +1376,11 @@
         var ul = $('[data-vh-dir="' + k + '"]', box);
         ul.innerHTML = FILES[k].map(function (f) {
           var gone = k === "tmp" && past && f.age >= 1;
-          return '<li class="' + (gone ? "is-gone" : "") + '"><span>' + esc(f.n) + "</span><small>" + (f.age ? f.age + "天前" : "今天") + (gone ? " · 已清" : "") + "</small></li>";
+          return '<li class="' + (gone ? "is-gone" : "") + '"><span>' + esc(f.n) + "</span><small>" + (f.age ? f.age + "天前" : "今天") + (gone ? "，已清" : "") + "</small></li>";
         }).join("");
       });
       box.setAttribute("data-past", past ? "1" : "0");
-      read.textContent = past ? clock(v) + "：过了零点，草稿区按文件年龄清掉了两个旧脚本；本机验收目录一个不少。" : clock(v) + "，两边都在。";
+      read.textContent = past ? clock(v) + "，过了零点，草稿区按文件年龄清掉了两个旧脚本，本机验收目录一个不少。" : clock(v) + "，两边都在。";
       if (speak) announce(read.textContent);
     }
     time.addEventListener("input", function () { paint(false); });
@@ -1388,8 +1388,8 @@
     $("[data-vh-run]").addEventListener("click", function () {
       var past = parseInt(time.value, 10) >= 6;
       read.textContent = past
-        ? "第二天复跑：草稿区找不到accept.mjs、perf.mjs（真事里是从会话记录捞回heredoc、再重放后续改动才恢复的）；本机验收目录照常跑。"
-        : "还没过零点，两边都能跑——明天就不一定了。把滑块拖过00:00再试。";
+        ? "第二天复跑，草稿区找不到accept.mjs和perf.mjs（实际那次是从会话记录里捞回heredoc，再重放后续改动才恢复的），本机验收目录照常能跑。"
+        : "还没过零点，两边都能跑，到明天就不一定了。把滑块拖过00:00再试。";
       box.setAttribute("data-rerun", past ? "lost" : "ok");
       announce(read.textContent);
     });
@@ -1402,13 +1402,13 @@
     if (!listEl) return;
     var read = $("[data-dc-read]");
     var L = [
-      { f: "float-scene.ts · 文件头", t: "精简档：像素比1，省显存。", e: 1, w: "① 数字过期：拿旧值「像素比1」全仓grep就能捞出来。" },
-      { f: "float-scene.ts · 改动点", t: "const dpr = Math.min(devicePixelRatio, 1.5); // 上限1.5（不再钉1，见文件头）", e: 2, w: "② 这一行本身对，可「见文件头」把人领去信那句错话。写「见X」时顺手打开X看一眼，连它一起改。" },
-      { f: "README.md", t: "3D精简档把像素比钉在1。", e: 1, w: "① 数字过期：文档正文复述了旧值。改一个值，要改所有复述它的地方。" },
-      { f: "规格 · 随笔球", t: "手机2、精简档1：因为精简档不看DPR、手机看DPR。", e: 3, w: "③ 结论读着没毛病，理由已经悬空：精简档现在也看DPR了。没有过期数字可grep，只能回头读「为什么是这个值」的段落。" },
-      { f: "CHANGELOG.md", t: "精简档像素比改为 min(devicePixelRatio, 1.5)。", e: 0, w: "对：这就是这一轮的记录。" },
-      { f: "quality.ts", t: "soft: { dprCap: 1.5 }", e: 0, w: "对：实现本身。" },
-      { f: "viewer.ts", t: "// 查看器没有精简档，像素比照旧钉1", e: 0, w: "对：说的是另一件东西。相似只是线索，不是结论——每一处单独核。" }
+      { f: "float-scene.ts文件头", t: "精简档像素比1，省显存。", e: 1, w: "① 数字过期，拿旧值「像素比1」在全仓grep就能找出来。" },
+      { f: "float-scene.ts改动点", t: "const dpr = Math.min(devicePixelRatio, 1.5); // 上限1.5（不再钉1，见文件头）", e: 2, w: "② 这一行本身对，可「见文件头」把人领去信那句错话。写「见X」时顺手打开X看一眼，连它一起改。" },
+      { f: "README.md", t: "3D精简档把像素比钉在1。", e: 1, w: "① 数字过期，文档正文复述了旧值。改一个值，要改所有复述它的地方。" },
+      { f: "规格里的随笔球一节", t: "手机2、精简档1，因为精简档不看DPR，手机看DPR。", e: 3, w: "③ 结论读着没问题，理由已经不成立，精简档现在也看DPR了。这里没有过期数字可以grep，只能回头读解释为什么是这个值的段落。" },
+      { f: "CHANGELOG.md", t: "精简档像素比改为 min(devicePixelRatio, 1.5)。", e: 0, w: "对的，这就是这一轮的记录。" },
+      { f: "quality.ts", t: "soft: { dprCap: 1.5 }", e: 0, w: "对的，这是实现本身。" },
+      { f: "viewer.ts", t: "// 查看器没有精简档，像素比照旧钉1", e: 0, w: "对的，说的是另一样东西。相似只是线索，不是结论，每一处都要单独核对。" }
     ];
     var checked = false;
     function render() {
@@ -1418,13 +1418,13 @@
       }).join("");
       checked = false;
       listEl.removeAttribute("data-score");
-      read.textContent = "选好了点「交卷」。";
+      read.textContent = "选好了点交卷。";
     }
     listEl.addEventListener("click", function (e) {
       var b = e.target.closest ? e.target.closest("[data-dc]") : null;
       if (!b || checked) return;
       var on = toggle(b);
-      announce((on ? "标为要改：" : "取消：") + L[parseInt(b.getAttribute("data-dc"), 10)].f);
+      announce((on ? "标为要改，" : "取消标记，") + L[parseInt(b.getAttribute("data-dc"), 10)].f);
     });
     $("[data-dc-check]").addEventListener("click", function () {
       var hit = 0, miss = 0, wrong = 0;
@@ -1474,12 +1474,12 @@
         } else if (any(WHITE, f)) inPkg.push(f);
         else if (!any(BLACK, f)) errs.push(f);
       });
-      pkg.innerHTML = inPkg.map(function (f) { return '<li class="' + (leaks.indexOf(f) >= 0 ? "is-leak" : "") + '">' + esc(f) + (leaks.indexOf(f) >= 0 ? "  ← 跟着走了" : "") + "</li>"; }).join("") +
-        errs.map(function (f) { return '<li class="is-err">✗ ' + esc(f) + "：两张表都没写到 → 报错，产物不算数</li>"; }).join("");
+      pkg.innerHTML = inPkg.map(function (f) { return '<li class="' + (leaks.indexOf(f) >= 0 ? "is-leak" : "") + '">' + esc(f) + (leaks.indexOf(f) >= 0 ? "（跟着走了）" : "") + "</li>"; }).join("") +
+        errs.map(function (f) { return '<li class="is-err">✗ ' + esc(f) + "，两张表都没写到，报错，产物不算数</li>"; }).join("");
       box.setAttribute("data-leaks", String(leaks.length));
       box.setAttribute("data-errs", String(errs.length));
-      if (mode === "black") read.textContent = leaks.length ? "黑名单：新文件默认就进包——" + leaks.join("、") + "悄悄跟着走了。" : "黑名单：现在看着没问题；可新加的文件只要没被列进排除表，就会默认进包。";
-      else read.textContent = errs.length ? "白名单：认得的新页面脚本自动进包；" + errs.join("、") + "两张表都没写到，报错停下，等人决定。" : "白名单：只拿网页运行要的。";
+      if (mode === "black") read.textContent = leaks.length ? "黑名单下新文件默认就进包，" + leaks.join("、") + "悄悄跟着走了。" : "黑名单现在看着没问题，可新加的文件只要没列进排除表，就会默认进包。";
+      else read.textContent = errs.length ? "白名单认得的新页面脚本自动进包，" + errs.join("、") + "两张表都没写到，报错停下，等人决定。" : "白名单只拿网页运行需要的文件。";
       if (speak) announce(read.textContent);
     }
     radios($('[aria-label="怎么挑文件"]'), function (b) { mode = b.getAttribute("data-wl"); paint(true); });

@@ -51,7 +51,7 @@
  *      数据 window.STAR_SEARCH（data/search-index.js），第一次聚焦 / 悬停 / 快捷键时才注入 <script>；
  *      页面里已经有 STAR_SEARCH 就直接用；没读到给一句「索引没读到」，不抛错。匹配字段：t 标题、n 目录短名、k 标签、
  *      g 分组 / pt 页面名、s 摘要（按这个顺序排名）；结果项 = 标题（命中 <mark>）+ 章节名 + 摘要一行，点或回车跳 item.f。
- *  13. 跳转点亮（「本站这里在用」的落点）：地址是 #spot-名字 时，找 [data-spot~="名字"] 里第一个看得见的；
+ *  13. 跳转点亮（「本站用在」的落点）：地址是 #spot-名字 时，找 [data-spot~="名字"] 里第一个看得见的；
  *      看不见但在「更多」面板里的（≤900 的外观控件）先打开面板。内置几个不用写属性的：copy / pull / trap / theme /
  *      accent / blur / reset / search / nav / brand / skip / more / pagein（正文页头，mo-page）（见 spotBuiltin）。瞬间滚到视口中间（不平滑，长页会跑偏），
  *      外壳固定 / 吸顶部件只滚到「刚好看得见」；一圈强调色光环亮两下（1.2s；减弱动效改静态描边2秒）。hashchange 也处理，
@@ -179,7 +179,7 @@
       var on = v === pref;
       b.setAttribute("aria-checked", on ? "true" : "false");
       b.setAttribute("tabindex", on ? "0" : "-1");
-      if (v === "auto") b.setAttribute("aria-label", "自动，跟随系统：当前" + MODE_LABEL[mode]);
+      if (v === "auto") b.setAttribute("aria-label", "自动，跟随系统，现在是" + MODE_LABEL[mode]);
     });
     eachShell("data-accent-set", function (b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-accent-set") === accent ? "true" : "false");
@@ -189,7 +189,7 @@
       var on = v === bp;
       b.setAttribute("aria-checked", on ? "true" : "false");
       b.setAttribute("tabindex", on ? "0" : "-1");
-      if (v === "auto") b.setAttribute("aria-label", "自动，按显卡：当前" + TIER_LABEL[tier]);
+      if (v === "auto") b.setAttribute("aria-label", "自动，按显卡，现在是" + TIER_LABEL[tier]);
     });
   }
 
@@ -253,17 +253,17 @@
     var willBe = modeOf(v);
     var go = function () { T.setMode(v); };
     if (willBe !== T.mode()) transition("reveal", origin, go); else go();
-    announce(v === "auto" ? "外观：自动，跟随系统，当前" + MODE_LABEL[willBe] : "外观：" + MODE_LABEL[v]);
+    announce(v === "auto" ? "外观设为自动，跟随系统，现在是" + MODE_LABEL[willBe] : "外观设为" + MODE_LABEL[v]);
   }
   function setAccent(a) {
     if (!T || a === T.accent()) return;
     transition("fade", null, function () { T.setAccent(a); });
-    announce("强调色：" + ACCENT_LABEL[a]);
+    announce("强调色设为" + ACCENT_LABEL[a] + "色");
   }
   function setBlur(v) {
     if (!T || !T.setBlur || v === T.blurPref()) return;
     T.setBlur(v);
-    announce("背景模糊：" + BLUR_LABEL[v] + (v === "auto" ? "，当前" + TIER_LABEL[blurTier()] : ""));
+    announce("背景模糊设为" + BLUR_LABEL[v] + (v === "auto" ? "，现在是" + TIER_LABEL[blurTier()] : ""));
   }
 
   doc.addEventListener("click", function (e) {
@@ -630,7 +630,7 @@
     each(NAV.pages, function (p) { if (p.id === NAV.current) cur = p; });
     if (!cur || typeof cur.count !== "number") return;
     var n = doc.querySelectorAll(".page .entry").length;
-    if (n !== cur.count) console.warn("[star] nav.js 里「" + cur.title + "」的 count 是" + cur.count + "，页面实际" + n + "条：同一轮改一处。");
+    if (n !== cur.count) console.warn("[star] nav.js 里「" + cur.title + "」的 count 是" + cur.count + "，页面实际" + n + "条，要在同一轮改成一致。");
   }
 
   /* ---------- 9. 图标占位 ---------- */
@@ -918,7 +918,7 @@
     out += inMark ? "<mark>" + esc(run) + "</mark>" : esc(run);
     return out;
   }
-  function whereOf(it) { return (it.pt || "") + (it.g ? " · " + it.g : ""); }
+  function whereOf(it) { return it.g ? it.g + "（" + (it.pt || "") + "）" : (it.pt || ""); }
   function optionHtml(k, inner, cls) {
     return '<li role="option" id="star-opt-' + k + '" aria-selected="false" data-k="' + k + '" class="so' + (cls ? " " + cls : "") + '">' + inner + "</li>";
   }
@@ -1025,10 +1025,10 @@
     S.prefix = "";
     S.shown = [];
     if (S.state === "loading" || S.state === "idle") {
-      note = "正在读索引…";
+      note = "正在读取索引";
     } else if (S.state === "failed") {
-      note = "索引没读到（data/search-index.js），搜不了。";
-      speech = "索引没读到";
+      note = "没读到搜索索引（data/search-index.js），暂时不能搜索。";
+      speech = "没读到搜索索引";
     } else if (q.charAt(0) === "#") {
       var tq = q.slice(1).trim();
       var tags = tagOptions(tq, limit);
@@ -1046,13 +1046,13 @@
         var top = hits.slice(0, limit);
         S.shown = top.map(function (h) { return { it: h.it }; });
         html = top.map(function (h, k) { return itemHtml(k, h.it, terms, false); }).join("");
-        if (hits.length > limit) foot = "共" + hits.length + "条，只列前" + limit + "条；多打几个字缩小范围";
+        if (hits.length > limit) foot = "共" + hits.length + "条，只列出前" + limit + "条，多输入几个字可以缩小范围";
         speech = (q ? "找到" : "标签" + tagWords() + "下有") + hits.length + "条，上下键选择";
       } else {
         var near = similar(q);
         S.shown = near.map(function (h) { return { it: h.it, near: true }; });
         html = near.map(function (h, k) { return itemHtml(k, h.it, terms, true); }).join("");
-        note = near.length ? "没有直接命中「" + q + "」，相近的：" : "没有找到「" + q + "」";
+        note = near.length ? "没有直接命中「" + q + "」的结果，下面是相近的" : "没有找到「" + q + "」";
         speech = near.length ? "没有直接命中，" + near.length + "条相近的" : "没有找到";
       }
     }

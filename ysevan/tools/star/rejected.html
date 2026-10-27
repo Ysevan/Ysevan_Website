@@ -1,8 +1,8 @@
 <!doctype html><html lang="zh-CN"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F4F5F9">
-<meta name="description" content="按时间线：否掉了什么、屋主当时怎么说、最后选了什么、为什么不是那样；被否的样子按当时的真实色值画出来，和现行左右对照。">
-<title>否掉的方向 · 设计合集</title>
+<meta name="description" content="按时间记下否掉了什么、屋主当时怎么说、最后选了什么，以及为什么不那样做。被否的样子按当时的真实色值画出来，和现行左右对照。">
+<title>否掉的方向 设计合集</title>
 <script src="assets/boot.js"></script>
 <link rel="stylesheet" href="assets/star.css">
 <link rel="stylesheet" href="assets/pages/rejected.css">
@@ -14,14 +14,14 @@
 <main id="main" class="page">
   <header class="page-head">
     <h1 class="page-title">否掉的方向</h1>
-    <p class="page-sub">按时间线：否掉了什么、屋主当时怎么说、最后选了什么、为什么不是那样。被否的样子按当时的真实色值和尺寸画出来，拖中间那条线和现行对照。</p>
+    <p class="page-sub">按时间记下否掉了什么、屋主当时怎么说、最后选了什么，以及为什么不那样做。被否的样子按当时的真实色值和尺寸画出来，拖中间那条线可以和现行对照。</p>
     <nav class="page-toc" aria-label="本页目录"></nav>
   </header>
 
   <!-- ============================ 时间线总表（不是 .group：页内目录只列条目） ============================ -->
   <section class="rj-tl" id="r-timeline" aria-labelledby="rj-tl-title">
     <h2 class="rj-tl-title" id="rj-tl-title">时间线总表</h2>
-    <p class="rj-tl-lede">从早到晚。「屋主怎么说」一栏是原话（时间是本地时间）；查不到原话的写明「文档转述」或「不是屋主说的」。最后一栏链到下面那条，或链到已经画过这一项的页面。</p>
+    <p class="rj-tl-lede">从早到晚排。屋主怎么说那一栏是原话，时间是本地时间。查不到原话的，写明是文档转述，或者不是屋主说的。最后一栏链到下面对应的那条，或者已经画过这一项的页面。</p>
     <div class="rj-tl-bar">
       <div class="seg seg-sm" role="radiogroup" aria-label="按范围筛时间线" data-tl-filter>
         <button type="button" role="radio" aria-checked="true" tabindex="0" data-scope-pick="all">全部</button>
@@ -34,73 +34,73 @@
       <table class="rj-tl-table">
         <thead><tr><th scope="col">时间</th><th scope="col">范围</th><th scope="col">否掉了什么</th><th scope="col">屋主怎么说</th><th scope="col">最后选了什么</th><th scope="col">去看</th></tr></thead>
         <tbody data-tl-body>
-          <tr data-scope="xiaowu"><th scope="row">2026-08-26<small>01:02</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">手机上门厅上下堆叠</td><td class="rj-said" data-k="屋主"><q>手机端的小屋页面是什么样子的，会不会不优雅，他的解决方法是把整个页面同比例缩小吗，还是上下，上下的话我觉得不好看</q></td><td data-k="后来">门厅全宽横构图，窄屏也不堆叠</td><td data-k="去看"><a href="layout.html#l-xw-narrow">布局章</a></td></tr>
-          <tr data-scope="xiaowu"><th scope="row">2026-08-26<small>01:07</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">中文与英文之间加空格</td><td class="rj-said" data-k="屋主"><q>英文和中文之间不要有空格，</q></td><td data-k="后来">页面文案中英文之间不加空格，URL两侧留空格</td><td data-k="去看"><a href="type.html#t-space">排版章</a></td></tr>
-          <tr data-scope="xiaowu"><th scope="row">2026-09-01<small>22:59</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">门厅只做整页CSS 3D倾斜</td><td class="rj-said" data-k="屋主"><q>卡纸在动但画像贴上去的一张纸，你可以把我给你的画边成一个个相关的组件之类的都可以</q></td><td data-k="后来">画内深度视差，再升级成真几何（手写WebGL）</td><td data-k="去看"><a href="3d.html">3D章</a></td></tr>
-          <tr data-scope="xiaowu"><th scope="row">2026-09-01<small>23:42</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">夜色第一版：夜橄榄</td><td class="rj-said" data-k="屋主"><q>深色模式下的深绿色有点太丑了，不够温馨</q></td><td data-k="后来">第二版琥珀棕</td><td data-k="去看"><a href="#r-xw-night">夜色被否的三版</a></td></tr>
-          <tr data-scope="xiaowu"><th scope="row">2026-09-01<small>23:56</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">夜色第二版：琥珀棕</td><td class="rj-said" data-k="屋主"><q>你把橄榄绿边成棕色之后我感觉还是不符合这个背景总体的颜色，有没有别的OK的颜色更加符合我想要的感觉</q></td><td data-k="后来">第三版冷夜暖灯（现行）</td><td data-k="去看"><a href="#r-xw-night">夜色被否的三版</a></td></tr>
-          <tr data-scope="xiaowu"><th scope="row">2026-09-02<small>00:02</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">换房间：从中缝展开的「开门」</td><td class="rj-said" data-k="屋主"><q>门开的太快了，并且门也不够具体</q></td><td data-k="后来">实心色板双开门</td><td data-k="去看"><a href="#r-xw-door">换房间的门</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-08-26<small>01:02</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">手机上门厅上下堆叠</td><td class="rj-said" data-k="屋主"><q>手机端的小屋页面是什么样子的，会不会不优雅，他的解决方法是把整个页面同比例缩小吗，还是上下，上下的话我觉得不好看</q></td><td data-k="后来">门厅全宽横构图，窄屏也不堆叠</td><td data-k="去看">布局页的<a href="layout.html#l-xw-narrow">窄屏也横构图</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-08-26<small>01:07</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">中文与英文之间加空格</td><td class="rj-said" data-k="屋主"><q>英文和中文之间不要有空格，</q></td><td data-k="后来">页面文案中英文之间不加空格，URL两侧留空格</td><td data-k="去看">排版页的<a href="type.html#t-space">不加空格</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-09-01<small>22:59</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">门厅只做整页CSS 3D倾斜</td><td class="rj-said" data-k="屋主"><q>卡纸在动但画像贴上去的一张纸，你可以把我给你的画边成一个个相关的组件之类的都可以</q></td><td data-k="后来">画内深度视差，再升级成真几何（手写WebGL）</td><td data-k="去看"><a href="3d.html">3D与性能</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-09-01<small>23:42</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">夜色第一版（夜橄榄）</td><td class="rj-said" data-k="屋主"><q>深色模式下的深绿色有点太丑了，不够温馨</q></td><td data-k="后来">第二版琥珀棕</td><td data-k="去看"><a href="#r-xw-night">夜色被否的三版</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-09-01<small>23:56</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">夜色第二版（琥珀棕）</td><td class="rj-said" data-k="屋主"><q>你把橄榄绿边成棕色之后我感觉还是不符合这个背景总体的颜色，有没有别的OK的颜色更加符合我想要的感觉</q></td><td data-k="后来">第三版冷夜暖灯（现行）</td><td data-k="去看"><a href="#r-xw-night">夜色被否的三版</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-09-02<small>00:02</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">换房间时从中缝展开的开门动画</td><td class="rj-said" data-k="屋主"><q>门开的太快了，并且门也不够具体</q></td><td data-k="后来">实心色板双开门</td><td data-k="去看"><a href="#r-xw-door">换房间的门</a></td></tr>
           <tr data-scope="xiaowu"><th scope="row">2026-09-02<small>00:08</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">实心色板门</td><td class="rj-said" data-k="屋主"><q>这个门有点丑，不够优雅</q></td><td data-k="后来">纸色格心门</td><td data-k="去看"><a href="#r-xw-door">换房间的门</a></td></tr>
-          <tr data-scope="xiaowu"><th scope="row">2026-09-02<small>00:15</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">「门」这条路</td><td class="rj-said" data-k="屋主"><q>开门的动画还是太丑了，去网上找找看有没有更合适的切换动画，不一定要开门</q></td><td data-k="后来">洇一层纸</td><td data-k="去看"><a href="#r-xw-door">换房间的门</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-09-02<small>00:15</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">做门这条路</td><td class="rj-said" data-k="屋主"><q>开门的动画还是太丑了，去网上找找看有没有更合适的切换动画，不一定要开门</q></td><td data-k="后来">洇一层纸</td><td data-k="去看"><a href="#r-xw-door">换房间的门</a></td></tr>
           <tr data-scope="xiaowu"><th scope="row">2026-09-02<small>00:33</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">回门厅也洇纸</td><td class="rj-said" data-k="屋主"><q>切换首页不用那个洇开盖住特效</q></td><td data-k="后来">回门厅只播开场手写，两个仪式不叠</td><td data-k="去看"><a href="#r-xw-door">换房间的门</a></td></tr>
-          <tr data-scope="xiaowu"><th scope="row">2026-09-20<small>01:56</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">工具页两件工具之间换场太长（中间整整一屏空白）</td><td class="rj-said" data-k="屋主"><q>工具架里面我感觉两个工具之间的切换不够自然，间距太长了，你选择一个滑动会比较自然的距离</q></td><td data-k="后来">共用一块吸顶舞台，换场重叠约40svh</td><td data-k="去看"><a href="layout.html#l-xw-rail">布局章</a></td></tr>
-          <tr data-scope="xiaowu"><th scope="row">2026-09-20<small>22:55</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">走进小屋：滚多少放多少（擦洗）</td><td class="rj-said" data-k="屋主"><q>可以拖动鼠标的时候自动播放吗，这样子会更加美观一点</q></td><td data-k="后来">第一次滚动意图起播，定时自动播放</td><td data-k="去看"><a href="motion.html#mo-xw-scrub">动画章</a></td></tr>
-          <tr data-scope="xiaowu"><th scope="row">2026-09-20</th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">走进小屋：画面放大到151倍</td><td class="rj-said" data-k="屋主">文档转述：「掉帧＋难看」</td><td data-k="后来">倍数封顶3.43，推近藏在洇纸底下</td><td data-k="去看"><a href="motion.html#mo-xw-walk">动画章</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-09-20<small>01:56</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">工具页两件工具之间换场太长（中间整整一屏空白）</td><td class="rj-said" data-k="屋主"><q>工具架里面我感觉两个工具之间的切换不够自然，间距太长了，你选择一个滑动会比较自然的距离</q></td><td data-k="后来">共用一块吸顶舞台，换场重叠约40svh（用到2026-10-21，之后工具页改成分区卡片）</td><td data-k="去看">布局页的<a href="layout.html#l-xw-rail">一条轨道五层叠放</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-09-20<small>22:55</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">走进小屋动画滚多少放多少（擦洗）</td><td class="rj-said" data-k="屋主"><q>可以拖动鼠标的时候自动播放吗，这样子会更加美观一点</q></td><td data-k="后来">第一次滚动意图起播，定时自动播放</td><td data-k="去看">动画页的<a href="motion.html#mo-xw-scrub">擦洗两条教训</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-09-20</th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">走进小屋动画把画面放大到151倍</td><td class="rj-said" data-k="屋主">文档转述「掉帧＋难看」</td><td data-k="后来">倍数封顶3.43，推近藏在洇纸底下</td><td data-k="去看">动画页的<a href="motion.html#mo-xw-walk">走进小屋</a></td></tr>
           <tr data-scope="xiaowu"><th scope="row">2026-09-22<small>16:44</small></th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">夜色换成海雾（Sea Mist）</td><td class="rj-said" data-k="屋主"><q>怎么感觉改完了之后更丑了，不改了</q></td><td data-k="后来">夜色原样不动</td><td data-k="去看"><a href="#r-xw-night">夜色被否的三版</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-22<small>18:34</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">plan</span></td><td data-k="否掉了什么">仪表盘式首页（六个面板装一条任务）</td><td class="rj-said" data-k="屋主"><q>plane的ui好丑哦，不够一目了然</q></td><td data-k="后来">一列四节清单，一个输入口</td><td data-k="去看"><a href="index.html#taste-06">总览原则06</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-22<small>22:13</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">plan</span></td><td data-k="否掉了什么">照刷刷用刷刷红当主色</td><td class="rj-said" data-k="屋主"><q>plan可以不是红色的吗，好奇怪好丑。</q></td><td data-k="后来">强调色换回蓝，红只留逾期</td><td data-k="去看"><a href="#r-sheet">黑红与六套中性</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-22<small>22:52</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">plan、岗岗</span></td><td data-k="否掉了什么">黑侧栏＋刷刷红</td><td class="rj-said" data-k="屋主"><q>感觉黑红不好看，你看看网上大部分网站都是怎么搭配的颜色</q></td><td data-k="后来">出六套中性对照图</td><td data-k="去看"><a href="#r-sheet">黑红与六套中性</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-22<small>22:54</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">三个工具</span></td><td data-k="否掉了什么">六套中性（暖纸＋靛蓝／橄榄／赭红、深蓝侧栏、Linear灰）</td><td class="rj-said" data-k="屋主"><q>都不好看</q></td><td data-k="后来">选了方向「粉彩渐变」，三张样张里挑P2</td><td data-k="去看"><a href="#r-sheet">黑红与六套中性</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-22<small>23:43</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">粉彩P1、P3两套</td><td class="rj-said" data-k="屋主"><q>可以用这些色卡吗</q><span class="rj-note">附了五张色卡；文档记「P2天蓝默认＋五张，P1／P3撤掉」</span></td><td data-k="后来">六套粉彩可切换</td><td data-k="去看"><a href="#r-pastel">粉彩</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-22<small>22:52</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">plan、岗岗</span></td><td data-k="否掉了什么">黑侧栏加刷刷红</td><td class="rj-said" data-k="屋主"><q>感觉黑红不好看，你看看网上大部分网站都是怎么搭配的颜色</q></td><td data-k="后来">出六套中性对照图</td><td data-k="去看"><a href="#r-sheet">黑红与六套中性</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-22<small>22:54</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">三个工具</span></td><td data-k="否掉了什么">六套中性色（暖纸配靛蓝、橄榄或赭红，深蓝侧栏，Linear灰）</td><td class="rj-said" data-k="屋主"><q>都不好看</q></td><td data-k="后来">选了粉彩渐变这个方向，三张样张里挑了P2</td><td data-k="去看"><a href="#r-sheet">黑红与六套中性</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-22<small>23:43</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">粉彩P1、P3两套</td><td class="rj-said" data-k="屋主"><q>可以用这些色卡吗</q><span class="rj-note">附了五张色卡，文档记「P2天蓝默认＋五张，P1／P3撤掉」</span></td><td data-k="后来">六套粉彩可切换</td><td data-k="去看"><a href="#r-pastel">粉彩</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-23<small>01:31</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">六套粉彩全部</td><td class="rj-said" data-k="屋主"><q>刷刷的这些我觉得都不好看，你参考一下苹果的UI和配色</q></td><td data-k="后来">苹果风</td><td data-k="去看"><a href="#r-pastel">粉彩</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23<small>01:35</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">苹果第一版样张：平白卡、不随缩放</td><td class="rj-said" data-k="屋主"><q>UI你要适配我页面的缩放大小，我觉得还是差一点意思，你再想想</q></td><td data-k="后来">液态玻璃＋clamp自适应</td><td data-k="去看"><a href="#r-apple-v1">苹果第一版样张</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23<small>01:35</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">苹果第一版样张（平白卡，不随缩放）</td><td class="rj-said" data-k="屋主"><q>UI你要适配我页面的缩放大小，我觉得还是差一点意思，你再想想</q></td><td data-k="后来">液态玻璃加clamp自适应</td><td data-k="去看"><a href="#r-apple-v1">苹果第一版样张</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-23<small>01:41</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">侧栏灰方块占位</td><td class="rj-said" data-k="屋主"><q>我截图红色框中左边那一侧的不要空白的，看着不舒服，</q></td><td data-k="后来">线条图标，不带底块</td><td data-k="去看"><a href="#r-apple-v1">苹果第一版样张</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-23<small>01:43</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">左上角写一个「刷」字</td><td class="rj-said" data-k="屋主"><q>左上角能不能不是刷这个字，帮我改成一个好看的图标</q></td><td data-k="后来">品牌图标</td><td data-k="去看"><a href="#r-apple-v1">苹果第一版样张</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23<small>01:48</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">用字符凑图标（▶ ◔ ? ✕ ★）</td><td class="rj-said" data-k="屋主"><q>这些图标我觉得还是不好看</q></td><td data-k="后来">真SVG线条图标写进规格</td><td data-k="去看"><a href="#r-apple-v1">苹果第一版样张</a>；<a href="index.html#taste-07">总览原则07</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23<small>02:14</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">主按钮为了4.5把渐变压深</td><td class="rj-said" data-k="屋主"><q>我希望所有颜色的按钮色可以和页面的左上角的颜色一样浅一点会好看一点</q></td><td data-k="后来">和品牌图标同一条亮渐变＋白字，记录不断言</td><td data-k="去看"><a href="index.html#taste-03">总览原则03</a>；<a href="color.html#c-button">色彩页</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23<small>01:48</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">用字符凑的图标（▶、◔、问号、✕、★）</td><td class="rj-said" data-k="屋主"><q>这些图标我觉得还是不好看</q></td><td data-k="后来">真SVG线条图标写进规格</td><td data-k="去看"><a href="#r-apple-v1">苹果第一版样张</a>、<a href="index.html#taste-07">总览原则07</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23<small>02:14</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">主按钮为了4.5把渐变压深</td><td class="rj-said" data-k="屋主"><q>我希望所有颜色的按钮色可以和页面的左上角的颜色一样浅一点会好看一点</q></td><td data-k="后来">和品牌图标同一条亮渐变加白字，对比度只记录、不判过不过</td><td data-k="去看"><a href="index.html#taste-03">总览原则03</a>、色彩页的<a href="color.html#c-button">主按钮</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-23<small>02:15</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">card</span></td><td data-k="否掉了什么">球档舞台的中性炭黑底</td><td class="rj-said" data-k="屋主">不是屋主说的<span class="rj-note">控制室下发「默认靛紫、按钮改亮」时自己加的一条</span></td><td data-k="后来">随强调色的深色调，出六选</td><td data-k="去看"><a href="#r-stage">舞台底六选</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23<small>02:20</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">card</span></td><td data-k="否掉了什么">舞台底A／B／C／E／F</td><td class="rj-said" data-k="屋主"><q>D，并且我感觉有点凸出不来像是一个球体</q></td><td data-k="后来">D星野</td><td data-k="去看"><a href="#r-stage">舞台底六选</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23<small>02:20</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">card</span></td><td data-k="否掉了什么">舞台底A、B、C、E、F</td><td class="rj-said" data-k="屋主"><q>D，并且我感觉有点凸出不来像是一个球体</q></td><td data-k="后来">D星野</td><td data-k="去看"><a href="#r-stage">舞台底六选</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-23<small>02:29</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">card</span></td><td data-k="否掉了什么">球形选卡</td><td class="rj-said" data-k="屋主"><q>我发现这些卡片正对我们的时候有一点倾斜，并且有一个球感觉很奇怪，你想想有没有别的更合适的方法来总的展示</q></td><td data-k="后来">出五种整体展示</td><td data-k="去看"><a href="#r-ball">球形选卡</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-23<small>02:33</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">card</span></td><td data-k="否掉了什么">弧形展架、手牌扇形、钱包叠卡、玻璃展柜墙</td><td class="rj-said" data-k="屋主"><q>A</q></td><td data-k="后来">Cover Flow</td><td data-k="去看"><a href="#r-showcase">展示五选</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23<small>02:48</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">内置SVG品牌图标</td><td class="rj-said" data-k="屋主"><q>左上角的logo看的很难受，修改一下，或者你跟我说希望有一个什么样子的图，描述一下我画了给你</q></td><td data-k="后来">屋主手绘，文件优先</td><td data-k="去看"><a href="interaction.html#ix-brand">交互页</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23<small>03:12</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">手绘图标在渐变方块里占65%</td><td class="rj-said" data-k="屋主"><q>logo占比大一点，太小了不合适</q></td><td data-k="后来">占84%</td><td data-k="去看"><a href="interaction.html#ix-brand">交互页</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23<small>03:26</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">刷刷</span></td><td data-k="否掉了什么">大屏上内容在侧栏右边居中成窄柱</td><td class="rj-said" data-k="屋主"><q>刷刷我用大屏幕，他就变成，不好看，不符合自动匹配</q></td><td data-k="后来">1560上限、整壳居中、多列（又错了）</td><td data-k="去看"><a href="index.html#taste-05">总览原则05</a>；<a href="#r-bigscreen">大屏四种错法</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23<small>03:56</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">plan</span></td><td data-k="否掉了什么">任务详情的显式「保存／取消」</td><td class="rj-said" data-k="屋主"><q>plan的这个感觉逻辑很不合适，你找找现在主流的都是怎么做的</q><span class="rj-note">没点名保存按钮；控制室照主流做法重做时撤掉了</span></td><td data-k="后来">自动保存＋「已保存·撤销」</td><td data-k="去看"><a href="interaction.html#ix-confirm">交互页</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23<small>02:48</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">内置SVG品牌图标</td><td class="rj-said" data-k="屋主"><q>左上角的logo看的很难受，修改一下，或者你跟我说希望有一个什么样子的图，描述一下我画了给你</q></td><td data-k="后来">屋主手绘，文件优先</td><td data-k="去看">交互页的<a href="interaction.html#ix-brand">品牌图标和标签页图标</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23<small>03:12</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">手绘图标在渐变方块里占65%</td><td class="rj-said" data-k="屋主"><q>logo占比大一点，太小了不合适</q></td><td data-k="后来">占84%</td><td data-k="去看">交互页的<a href="interaction.html#ix-brand">品牌图标和标签页图标</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23<small>03:26</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">刷刷</span></td><td data-k="否掉了什么">大屏上内容在侧栏右边居中成窄柱</td><td class="rj-said" data-k="屋主"><q>刷刷我用大屏幕，他就变成，不好看，不符合自动匹配</q></td><td data-k="后来">1560上限、整壳居中、多列（又错了）</td><td data-k="去看"><a href="index.html#taste-05">总览原则05</a>、<a href="#r-bigscreen">大屏四种错法</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23<small>03:56</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">plan</span></td><td data-k="否掉了什么">任务详情里显式的保存和取消按钮</td><td class="rj-said" data-k="屋主"><q>plan的这个感觉逻辑很不合适，你找找现在主流的都是怎么做的</q><span class="rj-note">没点名保存按钮，是控制室照主流做法重做时撤掉的</span></td><td data-k="后来">自动保存，加一条「已保存·撤销」提示</td><td data-k="去看">交互页的<a href="interaction.html#ix-confirm">确认与撤销</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-23<small>04:01</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">1560上限、整壳居中、1600以上加列</td><td class="rj-said" data-k="屋主"><q>刷刷这个windows大屏打开的视觉效果跟mac打开的视觉效果差距很大，我希望能跟mac的一样</q></td><td data-k="后来">以1440为基准等比放大，1.45封顶</td><td data-k="去看"><a href="#r-bigscreen">大屏四种错法</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23<small>04:20</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">严格等比（2088以上两边留白）</td><td class="rj-said" data-k="屋主">不是屋主说的<span class="rj-note">控制室裁定取填满：屋主第一次截图圈的就是两边空白</span></td><td data-k="后来">填满，多出的宽度给卡片与列表轨道</td><td data-k="去看"><a href="#r-bigscreen">大屏四种错法</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23</th><td data-k="范围"><span class="rj-scope rj-scope-tools">刷刷</span></td><td data-k="否掉了什么">放大倍数用「1440→2560线性爬坡」</td><td class="rj-said" data-k="屋主">不是屋主说的<span class="rj-note">控制室查「刷刷跟mac差距大」时找出来的</span></td><td data-k="后来">视口÷1440</td><td data-k="去看"><a href="#r-bigscreen">大屏四种错法</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23<small>04:20</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">四个工具</span></td><td data-k="否掉了什么">严格等比（2088以上两边留白）</td><td class="rj-said" data-k="屋主">不是屋主说的<span class="rj-note">控制室裁定取填满，因为屋主第一次截图圈的就是两边空白</span></td><td data-k="后来">填满，多出的宽度给卡片与列表轨道</td><td data-k="去看"><a href="#r-bigscreen">大屏四种错法</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23</th><td data-k="范围"><span class="rj-scope rj-scope-tools">刷刷</span></td><td data-k="否掉了什么">放大倍数从1440到2560线性爬坡</td><td class="rj-said" data-k="屋主">不是屋主说的<span class="rj-note">控制室查「刷刷跟mac差距大」时找出来的</span></td><td data-k="后来">视口宽除以1440</td><td data-k="去看"><a href="#r-bigscreen">大屏四种错法</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-23<small>14:39</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">plan</span></td><td data-k="否掉了什么">任务详情放在右侧第三栏</td><td class="rj-said" data-k="屋主"><q>plan右边这个窗口没有动画，并且我觉得他在右边会有点不合适，能不能放在别的更合适的地方</q></td><td data-k="后来">居中大对话框（14:43回「A」）</td><td data-k="去看"><a href="#r-plan-detail">详情第三栏</a></td></tr>
           <tr data-scope="tools"><th scope="row">2026-09-23<small>16:02</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">card</span></td><td data-k="否掉了什么">舞台高写死69svh，「刚好装下」</td><td class="rj-said" data-k="屋主"><q>我希望他就在一面里面，上下不对称看着不舒服，右边的那个可以直接不要了</q></td><td data-k="后来">flex:1吃剩余高度，再用等比值封顶</td><td data-k="去看"><a href="index.html#taste-09">总览原则09</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-23</th><td data-k="范围"><span class="rj-scope rj-scope-tools">岗岗</span></td><td data-k="否掉了什么">手机上也做3D案头手册</td><td class="rj-said" data-k="屋主"><q>岗可以不管</q><span class="rj-note">控制室记忆里记的原话（memory/ship-staged-not-perfect.md:8）</span></td><td data-k="后来">不做</td><td data-k="去看"><a href="3d.html#d-roster">3D章</a></td></tr>
-          <tr data-scope="tools"><th scope="row">2026-09-27<small>09:17</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">刷刷</span></td><td data-k="否掉了什么">专项练习的多选筛选胶囊</td><td class="rj-said" data-k="屋主"><q>刷刷專項練習蓋回去，該覺改了以後不好看了，沒有之前好</q><span class="rj-note">原文是繁体输入</span></td><td data-k="后来">撤回到3.12.0的卡片</td><td data-k="去看"><a href="interaction.html#ix-filter-multi">交互页</a>；<a href="index.html#taste-04">总览原则04</a></td></tr>
-          <tr data-scope="xiaowu"><th scope="row">2026-09-27</th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">套用屋主给的六个交互组件</td><td class="rj-said" data-k="屋主">不是屋主否的<span class="rj-note">控制室核对：一个都对不上已有交互，代码不动</span></td><td data-k="后来">只在规格里记一句理由</td><td data-k="去看"><a href="interaction.html#ix-only-upgrade">交互页</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-23</th><td data-k="范围"><span class="rj-scope rj-scope-tools">岗岗</span></td><td data-k="否掉了什么">手机上也做3D案头手册</td><td class="rj-said" data-k="屋主"><q>岗可以不管</q><span class="rj-note">控制室记忆里记的原话（memory/ship-staged-not-perfect.md:8）</span></td><td data-k="后来">不做</td><td data-k="去看">3D页的<a href="3d.html#d-roster">各家3D一览</a></td></tr>
+          <tr data-scope="tools"><th scope="row">2026-09-27<small>09:17</small></th><td data-k="范围"><span class="rj-scope rj-scope-tools">刷刷</span></td><td data-k="否掉了什么">专项练习的多选筛选胶囊</td><td class="rj-said" data-k="屋主"><q>刷刷專項練習蓋回去，該覺改了以後不好看了，沒有之前好</q><span class="rj-note">原文是繁体输入</span></td><td data-k="后来">撤回到3.12.0的卡片</td><td data-k="去看">交互页的<a href="interaction.html#ix-filter-multi">多选版（已撤回）</a>、<a href="index.html#taste-04">总览原则04</a></td></tr>
+          <tr data-scope="xiaowu"><th scope="row">2026-09-27</th><td data-k="范围"><span class="rj-scope rj-scope-xiaowu">小屋</span></td><td data-k="否掉了什么">套用屋主给的六个交互组件</td><td class="rj-said" data-k="屋主">不是屋主否的<span class="rj-note">控制室核对过，一个都对不上已有交互，代码不动</span></td><td data-k="后来">只在规格里记一句理由</td><td data-k="去看">交互页的<a href="interaction.html#ix-only-upgrade">只升级已有交互</a></td></tr>
         </tbody>
       </table>
     </div>
-    <p class="rj-tl-foot">「控制室会话记录」指控制室会话a06eb2e5的原始记录（本机，不进仓库）：屋主的原话、当晚样张的写法都从那里逐字核过；时间按记录里的时间戳换算成本地时间。</p>
+    <p class="rj-tl-foot">控制室会话记录，指控制室会话a06eb2e5的原始记录，存在本机，不进仓库。屋主的原话、当晚样张的写法都从那里逐字核过，时间按记录里的时间戳换算成本地时间。</p>
   </section>
 
   <!-- ============================ 工具 · 配色四轮 ============================ -->
   <section class="group" id="g-palette" data-scope="tools">
-    <h2 class="group-title">工具 · 配色四轮</h2>
-    <p class="group-lede">2026-09-22晚到23日凌晨，四个工具的配色换了四次：照刷刷的黑红、六套中性、粉彩、苹果液态玻璃。前三次都做出来过。</p>
+    <h2 class="group-title">工具的四轮配色</h2>
+    <p class="group-lede">2026-09-22晚到23日凌晨，四个工具的配色换了四次，依次是照刷刷的黑红、六套中性色、粉彩和苹果液态玻璃。前三次都做出来过。</p>
 
     <!-- 1 黑红与六套中性 -->
     <article class="entry" id="r-sheet" data-scope="tools" data-toc="黑红与六套中性">
       <header class="entry-head">
-        <h3>黑红和六套中性都被否：深色块与正红太重，中性底又等于没颜色</h3>
-        <p class="entry-lede">先照刷刷做成黑侧栏加刷刷红，屋主嫌红；控制室出了一张六套「中性底＋一个强调色」的对照图，屋主两分钟后回「都不好看」，之后才走到有颜色的底。</p>
+        <h3>黑红配色和六套中性色</h3>
+        <p class="entry-lede">先照刷刷做成黑侧栏加刷刷红，屋主嫌红。控制室又出了一张对照图，六套都是中性底加一个强调色，屋主两分钟后回「都不好看」。黑侧栏和正红太重，中性底又几乎没有颜色，之后才改用有颜色的底。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-22否</li></ul>
       </header>
       <div class="specimen">
-        <p class="rj-cap"><b>示意</b>同一页plan「今日」，照2026-09-22那张对照图的真实色值画（控制室当晚用脚本出的图，左边0号就是刷刷那套黑红）。拖中间那条线：左边被否，右边是现行液态玻璃，跟着本站的明暗与强调色走。</p>
+        <p class="rj-cap"><b>示意</b>同一页plan的今日页，照2026-09-22那张对照图的真实色值画。那张图是控制室当晚用脚本出的，0号就是刷刷那套黑红。拖中间那条线对照，左边是被否的，右边是现行的液态玻璃，跟着本站的明暗和强调色变。</p>
         <div class="rj-vars" role="group" aria-label="左边换成哪一套" data-vars>
-          <button type="button" class="rj-var" aria-pressed="true" data-v="0" data-note="0现状：黑侧栏＋刷刷红（屋主说不好看）· 侧栏#25282C，选中白底红字，强调#B4232C"><i style="--sw:#25282C"></i>0黑红</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="A" data-note="A暖纸＋浅侧栏＋靛蓝（Todoist / Things路线，最主流）· 侧栏#ECE9E1，强调#3B5BDB"><i style="--sw:#3B5BDB"></i>A靛蓝</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="B" data-note="B暖纸＋浅侧栏＋橄榄绿（小屋家族色，四个工具一家）· 强调#5E6144"><i style="--sw:#5E6144"></i>B橄榄</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="C" data-note="C暖纸＋浅侧栏＋赭红（刷刷红柔化一档）· 强调#B5563A"><i style="--sw:#B5563A"></i>C赭红</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="D" data-note="D深蓝侧栏＋冷白内容（GitHub / AdminLTE路线）· 底#F8FAFC，侧栏#1E293B，强调#2563EB"><i style="--sw:#1E293B"></i>D深蓝侧栏</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="E" data-note="E全浅灰＋石墨强调（Linear / Notion路线，几乎无色）· 底#F7F7F5，强调#1F1E1B"><i style="--sw:#1F1E1B"></i>E Linear灰</button>
+          <button type="button" class="rj-var" aria-pressed="true" data-v="0" data-note="0号现状，黑侧栏加刷刷红（屋主说不好看）。侧栏#25282C，选中项白底红字，强调色#B4232C"><i style="--sw:#25282C"></i>0黑红</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="A" data-note="A靛蓝，暖纸底、浅侧栏配靛蓝（Todoist和Things的路线，最主流）。侧栏#ECE9E1，强调色#3B5BDB"><i style="--sw:#3B5BDB"></i>A靛蓝</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="B" data-note="B橄榄，暖纸底、浅侧栏配橄榄绿（小屋的家族色，四个工具算一家）。强调色#5E6144"><i style="--sw:#5E6144"></i>B橄榄</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="C" data-note="C赭红，暖纸底、浅侧栏配赭红（刷刷红调柔一档）。强调色#B5563A"><i style="--sw:#B5563A"></i>C赭红</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="D" data-note="D深蓝侧栏，配冷白内容区（GitHub和AdminLTE的路线）。底#F8FAFC，侧栏#1E293B，强调色#2563EB"><i style="--sw:#1E293B"></i>D深蓝侧栏</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="E" data-note="E Linear灰，全浅灰配石墨色强调（Linear和Notion的路线，几乎没有颜色）。底#F7F7F5，强调色#1F1E1B"><i style="--sw:#1F1E1B"></i>E Linear灰</button>
         </div>
         <div class="rj-cmp" data-cmp data-mode="split">
           <div class="rj-box" style="--mw:640;--mh:400;--cap:760" data-cmp-box>
@@ -134,7 +134,7 @@
               </div>
               
             </div>
-            <span class="rj-flag rj-flag-new">现行</span><span class="rj-flag rj-flag-old">示意 · 被否</span><div class="rj-rail"><span class="rj-line"></span><span class="rj-knob" role="slider" tabindex="0" aria-label="分界线：左边被否，右边现行" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="被否的样子占一半"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span></div>
+            <span class="rj-flag rj-flag-new">现行</span><span class="rj-flag rj-flag-old">被否（示意）</span><div class="rj-rail"><span class="rj-line"></span><span class="rj-knob" role="slider" tabindex="0" aria-label="分界线，左边被否，右边现行" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="被否的样子占一半"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span></div>
           </div>
           <div class="rj-row">
             <div class="seg seg-sm" role="radiogroup" aria-label="看哪一边">
@@ -144,7 +144,7 @@
             </div>
           </div>
         </div>
-        <p class="rj-read" data-vars-read>左边：0现状：黑侧栏＋刷刷红（屋主说不好看）· 侧栏#25282C，选中白底红字，强调#B4232C</p>
+        <p class="rj-read" data-vars-read>左边是0号现状，黑侧栏加刷刷红（屋主说不好看）。侧栏#25282C，选中项白底红字，强调色#B4232C</p>
       </div>
       <div class="entry-body">
         <section class="fact"><h4>数值</h4>
@@ -157,10 +157,10 @@ D深蓝侧栏  底#334155、白字 #F8FAFC  #1E293B  #2563EB   GitHub / AdminLTE
 E Linear灰 底#E6E4DF       #F7F7F5  #F0EFEC  #1F1E1B   Linear / Notion 路线
 0–C 共用   字 #2E2D28 · 次级 #6C6A61 · 线 #E4E0D6 · 卡 #FDFCF9；逾期红六套都是 #B4232C
 刷刷原值   --canvas #f6f5f1  --ink-900 #25282c（侧栏）  --red #b4232c</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>plan先做（屋主问能不能参考小屋或刷刷的色系，选了刷刷），岗岗跟着「对齐刷刷」做了一整版，验完没发布；card那时刚接进工作区，直接上的粉彩。六套中性只出了对照图，没落代码。</p></section>
-        <section class="fact"><h4>为什么不是那样</h4><p>深色侧栏是整屏最重的一块；刷刷红当主色，每个选中项都像在报错——红本该只留给「答错、逾期」这类语义位，plan后来也写成「红只做逾期／风险／危险操作」。六套中性把这两样拿掉了，可底子还是暖纸或冷白，颜色只剩按钮和选中项一小块，等于没颜色。屋主下一句选的是粉彩渐变（TickTick／Apple提醒事项那种），说明他要的是底子本身有颜色、又不重——这是控制室的归纳，他的原话只有「都不好看」。</p></section>
-        <blockquote class="said"><p>「plan可以不是红色的吗，好奇怪好丑。」</p><p>「感觉黑红不好看，你看看网上大部分网站都是怎么搭配的颜色」</p><p>「都不好看」</p><footer>屋主 · 2026-09-22 22:13、22:52、22:54（控制室会话记录）</footer></blockquote>
-        <section class="fact trap"><h4>坑</h4><p>「和刷刷一致」一致的是哪一层要先问清：刷刷的暖纸底、黑侧栏、刷刷红是刷刷自己的身份，plan照抄就把别人的品牌红搬成了自己的主色。屋主当时问的是「参考色系」。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>plan先做，屋主问能不能参考小屋或刷刷的色系，选了刷刷。岗岗照着对齐刷刷的要求做了一整版，验完没发布。card那时刚接进工作区，直接用的粉彩。六套中性色只出了对照图，没写进代码。</p></section>
+        <section class="fact"><h4>为什么不是那样</h4><p>深色侧栏是整屏最重的一块。刷刷红当主色，选中项和报错都是红色，分不开。红色本该只留给答错、逾期这类语义，plan后来也写明「红只做逾期／风险／危险操作」。六套中性色去掉了这两样，可底子还是暖纸或冷白，颜色只剩按钮和选中项一小块，几乎没有颜色。屋主接着选了粉彩渐变（TickTick和Apple提醒事项那种），控制室据此归纳，他要的是底子本身有颜色、又不重。他的原话只有「都不好看」。</p></section>
+        <blockquote class="said"><p>「plan可以不是红色的吗，好奇怪好丑。」</p><p>「感觉黑红不好看，你看看网上大部分网站都是怎么搭配的颜色」</p><p>「都不好看」</p><footer>屋主，2026-09-22 22:13、22:52、22:54（控制室会话记录）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>说要和刷刷一致时，先问清是哪一层一致。刷刷的暖纸底、黑侧栏和刷刷红是刷刷自己的标识，plan照抄，就把别人的品牌红当成了自己的主色。屋主当时问的只是能不能参考色系。</p></section>
         <p class="source">出处：控制室会话记录（2026-09-22 22:13、22:52、22:54屋主消息；22:53生成对照图palette-options.png的脚本里的六组色值，图在已清空的草稿区）；memory/tools-palette-pastel-p2.md:18「配色裁定过程」、:19；memory/plan-inbox-direction.md:11；tools/plan/docs/ui-redesign-proposal-v2.md:72「3.0 整体骨架」、:201「3.7 配色 / 3D」；tools/gang/design-proposal.md:616「留档：被否掉的那两版」；tools/shua@3c2d691 styles.css 第3、10、21、55行（刷刷改版前的 --red、--canvas、--ink-900、.sidebar）</p>
       </div>
     </article>
@@ -168,21 +168,21 @@ E Linear灰 底#E6E4DF       #F7F7F5  #F0EFEC  #1F1E1B   Linear / Notion 路线
     <!-- 2 粉彩 -->
     <article class="entry" id="r-pastel" data-scope="tools" data-toc="粉彩三选与六套">
       <header class="entry-head">
-        <h3>粉彩渐变三选一、又改六套可切换，做完验完全部作废：颜色该落在光晕和强调位上，不该换整张底</h3>
-        <p class="entry-lede">P1／P2／P3三张样张屋主挑了P2；当晚加进他自己找的五张色卡，四个工具都做成六套可切换。第二天看了刷刷的成品，「都不好看」，换苹果风。</p>
+        <h3>粉彩渐变，三选一后又做成六套切换</h3>
+        <p class="entry-lede">P1、P2、P3三张样张，屋主挑了P2。当晚又加进他自己找的五张色卡，四个工具都做成六套可切换。第二天屋主看了刷刷的成品，说「都不好看」，改走苹果风。这一轮做完验完全部作废，后来颜色只落在光晕和强调色的位置上，不再换整张底。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23否</li></ul>
       </header>
       <div class="specimen">
-        <p class="rj-cap"><b>示意</b>plan「今日」，照plan仓库留档的粉彩样张原值画（去掉了右侧详情栏）。左边换八套底；右边是现行：底子中性不动，只换强调色——右下角六个色点只改右边这一块，不改全站。</p>
+        <p class="rj-cap"><b>示意</b>plan的今日页，照plan仓库留档的粉彩样张原值画，去掉了右侧详情栏。左边可以换八套底。右边是现行做法，底色中性不动，只换强调色，右下角六个色点只改右边这一块，不改全站。</p>
         <div class="rj-vars" role="group" aria-label="左边换成哪一套粉彩" data-vars>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="1" data-note="P1蓝紫到粉（TickTick那种）· 135° #e9ecff→#f4ecff→#ffeef6，强调#5b6cff"><i style="--sw:linear-gradient(135deg,#e9ecff,#ffeef6)"></i>P1</button>
-          <button type="button" class="rj-var" aria-pressed="true" data-v="2" data-note="P2天蓝到浅粉（屋主选的，六套里的sky）· 160° #e6f3ff→#f2f6fb→#fdf1f4，强调#3b82f6"><i style="--sw:linear-gradient(160deg,#e6f3ff,#fdf1f4)"></i>P2天蓝</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="3" data-note="P3桃粉到淡蓝 · 135° #fff0e6→#ffe9f0→#eef0ff，强调#ff7a59"><i style="--sw:linear-gradient(135deg,#fff0e6,#eef0ff)"></i>P3</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="4" data-note="薄荷mint（色卡Fresh Aura）· 160° #dff6ee→#eefbf8→#e4f3fa，强调#2fb5b8，墨#2a3550"><i style="--sw:linear-gradient(160deg,#dff6ee,#e4f3fa)"></i>薄荷</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="5" data-note="紫雾lilac（色卡Gentle Radiance）· 160° #e6e5f0→#f5f0f3→#ffe6e6，强调#8785a2，墨#33314a"><i style="--sw:linear-gradient(160deg,#e6e5f0,#ffe6e6)"></i>紫雾</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="6" data-note="糖果candy（色卡Flow Shade）· 135° #dcf6f2→#f8f3d5→#ffe1e8，强调#00a99c，墨#1f3336"><i style="--sw:linear-gradient(135deg,#dcf6f2,#ffe1e8)"></i>糖果</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="7" data-note="海雾mist（色卡Sea Mist）· 160° #dbe2ef→#eef2f8→#f9f7f7，强调#3f72af，墨#112d4e"><i style="--sw:linear-gradient(160deg,#dbe2ef,#f9f7f7)"></i>海雾</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="8" data-note="暖雾meadow（色卡Warm Veil）· 160° #fff6c4→#f6fbe6→#dcf7e3，强调#f0932b，墨#2f3a2a"><i style="--sw:linear-gradient(160deg,#fff6c4,#dcf7e3)"></i>暖雾</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="1" data-note="P1，蓝紫到粉（TickTick那种）。135°渐变，#e9ecff、#f4ecff到#ffeef6，强调色#5b6cff"><i style="--sw:linear-gradient(135deg,#e9ecff,#ffeef6)"></i>P1</button>
+          <button type="button" class="rj-var" aria-pressed="true" data-v="2" data-note="P2，天蓝到浅粉（屋主选的，六套里的sky）。160°渐变，#e6f3ff、#f2f6fb到#fdf1f4，强调色#3b82f6"><i style="--sw:linear-gradient(160deg,#e6f3ff,#fdf1f4)"></i>P2天蓝</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="3" data-note="P3，桃粉到淡蓝。135°渐变，#fff0e6、#ffe9f0到#eef0ff，强调色#ff7a59"><i style="--sw:linear-gradient(135deg,#fff0e6,#eef0ff)"></i>P3</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="4" data-note="薄荷mint（色卡Fresh Aura）。160°渐变，#dff6ee、#eefbf8到#e4f3fa，强调色#2fb5b8，墨色#2a3550"><i style="--sw:linear-gradient(160deg,#dff6ee,#e4f3fa)"></i>薄荷</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="5" data-note="紫雾lilac（色卡Gentle Radiance）。160°渐变，#e6e5f0、#f5f0f3到#ffe6e6，强调色#8785a2，墨色#33314a"><i style="--sw:linear-gradient(160deg,#e6e5f0,#ffe6e6)"></i>紫雾</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="6" data-note="糖果candy（色卡Flow Shade）。135°渐变，#dcf6f2、#f8f3d5到#ffe1e8，强调色#00a99c，墨色#1f3336"><i style="--sw:linear-gradient(135deg,#dcf6f2,#ffe1e8)"></i>糖果</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="7" data-note="海雾mist（色卡Sea Mist）。160°渐变，#dbe2ef、#eef2f8到#f9f7f7，强调色#3f72af，墨色#112d4e"><i style="--sw:linear-gradient(160deg,#dbe2ef,#f9f7f7)"></i>海雾</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="8" data-note="暖雾meadow（色卡Warm Veil）。160°渐变，#fff6c4、#f6fbe6到#dcf7e3，强调色#f0932b，墨色#2f3a2a"><i style="--sw:linear-gradient(160deg,#fff6c4,#dcf7e3)"></i>暖雾</button>
         </div>
         <div class="rj-cmp" data-cmp data-mode="split">
           <div class="rj-box" style="--mw:1080;--mh:760;--cap:860" data-cmp-box>
@@ -224,7 +224,7 @@ E Linear灰 底#E6E4DF       #F7F7F5  #F0EFEC  #1F1E1B   Linear / Notion 路线
               </div>
               
             </div>
-            <span class="rj-flag rj-flag-new">现行</span><span class="rj-flag rj-flag-old">示意 · 被否</span><div class="rj-rail"><span class="rj-line"></span><span class="rj-knob" role="slider" tabindex="0" aria-label="分界线：左边被否，右边现行" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="被否的样子占一半"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span></div>
+            <span class="rj-flag rj-flag-new">现行</span><span class="rj-flag rj-flag-old">被否（示意）</span><div class="rj-rail"><span class="rj-line"></span><span class="rj-knob" role="slider" tabindex="0" aria-label="分界线，左边被否，右边现行" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="被否的样子占一半"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span></div>
           </div>
           <div class="rj-row">
             <div class="seg seg-sm" role="radiogroup" aria-label="看哪一边">
@@ -243,7 +243,7 @@ E Linear灰 底#E6E4DF       #F7F7F5  #F0EFEC  #1F1E1B   Linear / Notion 路线
             </div>
           </div>
         </div>
-        <p class="rj-read" data-vars-read>左边：P2天蓝到浅粉（屋主选的，六套里的sky）· 160° #e6f3ff→#f2f6fb→#fdf1f4，强调#3b82f6</p>
+        <p class="rj-read" data-vars-read>左边是P2，天蓝到浅粉（屋主选的，六套里的sky）。160°渐变，#e6f3ff、#f2f6fb到#fdf1f4，强调色#3b82f6</p>
       </div>
       <div class="entry-body">
         <section class="fact"><h4>数值</h4>
@@ -258,10 +258,10 @@ mist    160deg #dbe2ef → #eef2f8 → #f9f7f7       · 强调#3f72af · 墨#112
 meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3a2a   Warm Veil
 共用    卡 rgba(255,255,255,.72) · 墨 #1f2333 · 次级 #6b7086 · 逾期 #ff5c7a
 切换    html[data-palette] = sky | mint | lilac | candy | mist | meadow，键 plan-palette / card-palette / hb:palette</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>四个工具都做过、验过：card提交过两版（先P2一套，再六套切换）；岗岗做完验完写完文档、没发布；plan、刷刷也停在工作区——刷刷那一版原本要叫3.11.0，最后3.11.0发出去的是液态玻璃。</p></section>
-        <section class="fact"><h4>为什么不是那样</h4><p>六套等于六种页面：每套换的是整张底，文字档要按每套底各压深一组，对比度表也是六张——作废时plan写的就是「六套的色值与六张对比度表随之作废」。渐变底上再压半透明白卡，同一种灰字在不同位置对比度不一样，次级灰为了六套都过4.5又压了一档。现行把「颜色」拆成两个维度：底子中性（#F4F5F9／#0B0C10）不动，颜色只出现在三团光晕、主按钮、选中项和图标块上；换强调色时这几处一起换，字压的底永远可预测。这正落在屋主「有颜色但不重」上——这一句是控制室的归纳。</p></section>
-        <blockquote class="said"><p>「P2 天蓝到浅粉，更接近 Apple 提醒事项，强调色纯蓝。」</p><p>「这三个都可以都做吗，然后有一个切换的地方」</p><p>「可以用这些色卡吗」</p><p>「刷刷的这些我觉得都不好看，你参考一下苹果的UI和配色」</p><footer>屋主 · 2026-09-22 23:09、23:29、23:43，2026-09-23 01:31（控制室会话记录）</footer></blockquote>
-        <section class="fact trap"><h4>坑</h4><p>换风格后，旧版本存在本机的主题名要一律忽略、回落默认（plan的<code>plan-palette</code>、岗岗的<code>hb:palette</code>）：不然用户会读到一个已经不存在的主题。岗岗还把旧的「界面主题」读一次当新外观的初值，选择不丢。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>四个工具都做过、验过。card提交过两版，先是P2一套，再是六套切换。岗岗做完、验完、写完文档，没有发布。plan和刷刷也停在工作区，刷刷那一版原本要叫3.11.0，最后发出去的3.11.0是液态玻璃。</p></section>
+        <section class="fact"><h4>为什么不是那样</h4><p>六套就是六种页面。每套换的是整张底，文字色要按每套底各加深一组，对比度表也要六张，作废时plan写的就是「六套的色值与六张对比度表随之作废」。渐变底上再压半透明白卡，同一种灰字在不同位置对比度不一样，次级灰为了六套都过4.5又加深了一档。现行做法把颜色拆成两个维度，底色中性不动（浅色#F4F5F9，深色#0B0C10），颜色只出现在三团光晕、主按钮、选中项和图标块上。换强调色时这几处一起换，文字下面的底色始终是确定的。控制室的归纳是，这正合屋主要的有颜色但不重。</p></section>
+        <blockquote class="said"><p>「P2 天蓝到浅粉，更接近 Apple 提醒事项，强调色纯蓝。」</p><p>「这三个都可以都做吗，然后有一个切换的地方」</p><p>「可以用这些色卡吗」</p><p>「刷刷的这些我觉得都不好看，你参考一下苹果的UI和配色」</p><footer>屋主，2026-09-22 23:09、23:29、23:43，2026-09-23 01:31（控制室会话记录）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>换风格后，旧版本存在本机的主题名要一律忽略，回到默认值，比如plan的<code>plan-palette</code>、岗岗的<code>hb:palette</code>。不然页面会套用一个已经不存在的主题。岗岗还把旧的界面主题设置读一次，当作新外观的初始值，用户的选择不会丢。</p></section>
         <p class="source">出处：控制室会话记录（2026-09-22 23:09、23:29、23:43，2026-09-23 01:31屋主消息）；tools/plan/docs/design/superseded-pastel/plan-pastel-mock.html:10、:11、:12、:13「屋主色卡五套」；tools/plan/docs/ui-redesign-proposal-v2.md:577「8.9 作废记录：粉彩六套」、:319「8.1 两个维度，不是六套主题」；tools/gang/CHANGELOG.md:130；tools/gang/design-proposal.md:620；memory/tools-palette-pastel-p2.md:20、:26「晚定稿：六套」、:27；memory/plan-inbox-direction.md:11（次级灰#62677d→#5e6276）；tools/card@18cb755 collection/gallery.css 第1行（card粉彩P2那一版）；tools/card@c3cebc3 collection/shared/palette.js 第2行（card六套切换那一版）</p>
       </div>
     </article>
@@ -269,15 +269,15 @@ meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3
     <!-- 3 苹果第一版样张 -->
     <article class="entry" id="r-apple-v1" data-scope="tools" data-toc="苹果第一版样张">
       <header class="entry-head">
-        <h3>苹果风第一版太素、侧栏是灰方块：屋主十几分钟里点了四处，第二版才定成液态玻璃</h3>
-        <p class="entry-lede">纯苹果分组列表（#F2F2F7底、白卡、无玻璃无光晕）他说「差一点意思」、还要跟着缩放走；玻璃初稿里侧栏的灰方块、左上角的「刷」字、列表里用字符凑的图标，又各点了一次。</p>
+        <h3>苹果风第一版样张</h3>
+        <p class="entry-lede">第一版是纯苹果的分组列表（#F2F2F7底、白卡、没有玻璃和光晕），屋主说「差一点意思」，还要求跟着缩放走。之后的玻璃初稿里，侧栏的灰方块、左上角的「刷」字、列表里用字符凑的图标，他又各点了一次。十几分钟里点了四处，第二版才定成液态玻璃。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23否</li></ul>
       </header>
       <div class="specimen">
-        <p class="rj-cap"><b>示意</b>刷刷「学习首页」，照控制室当晚两份样张的写法画：左边可以换「第一版纯苹果」或「玻璃初稿」，右边是现行。点下面四个编号，左边亮出屋主点的那一处。</p>
+        <p class="rj-cap"><b>示意</b>刷刷的学习首页，照控制室当晚两份样张的写法画。左边可以换成第一版纯苹果或玻璃初稿，右边是现行。点下面四个编号，左边会圈出屋主点的那一处。</p>
         <div class="rj-vars" role="group" aria-label="左边换成哪一版样张" data-vars>
-          <button type="button" class="rj-var" aria-pressed="true" data-v="v1" data-note="第一版纯苹果：#F2F2F7底、#FFFFFF卡、侧栏#F5F5F7加1px分隔线；不模糊、无投影、无光晕；导航22px灰方块；品牌是文字「刷刷」"><i style="--sw:#F2F2F7"></i>第一版纯苹果</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="g0" data-note="玻璃初稿：玻璃.62／.78＋三团光晕已经有了；导航仍是灰方块，品牌方块里写「刷」，列表图标是 ▶ ◔ 1 ☰ ✓ ? ✕ ★"><i style="--sw:linear-gradient(135deg,#5AC8FA,#FFD6AA,#AFA0FF)"></i>玻璃初稿</button>
+          <button type="button" class="rj-var" aria-pressed="true" data-v="v1" data-note="第一版纯苹果，#F2F2F7底、#FFFFFF卡，侧栏#F5F5F7加1px分隔线。没有磨砂、投影和光晕，导航是22px灰方块，品牌是文字「刷刷」"><i style="--sw:#F2F2F7"></i>第一版纯苹果</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="g0" data-note="玻璃初稿，.62和.78两档玻璃加三团光晕已经有了。导航仍是灰方块，品牌方块里写一个「刷」字，列表图标是▶、◔、1、☰、✓、问号、✕、★这些字符"><i style="--sw:linear-gradient(135deg,#5AC8FA,#FFD6AA,#AFA0FF)"></i>玻璃初稿</button>
         </div>
         <div class="rj-cmp" data-cmp data-mode="split">
           <div class="rj-box" style="--mw:1440;--mh:900" data-cmp-box>
@@ -340,7 +340,7 @@ meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3
               </div>
               
             </div>
-            <span class="rj-flag rj-flag-new">现行</span><span class="rj-flag rj-flag-old">示意 · 被否</span><div class="rj-rail"><span class="rj-line"></span><span class="rj-knob" role="slider" tabindex="0" aria-label="分界线：左边被否，右边现行" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="被否的样子占一半"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span></div>
+            <span class="rj-flag rj-flag-new">现行</span><span class="rj-flag rj-flag-old">被否（示意）</span><div class="rj-rail"><span class="rj-line"></span><span class="rj-knob" role="slider" tabindex="0" aria-label="分界线，左边被否，右边现行" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="被否的样子占一半"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span></div>
           </div>
           <div class="rj-row">
             <div class="seg seg-sm" role="radiogroup" aria-label="看哪一边">
@@ -351,12 +351,12 @@ meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3
           </div>
         </div>
         <ul class="rj-spots" aria-label="屋主点出的四处" data-spots>
-          <li><button type="button" class="rj-spot-btn" aria-pressed="false" data-rj-spot="1" data-spot-v="v1" data-said="01:35「UI你要适配我页面的缩放大小，我觉得还是差一点意思，你再想想」"><em>1</em><span>太素、不随缩放<small>第一版纯苹果</small></span></button></li>
-          <li><button type="button" class="rj-spot-btn" aria-pressed="false" data-rj-spot="2" data-spot-v="g0" data-said="01:41「我截图红色框中左边那一侧的不要空白的，看着不舒服，」"><em>2</em><span>侧栏灰方块<small>玻璃初稿</small></span></button></li>
-          <li><button type="button" class="rj-spot-btn" aria-pressed="false" data-rj-spot="3" data-spot-v="g0" data-said="01:43「左上角能不能不是刷这个字，帮我改成一个好看的图标」"><em>3</em><span>左上角的「刷」字<small>玻璃初稿</small></span></button></li>
-          <li><button type="button" class="rj-spot-btn" aria-pressed="false" data-rj-spot="4" data-spot-v="g0" data-said="01:48「这些图标我觉得还是不好看」"><em>4</em><span>字符凑的图标<small>玻璃初稿</small></span></button></li>
+          <li><button type="button" class="rj-spot-btn" aria-pressed="false" data-rj-spot="1" data-spot-v="v1" data-said="01:35说「UI你要适配我页面的缩放大小，我觉得还是差一点意思，你再想想」"><em>1</em><span>太素、不随缩放<small>第一版纯苹果</small></span></button></li>
+          <li><button type="button" class="rj-spot-btn" aria-pressed="false" data-rj-spot="2" data-spot-v="g0" data-said="01:41说「我截图红色框中左边那一侧的不要空白的，看着不舒服，」"><em>2</em><span>侧栏灰方块<small>玻璃初稿</small></span></button></li>
+          <li><button type="button" class="rj-spot-btn" aria-pressed="false" data-rj-spot="3" data-spot-v="g0" data-said="01:43说「左上角能不能不是刷这个字，帮我改成一个好看的图标」"><em>3</em><span>左上角的「刷」字<small>玻璃初稿</small></span></button></li>
+          <li><button type="button" class="rj-spot-btn" aria-pressed="false" data-rj-spot="4" data-spot-v="g0" data-said="01:48说「这些图标我觉得还是不好看」"><em>4</em><span>字符凑的图标<small>玻璃初稿</small></span></button></li>
         </ul>
-        <p class="rj-read" data-vars-read>左边：第一版纯苹果：#F2F2F7底、#FFFFFF卡、侧栏#F5F5F7加1px分隔线；不模糊、无投影、无光晕；导航22px灰方块；品牌是文字「刷刷」</p>
+        <p class="rj-read" data-vars-read>左边是第一版纯苹果，#F2F2F7底、#FFFFFF卡，侧栏#F5F5F7加1px分隔线。没有磨砂、投影和光晕，导航是22px灰方块，品牌是文字「刷刷」</p>
       </div>
       <div class="entry-body">
         <section class="fact"><h4>数值</h4>
@@ -371,10 +371,10 @@ meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3
   01:43改成品牌图标（叠卡 + 勾）；列表图标 ▶ ◔ 1 ☰ ✓ ? ✕ ★ 到01:49才换掉
 现行（SPEC §5b）
   一律真 SVG 线条：stroke 1.9、圆头圆角，导航20px、列表18px；禁止字符、emoji、灰色空方块</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>2026-09-23凌晨给四个工具定新风格时的两份样张（都画的刷刷首页），定稿那份拷进了四个仓库当真源。</p></section>
-        <section class="fact"><h4>为什么不是那样</h4><p>第一版太素：中性灰底配纯白卡，层次只剩卡片的边，屋主要的「有颜色」没了；它还是定死1440×900画的，不跟窗口和浏览器缩放走。第二版加了三团随强调色变的光晕、两档玻璃，字号间距全换成clamp。灰方块是占位，看上去就是「左边一列空白」——屋主截图圈的就是它；字符图标粗细高低各不一样、跟不了字色（切到深色更明显，见<a href="index.html#taste-07">总览原则07</a>）。左上角写字等于没有品牌，换成品牌图标，后来屋主又换成自己手绘的（见<a href="interaction.html#ix-brand">交互页「品牌图标」</a>）。</p></section>
-        <blockquote class="said"><p>「UI你要适配我页面的缩放大小，我觉得还是差一点意思，你再想想」</p><p>「我截图红色框中左边那一侧的不要空白的，看着不舒服，」</p><p>「左上角能不能不是刷这个字，帮我改成一个好看的图标」</p><p>「这些图标我觉得还是不好看」</p><footer>屋主 · 2026-09-23 01:35、01:41、01:43、01:48（控制室会话记录）</footer></blockquote>
-        <section class="fact trap"><h4>坑</h4><p>样张里的占位最容易被当成设计：灰方块、字符箭头写的时候是「先占个位置」，屋主看到的就是成品。给屋主看的样张，占位也要用真东西。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>2026-09-23凌晨给四个工具定新风格时的两份样张，画的都是刷刷首页。定稿那份拷进了四个仓库，作为统一的依据。</p></section>
+        <section class="fact"><h4>为什么不是那样</h4><p>第一版太素，中性灰底配纯白卡，层次只剩卡片的边，屋主要的颜色没有了。它还是按1440×900定死画的，不跟窗口和浏览器缩放走。第二版加了三团随强调色变的光晕和两档玻璃，字号和间距全换成clamp。灰方块是占位，看上去就是左边空着一列，屋主截图圈的就是它。字符图标粗细高低各不一样，也跟不了字色，切到深色更明显（见<a href="index.html#taste-07">总览原则07</a>）。左上角写字等于没有品牌，于是换成品牌图标，后来屋主又换成自己手绘的（见交互页的<a href="interaction.html#ix-brand">品牌图标和标签页图标</a>）。</p></section>
+        <blockquote class="said"><p>「UI你要适配我页面的缩放大小，我觉得还是差一点意思，你再想想」</p><p>「我截图红色框中左边那一侧的不要空白的，看着不舒服，」</p><p>「左上角能不能不是刷这个字，帮我改成一个好看的图标」</p><p>「这些图标我觉得还是不好看」</p><footer>屋主，2026-09-23 01:35、01:41、01:43、01:48（控制室会话记录）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>样张里的占位最容易被当成设计。灰方块和字符箭头写的时候只是先占个位置，屋主看到的却是成品。给屋主看的样张，占位也要用真东西。</p></section>
         <p class="source">出处：控制室会话记录（2026-09-23 01:33写apple/shua-apple.html、01:37写apple/shua-glass.html、01:41／01:43／01:49三次改样张，样张在已清空的草稿区；屋主消息01:35、01:41、01:43、01:48）；tools/plan/docs/design/SPEC-apple-glass.md:128「图标」、:10；memory/tools-palette-pastel-p2.md:11</p>
       </div>
     </article>
@@ -382,18 +382,18 @@ meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3
 
   <!-- ============================ 工具 · 版式与展示 ============================ -->
   <section class="group" id="g-layout" data-scope="tools">
-    <h2 class="group-title">工具 · 版式与展示</h2>
+    <h2 class="group-title">工具的版式和展示</h2>
     <p class="group-lede">大屏怎么放、卡集怎么选卡、舞台用什么底、plan的详情放哪。</p>
 
     <!-- 4 大屏 -->
     <article class="entry" id="r-bigscreen" data-scope="tools" data-toc="大屏四种错法">
       <header class="entry-head">
-        <h3>大屏错过四次：窄柱、加列、两边留白、线性爬坡；现行是「视口÷1440」等比放大，1.45封顶</h3>
-        <p class="entry-lede">前两种的样子在<a href="index.html#taste-05">总览原则05</a>里并排画着；这里拖视口宽，看后两种：严格等比留下的两条白边，和线性爬坡在屋主那台2040屏上小的那一截。</p>
+        <h3>大屏放大的四种错法</h3>
+        <p class="entry-lede">大屏错过四次，依次是窄柱、加列、两边留白和线性爬坡。现行是视口宽除以1440等比放大，到1.45封顶。前两种的样子在<a href="index.html#taste-05">总览原则05</a>里并排画着，这里拖视口宽看后两种，看严格等比留下的两条白边，和线性爬坡在屋主那台2040屏上小掉的那一截。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23否</li></ul>
       </header>
       <div class="specimen">
-        <p class="rj-cap"><b>示意</b>横轴是视口宽（CSS像素），纵轴是整套尺寸的放大倍数。三条线：现行、线性爬坡、初版（只有字号跟着涨，到2000就封顶）。拖滑块或点屋主的三台设备。</p>
+        <p class="rj-cap"><b>示意</b>横轴是视口宽（CSS像素），纵轴是整套尺寸的放大倍数。三条线分别是现行、线性爬坡和初版，初版只有字号跟着涨，到2000就封顶。可以拖滑块，或点屋主的三台设备。</p>
         <div class="rj-big" data-big>
           <div class="rj-big-ctl">
             <label class="rj-range"><span>视口宽</span><input type="range" min="1440" max="2560" step="8" value="2040" data-big-w aria-describedby="rj-big-read"><output data-big-wout>2040px</output></label>
@@ -416,19 +416,19 @@ meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3
             </g>
           </svg>
           <ul class="rj-legend">
-            <li><i class="lg-now"></i>现行：视口÷1440，2088起封顶1.45</li>
-            <li><i class="lg-lin"></i>被否：1440→2560线性爬坡</li>
-            <li><i class="lg-v1"></i>被否：初版只涨字号（正文17px封顶）</li>
+            <li><i class="lg-now"></i>视口宽除以1440，2088起封顶1.45（现行）</li>
+            <li><i class="lg-lin"></i>从1440到2560线性爬坡（被否）</li>
+            <li><i class="lg-v1"></i>初版只涨字号，正文17px封顶（被否）</li>
           </ul>
-          <p class="rj-read" id="rj-big-read" data-big-read>2040px：现行1.417；线性爬坡1.241；初版正文1.13</p>
+          <p class="rj-read" id="rj-big-read" data-big-read>2040px，现行1.417，线性爬坡1.241，初版正文1.13</p>
           <div class="rj-fill">
-            <figure><figcaption><b>被否：严格等比</b> <span data-big-gap>两边各空0px</span></figcaption><div class="rj-vp" data-big-strict><i></i></div></figure>
-            <figure><figcaption><b>现行：填满</b> 多出的宽度给卡片与列表轨道</figcaption><div class="rj-vp"><i></i></div></figure>
+            <figure><figcaption><b>严格等比（被否）</b> <span data-big-gap>两边各空0px</span></figcaption><div class="rj-vp" data-big-strict><i></i></div></figure>
+            <figure><figcaption><b>填满（现行）</b> 多出的宽度给卡片和列表轨道</figcaption><div class="rj-vp"><i></i></div></figure>
           </div>
         </div>
       </div>
       <div class="entry-body">
-        <section class="fact"><h4>数值 / 代码</h4>
+        <section class="fact"><h4>数值和代码</h4>
 <pre><code>现行  --scale: clamp(1, tan(atan2(100vw, 1440px)), 1.45)   视口 ÷ 1440，2088起封顶
       内容宽 = 视口 − 侧栏 − 左右内边距，铺满；不加列、不整壳居中、不用 CSS zoom
 错一  .view { max-width: 1180px; margin: 0 auto }           刷刷3.11.0：侧栏右边居中成窄柱
@@ -436,10 +436,10 @@ meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3
       @media (min-width: 1600px) { 快速开始并成三列 }        刷刷3.11.1：字只涨1.13–1.18倍还加列
 错三  严格等比：1440构图 × 1.45 = 2088，超出的部分两边留白
 错四  min(calc(1px + (100vw − 1440px) × 0.000401786), 1.45px)   线性爬坡：2040处1.241，等比是1.417</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>四个工具（刷刷3.11.1→3.11.2、岗岗、plan、card）。本站外壳的<code>--scale</code>也是现行这条；现行写法见<a href="layout.html#l-scale">布局章「1440等比放大」</a>。</p></section>
-        <section class="fact"><h4>为什么不是那样</h4><p>窄柱：屋主第一次截图圈的就是侧栏右边两大块空白。加列：视口涨1.78倍、字只涨1.13–1.18倍，再拆多列，版面变密、构图也变了，跟Mac上「不是同一个东西」。严格等比：2088以上同样会两边留白，等于把他抱怨的东西还回去，所以取填满，多出来的宽度只给卡片和列表轨道吃。线性爬坡：两种写法在2560都是1.45，中间全程不同——屋主台式机是2040（DPR 1.25），线性只给1.241，刷刷在他屏上比另外两家小一圈。连前提都错过一次：一直按2560推算，屋主台式机的视口其实是2040。</p></section>
-        <blockquote class="said"><p>「刷刷我用大屏幕，他就变成，不好看，不符合自动匹配」</p><p>「刷刷这个windows大屏打开的视觉效果跟mac打开的视觉效果差距很大，我希望能跟mac的一样」</p><footer>屋主 · 2026-09-23 03:26、04:01（控制室会话记录）</footer></blockquote>
-        <section class="fact trap"><h4>坑</h4><p>判定方法：大屏截图缩到1440宽，和真1440并排看，看不出差别才算过。只验一档会漏：1.45封顶要到2088才碰得到，屋主台式机2040碰不到，笔记本2552才显形，两档都要拍。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>当时的四个工具，刷刷（3.11.1改到3.11.2）、岗岗、plan和card。本站外壳的<code>--scale</code>也用现行这条，写法见布局页的<a href="layout.html#l-scale">1440等比放大</a>。</p></section>
+        <section class="fact"><h4>为什么不是那样</h4><p>窄柱的问题，屋主第一次截图圈的就是侧栏右边两大块空白。加列时视口涨了1.78倍，字只涨1.13到1.18倍，再拆成多列，版面变密，构图也变了，和Mac上看到的不一样。严格等比在2088以上同样会两边留白，又回到屋主抱怨的样子，所以选了填满，多出来的宽度只分给卡片和列表轨道。线性爬坡和等比在2560都是1.45，中间每一处都不同。屋主台式机是2040（DPR 1.25），线性只给到1.241，刷刷在他屏上比另外两家小一圈。前提也错过一次，一直按2560推算，屋主台式机的视口其实是2040。</p></section>
+        <blockquote class="said"><p>「刷刷我用大屏幕，他就变成，不好看，不符合自动匹配」</p><p>「刷刷这个windows大屏打开的视觉效果跟mac打开的视觉效果差距很大，我希望能跟mac的一样」</p><footer>屋主，2026-09-23 03:26、04:01（控制室会话记录）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>判定方法是把大屏截图缩到1440宽，和真正的1440并排看，看不出差别才算过。只验一档会漏，1.45封顶要到2088才碰得到，屋主台式机2040碰不到，笔记本2552才看得出来，所以两档都要拍。</p></section>
         <p class="source">出处：控制室会话记录（2026-09-23 03:26、04:01屋主消息，04:20控制室裁定取填满）；tools/plan/docs/design/SPEC-apple-glass.md:77「大屏」、:78、:80「填满」、:83「线性爬坡」、:91；tools/shua@fdbb999 styles.css 第299行（3.11.0 .view）；tools/shua@9a5e27c styles.css 第102、242、863行（3.11.1 --view-max、.app-shell、≥1600）</p>
       </div>
     </article>
@@ -447,16 +447,16 @@ meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3
     <!-- 5 球形选卡 -->
     <article class="entry" id="r-ball" data-scope="tools" data-toc="球形选卡">
       <header class="entry-head">
-        <h3>球形选卡被否：卡贴在球面上朝外，正对你的那张也带着倾斜；换成Cover Flow，正中那张永远端正</h3>
-        <p class="entry-lede">13张卡按斐波那契球面排开、整组转到正前方，相机还从上方10°往下看——转到了也是歪的，最上最下两张转不到正面；球本身也「看着很奇怪」。</p>
+        <h3>球形选卡</h3>
+        <p class="entry-lede">13张卡按斐波那契球面排开，整组转到正前方，相机还从上方10°往下看，所以转到正前也是歪的，最上最下两张转不到正面。屋主也觉得这个球本身很奇怪。后来换成Cover Flow，正中那张始终端正。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23否</li></ul>
       </header>
       <div class="specimen">
-        <p class="rj-cap"><b>示意</b>左边按card当时球档的几何（斐波那契球面、卡面朝外、俯仰限±63°、相机俯视10°、停3秒自转）用CSS 3D画的轻量版，不是原物（原物是three.js）；右边是现行Cover Flow。卡面是示意色块。两边都能拖，点一下舞台再用←→换卡。</p>
+        <p class="rj-cap"><b>示意</b>左边按card当时球档的几何，用CSS 3D画的轻量版，包括斐波那契球面、卡面朝外、俯仰限±63°、相机俯视10°、停3秒自转。原物用的是three.js。右边是现行的Cover Flow。卡面是示意色块。两边都能拖，也可以点一下舞台，再用左右方向键换卡。</p>
         <div class="rj-duo">
           <figure>
-            <figcaption><span>被否：球</span><span class="rj-flag-old" style="position:static;padding:1px 8px;border-radius:999px;font-size:var(--fs-xs)">示意</span></figcaption>
-            <div class="rj-box rj-stage" style="--mw:360;--mh:300;--cap:460" tabindex="0" role="group" aria-roledescription="选卡台" aria-label="球形选卡（示意）：←→换卡" data-ball>
+            <figcaption><span>球（被否）</span><span class="rj-flag-old" style="position:static;padding:1px 8px;border-radius:999px;font-size:var(--fs-xs)">示意</span></figcaption>
+            <div class="rj-box rj-stage" style="--mw:360;--mh:300;--cap:460" tabindex="0" role="group" aria-roledescription="选卡台" aria-label="球形选卡（示意），用左右方向键换卡" data-ball>
               <div class="rj-mock mk-night" aria-hidden="true"><div class="mk-3d" data-ball-scene></div></div>
             </div>
             <div class="rj-stage-ctl">
@@ -464,18 +464,18 @@ meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3
               <button type="button" class="rj-btn" data-ball-step="1">下一张</button>
               <button type="button" class="rj-btn" data-ball-go="0">转到第1张</button>
             </div>
-            <p class="rj-read" data-ball-read>正前：第7张</p>
+            <p class="rj-read" data-ball-read>正前方是第7张</p>
           </figure>
           <figure>
-            <figcaption><span>现行：Cover Flow</span></figcaption>
-            <div class="rj-box rj-stage" style="--mw:360;--mh:300;--cap:460" tabindex="0" role="group" aria-roledescription="选卡台" aria-label="Cover Flow：←→换卡" data-flow>
+            <figcaption><span>Cover Flow（现行）</span></figcaption>
+            <div class="rj-box rj-stage" style="--mw:360;--mh:300;--cap:460" tabindex="0" role="group" aria-roledescription="选卡台" aria-label="Cover Flow，用左右方向键换卡" data-flow>
               <div class="rj-mock mk-night" aria-hidden="true"><div class="mk-3d mk-flow" data-flow-scene style="perspective:900px"></div><div class="mk-refl"></div></div>
             </div>
             <div class="rj-stage-ctl">
               <button type="button" class="rj-btn" data-flow-step="-1">上一张</button>
               <button type="button" class="rj-btn" data-flow-step="1">下一张</button>
             </div>
-            <p class="rj-read" data-flow-read>正中：第7张，端正</p>
+            <p class="rj-read" data-flow-read>正中是第7张，端正</p>
           </figure>
         </div>
       </div>
@@ -490,9 +490,9 @@ meadow  160deg #fff6c4 → #f6fbe6 → #dcf7e3       · 强调#f0932b · 墨#2f3
 Cover Flow（现行，tools/card/CLAUDE.md「画廊的几条硬约束」）
   正中一张 rotate 0、最大最近；两侧 rotateY ±60° 后退、等距重叠、越远越暗到 .45
   切换380ms cubic-bezier(.32,.72,0,1)；减弱动效直接切；WebGL 从画廊去掉，纯 CSS 3D</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>card画廊的选卡台。球那一版2026-09-22晚提交，第二天凌晨卡加到13张、进了球档，屋主看过就否了。</p></section>
-        <section class="fact"><h4>为什么不是那样</h4><p>球面上的卡只能「朝外」，朝外和「朝你」只在正前方一点重合；相机俯视10°，正前那张也是上宽下窄的梯形；俯仰有限，最上最下两张转不正。屋主前一晚就说过牌少时球不好看；02:20又说「凸出不来像是一个球体」，控制室的办法是加球壳、经纬线、后排压暗，让它更像个球——方向反了：要的是看得清每张卡，不是一个球。Cover Flow把「端正」交给正中那一张，它永远rotate 0；两侧侧立只负责告诉你还有多少张。这一条后来写成了审美原则（<a href="method.html#me-upright">方法章「正对你的东西要端正」</a>）。</p></section>
-        <blockquote class="said"><p>「卡的球如果牌少感觉不是很好看，帮我想想怎么优化」</p><p>「我发现这些卡片正对我们的时候有一点倾斜，并且有一个球感觉很奇怪，你想想有没有别的更合适的方法来总的展示」</p><footer>屋主 · 2026-09-22 22:33、2026-09-23 02:29（控制室会话记录）</footer></blockquote>
+        <section class="fact"><h4>用在哪</h4><p>card画廊的选卡台。球那一版2026-09-22晚提交，第二天凌晨卡加到13张，进了球档，屋主看过就否了。</p></section>
+        <section class="fact"><h4>为什么不是那样</h4><p>球面上的卡只能朝外，朝外和朝向你只在正前方那一点重合。相机俯视10°，正前那张也是上宽下窄的梯形。俯仰角度有限，最上和最下两张转不正。屋主前一晚就说过牌少时球不好看，02:20又说「凸出不来像是一个球体」。控制室当时的办法是加球壳、经纬线、把后排压暗，让它更像个球，这个方向是反的，要的是看得清每张卡，不是一个球。Cover Flow只要求正中那一张端正，它始终是rotate 0，两侧侧立的卡只用来提示还有多少张。这一条后来写成了审美原则（见方法页的<a href="method.html#me-upright">端正</a>）。</p></section>
+        <blockquote class="said"><p>「卡的球如果牌少感觉不是很好看，帮我想想怎么优化」</p><p>「我发现这些卡片正对我们的时候有一点倾斜，并且有一个球感觉很奇怪，你想想有没有别的更合适的方法来总的展示」</p><footer>屋主，2026-09-22 22:33、2026-09-23 02:29（控制室会话记录）</footer></blockquote>
         <p class="source">出处：控制室会话记录（2026-09-22 22:33、2026-09-23 02:29屋主消息）；tools/card@18cb755 collection/gallery.js 第7、22、32–36、166、177、283行（球档说明、阈值8张、相机距离与俯视10°与俯仰限与自转、斐波那契球面、偏航俯仰、球档姿态）；tools/card/CLAUDE.md:160「画廊的几条硬约束」、:235；memory/ysevan-workspace-map.md:19</p>
       </div>
     </article>
@@ -500,25 +500,25 @@ Cover Flow（现行，tools/card/CLAUDE.md「画廊的几条硬约束」）
     <!-- 6 舞台底 -->
     <article class="entry" id="r-stage" data-scope="tools" data-toc="舞台底六选">
       <header class="entry-head">
-        <h3>选卡台的舞台底：中性炭黑不要，六选里五种没选——星野留下来，球撤了它还在</h3>
-        <p class="entry-lede">球档原来的舞台是一团中性炭灰的径向渐变；控制室按「随强调色的深色调」出了六种，屋主回了一个字母「D」。</p>
+        <h3>选卡台的舞台底六选</h3>
+        <p class="entry-lede">球档原来的舞台是一团中性炭灰的径向渐变。控制室按「随强调色的深色调」出了六种，屋主回了一个字母「D」，选的是星野。球后来撤了，星野底还留着。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23否</li></ul>
       </header>
       <div class="specimen">
-        <p class="rj-cap"><b>示意</b>左边换被否的那几种：炭黑是card当时的原底，A–F照控制室当晚样张的写法（示例强调色靛紫）；右边固定是选中的D星野。三张卡是示意色块。E那一块样张里还挂了磨砂，这里没画（样例不新增磨砂）。</p>
+        <p class="rj-cap"><b>示意</b>左边换被否的那几种。炭黑是card当时的原底，A到F照控制室当晚样张的写法，示例强调色用靛紫。右边固定是选中的D星野。三张卡是示意色块。E那一块在样张里还加了磨砂，这里没画，因为样例不新增磨砂。</p>
         <div class="rj-vars" role="group" aria-label="左边换成哪一种舞台底" data-vars>
-          <button type="button" class="rj-var" aria-pressed="true" data-v="charcoal" data-note="原底炭黑：radial-gradient(ellipse 70% 60% at 50% 42%, #3b3e44, #22242a 48%, #141519)，跟强调色无关"><i style="--sw:#22242A"></i>原底炭黑</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="A" data-note="A极光雾：#14162A底上三团blur(48px)的色块（强调色、#FF375F、#40C8E0）。控制室当时推荐的就是它"><i style="--sw:#5856D6"></i>A极光雾</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="B" data-note="B聚光舞台：顶上一束强调色聚光、底部一道地面反光、四角暗角，像博物馆展柜"><i style="--sw:#1B1D38"></i>B聚光</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="C" data-note="C网格渐变加颗粒：四角四色径向渐变压暗，叠一层feTurbulence胶片颗粒"><i style="--sw:linear-gradient(135deg,#5856D6,#FF2D55)"></i>C网格颗粒</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="E" data-note="E玻璃台面：深底上浮一块更亮的玻璃面板，顶部一团逆光、底部强调色地面反射"><i style="--sw:#22243F"></i>E玻璃台面</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="F" data-note="F光环：卡后面一圈conic-gradient多色光环加柔光，像全息投影台"><i style="--sw:conic-gradient(#5856D6,#BF5AF2,#40C8E0,#FF375F,#5856D6)"></i>F光环</button>
+          <button type="button" class="rj-var" aria-pressed="true" data-v="charcoal" data-note="原底炭黑，radial-gradient(ellipse 70% 60% at 50% 42%, #3b3e44, #22242a 48%, #141519)，和强调色无关"><i style="--sw:#22242A"></i>原底炭黑</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="A" data-note="A极光雾，#14162A底上三团blur(48px)的色块（强调色、#FF375F、#40C8E0）。控制室当时推荐的就是它"><i style="--sw:#5856D6"></i>A极光雾</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="B" data-note="B聚光舞台，参照博物馆展柜，顶上一束强调色聚光，底部一道地面反光，四角压暗"><i style="--sw:#1B1D38"></i>B聚光</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="C" data-note="C网格渐变加颗粒，四角四色径向渐变压暗，叠一层feTurbulence胶片颗粒"><i style="--sw:linear-gradient(135deg,#5856D6,#FF2D55)"></i>C网格颗粒</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="E" data-note="E玻璃台面，深底上浮一块更亮的玻璃面板，顶部一团逆光，底部有强调色的地面反射"><i style="--sw:#22243F"></i>E玻璃台面</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="F" data-note="F光环，参照全息投影台，卡后面一圈conic-gradient多色光环加柔光"><i style="--sw:conic-gradient(#5856D6,#BF5AF2,#40C8E0,#FF375F,#5856D6)"></i>F光环</button>
         </div>
         <div class="rj-cmp" data-cmp data-mode="split">
           <div class="rj-box" style="--mw:452;--mh:340;--cap:600" data-cmp-box>
             <div class="rj-pane rj-pane-new" data-pane="new"><div class="rj-mock" aria-hidden="true"><div class="mk-bg" data-v="D"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i></div><div class="mk-trio"><span class="mk-card" style="--h:216"></span><span class="mk-card" style="--h:258"></span><span class="mk-card" style="--h:318"></span></div></div></div>
             <div class="rj-pane rj-pane-old" data-pane="old"><div class="rj-mock" aria-hidden="true"><div class="mk-bg" data-v="charcoal" data-vars-target><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i></div><div class="mk-trio"><span class="mk-card" style="--h:216"></span><span class="mk-card" style="--h:258"></span><span class="mk-card" style="--h:318"></span></div></div></div>
-            <span class="rj-flag rj-flag-new">现行 · D星野</span><span class="rj-flag rj-flag-old">示意 · 被否</span><div class="rj-rail"><span class="rj-line"></span><span class="rj-knob" role="slider" tabindex="0" aria-label="分界线：左边被否，右边现行" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="被否的样子占一半"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span></div>
+            <span class="rj-flag rj-flag-new">D星野（现行）</span><span class="rj-flag rj-flag-old">被否（示意）</span><div class="rj-rail"><span class="rj-line"></span><span class="rj-knob" role="slider" tabindex="0" aria-label="分界线，左边被否，右边现行" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="被否的样子占一半"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span></div>
           </div>
           <div class="rj-row">
             <div class="seg seg-sm" role="radiogroup" aria-label="看哪一边">
@@ -528,7 +528,7 @@ Cover Flow（现行，tools/card/CLAUDE.md「画廊的几条硬约束」）
             </div>
           </div>
         </div>
-        <p class="rj-read" data-vars-read>左边：原底炭黑：radial-gradient(ellipse 70% 60% at 50% 42%, #3b3e44, #22242a 48%, #141519)，跟强调色无关</p>
+        <p class="rj-read" data-vars-read>左边是原底炭黑，radial-gradient(ellipse 70% 60% at 50% 42%, #3b3e44, #22242a 48%, #141519)，和强调色无关</p>
       </div>
       <div class="entry-body">
         <section class="fact"><h4>数值</h4>
@@ -539,9 +539,9 @@ C     四角 radial（#5856D6 / #BF5AF2 / #30B0C7 / #FF2D55）on #1A1C38，压 r
 D     radial(50% 45% at 50% 55%, rgba(88,86,214,.45)) + 160deg #0F1128 → #1B1740 55% → #0B0C1E + 十二颗星点 + 暗角   选定
 E     linear(#22243F, #101226) + 一块 inset 14% 8% 12% 的白面板，.10→.04（样张带 backdrop-filter: blur(20px)）
 F     conic 四色环用 mask 只留一圈 + blur(2px)，外面一团 blur(20px) 柔光</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>card选卡台。球撤掉、换成Cover Flow以后，星野底留了下来；落地的写法（中段混18%强调色、星点慢慢闪、深色再压一档）见<a href="color.html#c-stage">色彩页「星野舞台底」</a>。</p></section>
-        <section class="fact"><h4>为什么不是那样</h4><p>原底那团炭灰跟强调色无关，换了强调色舞台还是一块灰。「不要纯黑、要随强调色的深色调」这一条是控制室下发时自己加的，查不到屋主说过（记忆里记成了屋主看过card后定的）。六选里屋主只回了「D」，没说为什么不要另外五种；控制室当时推荐的是A极光雾（和页面光晕同一种语言），他没选。D的说明写的是「贴合月海、星轨、暮色这些卡的题材」。他同时说球「凸出不来」，那一条后来连球一起撤了。</p></section>
-        <blockquote class="said"><p>「D，并且我感觉有点凸出不来像是一个球体」</p><footer>屋主 · 2026-09-23 02:20（控制室会话记录）</footer></blockquote>
+        <section class="fact"><h4>用在哪</h4><p>card选卡台。球撤掉、换成Cover Flow以后，星野底留了下来。最后的写法是中段混18%强调色，星点慢慢闪，深色模式再暗一档，见色彩页的<a href="color.html#c-stage">星野舞台底</a>。</p></section>
+        <section class="fact"><h4>为什么不是那样</h4><p>原底那团炭灰和强调色无关，换了强调色，舞台还是一块灰。舞台底不要纯黑、要随强调色的深色调，这一条是控制室下发时自己加的，查不到屋主说过，记忆里记成了屋主看过card后定的。六选里屋主只回了「D」，没说为什么不要另外五种。控制室当时推荐的是A极光雾，和页面光晕是同一种做法，他没选。D的说明写的是「贴合月海、星轨、暮色这些卡的题材」。他同时说球「凸出不来」，这个问题后来连球一起撤掉了。</p></section>
+        <blockquote class="said"><p>「D，并且我感觉有点凸出不来像是一个球体」</p><footer>屋主，2026-09-23 02:20（控制室会话记录）</footer></blockquote>
         <p class="source">出处：控制室会话记录（2026-09-23 02:15下发「舞台底改成随强调色的深色调而不是纯黑」、02:19写stage/options.html、02:20屋主回D）；tools/card@18cb755 collection/gallery.css 第35行（球档舞台.globe-stage）；tools/card/CLAUDE.md:233「星野」；memory/tools-palette-pastel-p2.md:12</p>
       </div>
     </article>
@@ -549,12 +549,12 @@ F     conic 四色环用 mask 只留一圈 + blur(2px)，外面一团 blur(20px)
     <!-- 7 展示五选 -->
     <article class="entry" id="r-showcase" data-scope="tools" data-toc="展示五选">
       <header class="entry-head">
-        <h3>卡集整体展示五选一：弧形展架、手牌扇形、钱包叠卡、玻璃展柜墙都没选，选了Cover Flow</h3>
-        <p class="entry-lede">球被否后三分钟出的五种，样张标题就写着「正对的那张永远端正，不再用球」。屋主回「A」。</p>
+        <h3>卡集整体展示五选一</h3>
+        <p class="entry-lede">球被否后三分钟出了五种，样张标题就写着「正对的那张永远端正，不再用球」。屋主回「A」，选了Cover Flow，弧形展架、手牌扇形、钱包叠卡和玻璃展柜墙都没选。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23否</li></ul>
       </header>
       <div class="specimen">
-        <p class="rj-cap"><b>示意</b>同一块星野舞台、同13张卡，照控制室当晚样张的变换值摆成五种；A是现行，B–E被否。卡面是示意色块。点一下舞台再用←→换选中的那张。</p>
+        <p class="rj-cap"><b>示意</b>同一块星野舞台、同样13张卡，照控制室当晚样张的变换值摆成五种。A是现行，B到E被否。卡面是示意色块。点一下舞台，再用左右方向键换选中的那张。</p>
         <div class="seg seg-sm rj-seg-wrap" role="radiogroup" aria-label="整体展示方式" data-show-pick style="max-width:calc(560 * var(--u));margin-bottom:calc(10 * var(--u))">
           <button type="button" role="radio" aria-checked="true" tabindex="0" data-show-v="A">A Cover Flow</button>
           <button type="button" role="radio" aria-checked="false" tabindex="-1" data-show-v="B">B弧形展架</button>
@@ -562,11 +562,11 @@ F     conic 四色环用 mask 只留一圈 + blur(2px)，外面一团 blur(20px)
           <button type="button" role="radio" aria-checked="false" tabindex="-1" data-show-v="D">D钱包叠卡</button>
           <button type="button" role="radio" aria-checked="false" tabindex="-1" data-show-v="E">E展柜墙</button>
         </div>
-        <div class="rj-box rj-stage" style="--mw:686;--mh:270;--cap:900" tabindex="0" role="group" aria-roledescription="选卡台" aria-label="整体展示（示意）：←→换选中的卡" data-show>
+        <div class="rj-box rj-stage" style="--mw:686;--mh:270;--cap:900" tabindex="0" role="group" aria-roledescription="选卡台" aria-label="整体展示（示意），用左右方向键换选中的卡" data-show>
           <div class="rj-mock mk-night" aria-hidden="true"><div class="mk-3d mk-show" data-show-scene style="perspective:900px"></div></div>
           <span class="rj-flag rj-flag-new" data-show-flag>现行</span>
         </div>
-        <p class="rj-read" data-show-read>A Cover Flow（Apple iTunes经典）：正中一张端正朝你，两侧侧立排开、越远越暗。</p>
+        <p class="rj-read" data-show-read>A Cover Flow（Apple iTunes的经典样式）。正中一张端正朝你，两侧侧立排开，越远越暗。</p>
       </div>
       <div class="entry-body">
         <section class="fact"><h4>数值</h4>
@@ -576,9 +576,9 @@ B  全端正：translateX + translateZ(-120…40px) + rotateY(±1…14deg) + sca
 C  transform-origin: 50% 300%; rotate(±7…42deg)；选中那张 rotate(0) translateY(-34px) 抽高
 D  往后叠：translateY(-12…-96px) scale(.78….98) + brightness(.45….9)，最前一张完整
 E  不做3D：七列铺成墙，选中 scale(1.12)，悬停跟指针出全息光</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>card画廊。选了A以后去掉了WebGL，纯CSS 3D；落地的几何（中间宽.50H、两侧.44H、透视2.2H、间距按侧立卡两条竖边的真实投影反算）见卡集文档。</p></section>
-        <section class="fact"><h4>为什么不是那样</h4><p>屋主只回了「A」，没说别的为什么不要。控制室当时的评语：A，13张一眼看全、正中端正、苹果味最正（推荐）；B，每张都端正，但越往两端越小越远；C，最有「收藏闪卡」的味道，可除了抽出来那张，每张都是斜的；D，最省地方，一次却只看得到一张完整的；E，最一目了然、最不会怪，但没什么惊喜。</p></section>
-        <blockquote class="said"><p>「A」</p><footer>屋主 · 2026-09-23 02:33（控制室会话记录）</footer></blockquote>
+        <section class="fact"><h4>用在哪</h4><p>card画廊。选了A以后去掉了WebGL，改用纯CSS 3D。最后的几何见卡集文档，正中卡宽.50H，两侧.44H，透视2.2H，间距按侧立卡两条竖边的真实投影反算。</p></section>
+        <section class="fact"><h4>为什么不是那样</h4><p>屋主只回了「A」，没说为什么不要别的。下面是控制室当时的评语。A，13张一眼看全，正中端正，最像苹果的做法，控制室推荐的就是它。B，每张都端正，但越往两端越小越远。C，最像收藏闪卡，可除了抽出来那张，每张都是斜的。D，最省地方，一次却只看得到一张完整的。E，最一目了然，也最不容易出怪样子，但没什么惊喜。</p></section>
+        <blockquote class="said"><p>「A」</p><footer>屋主，2026-09-23 02:33（控制室会话记录）</footer></blockquote>
         <p class="source">出处：控制室会话记录（2026-09-23 02:31写stage/layouts.html、02:32控制室推荐、02:33屋主回A，样张在已清空的草稿区）；tools/card/CLAUDE.md:160「画廊的几条硬约束」；tools/star/docs/sources/extract-taste.md:196「E2. 卡集整体展示五选」（二手整理，已对过样张原文）</p>
       </div>
     </article>
@@ -586,12 +586,12 @@ E  不做3D：七列铺成墙，选中 scale(1.12)，悬停跟指针出全息光
     <!-- 8 plan 详情第三栏 -->
     <article class="entry" id="r-plan-detail" data-scope="tools" data-toc="详情第三栏">
       <header class="entry-head">
-        <h3>plan任务详情放在右侧第三栏被否：笔记本2552宽上栏窄、名字被截，主区却空着；改成居中大对话框</h3>
-        <p class="entry-lede">收口轮照TickTick把详情放成内容区右侧的第三栏（1100以下退回抽屉）；屋主在笔记本上看了说放右边不合适、也没有动画，控制室给了三种，他回「A」。</p>
+        <h3>plan任务详情放在右侧第三栏</h3>
+        <p class="entry-lede">收尾那一轮照TickTick把详情放成内容区右侧的第三栏，1100以下退回抽屉。在屋主2552宽的笔记本上，这一栏窄，名字被截断，主区却空着。屋主看了说放右边不合适，也没有动画，控制室给了三种方案，他回「A」，改成居中大对话框。</p>
         <ul class="entry-tags"><li class="scope">工具</li><li>2026-09-23否</li></ul>
       </header>
       <div class="specimen">
-        <p class="rj-cap"><b>示意</b>按屋主笔记本2552×1274画（已到1.45封顶，尺寸都乘1.45）。任务、阶段、材料名照plan自带的示例数据；栏里那一行还挤着状态、工作量两个下拉，名字截在哪个字取决于这些控件——屋主当时看到的是「发通知并收…」「检查材料并…」。</p>
+        <p class="rj-cap"><b>示意</b>按屋主笔记本的2552×1274画，已到1.45封顶，尺寸都乘1.45。任务、阶段和材料名照plan自带的示例数据。栏里那一行还挤着状态和工作量两个下拉框，名字截在哪个字取决于这些控件，屋主当时看到的是「发通知并收…」「检查材料并…」。</p>
         <div class="rj-cmp" data-cmp data-mode="swap" data-show="old">
           <div class="rj-box" style="--mw:2552;--mh:1274" data-cmp-box>
             <div class="rj-pane rj-pane-new" data-pane="new"><div class="rj-mock mk-wide" data-v="dlg" data-clone aria-hidden="true"></div><span class="rj-flag rj-flag-new">现行</span></div>
@@ -631,29 +631,29 @@ E  不做3D：七列铺成墙，选中 scale(1.12)，悬停跟指针出全息光
                 <div class="w-dlg-scrim"></div>
                 <section class="w-dlg"></section>
               </div>
-              <span class="rj-flag rj-flag-old">示意 · 被否</span>
+              <span class="rj-flag rj-flag-old">被否（示意）</span>
             </div>
           </div>
           <div class="rj-row">
             <div class="seg seg-sm rj-seg-wrap" role="radiogroup" aria-label="看哪一版">
-              <button type="button" role="radio" aria-checked="true" tabindex="0" data-show-side="old">被否：右侧第三栏</button>
-              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-show-side="new">现行：居中大对话框</button>
+              <button type="button" role="radio" aria-checked="true" tabindex="0" data-show-side="old">右侧第三栏（被否）</button>
+              <button type="button" role="radio" aria-checked="false" tabindex="-1" data-show-side="new">居中大对话框（现行）</button>
             </div>
           </div>
         </div>
-        <p class="rj-read" data-cmp-read data-read-old="正在看：被否的右侧第三栏，宽416×1.45＝603px；名字挤在两个下拉旁边，被截短，主区却空着" data-read-new="正在看：现行的居中大对话框，宽920×1.45＝1334px；阶段和材料两列并排，名字完整">正在看：被否的右侧第三栏，宽416×1.45＝603px；名字挤在两个下拉旁边，被截短，主区却空着</p>
+        <p class="rj-read" data-cmp-read data-read-old="正在看被否的右侧第三栏，宽416×1.45，等于603px。名字挤在两个下拉框旁边，被截短，主区却空着" data-read-new="正在看现行的居中大对话框，宽920×1.45，等于1334px。阶段和材料两列并排，名字完整">正在看被否的右侧第三栏，宽416×1.45，等于603px。名字挤在两个下拉框旁边，被截短，主区却空着</p>
       </div>
       <div class="entry-body">
-        <section class="fact"><h4>数值 / 代码</h4>
+        <section class="fact"><h4>数值和代码</h4>
 <pre><code>被否  .detail-host.is-column  宽 calc(416px × --ui-scale)（2552处603px）；≤1100退回覆盖式抽屉
 现行  DetailDialog  宽 min(920px × --ui-scale, 92vw)、高上限86vh，只有 .detail-body 内部滚动
       ≥1000px 正文两列（左阶段、右材料）；遮罩 rgba(0,0,0,.28)；Esc / 点遮罩关，焦点还回那一行
       240ms cubic-bezier(.32,.72,0,1)：桌面淡入 + scale(.96)→1；≤600整屏页从右推入
 实测  视口2552×1274下对话框宽1334、2040×1019下宽1303.3；6个名字全部完整显示</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>plan的任务详情与笔记详情。当天计划抽屉、收件箱面板仍是覆盖式。</p></section>
-        <section class="fact"><h4>为什么不是那样</h4><p>第三栏的宽是照1440定的，大屏上跟着等比放大，可内容区放得更多——名字截成「发通知并收…」「检查材料并…」，主区一大片空着。居中对话框借的是整屏的宽，名字不截、阶段和材料两列并排，打开时背景压暗、专心改一件事。手机上整屏页是主流做法，控制室定的，没问屋主。</p></section>
-        <blockquote class="said"><p>「plan右边这个窗口没有动画，并且我觉得他在右边会有点不合适，能不能放在别的更合适的地方，并且里面的内容例如材料他是可以修改的，而不是直接编辑后不能修改的。」</p><p>「A」</p><footer>屋主 · 2026-09-23 14:39、14:43（控制室会话记录）</footer></blockquote>
-        <section class="fact trap"><h4>坑</h4><p>截断不是一处的事：换成对话框后又扫了一遍详情里所有「定宽单行＋截断」，全改成折行，标题也改成自动长高的多行框。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>plan的任务详情和笔记详情。当天计划抽屉和收件箱面板仍是覆盖式。</p></section>
+        <section class="fact"><h4>为什么不是那样</h4><p>第三栏的宽度是按1440定的，大屏上跟着等比放大，可内容区放大得更多，名字截成了「发通知并收…」「检查材料并…」，主区却空着一大片。居中对话框用的是整个屏幕的宽度，名字不截断，阶段和材料两列并排，打开时背景压暗，专心改一件事。手机上用整屏页，这是主流做法，由控制室定的，没问屋主。</p></section>
+        <blockquote class="said"><p>「plan右边这个窗口没有动画，并且我觉得他在右边会有点不合适，能不能放在别的更合适的地方，并且里面的内容例如材料他是可以修改的，而不是直接编辑后不能修改的。」</p><p>「A」</p><footer>屋主，2026-09-23 14:39、14:43（控制室会话记录）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>截断不只一处。换成对话框后，又把详情里所有定宽单行加截断的地方扫了一遍，全改成折行，标题也改成能自动长高的多行输入框。</p></section>
         <p class="source">出处：控制室会话记录（2026-09-23 14:39、14:43屋主消息）；tools/plan/docs/ui-redesign-proposal-v2.md:170「3.4 任务详情」、:513、:802「10.5 居中大对话框 / 手机整屏页」；tools/plan@62438c9 app/src/App.css 第2786–2790、4954–4959行（阶段行里的下拉最窄84px；.detail-host.is-column 宽416）；tools/plan/app/src/data/seedData.ts:29、:30（示例阶段名）；memory/plan-inbox-direction.md:11</p>
       </div>
     </article>
@@ -661,22 +661,22 @@ E  不做3D：七列铺成墙，选中 scale(1.12)，悬停跟指针出全息光
 
   <!-- ============================ 小屋 · 暖纸 ============================ -->
   <section class="group" id="g-xw" data-scope="xiaowu">
-    <h2 class="group-title">小屋 · 暖纸</h2>
+    <h2 class="group-title">小屋的夜色和转场</h2>
     <p class="group-lede">夜色和换房间的转场。小屋那时由控制室直接改、直接提交，提交说明里记着每一版。</p>
 
     <!-- 9 夜色 -->
     <article class="entry" id="r-xw-night" data-scope="xiaowu" data-toc="夜色被否的三版">
       <header class="entry-head">
-        <h3>小屋的夜色否过三版：夜橄榄发泥、琥珀棕不衬、海雾太冷——现行是冷夜暖灯</h3>
-        <p class="entry-lede">夜里是同一间屋子的晚上，不是反相。深绿一压暗就脏；通铺暖色，暖就显不出来；整套换成冷蓝，又把仅剩的暖冲淡了。</p>
+        <h3>小屋夜色被否的三版</h3>
+        <p class="entry-lede">夜间配色是同一间屋子入夜后的样子，不是把颜色反过来。夜橄榄的深绿一压暗就发脏，琥珀棕满屏都是暖色，暖反而显不出来，海雾整套换成冷蓝，又把仅剩的暖色冲淡了。现行是冷夜暖灯。</p>
         <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-01否</li><li>2026-09-22否</li></ul>
       </header>
       <div class="specimen xw">
-        <p class="rj-cap"><b>示意</b>同一间屋子的夜里：顶栏、色块、一条随笔。三版都按Ysevan_web当时提交里的HSL实算；海雾只换了色卡的四个色，其余沿用当时夜色。下面的读数是现算的对比度。想看底色相从琥珀拖到冷夜，见<a href="index.html#taste-08">总览原则08</a>。</p>
+        <p class="rj-cap"><b>示意</b>同一间屋子的夜里，有顶栏、色块和一条随笔。三版都按Ysevan_web当时提交里的HSL实算。海雾只换了色卡的四个色，其余沿用当时的夜色。下面的读数是现算的对比度。把底色相从琥珀拖到冷夜的演示，见<a href="index.html#taste-08">总览原则08</a>。</p>
         <div class="rj-vars" role="group" aria-label="左边换成哪一版夜色" data-vars>
-          <button type="button" class="rj-var" aria-pressed="true" data-v="v1" data-note="v1夜橄榄（46c409e）：纸底暖炭#1C1B17，色块夜橄榄#333328，亮色浅橄榄#ACB08D"><i style="--sw:#333328"></i>v1夜橄榄</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="v2" data-note="v2琥珀棕（adb2fe4）：咖啡炭#1C1915，深琥珀木色块#383329，黄铜#C8BA93"><i style="--sw:#383329"></i>v2琥珀棕</button>
-          <button type="button" class="rj-var" aria-pressed="false" data-v="mist" data-note="海雾Sea Mist（2026-09-22对比图）：底#112D4E、正文#DBE2EF、标题#F9F7F7、链接#3F72AF"><i style="--sw:#112D4E"></i>海雾</button>
+          <button type="button" class="rj-var" aria-pressed="true" data-v="v1" data-note="v1夜橄榄（46c409e），纸底暖炭#1C1B17，色块夜橄榄#333328，亮色浅橄榄#ACB08D"><i style="--sw:#333328"></i>v1夜橄榄</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="v2" data-note="v2琥珀棕（adb2fe4），咖啡炭#1C1915，深琥珀木色块#383329，黄铜#C8BA93"><i style="--sw:#383329"></i>v2琥珀棕</button>
+          <button type="button" class="rj-var" aria-pressed="false" data-v="mist" data-note="海雾Sea Mist（2026-09-22对比图），底#112D4E，正文#DBE2EF，标题#F9F7F7，链接#3F72AF"><i style="--sw:#112D4E"></i>海雾</button>
         </div>
         <div class="rj-cmp" data-cmp data-mode="split">
           <div class="rj-box" style="--mw:640;--mh:400;--cap:760" data-cmp-box>
@@ -694,7 +694,7 @@ E  不做3D：七列铺成墙，选中 scale(1.12)，悬停跟指针出全息光
               </div>
               
             </div>
-            <span class="rj-flag rj-flag-new">现行 · 冷夜暖灯</span><span class="rj-flag rj-flag-old">示意 · 被否</span><div class="rj-rail"><span class="rj-line"></span><span class="rj-knob" role="slider" tabindex="0" aria-label="分界线：左边被否，右边现行" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="被否的样子占一半"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span></div>
+            <span class="rj-flag rj-flag-new">冷夜暖灯（现行）</span><span class="rj-flag rj-flag-old">被否（示意）</span><div class="rj-rail"><span class="rj-line"></span><span class="rj-knob" role="slider" tabindex="0" aria-label="分界线，左边被否，右边现行" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="被否的样子占一半"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></span></div>
           </div>
           <div class="rj-row">
             <div class="seg seg-sm" role="radiogroup" aria-label="看哪一边">
@@ -704,8 +704,8 @@ E  不做3D：七列铺成墙，选中 scale(1.12)，悬停跟指针出全息光
             </div>
           </div>
         </div>
-        <p class="rj-read" data-vars-read>左边：v1夜橄榄（46c409e）：纸底暖炭#1C1B17，色块夜橄榄#333328，亮色浅橄榄#ACB08D</p>
-        <p class="rj-read" data-night-read>对比度：左 正文／底 —；链接／底 —；日期橙／卡 —。右 —</p>
+        <p class="rj-read" data-vars-read>左边是v1夜橄榄（46c409e），纸底暖炭#1C1B17，色块夜橄榄#333328，亮色浅橄榄#ACB08D</p>
+        <p class="rj-read" data-night-read>对比度（低于4.5标红）</p>
       </div>
       <div class="entry-body">
         <section class="fact"><h4>数值</h4>
@@ -719,11 +719,11 @@ v2琥珀棕：     36 14% 9.5%       38 14% 13%    40 16% 19%     44 32% 68%    
                #15171B           #1E1F25       #2A2E37        #CDBF98           #EB8947
 （globals.css 里写的是 HSL，注释里的十六进制是近似值；上表按 HSL 实算）</code></pre></section>
         <section class="fact"><h4>用在哪</h4><p>小屋（Ysevan_web）的<code>.dark</code>。切换入口是顶栏的墙壁开关。</p></section>
-        <section class="fact"><h4>为什么不是那样</h4><p>v1夜橄榄：色相不动、只把纸压成暖炭，绿翻成浅橄榄当亮色——深绿一暗就发泥，屋主说「太丑了，不够温馨」。v2琥珀棕：整体挪进琥珀，「夜里点着灯的屋子」；屋主看了说还是不符合背景总体的颜色，第三版于是把底换冷，理由是通铺暖色，暖就不暖了。现行：底沉进色相225的冷夜，字、黄铜、炉火橙保持暖（色相42–45），和门厅那幅画入夜的方子一样。海雾：屋主自己找来的色卡，控制室挑了它只接管夜间；对比图出来，链接压底只有2.8，要改20个令牌、9处着色器，站里的暖除了黄铜和炉火橙都变冷了。屋主看完「更丑了，不改了」。</p></section>
-        <blockquote class="said"><p>「深色模式下的深绿色有点太丑了，不够温馨，同时深色模式和浅色模式之间切换不够自然，应该有一点的过渡更加美观一点」</p><footer>屋主 · 2026-09-01 23:42（控制室会话记录）</footer></blockquote>
-        <blockquote class="said"><p>「你把橄榄绿边成棕色之后我感觉还是不符合这个背景总体的颜色，有没有别的OK的颜色更加符合我想要的感觉」</p><footer>屋主 · 2026-09-01 23:56（控制室会话记录，排队消息）</footer></blockquote>
-        <blockquote class="said"><p>「怎么感觉改完了之后更丑了，不改了」</p><footer>屋主 · 2026-09-22 16:44（控制室会话记录）</footer></blockquote>
-        <section class="fact trap"><h4>坑</h4><p>查屋主原话要连排队消息一起翻：助手还在干活时屋主打的字，会话记录里记成排队消息，不在普通的用户消息里，只搜后者会漏。这一章起初就这样漏了琥珀棕和实心色板门两处原话，写成了「查不到、是控制室自己换的」；2026-10-09小屋查会话记录补出原话（小屋ebdd49d），这里照改。</p></section>
+        <section class="fact"><h4>为什么不是那样</h4><p>v1夜橄榄色相不动，只把纸压成暖炭色，绿色翻成浅橄榄当亮色。深绿一暗就发泥，屋主说「太丑了，不够温馨」。v2琥珀棕整体挪到琥珀色，取「夜里点着灯的屋子」的意思。屋主看了说还是不符合背景总体的颜色，第三版于是把底换成冷色，理由是满屏都是暖色，暖就显不出来了。现行的底色沉到色相225的冷夜，字、黄铜和炉火橙保持暖色（色相42到45），和门厅那幅画入夜的配色方法一样。海雾是屋主自己找来的色卡，控制室挑了它只接管夜间。对比图出来以后，链接压在底上只有2.8，要改20个变量、9处着色器，站里除了黄铜和炉火橙，暖色都变冷了。屋主看完说「更丑了，不改了」。</p></section>
+        <blockquote class="said"><p>「深色模式下的深绿色有点太丑了，不够温馨，同时深色模式和浅色模式之间切换不够自然，应该有一点的过渡更加美观一点」</p><footer>屋主，2026-09-01 23:42（控制室会话记录）</footer></blockquote>
+        <blockquote class="said"><p>「你把橄榄绿边成棕色之后我感觉还是不符合这个背景总体的颜色，有没有别的OK的颜色更加符合我想要的感觉」</p><footer>屋主，2026-09-01 23:56（控制室会话记录，排队消息）</footer></blockquote>
+        <blockquote class="said"><p>「怎么感觉改完了之后更丑了，不改了」</p><footer>屋主，2026-09-22 16:44（控制室会话记录）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>查屋主原话要连排队消息一起查。助手还在干活时屋主打的字，会话记录里记成排队消息，不在普通的用户消息里，只搜用户消息会漏。这一章起初就漏了琥珀棕和实心色板门两处原话，写成了「查不到、是控制室自己换的」。2026-10-09小屋查会话记录补出了原话（小屋ebdd49d），这里也照改了。</p></section>
         <p class="source">出处：控制室会话记录（2026-09-01 23:42、23:56，2026-09-22 16:44屋主消息）；Ysevan_web@46c409e app/globals.css 第62行（v1 .dark）；Ysevan_web@adb2fe4 app/globals.css 第62行（v2）与那一笔的提交说明；Ysevan_web@24fc3f6 app/globals.css 第63行（v3）与提交说明；Ysevan_web/docs/xiaowu-ui-spec.md「1.2 六条原则」（「两个时辰，一间屋子」「你把橄榄绿边成棕色」「Sea Mist」）；Ysevan_web/app/globals.css「小屋色板」（「第二版琥珀棕就是这么被否的」）；memory/ysevan-web-state.md:17（海雾对比图：2.8、20个令牌、9处）</p>
       </div>
     </article>
@@ -731,12 +731,12 @@ v2琥珀棕：     36 14% 9.5%       38 14% 13%    40 16% 19%     44 32% 68%    
     <!-- 10 换房间的门 -->
     <article class="entry" id="r-xw-door" data-scope="xiaowu" data-toc="换房间的门">
       <header class="entry-head">
-        <h3>换房间的转场先做了三版「门」，都被否：转场不该造一个新物件，该说站点自己的语言——洇一层纸</h3>
-        <p class="entry-lede">门是屋主自己要的；做出来是中缝展开，太快、不像门；改成实心色板门，大面积色块糊在脸上；纸色格心门还是门。最后不造门，一团纸色水痕从中间洇开、盖住旧房间。</p>
+        <h3>换房间转场的三版门</h3>
+        <p class="entry-lede">门是屋主自己要的。第一版从中缝展开，太快，也不像门。第二版改成实心色板门，大面积色块挡住整个画面。第三版纸色格心门，还是一扇门。最后不再造门，改成一团纸色水痕从中间洇开，盖住旧房间，用的是站点自己的水彩和纸。</p>
         <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-02否</li></ul>
       </header>
       <div class="specimen xw" data-door>
-        <p class="rj-cap"><b>示意</b>照Ysevan_web各版提交里的CSS原值（时长、曲线、门板材质）在样例框里重演，门和纸只盖住这一块，顶栏是墙、不参与。点「换房间」看，减弱动效下直接换。为了对照，「回小屋」也照样播（原站回门厅不洇纸，由开场手写接手）；房间里的字和画是示意。</p>
+        <p class="rj-cap"><b>示意</b>照Ysevan_web各版提交里的CSS原值（时长、曲线、门板材质）在样例框里重演。门和纸只盖住这一块，顶栏是墙，不参与。点换房间按钮看效果，减弱动效下直接换。为了对照，回小屋也照样播，原站回门厅不洇纸，由开场手写接手。房间里的字和画是示意。</p>
         <div class="rj-box" style="--mw:1440;--mh:900;--cap:860">
           <div class="rj-mock mk-site" aria-hidden="true">
             <div class="d-top"><b>Ysevan的小屋</b><span class="on" data-door-nav="hall">小屋</span><span data-door-nav="notes">随笔</span><span>工具</span></div>
@@ -752,15 +752,15 @@ v2琥珀棕：     36 14% 9.5%       38 14% 13%    40 16% 19%     44 32% 68%    
             <button type="button" role="radio" aria-checked="false" tabindex="-1" data-door-v="split">中缝展开</button>
             <button type="button" role="radio" aria-checked="false" tabindex="-1" data-door-v="solid">实心色板门</button>
             <button type="button" role="radio" aria-checked="false" tabindex="-1" data-door-v="paper">纸色格心门</button>
-            <button type="button" role="radio" aria-checked="true" tabindex="0" data-door-v="veil">现行：洇一层纸</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0" data-door-v="veil">洇一层纸（现行）</button>
           </div>
-          <button type="button" class="rj-btn" data-door-go>换房间：去随笔</button>
+          <button type="button" class="rj-btn" data-door-go>换房间去随笔</button>
           <button type="button" class="rj-btn" aria-pressed="false" data-door-night>夜里</button>
         </div>
-        <p class="rj-read" data-door-read>现行：洇一层纸。洇开0.55秒 → 纸下换房间 → 干去0.6秒。</p>
+        <p class="rj-read" data-door-read>洇一层纸（现行）。洇开0.55秒，纸下换房间，干去0.6秒。</p>
       </div>
       <div class="entry-body">
-        <section class="fact"><h4>数值 / 代码</h4>
+        <section class="fact"><h4>数值和代码</h4>
 <pre><code>中缝展开（24fc3f6） 出0.3s：scale(1.045) + 淡出；进0.55s：clip-path inset(0 49.5%) → inset(0)，亮度 .7→1
 实心色板门（33ca504）合门0.45s cubic-bezier(.32,0,.24,1)：两扇 translateX(±101%) → 0，旧页 scale(1.04) 压暗到 .35
                     门后换房间；开门0.75s cubic-bezier(.3,.05,.2,1)：rotateY(∓96deg)，perspective 1400px
@@ -769,10 +769,10 @@ v2琥珀棕：     36 14% 9.5%       38 14% 13%    40 16% 19%     44 32% 68%    
 现行 洇一层纸（017f067）两个250vmax的径向渐变圆盘：纸色 wash ＋ 橄榄颜料边 rim
                     洇开0.55s scale(.01→1)，rim 晚50ms；盖住时换房间；干去0.6s scale(1→1.06) + 淡出
                     旧页0.55s退到 scale(.985)、.45；只动 transform 与 opacity；回门厅不洇</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>小屋从门厅去随笔、工具（房间互串也一样）；回门厅不播，开场手写「Hey, Ysevan!」就是门厅自己的仪式。现行洇纸的写法见<a href="motion.html#mo-xw-veil">动画章「洇一层纸」</a>。</p></section>
-        <section class="fact"><h4>为什么不是那样</h4><p>门是新物件：小屋的语言是水彩和纸，门板不管做成色块还是纸色都是外来的；合门加开门要1.2秒，每次换房间都在等一扇门。控制室查了当时的主流转场（错列色块、方向扫屏、交叉淡化），也都偏科技作品集的气质。洇纸是水彩本身，只动缩放和透明度，比门轻一半（这一条后来写成了原则：<a href="method.html#me-own-language">方法章「转场用站点自己的语言」</a>）。实心色板门屋主当场说丑、不够优雅，换成纸色格心门以后还是「太丑了」，才放弃门这条路。</p></section>
-        <blockquote class="said"><p>「我从小屋切换到随笔或者工具的时候，我希望有一个网页切换的动画，相当于我打开了一扇门进入到了房间的内部」</p><p>「门开的太快了，并且门也不够具体」</p><p>「这个门有点丑，不够优雅」</p><p>「开门的动画还是太丑了，去网上找找看有没有更合适的切换动画，不一定要开门」</p><p>「切换首页不用那个洇开盖住特效」</p><footer>屋主 · 2026-09-01 23:55，2026-09-02 00:02、00:08、00:15、00:33（控制室会话记录）</footer></blockquote>
-        <section class="fact trap"><h4>坑</h4><p>屋主要的「一扇门」是比喻，说的是「进到房间里」的感觉，不是要一扇画出来的门。照字面做，越做越具体，离他要的越远。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋从门厅去随笔或工具时播放，房间之间互相切换也一样。回门厅不播，开场手写的「Hey, Ysevan!」就是门厅自己的开场动画。现行洇纸的写法见动画页的<a href="motion.html#mo-xw-veil">洇一层纸</a>。</p></section>
+        <section class="fact"><h4>为什么不是那样</h4><p>门是新加的物件。小屋用的是水彩和纸，门板不管做成色块还是纸色，都是外来的东西。合门加开门要1.2秒，每次换房间都要等一扇门开完。控制室查了当时主流的转场（错列色块、方向扫屏、交叉淡化），也都偏科技作品集的风格。洇纸就是水彩本身的效果，只动缩放和透明度，比门轻一半。这一条后来写成了原则，见方法页的<a href="method.html#me-own-language">自己的语言</a>。实心色板门屋主当场说丑、不够优雅，换成纸色格心门以后还是「太丑了」，才放弃门这条路。</p></section>
+        <blockquote class="said"><p>「我从小屋切换到随笔或者工具的时候，我希望有一个网页切换的动画，相当于我打开了一扇门进入到了房间的内部」</p><p>「门开的太快了，并且门也不够具体」</p><p>「这个门有点丑，不够优雅」</p><p>「开门的动画还是太丑了，去网上找找看有没有更合适的切换动画，不一定要开门」</p><p>「切换首页不用那个洇开盖住特效」</p><footer>屋主，2026-09-01 23:55，2026-09-02 00:02、00:08、00:15、00:33（控制室会话记录）</footer></blockquote>
+        <section class="fact trap"><h4>坑</h4><p>屋主说的一扇门是比喻，指的是进到房间里的感觉，不是要画一扇门出来。照字面做，越做越具体，离他要的越远。</p></section>
         <p class="source">出处：控制室会话记录（2026-09-01 23:55，2026-09-02 00:02、00:08、00:15、00:33屋主消息）；Ysevan_web@24fc3f6 app/globals.css 第174行「开门」；Ysevan_web@33ca504 app/globals.css 第182、235、294行（门板、合门、旧页推近）；Ysevan_web@65842d1 app/globals.css 第193行「纸色的格心门」；Ysevan_web/app/globals.css「.xw-veil」（「换房间的转场：洇一层纸」）；Ysevan_web/components/page-veil.tsx「PageVeil」（「这个门有点丑，不够优雅」）；Ysevan_web@017f067、Ysevan_web@e05b335两笔的提交说明</p>
       </div>
     </article>

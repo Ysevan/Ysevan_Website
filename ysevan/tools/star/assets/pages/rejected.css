@@ -707,7 +707,7 @@
   .rj-tl-table tbody tr[hidden] { display: none; }
   .rj-tl-table tbody tr + tr td, .rj-tl-table tbody tr + tr th { border-top: 0; }
   .rj-tl-table th, .rj-tl-table td { padding: 2px 0; }
-  .rj-tl-table td[data-k]::before { content: attr(data-k) "："; color: var(--label2); font-size: var(--fs-xs); }
+  .rj-tl-table td[data-k]::before { content: attr(data-k) "　"; color: var(--label2); font-size: var(--fs-xs); }
   .rj-tl-table td:last-child { white-space: normal; }
   .rj-row > .seg, .rj-tl-bar .seg { flex: 1 1 100%; min-width: 0; }
   .rj-range input { width: 46vw; }

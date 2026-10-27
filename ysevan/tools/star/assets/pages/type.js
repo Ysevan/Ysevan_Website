@@ -285,7 +285,7 @@
         dots[k].style.top = "calc(10 * var(--u) + (100% - 20 * var(--u)) * " + (y(px) / 200).toFixed(4) + ")";
       });
       var zone = w <= 1440 ? (sizeAt(STEPS.title, w) >= 34.15 ? "clamp到顶" : "clamp插值") : (w >= 2088 ? "1.45倍封顶" : "--scale放大");
-      out.textContent = w + "px · --scale " + sc.toFixed(3);
+      out.textContent = w + "px，--scale " + sc.toFixed(3);
       range.setAttribute("aria-valuetext", w + "px，" + zone + "，大标题" + fix(sizeAt(STEPS.title, w), 2) + "px，正文" + fix(sizeAt(STEPS.body, w), 2) + "px");
     }
     range.addEventListener("input", paint);
@@ -303,7 +303,7 @@
         var w = v === "here" ? (root.clientWidth || window.innerWidth) : +v;
         range.value = String(clamp(Math.round(w), W0, W1));
         paint();
-        announce("模拟视口宽" + range.value + "px：大标题" + fix(sizeAt(STEPS.title, +range.value), 2) + "px，正文" + fix(sizeAt(STEPS.body, +range.value), 2) + "px");
+        announce("模拟视口宽" + range.value + "px，大标题" + fix(sizeAt(STEPS.title, +range.value), 2) + "px，正文" + fix(sizeAt(STEPS.body, +range.value), 2) + "px");
       });
     });
     paint();
@@ -352,17 +352,17 @@
         if (!groups[key]) groups[key] = [];
         groups[key].push(r.w);
         var first = groups[key][0];
-        r.px.textContent = mode === "here" ? "宽" + fix(widths[r.w], 1) : "雅黑：" + YH[widths[r.w]];
-        r.same.textContent = first !== r.w ? "＝" + first : "";
+        r.px.textContent = mode === "here" ? "宽" + fix(widths[r.w], 1) : "雅黑" + YH[widths[r.w]];
+        r.same.textContent = first !== r.w ? "同" + first : "";
         r.same.classList.toggle("is-dup", first !== r.w);
       });
       var same = Object.keys(groups).map(function (k) { return groups[k]; }).filter(function (g) { return g.length > 1; });
       var lead = leaders(fam).han;
       var text;
       if (mode === "here") {
-        text = same.length ? "这台机器（中文由" + lead + "出字）：" + same.map(function (g) { return g.join("、"); }).join("；") + (same.length > 1 ? "画出来一样宽，每组各是同一款字重。" : "画出来一样宽，是同一款字重。") : "这台机器（中文由" + lead + "出字）：八个字重宽度都不一样。";
+        text = same.length ? "这台机器上中文由" + lead + "画，" + same.map(function (g) { return g.join("、") + "画出来一样宽"; }).join("，") + (same.length > 1 ? "，每组各是同一款字重。" : "，是同一款字重。") : "这台机器上中文由" + lead + "画，八个字重宽度都不一样。";
       } else {
-        text = "微软雅黑上（示意）：300是细，400、500是常规，600、650、700、750、800全是粗——600和700分不出来。";
+        text = "微软雅黑上（示意），300是细，400、500是常规，600、650、700、750、800全是粗，600和700分不出来。";
       }
       sum.textContent = text;
       if (speak) announce(text);
@@ -398,11 +398,11 @@
       read.innerHTML = "";
       read.appendChild(doc.createTextNode("栏宽"));
       read.appendChild(el("b", null, Math.round(w) + "px"));
-      read.appendChild(doc.createTextNode(" · 正文行宽"));
+      read.appendChild(doc.createTextNode("，正文行宽"));
       read.appendChild(el("b", null, Math.round(lw) + "px"));
-      read.appendChild(doc.createTextNode(" · 第一行"));
+      read.appendChild(doc.createTextNode("，第一行"));
       read.appendChild(el("b", null, n + "字"));
-      read.appendChild(doc.createTextNode(" · 行高" + fix(lh, 2) + (mode === "measure" && w > lw + 40 ? " · 右边是留白" : "")));
+      read.appendChild(doc.createTextNode("，行高" + fix(lh, 2) + (mode === "measure" && w > lw + 40 ? "，右边是留白" : "")));
     }
     var paintSoon = frame(paint);
     var h = makeHandle(handle, {
@@ -422,7 +422,7 @@
       mode = b.getAttribute("data-tms-mode");
       col.setAttribute("data-mode", mode);
       paint();
-      announce((mode === "fill" ? "反例：正文铺满，第一行" : "现行：正文收在680px，第一行") + firstLineChars(p) + "字");
+      announce((mode === "fill" ? "反例，正文铺满，第一行" : "现行，正文收在680px，第一行") + firstLineChars(p) + "字");
     });
     window.addEventListener("resize", frame(fit));
     fit();
@@ -446,17 +446,17 @@
       phone.style.setProperty("--body", body + "px");
       phone.classList.toggle("is-low", a < 13);
       auxOut.textContent = a + "px";
-      aux.setAttribute("aria-valuetext", a + "px" + (a < 13 ? "，低于13px地板" : ""));
+      aux.setAttribute("aria-valuetext", a + "px" + (a < 13 ? "，低于13px下限" : ""));
       read.innerHTML = "";
       read.appendChild(doc.createTextNode("辅助字"));
       read.appendChild(el("b", null, a + "px"));
-      read.appendChild(doc.createTextNode(" · 正文"));
+      read.appendChild(doc.createTextNode("，正文"));
       read.appendChild(el("b", null, body + "px"));
       var warns = [];
-      if (a < 13) warns.push("辅助字低于岗岗的13px地板");
+      if (a < 13) warns.push("辅助字低于岗岗的13px下限");
       if (body < 15) warns.push("手机正文降到了14px");
-      if (warns.length) { read.appendChild(doc.createTextNode(" · ")); read.appendChild(el("span", "ty-warn", warns.join("；"))); }
-      if (speak) announce("辅助字" + a + "px，正文" + body + "px" + (warns.length ? "：" + warns.join("；") : ""));
+      if (warns.length) { read.appendChild(doc.createTextNode("，")); read.appendChild(el("span", "ty-warn", warns.join("，"))); }
+      if (speak) announce("辅助字" + a + "px，正文" + body + "px" + (warns.length ? "，" + warns.join("，") : ""));
     }
     aux.addEventListener("input", function () { paint(false); });
     aux.addEventListener("change", function () { paint(true); });
@@ -544,18 +544,18 @@
       read.innerHTML = "";
       read.appendChild(doc.createTextNode("字墨中线"));
       read.appendChild(el("b", null, Math.abs(off) < 0.3 ? "居中" : (off < 0 ? "偏左" : "偏右") + fix(Math.abs(off), 1) + "px"));
-      read.appendChild(doc.createTextNode(indentBtn.getAttribute("aria-pressed") === "true" ? "（text-indent补上了）" : "（没补：最后一个字后面多一格字距）"));
-      read.appendChild(doc.createTextNode(" · "));
+      read.appendChild(doc.createTextNode(indentBtn.getAttribute("aria-pressed") === "true" ? "（text-indent补上了）" : "（没补，最后一个字后面多一格字距）"));
+      read.appendChild(doc.createTextNode("，"));
       if (!list.length) read.appendChild(el("span", "ty-warn", "标题空着"));
       else if (out.length) {
-        read.appendChild(el("span", "ty-warn", "子集外" + out.length + "个字：" + out.join("、")));
+        read.appendChild(el("span", "ty-warn", "子集外" + out.length + "个字，" + out.join("、")));
         read.appendChild(doc.createTextNode("，落到" + FB[fb]));
       } else read.appendChild(doc.createTextNode("全在子集里"));
       if (wide) {
-        read.appendChild(doc.createTextNode(" · "));
-        read.appendChild(el("span", "ty-warn", list.length + "个字：色块比两个字" + (b.width >= twoW ? "宽了" : "窄了") + fix(Math.abs(b.width - twoW), 0) + "px"));
+        read.appendChild(doc.createTextNode("，"));
+        read.appendChild(el("span", "ty-warn", list.length + "个字，色块比两个字" + (b.width >= twoW ? "宽了" : "窄了") + fix(Math.abs(b.width - twoW), 0) + "px"));
       }
-      read.appendChild(doc.createTextNode(" · 本机楷体：" + (kaiLead.han === "系统回退字" ? "没有，落到了serif" : kaiLead.han)));
+      read.appendChild(doc.createTextNode(kaiLead.han === "系统回退字" ? "，本机没有楷体，落到了serif" : "，本机楷体是" + kaiLead.han));
       if (speak) announce(read.textContent);
     }
     indentBtn.addEventListener("click", function () {
@@ -603,15 +603,15 @@
       hand: "cursive"
     };
     var SAY = {
-      sans: "黑体：正文、说明、副标题、日期，界面上其余的字全是它。",
-      serif: "宋体：工具名、规格数字、归档「以前写的」与随笔球标题。",
-      kai: "楷书：只有两个字的巨字。小屋用自托管子集，这里用系统楷体代替。",
-      xing: "行楷：站上现在没有页面在用。「以前写的」换回2026-09-28以前的样子（示意）：没装系统行楷的机器会回落到楷书子集，这四个字又都不在子集里。",
-      hand: "手写：只有开场「Hey, Ysevan!」。小屋用自托管子集，这里是浏览器的cursive。"
+      sans: "黑体用于正文、说明、副标题和日期，界面上其余的字也都是它。",
+      serif: "宋体用于工具名、区名、工具卡上的数字，以及归档「以前写的」和随笔球的标题。",
+      kai: "楷书只用于两个字的巨字。小屋用自托管子集，这里用系统楷体代替。",
+      xing: "行楷站上现在没有页面在用。这里把「以前写的」换回2026-09-28以前的样子（示意）。没装系统行楷的机器会回落到楷书子集，这四个字又都不在子集里。",
+      hand: "手写只用于开场的「Hey, Ysevan!」。小屋用自托管子集，这里是浏览器的cursive。"
     };
     var cur = "";
     function where(f) {
-      if (f === "hand") return "本机：浏览器的cursive";
+      if (f === "hand") return "本机用浏览器的cursive";
       var l = leaders(STACK[f]);
       return "本机落到" + l.han;
     }
@@ -623,8 +623,8 @@
         n.classList.toggle("is-on", cur === "xing" ? n === arch : n.getAttribute("data-fam") === cur);
       });
       picks.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-tfam-pick") === cur ? "true" : "false"); });
-      var text = cur ? SAY[cur] + where(cur) + "。" : "点上面的字族看它用在哪；再点一次取消。";
-      if (stage.classList.contains("is-plain")) text = "只留黑体（示意）：巨字、工具名、归档标题都换成黑体，小屋的手作气质就没了。" + (cur ? " " + text : "");
+      var text = cur ? SAY[cur] + where(cur) + "。" : "点上面的字族，看它用在哪，再点一次取消。";
+      if (stage.classList.contains("is-plain")) text = "只留黑体（示意），巨字、工具名、归档标题都换成黑体，小屋的手作气质就没了。" + (cur ? text : "");
       read.textContent = text;
       if (speak) announce(text);
     }
@@ -657,7 +657,7 @@
     var read = $("[data-tpr-read]", box);
     lhOut.setAttribute("aria-live", "off");
     var mode = "paper";
-    var NAME = { paper: "论文排法", web: "顶格＋空一行（改版前，示意）", zero: "段距0（示意）" };
+    var NAME = { paper: "论文排法", web: "顶格加空一行（改版前，示意）", zero: "段距0（示意）" };
     box.setAttribute("data-mode", mode);
     function paint(speak) {
       var lh = +range.value;
@@ -671,20 +671,20 @@
       var ratio = line > 0 ? para / line : 0;
       var ind = parseFloat(cs.textIndent) / fs;
       read.innerHTML = "";
-      read.appendChild(doc.createTextNode(NAME[mode] + "：首行缩进"));
+      read.appendChild(doc.createTextNode(NAME[mode] + "，首行缩进"));
       read.appendChild(el("b", null, fix(ind, 0) + "em"));
-      read.appendChild(doc.createTextNode(" · 行间"));
+      read.appendChild(doc.createTextNode("，行间"));
       read.appendChild(el("b", null, fix(line, 2) + "em"));
-      read.appendChild(doc.createTextNode(" · 段间"));
+      read.appendChild(doc.createTextNode("，段间"));
       read.appendChild(el("b", null, fix(para, 2) + "em"));
-      read.appendChild(doc.createTextNode(" · 段间:行间＝"));
-      read.appendChild(el("b", null, fix(ratio, 1) + ":1"));
+      read.appendChild(doc.createTextNode("，段间和行间是"));
+      read.appendChild(el("b", null, fix(ratio, 1) + "比1"));
       var note = "";
       if (mode === "zero") note = "缩进成了唯一的分段信号";
-      else if (mode === "web") note = "段间空了一整行，长文看着像一堵墙一块一块";
+      else if (mode === "web") note = "段间空了一整行，长文被切成一块一块";
       else if (Math.abs(lh - 1.8) < 0.01) note = "现行就是这一组";
-      if (note) { read.appendChild(doc.createTextNode(" · ")); read.appendChild(el("span", mode === "paper" ? null : "ty-warn", note)); }
-      range.setAttribute("aria-valuetext", "行距" + lh + "，段间:行间" + fix(ratio, 1) + "比1");
+      if (note) { read.appendChild(doc.createTextNode("，")); read.appendChild(el("span", mode === "paper" ? null : "ty-warn", note)); }
+      range.setAttribute("aria-valuetext", "行距" + lh + "，段间和行间是" + fix(ratio, 1) + "比1");
       if (speak) announce(read.textContent);
     }
     range.addEventListener("input", function () { paint(false); });
@@ -712,7 +712,7 @@
       ui: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif',
       latin: 'Arial, Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif'
     };
-    var NAME = { cjk: "中文在前（现行）", ui: "系统UI在前（刷刷）", latin: "西文字体在前（反例，示意）" };
+    var NAME = { cjk: "中文在前（小屋）", ui: "系统UI在前（工具和本站）", latin: "西文字体在前（反例，示意）" };
     var mode = "cjk";
     function paint(speak) {
       var st = STACKS[mode];
@@ -723,11 +723,11 @@
       familyList(st).forEach(function (f) {
         if (GENERIC[f]) return;
         var p = probeFont(f);
-        var li = el("li", p.han ? "is-have" : p.have ? "is-latin" : "", f + (p.han ? " ✓" : p.have ? " · 只有西文" : " · 没有"));
+        var li = el("li", p.han ? "is-have" : p.have ? "is-latin" : "", f + (p.han ? " ✓" : p.have ? "（只有西文）" : "（没有）"));
         if (f === lead.han || f === lead.latin) li.classList.add("is-lead");
         hits.appendChild(li);
       });
-      var text = NAME[mode] + "：中文由" + lead.han + "出字，西文、数字、箭头和中点由" + lead.latin + "出字" +
+      var text = NAME[mode] + "，中文由" + lead.han + "出字，西文、数字、箭头和中点由" + lead.latin + "出字" +
         (lead.han === lead.latin ? "，一段话一套字形。" : "，一段话里两套字形。");
       read.textContent = text;
       if (speak) announce(text);
@@ -779,15 +779,15 @@
       text.classList.remove("is-blank");
       time.textContent = "0.0秒";
       if (mode === "system") {
-        log("（不发字体请求：系统里就有这几款字）");
+        log("（不发字体请求，系统里就有这几款字）");
         prog.style.transform = "scaleX(1)";
-        done("系统字体栈：第0秒就画出来。", speak);
+        done("系统字体栈，第0秒就画出来。", speak);
         return;
       }
       if (mode === "csp") {
         log("Refused to load the font 'https://fonts.gstatic.com/…' because it violates the following Content Security Policy directive: \"font-src 'self' data:\".", true);
         prog.style.transform = "scaleX(1)";
-        done("被CSP拦下：请求当场失败，控制台报一条错，字一直是回退字——设计稿上那款字一次都没画出来。", speak);
+        done("被CSP拦下，请求当场失败，控制台报一条错，字一直是回退字，设计稿上那款字一次都没画出来。", speak);
         return;
       }
       /* 连不上：先空白，最多约 3 秒才用回退字（浏览器默认的阻塞期，示意） */
@@ -795,8 +795,8 @@
       if (reduced()) {
         prog.style.transform = "scaleX(1)";
         time.textContent = "3.0秒";
-        log("3秒到了，先用回退字；那款字一直没到。");
-        done("连不上：0到3秒这段字是空白的，3秒后才用回退字（减弱动效下直接显示结果）。", speak);
+        log("3秒到了，先用回退字，那款字一直没到。");
+        done("连不上，0到3秒这段字是空白的，3秒后才用回退字（减弱动效下直接显示结果）。", speak);
         return;
       }
       text.classList.add("is-blank");
@@ -807,16 +807,16 @@
         if (my !== gen) return;
         time.textContent = fix(Math.min(3, (Date.now() - t0) / 1000), 1) + "秒";
       }, 100));
-      read.textContent = "连不上：字先空着，等那款字……";
-      if (speak) announce("连不上：字先空着，最多等3秒");
+      read.textContent = "连不上，字先空着，在等那款字";
+      if (speak) announce("连不上，字先空着，最多等3秒");
       timers.push(setTimeout(function () {
         if (my !== gen) return;
         clear();
         time.textContent = "3.0秒";
         prog.style.transform = "scaleX(1)";
         text.classList.remove("is-blank");
-        log("3秒到了，先用回退字；那款字一直没到。");
-        done("连不上：前3秒一个字都没有，之后才用回退字。", true);
+        log("3秒到了，先用回退字，那款字一直没到。");
+        done("连不上，前3秒一个字都没有，之后才用回退字。", true);
       }, 3000));
     }
     run.addEventListener("click", function () { start(true); });
@@ -947,7 +947,7 @@
         } else out.appendChild(doc.createTextNode(p.s));
       });
       var text = del + add + swap === 0 ? "已经符合家族口径。" :
-        "去掉" + del + "处空格 · 网址两侧补了" + add + "个空格 · 换了" + swap + "个半角标点";
+        "去掉" + del + "处空格，网址两侧补了" + add + "个空格，换了" + swap + "个半角标点";
       read.textContent = text;
       if (speak) announce(text);
     }
@@ -1038,18 +1038,18 @@
         f.jit.appendChild(doc.createTextNode("「1」比「0」窄"));
         f.jit.appendChild(el("b", null, fix(f.diff / 5, 1) + "px"));
         if (f.hi > 0) {
-          f.jit.appendChild(doc.createTextNode(" · 计时时框宽跳了"));
+          f.jit.appendChild(doc.createTextNode("，计时时框宽跳了"));
           f.jit.appendChild(el("b", f.hi - f.lo > 0.5 ? "ty-warn" : null, fix(f.hi - f.lo, 1) + "px"));
         }
       });
       var pf = figs.filter(function (f) { return f.kind === "pf"; })[0];
       var num = figs.filter(function (f) { return f.kind === "num"; })[0];
-      var text = "这台机器：" + figs.map(function (f) {
+      var text = "这台机器上，" + figs.map(function (f) {
         return NAME[f.kind] + "时「1」比「0」窄" + fix(f.diff / 5, 1) + "px" + (f.hi > 0 ? "、计时框宽跳了" + fix(f.hi - f.lo, 1) + "px" : "");
-      }).join("；") + "。";
+      }).join("。") + "。";
       /* 按写的栈认（计算样式里 Chrome 会把 BlinkMacSystemFont 写成 "system-ui"，读出来认不准是谁） */
       var rs = getComputedStyle(root);
-      text += "中文字族打头时数字由" + leaders(rs.getPropertyValue("--font-cjk")).latin + "画" + (pf.diff > 0.5 ? "，这个浏览器里它不认等宽" : "，这个浏览器里它也认等宽") + "；";
+      text += "中文字族打头时数字由" + leaders(rs.getPropertyValue("--font-cjk")).latin + "画" + (pf.diff > 0.5 ? "，这个浏览器里它不认等宽" : "，这个浏览器里它也认等宽") + "。";
       text += "--font-num时由" + leaders(rs.getPropertyValue("--font-num")).latin + "画" + (num.diff > 0.5 ? "，还是会跳（这台机器要另核）。" : "，等宽生效。");
       read.textContent = text;
     }
@@ -1087,9 +1087,9 @@
       runBtn.setAttribute("aria-pressed", "false");
       runBtn.textContent = "开始计时";
     }
-    function jumps() { return figs.map(function (f) { return NAME[f.kind] + fix(f.hi - f.lo, 1) + "px"; }).join("，"); }
+    function jumps() { return figs.map(function (f) { return NAME[f.kind] + "跳了" + fix(f.hi - f.lo, 1) + "px"; }).join("，"); }
     runBtn.addEventListener("click", function () {
-      if (running) { stop(); userStopped = true; announce("计时暂停。框宽跳了：" + jumps()); }
+      if (running) { stop(); userStopped = true; announce("计时暂停，" + jumps()); }
       else { figs.forEach(function (f) { f.lo = Infinity; f.hi = 0; }); userStopped = false; start(); announce("计时开始"); }
     });
     nextBtn.addEventListener("click", function () {
@@ -1170,7 +1170,7 @@
         var gen = GENERIC[name];
         var have = gen ? true : probeFont(name).have;
         if (x.on && have && !lead) lead = gen ? "通用回退" + name : name;
-        var btn = el("button", "ty-chip " + (have ? "is-have" : "is-miss"), name + (gen ? " · 通用回退" : have ? " · 取得到" : " · 取不到"));
+        var btn = el("button", "ty-chip " + (have ? "is-have" : "is-miss"), name + (gen ? "（通用回退）" : have ? "（取得到）" : "（取不到）"));
         btn.type = "button";
         btn.setAttribute("aria-pressed", x.on ? "true" : "false");
         btn.setAttribute("data-i", String(i));
@@ -1179,9 +1179,9 @@
       $$(".ty-chip", b.chips).forEach(function (c) { if (c.textContent.indexOf(lead.replace("通用回退", "")) === 0 && lead) c.classList.add("is-lead"); });
       var j = judge(st);
       b.read.textContent = "";
-      b.read.appendChild(doc.createTextNode("栈里第一个取得到的：" + (lead || "没有") + " · 量字宽判："));
+      b.read.appendChild(doc.createTextNode("栈里第一个取得到的是" + (lead || "没有") + "，按字宽判断实际是"));
       b.read.appendChild(el("b", j === "Courier New" ? "ty-warn" : null, j));
-      if (speak) announce((b.kind === "old" ? "改前的栈" : "现行的栈") + "：实际是" + j);
+      if (speak) announce((b.kind === "old" ? "改前的栈" : "现行的栈") + "实际是" + j);
     }
     boxes.forEach(function (b) {
       b.chips.addEventListener("click", function (e) {
@@ -1340,7 +1340,7 @@
       ctx.font = (12 * u) + "px " + fam;
       ctx.fillStyle = tok("--label2");
       ctx.textBaseline = "top";
-      ctx.fillText("2026年9月20日 · 示例", pad, top);
+      ctx.fillText("2026年9月20日（示例）", pad, top);
       ctx.font = fs + "px " + fam;
       var y0 = top + 18 * u;
       lines.forEach(function (ln, k) {
@@ -1365,13 +1365,13 @@
         ctx.fillText(ln, pad, y + (lh - fs) / 2);
       });
       last = { lines: lines, badStart: badStart.length, split: split.length, badEnd: badEnd };
-      cv.setAttribute("aria-label", "画在画布上的随笔卡片，" + lines.length + "行：" + lines.join(" / "));
+      cv.setAttribute("aria-label", "画在画布上的随笔卡片，共" + lines.length + "行。" + lines.join("\n"));
       read.innerHTML = "";
-      read.appendChild(doc.createTextNode("宽" + Math.round(w) + "px · " + lines.length + "行 · 行首标点"));
+      read.appendChild(doc.createTextNode("宽" + Math.round(w) + "px，" + lines.length + "行，行首标点"));
       read.appendChild(el("b", badStart.length ? "ty-warn" : null, badStart.length + "处"));
-      read.appendChild(doc.createTextNode(" · 拆开的英文串"));
+      read.appendChild(doc.createTextNode("，拆开的英文串"));
       read.appendChild(el("b", split.length ? "ty-warn" : null, split.length + "处"));
-      read.appendChild(doc.createTextNode(" · 行尾开括号"));
+      read.appendChild(doc.createTextNode("，行尾开括号"));
       read.appendChild(el("b", badEnd ? "ty-warn" : null, badEnd + "处"));
       if (hard) read.appendChild(doc.createTextNode("（另有" + hard + "处是英文串比一整行还宽，规则允许硬断）"));
     }
@@ -1428,7 +1428,7 @@
         b.textContent = t;
         b.classList.toggle("is-wrong", k === "path" && mode === "cheer");
       });
-      if (speak) announce(line + (mode === "cheer" ? "；搜索第三条出了「正文0处」" : ""));
+      if (speak) announce(line + (mode === "cheer" ? "，搜索第三条出了「正文0处」" : ""));
     }
     $("[data-tcp-add]", box).addEventListener("click", function () {
       n++;
@@ -1463,7 +1463,7 @@
         var b = el("button", "tem-check");
         b.type = "button";
         b.setAttribute("aria-pressed", "false");
-        b.setAttribute("aria-label", "完成：" + t);
+        b.setAttribute("aria-label", "标记完成，" + t);
         b.innerHTML = CHECK;
         li.appendChild(b);
         li.appendChild(el("span", "tem-t", t));
@@ -1495,7 +1495,7 @@
       empty.hidden = false;
       var go = $("[data-tem-week]", empty);
       if (go) go.focus(); else reset.focus();
-      announce(mode === "line" ? "今天没有要做的事。看看本周的日程" : "反例：灰框、插画、两句话");
+      announce(mode === "line" ? "今天没有要做的事。看看本周的日程" : "反例，灰框、插画和两句话");
     }
     list.addEventListener("click", function (e) {
       var b = e.target.closest ? e.target.closest(".tem-check") : null;
@@ -1511,7 +1511,7 @@
         else {
           var nb = nextLi && nextLi.parentNode ? $(".tem-check", nextLi) : $(".tem-check", list);
           if (nb) nb.focus();
-          announce("已完成：" + name + "；还剩" + remaining() + "件");
+          announce("已完成" + name + "，还剩" + remaining() + "件");
         }
       }
       if (reduced()) { gone(); return; }
@@ -1530,16 +1530,16 @@
       fill();
       var first = $(".tem-check", list);
       if (first) first.focus();
-      announce("（示例）这里会跳到日程页；清单已放回");
+      announce("示例里这一步会跳到日程页，清单已放回");
     });
     reset.addEventListener("click", function () {
       fill();
-      announce("清单已放回：三件");
+      announce("清单已放回，共三件");
     });
     radios($('[role="radiogroup"]', entry), function (b) {
       mode = b.getAttribute("data-tem-mode");
       if (!empty.hidden) renderEmpty();
-      announce(mode === "line" ? "现行：一句话加一个动作" : "反例：灰框、插画、两句话（示意）");
+      announce(mode === "line" ? "现行，一句话加一个动作" : "反例，灰框、插画和两句话（示意）");
     });
     fill();
   }
@@ -1572,8 +1572,8 @@
     function paint() {
       var s = state();
       read.innerHTML = "";
-      read.appendChild(doc.createTextNode("面板宽" + Math.round(w) + "px · "));
-      if (s.cut.length) read.appendChild(el("span", "ty-warn", "被截掉" + s.cut.length + "个名字：" + s.cut.join("、")));
+      read.appendChild(doc.createTextNode("面板宽" + Math.round(w) + "px，"));
+      if (s.cut.length) read.appendChild(el("span", "ty-warn", "被截掉" + s.cut.length + "个名字，" + s.cut.join("、")));
       else read.appendChild(el("b", null, "四个名字都完整" + (s.wrapped ? "（" + s.wrapped + "个折了行）" : "")));
     }
     var paintSoon = frame(paint);

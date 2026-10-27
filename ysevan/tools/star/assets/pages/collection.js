@@ -111,10 +111,10 @@
 
   /* ---------- 四组（scripts/build-data.mjs 从这里抠 KINDS 字面量取分组名：保持纯字面量） ---------- */
   var KINDS = [
-    { key: "skill", title: "Skill", label: "Skill", sub: "好看的Agent Skill：装进项目里，让AI照着一套成熟的做法干活。" },
+    { key: "skill", title: "Skill", label: "Skill", sub: "好看的Agent Skill。装进项目以后，AI会照着里面整理好的一套做法干活。" },
     { key: "project", title: "项目", label: "项目", sub: "有意思的开源项目，以及我们拿它做了什么。" },
-    { key: "prompt", title: "提示词", label: "提示词", sub: "屋主写的提示词原文，附落到了哪些项目、哪个没做和为什么。" },
-    { key: "effect", title: "特效与小游戏", label: "特效", sub: "老站攒下的网页特效、节日页和小游戏；署名不详的一律写「原作者不详」，不等于屋主原创。" }
+    { key: "prompt", title: "提示词", label: "提示词", sub: "屋主写的提示词原文，后面记着哪些项目做了，哪些没做，为什么。" },
+    { key: "effect", title: "特效与小游戏", label: "特效", sub: "老站攒下的网页特效、节日页和小游戏。查不到作者的一律写「原作者不详」，不代表是屋主原创。" }
   ];
   function kindOf(key) {
     for (var i = 0; i < KINDS.length; i++) if (KINDS[i].key === key) return KINDS[i];
@@ -187,7 +187,7 @@
       if (demo) {
         var wrap = el("span", "col-source-text", null);
         wrap.appendChild(pathText(el("code", null, null), demo[1]));
-        wrap.appendChild(document.createTextNode("；样例见 "));
+        wrap.appendChild(document.createTextNode("，样例见 "));
         var go = el("a", "col-source-link", demo[2]);
         go.href = demo[2];
         wrap.appendChild(go);
@@ -368,11 +368,11 @@
   function hintOf(ctl) {
     var d = ctl.d;
     return ctl.auto ? "滚到这里会自动运行"
-      : d.heavy ? "没独显的机器会卡，点了才跑"
-      : d.sound ? (d.muted ? "原页面有音乐，框里不放；点了才跑" : "有声音，点了才放")
-      : (d.online && IS_FILE) ? "双击打开时要走线上地址，点了才联网加载"
-      : d.choices ? "选一个，点了才跑"
-      : "点了才跑";
+      : d.heavy ? "没有独立显卡的机器会卡，点了才运行"
+      : d.sound ? (d.muted ? "原页面有音乐，框里不放，点了才运行" : "有声音，点了才运行")
+      : (d.online && IS_FILE) ? "双击打开时要用线上地址，点了才联网加载"
+      : d.choices ? "先选一个，点了才运行"
+      : "点了才运行";
   }
   function frameDemo(item, d) {
     var ctl = { item: item, d: d, choice: d.choices ? d.choices[0] : null, frame: null, ratio: 0, userStopped: false };
@@ -387,7 +387,7 @@
     run.type = "button";
     run.appendChild(icon("play"));
     run.appendChild(el("span", null, d.heavy ? "运行（吃显卡）" : "运行"));
-    run.setAttribute("aria-label", "运行演示：" + item.name + (d.heavy ? "，吃显卡" : "") + (d.sound ? "，有声音" : ""));
+    run.setAttribute("aria-label", "运行" + item.name + "的演示" + (d.heavy ? "，吃显卡" : "") + (d.sound ? "，有声音" : ""));
     run.addEventListener("click", function () { ctl.userStopped = false; start(ctl, true); });
     ph.appendChild(run);
     ph.appendChild(el("p", "col-ph-hint", hintOf(ctl)));
@@ -423,7 +423,7 @@
     stop.hidden = true;
     stop.appendChild(icon("stop"));
     stop.appendChild(el("span", null, "停止"));
-    stop.setAttribute("aria-label", "停止演示：" + item.name);
+    stop.setAttribute("aria-label", "停止" + item.name + "的演示");
     /* 点了「停止」＝这一屏想安静：眼下看得见的演示都不再自动开，滚出视口再滚回来才恢复 */
     stop.addEventListener("click", function () {
       demos.forEach(function (x) { if (x.ratio > 0) x.userStopped = true; });
@@ -457,7 +457,7 @@
   }
   function syncOpen(ctl) {
     ctl.open.href = srcOf(ctl);
-    ctl.open.setAttribute("aria-label", "新窗口打开：" + ctl.item.name + (ctl.choice ? "·" + ctl.choice.label : ""));
+    ctl.open.setAttribute("aria-label", "在新窗口打开" + ctl.item.name + (ctl.choice ? "里的" + ctl.choice.label : ""));
   }
   /* 声音、提示、线上地址：卡里的演示框底下与详情的「现场演示」共用 */
   function noteLines(ctl) {
@@ -465,14 +465,14 @@
     var lines = [];
     if (c.note) lines.push(c.note);
     if (c !== d && d.note) lines.push(d.note);
-    if (IS_FILE && c.online) lines.push("双击打开时浏览器会拦下它的图片，这里改走线上地址 " + c.online + " ；放到服务器上用本地这份。");
+    if (IS_FILE && c.online) lines.push("双击打开时浏览器会拦下它的图片，这里改用线上地址 " + c.online + " ，放到服务器上时用本地这份。");
     return lines;
   }
   function soundLine(c) {
     if (!c.sound) return null;
     var s = el("p", "col-live-sound", null);
     s.appendChild(icon("sound"));
-    s.appendChild(el("span", null, (c.muted ? "声音：" : "有声音，点了才放：") + c.sound));
+    s.appendChild(el("span", null, (c.muted ? c.sound : "有声音，点了才放。" + c.sound) + "。"));
     return s;
   }
   function syncNote(ctl) {
@@ -505,7 +505,7 @@
     active = ctl;
     var f = document.createElement("iframe");
     f.className = "col-frame";
-    f.title = "演示：" + ctl.item.name + (ctl.choice ? "·" + ctl.choice.label : "");
+    f.title = ctl.item.name + (ctl.choice ? "里的" + ctl.choice.label : "的") + "演示";
     f.setAttribute("loading", "lazy");
     f.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups");
     f.setAttribute("allow", "autoplay 'none'");
@@ -637,13 +637,13 @@
     if (K && K.flip) {
       K.flip({
         scene: box, card: card, front: front, back: back, button: btn,
-        label: function (flipped) { return flipped ? "翻回正面：" + item.name : "翻到背面，看「" + item.name + "」的效果"; }
+        label: function (flipped) { return flipped ? "翻回正面，" + item.name : "翻到背面，看「" + item.name + "」的效果"; }
       });
     } else {
       /* 套件没读到：不翻，只把背面藏好（读屏读不到看不见的那一面） */
       back.inert = true;
       back.setAttribute("aria-hidden", "true");
-      btn.setAttribute("aria-label", "「" + item.name + "」：" + d.front);
+      btn.setAttribute("aria-label", item.name + "，" + d.front);
     }
     return box;
   }
@@ -672,7 +672,7 @@
       '<circle class="sk-on-accent-fill" cx="42" cy="126" r="15"/><path class="sk-accent-line" d="M36 120l12 12M48 120l-12 12"/>' +
       '<g class="sk-wave"><path d="M72 126v0M80 120v12M88 114v24M96 119v14M104 110v32M112 117v18M120 122v8M128 112v28M136 118v16M144 108v36M152 116v20M160 121v10M168 113v26M176 118v16M184 111v30M192 119v14M200 115v22M208 121v10M216 117v18M224 123v6"/></g>' +
       '<text class="sk-on-accent-text" x="282" y="130" font-size="12" text-anchor="end">0:07</text>' +
-      '<text class="sk-text" x="20" y="170" font-size="11">加号转成取消；松手复原</text>'
+      '<text class="sk-text" x="20" y="170" font-size="11">加号转成取消，松手复原</text>'
   };
   /* tag：同一张示意在详情里再画一份时，渐变与遮罩的 id 加后缀，免得文档里 id 重复 */
   function sketch(name, tag) {
@@ -680,7 +680,7 @@
     s.setAttribute("viewBox", "0 0 320 176");
     s.setAttribute("class", "col-sketch");
     s.setAttribute("role", "img");
-    s.setAttribute("aria-label", name === "font-dial" ? "示意：键盘顶上一排字号刻度，17居中高亮、两侧渐隐，左右拨动" : "示意：长按麦克风后，两个圆按钮拉长成带波形的录音条，加号转成取消");
+    s.setAttribute("aria-label", name === "font-dial" ? "示意图，键盘顶上一排字号刻度，17居中高亮，两侧渐隐，可以左右拨动" : "示意图，长按麦克风后，两个圆按钮拉长成带波形的录音条，加号转成取消");
     var src = SKETCH[name] || "";
     s.innerHTML = tag ? src.replace(/col-sk-/g, "col-sk-" + tag + "-") : src; // 常量字符串，不含数据
     return s;
@@ -724,7 +724,7 @@
     var media = el("span", "col-thumb-media", null);
     var image = img(d.img, d.w, d.h, "");
     media.appendChild(image);
-    var zoom = zoomButton("col-thumb-zoom", image, "放大截图：" + item.name, item.name + "：交互页样例截图");
+    var zoom = zoomButton("col-thumb-zoom", image, "放大" + item.name + "的截图", "交互页里" + item.name + "的样例截图");
     zoom.appendChild(media);
     box.appendChild(zoom);
     cta = el("a", "col-thumb-cta", null);
@@ -756,7 +756,7 @@
     var fig = el("figure", "col-demo col-shot", null);
     if (d.img) {
       var image = img(d.img, d.w, d.h, d.alt || "");
-      var m = zoomButton("col-shot-media", image, "放大截图：" + item.name, d.alt || item.name);
+      var m = zoomButton("col-shot-media", image, "放大" + item.name + "的截图", d.alt || item.name);
       m.appendChild(image);
       fig.appendChild(m);
     } else {
@@ -802,8 +802,8 @@
     var box = el("div", "col-ddemo", null);
     if (d.type === "iframe" && ctlOf[item.id]) {
       var ctl = ctlOf[item.id];
-      box.appendChild(para("col-dp", "卡里的演示框：" + hintOf(ctl) + "；同一时间只跑一个。"));
-      if (d.choices) box.appendChild(para("col-dp", "可选" + d.choices.length + "个：" + d.choices.map(function (c) { return c.label; }).join("、") + "。"));
+      box.appendChild(para("col-dp", "卡里的演示框，" + hintOf(ctl) + "。全站同一时间只运行一个演示。"));
+      if (d.choices) box.appendChild(para("col-dp", "有" + d.choices.length + "个可选，" + d.choices.map(function (c) { return c.label; }).join("、") + "。"));
       var s = soundLine(d);
       if (s) box.appendChild(s);
       noteLines({ d: d, choice: null }).forEach(function (t) { box.appendChild(para("col-dp col-dp-sub", t)); });
@@ -820,7 +820,7 @@
       }
       if (b.live) box.appendChild(linkTo(b.live, "去看活样例", false));
     } else if (d.type === "link") {
-      box.appendChild(para("col-dp", d.mini === "oldnav" ? "卡上是照老站画的缩略小窗；活样例在交互页。" : "交互页有能点能拖的活样例；卡上的缩略图点了能放大。"));
+      box.appendChild(para("col-dp", d.mini === "oldnav" ? "卡上是照老站画的缩略小窗，活样例在交互页。" : "交互页有能点能拖的活样例，卡上的缩略图点了能放大。"));
       box.appendChild(linkTo(d.href, "去交互页玩", false));
     } else if (d.type === "shot") {
       box.appendChild(para("col-dp", d.img ? "卡上放的是截图，点了能放大。" : d.reason));
@@ -1193,7 +1193,7 @@
       g.srEl.textContent = (filtered ? "，筛出" : "，共") + n + "条";
     });
     var k = kindOf(curKind);
-    none.textContent = "「" + (k ? k.title : "全部") + "」里没有带所选标签的收藏：换一个类型，或者点上面的「清除」。";
+    none.textContent = (k ? k.title + "这一类里" : "") + "没有带所选标签的收藏，可以换一个类型，或者点上面的清除按钮。";
     none.hidden = count > 0;
     syncToc();
     var changed = countEl.textContent !== String(count);

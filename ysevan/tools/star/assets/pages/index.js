@@ -23,7 +23,7 @@
  *     STAR_UPDATES 里有日期的版本落在今年第几周（与 kit 同一算法：1月1日算第1周、每7天一格），「未发布」记在本周。
  *     遮住的编号是最近一次发布的版本号（还没发布过就是「未发布」）。下面按版本从新到旧列条目：每条先露到第一个句号
  *     （或前40字），点「展开」原地接着露出全文（首句不动，后文淡入，按钮 aria-expanded；不是 ix-sheet-pull 的拖开）。
- *   接着看（ix-resume）：读 localStorage「star-last」（外壳 star.js 第16条写），有就「接着看：交互 › 圆环计数」链到那一条；
+ *   接着看（ix-resume）：读 localStorage「star-last」（外壳 star.js 第16条写），有就「接着看交互里的圆环计数」链到那一条；
  *     没有就写明「从色彩开始」；记的那条已经不在了也写明从那一章开头看——点之前就知道会落到哪。
  *
  * 二、「屋主的审美原则」十条旁边的对比小样
@@ -115,7 +115,7 @@
   function shortName(it) {
     if (it.n) return it.n;
     var t = String(it.t || "").split(/[：，；（]/)[0];
-    return t.length > 10 ? t.slice(0, 10) + "…" : t;
+    return t.length > 10 ? t.slice(0, 10) : t;
   }
   /* 章节色（nav.js 的 tint）是渐变时取中间那个色当光晕色：box-shadow 不认渐变 */
   /* 星上的字：短名去掉括号注记（「多选版（已撤回）」只显示「多选版」）；全名在下面那行和播报里 */
@@ -202,7 +202,7 @@
     host.setAttribute("tabindex", "0");
     host.setAttribute("role", "application");
     host.setAttribute("aria-roledescription", "条目星球");
-    host.setAttribute("aria-label", "条目星球：" + globeScope() + "共" + N + "条。左右方向键换一条并转到正面，Home、End到头尾，回车打开那一条。");
+    host.setAttribute("aria-label", "条目星球，" + globeScope() + "共" + N + "条。左右方向键换一条并转到正面，Home和End跳到第一条和最后一条，回车打开这一条。");
 
     var yaw = 0.35, pitch = -0.16, vel = 0, spin = reduced() ? 0 : 1, target = null;
     var pressed = null, hovering = -1, kbd = false, sel = -1;
@@ -370,7 +370,7 @@
     function setCap(j) {
       if (j < 0) { cap.classList.remove("is-on"); return; }
       var it2 = globeItems[j];
-      cap.textContent = pageTitle(it2.p) + " · " + it2.t;
+      cap.textContent = it2.t + "（" + pageTitle(it2.p) + "）";
       cap.classList.add("is-on");
     }
     function markSel() {
@@ -477,7 +477,7 @@
       apply();
       if (speak) {
         var it2 = globeItems[sel];
-        announce(pageTitle(it2.p) + "：" + it2.t + "（" + (sel + 1) + "／" + N + "）");
+        announce(it2.t + "，" + pageTitle(it2.p) + "，第" + (sel + 1) + "条，共" + N + "条");
       }
     }
     host.addEventListener("focus", function () {
@@ -563,7 +563,7 @@
     var ready = chapters.filter(function (p) { return p.ready; });
     KIT.ring(body, {
       value: ready.length, max: chapters.length,
-      unit: "章已上线 · 共" + chapters.length + "章",
+      unit: "章已上线，共" + chapters.length + "章",
       label: "已上线" + ready.length + "章，共" + chapters.length + "章"
     });
     var total = 0;
@@ -578,8 +578,8 @@
     sum.className = "pg-sum";
     /* 全部上线时不写「其余0章还没写」 */
     sum.textContent = ready.length === chapters.length
-      ? chapters.length + "章都已上线，共收" + total + "条：" + parts.join("、") + "。"
-      : "上线的" + ready.length + "章共收" + total + "条：" + parts.join("、") + "。其余" + (chapters.length - ready.length) +
+      ? chapters.length + "章都已上线，共收" + total + "条，分别是" + parts.join("、") + "。"
+      : "上线的" + ready.length + "章共收" + total + "条，分别是" + parts.join("、") + "。其余" + (chapters.length - ready.length) +
         "章还没写，导航里标「" + NAV.pendingLabel + "」。";
     body.appendChild(sum);
     var html = "";
@@ -590,7 +590,7 @@
         if (p.ready) {
           var n = chapterCount(p);
           html += '<li><a class="row" href="' + p.file + '" data-pg="' + p.id + '">' + block + '<span class="badge is-ready">已上线' +
-            (n === null ? "" : " · " + n + "条") + '</span><span class="chev">' + NAV.icon("chevron") + "</span></a></li>";
+            (n === null ? "" : "，" + n + "条") + '</span><span class="chev">' + NAV.icon("chevron") + "</span></a></li>";
         } else {
           html += '<li><span class="row" role="link" aria-disabled="true" data-pg="' + p.id + '">' + block + '<span class="badge">' + NAV.pendingLabel + "</span></span></li>";
         }
@@ -662,7 +662,7 @@
       var b = doc.createElement("b");
       b.textContent = v.v;
       var meta = doc.createElement("span");
-      meta.textContent = d ? v.date + " · 第" + weekOf(d) + "周" : "本周进行中 · 第" + nowWeek + "周";
+      meta.textContent = d ? v.date + "（第" + weekOf(d) + "周）" : "本周进行中（第" + nowWeek + "周）";
       h3.appendChild(b);
       h3.appendChild(meta);
       sec.appendChild(h3);
@@ -692,7 +692,7 @@
             var dots = doc.createElement("span");
             dots.className = "up-dots";
             dots.setAttribute("aria-hidden", "true");
-            dots.textContent = fs.cut ? "…" : "";
+            dots.textContent = "";
             var rest = doc.createElement("span");
             rest.className = "up-rest";
             rest.id = id;
@@ -783,7 +783,7 @@
       var pg = rec && typeof rec.p === "string" ? pageOf(rec.p) : null;
       if (!pg || !pg.ready || pg.id === "index" || !rec.id || typeof rec.id !== "string") {
         var first = pageOf("color") || NAV.pages[1];
-        paint(first, first.file, "从" + first.title + "开始", "还没有看过的记录，点了从" + first.title + "第一条开始", "");
+        paint(first, first.file, "从" + first.title + "开始", "还没有浏览记录，点这里从" + first.title + "第一条开始", "");
         return;
       }
       var f = pg.file + "#" + rec.id;
@@ -791,11 +791,11 @@
       if (SEARCH) for (var i = 0; i < SEARCH.items.length; i++) if (SEARCH.items[i].f === f) { it = SEARCH.items[i]; break; }
       if (SEARCH && !it) {
         /* 记的那条已经不在了（改过名、删了）：写明会从这一章开头看 */
-        paint(pg, pg.file, "从" + pg.title + "开始", "上次看的「" + (rec.t || "那一条") + "」已经不在了，点了从" + pg.title + "第一条开始", "");
+        paint(pg, pg.file, "从" + pg.title + "开始", "上次看的「" + (rec.t || "那一条") + "」已经不在了，点这里从" + pg.title + "第一条开始", "");
         return;
       }
       var name = it ? shortName(it) : String(rec.t || "");
-      paint(pg, f, "接着看：" + pg.title + " › " + name, it ? it.t : String(rec.t || ""), ago(rec.at));
+      paint(pg, f, "接着看" + pg.title + "里的" + name, it ? it.t : String(rec.t || ""), ago(rec.at));
     }
     render();
     window.addEventListener("pageshow", function (e) { if (e.persisted) render(); });
@@ -827,9 +827,9 @@
       btn.setAttribute("aria-pressed", red ? "true" : "false");
       stack.setAttribute("data-v", red ? "red" : "glass");
       state.innerHTML = red
-        ? '<span class="tp-flag tp-no">被否</span>黑侧栏 + 刷刷红（示意）：深色块压着、正红很重'
-        : '<span class="tp-flag tp-yes">现行</span>液态玻璃：偏软、偏轻、有颜色';
-      announce(red ? "已换成被否的黑红：黑侧栏、深色今日面板、正红按钮" : "已换回现行的液态玻璃");
+        ? '<span class="tp-flag tp-no">被否</span>黑侧栏加刷刷红（示意），深色块和正红都很重'
+        : '<span class="tp-flag tp-yes">现行</span>液态玻璃，偏软偏轻，有颜色';
+      announce(red ? "已换成被否的黑红，黑侧栏、深色今日面板和正红按钮" : "已换回现行的液态玻璃");
     });
   });
 
@@ -872,8 +872,8 @@
       if (b) select(t3group, b);
       paint3();
       if (speak) {
-        announce(ACCENT_NAME[acc] + "：主按钮白字对深端" + $("[data-tp3-b1]", tp3).textContent + "、浅端" + $("[data-tp3-b2]", tp3).textContent +
-          "，记录不断言；链接" + $("[data-tp3-l]", tp3).textContent + "、标签" + $("[data-tp3-c]", tp3).textContent);
+        announce(ACCENT_NAME[acc] + "色，主按钮白字对深端" + $("[data-tp3-b1]", tp3).textContent + "，对浅端" + $("[data-tp3-b2]", tp3).textContent +
+          "，只记录。链接" + $("[data-tp3-l]", tp3).textContent + "，标签" + $("[data-tp3-c]", tp3).textContent);
       }
     };
     radios(t3group, function (b) { setAccent3(b.getAttribute("data-tp3-accent"), true); });
@@ -917,7 +917,7 @@
     var cap5 = $("[data-tp5-cap]", tp5);
     var frames = $$("[data-tp5-frame]", tp5);
     var mode5 = "scale";
-    var MODE_LABEL = { scale: "现行：等比放大", column: "错法一：居中窄柱", dense: "错法二：加列变密" };
+    var MODE_LABEL = { scale: "等比放大（现行）", column: "居中窄栏（错法一）", dense: "加列变密（错法二）" };
     /* 三种做法各自的参数（示意）：
        scale  = clamp(1, W/1440, 1.45)，构图不变、填满（SPEC「自适应」现行规则）
        column = 尺寸不放大、内容列封顶居中，两边空着（错法一）
@@ -959,12 +959,12 @@
         text = "--scale = " + g.s.toFixed(3) + "（" + W + " ÷ 1440" + (raw > 1.45 ? " = " + raw.toFixed(3) + "，封顶1.45" : "，1.45封顶") + "）";
       } else if (mode5 === "column") {
         var side = Math.max(0, (W - 240 - 86 - 1100) / 2);
-        text = "--scale恒为1：内容列封顶1100px居中，两边各空" + Math.round(side) + "px";
+        text = "--scale恒为1，内容列最宽1100px，居中，两边各空" + Math.round(side) + "px";
       } else {
-        text = "字号只放大到" + g.s.toFixed(2) + "倍、内容上限1560，" + (g.cols > 3 ? "加到" + g.cols + "列：版面变密、构图变了" : "1600以下还是3列");
+        text = "字号只放大到" + g.s.toFixed(2) + "倍，内容最宽1560，" + (g.cols > 3 ? "加到" + g.cols + "列，版面变密，构图也变了" : "1600以下还是3列");
       }
       read5.textContent = text;
-      if (speak) announce("视口" + W + "px，" + MODE_LABEL[mode5] + "：" + text);
+      if (speak) announce("视口" + W + "px，" + MODE_LABEL[mode5] + "，" + text);
     };
     w5.addEventListener("input", function () { paint5(false); });
     w5.addEventListener("change", function () { paint5(true); });
@@ -988,10 +988,10 @@
     var added = 0;
     var MAX = 6;
     var paint6 = function () {
-      dcount.textContent = "首页" + (6 + added) + "个面板" + (added ? "（+" + added + "）" : "");
+      dcount.textContent = "首页" + (6 + added) + "个面板" + (added ? "（多了" + added + "个）" : "");
       lcount.textContent = "首页净增0" + (added ? "，二级页多了" + added + "个" : "");
       add.disabled = added >= MAX;
-      add.textContent = added >= MAX ? "够乱了，先到这" : "首页加一个新功能";
+      add.textContent = added >= MAX ? "最多加6个" : "首页加一个新功能";
     };
     add.addEventListener("click", function () {
       if (added >= MAX) return;
@@ -1006,14 +1006,14 @@
       s.textContent = "新功能" + added;
       second.appendChild(s);
       paint6();
-      announce("仪表盘多了一个面板，现在" + (6 + added) + "个；清单首页不变，新功能" + added + "进了二级页");
+      announce("仪表盘多了一个面板，现在有" + (6 + added) + "个。清单首页不变，新功能" + added + "放进了二级页");
     });
     $("[data-tp6-reset]", tp6).addEventListener("click", function () {
       added = 0;
       each($$(".tp6-p.is-new", dash), function (p) { p.parentNode.removeChild(p); });
       second.textContent = "还没有新功能";
       paint6();
-      announce("已复原：仪表盘6个面板，二级页没有新功能");
+      announce("已复原，仪表盘6个面板，二级页没有新功能");
     });
     paint6();
   }
@@ -1027,7 +1027,7 @@
       t7box.setAttribute("data-mode", m);
       var b = $('[data-tp7="' + m + '"]', tp7);
       if (b) select(t7group, b);
-      if (speak) announce(m === "dark" ? "图标样例切到深色：emoji不跟字色走，线条图标跟着换色" : "图标样例切到浅色");
+      if (speak) announce(m === "dark" ? "图标示例切到深色，emoji不跟着字色变，线条图标跟着换色" : "图标示例切到浅色");
     };
     radios(t7group, function (b) { setMode7(b.getAttribute("data-tp7"), true); });
     setMode7(lastTheme.mode === "dark" ? "dark" : "light", false);
@@ -1047,7 +1047,7 @@
       live8.style.setProperty("--n-block", "hsl(" + h + " 14% 19%)");
       live8.style.setProperty("--n-border", "hsl(" + h + " 9% 23%)");
       hout.textContent = h + "°";
-      if (speak) announce("底色相" + h + "度" + (h >= 200 ? "，冷底：暖字和炉火橙显出来了" : h <= 60 ? "，暖底：全屋一片暖" : ""));
+      if (speak) announce("底色相" + h + "度" + (h >= 200 ? "，冷色底，暖色的字和炉火橙显得出来" : h <= 60 ? "，暖色底，整间屋子都是暖色" : ""));
     };
     h8.addEventListener("input", function () { paint8(false); });
     h8.addEventListener("change", function () { paint8(true); });
@@ -1105,14 +1105,14 @@
         }
         if (kind === "fit") {
           out.innerHTML = over
-            ? "上留白48px · <b>下面溢出" + Math.round(-bottom) + "px，出滚动条</b>"
-            : "上留白48px · 下留白" + Math.round(bottom) + "px" + (bottom <= 8 ? "（刚好装下）" : "（上下不对称）");
+            ? "上留白48px，<b>下面溢出" + Math.round(-bottom) + "px，出现滚动条</b>"
+            : "上留白48px，下留白" + Math.round(bottom) + "px" + (bottom <= 8 ? "（刚好装下）" : "（上下不对称）");
         } else {
-          out.textContent = "上下留白各32px · 卡片缩到" + Math.round(ch) + "px高，在舞台里上下各" + Math.round((st - ch) / 2) + "px";
+          out.textContent = "上下留白各32px，卡片缩到" + Math.round(ch) + "px高，在舞台里上下各留" + Math.round((st - ch) / 2) + "px";
         }
         read[kind] = out.textContent;
       });
-      if (speak) announce("工具栏吃掉" + t + "px。凑参数那版：" + read.fit + "。现行：" + read.flex);
+      if (speak) announce("工具栏占掉" + t + "px。凑参数的那版，" + read.fit + "。现行做法，" + read.flex);
     };
     t9.addEventListener("input", function () { paint9(false); });
     t9.addEventListener("change", function () { paint9(true); });

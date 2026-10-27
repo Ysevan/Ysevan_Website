@@ -96,7 +96,7 @@
     radios($("[data-m-glass-tier]"), function (v) {
       grid.setAttribute("data-tier", v);
       read();
-      announce(v === "0" ? "不模糊，只剩.62的不透明度" : v === "30" ? "视口面一档：模糊30像素、饱和度160%" : "卡片一档：模糊24像素、饱和度150%");
+      announce(v === "0" ? "不模糊，只剩.62的不透明度" : v === "30" ? "视口面一档，模糊30像素，饱和度160%" : "卡片一档，模糊24像素，饱和度150%");
     });
     toggle($("[data-m-glass-edge]"), function (on) {
       grid.setAttribute("data-edge", on ? "on" : "off");
@@ -116,8 +116,8 @@
       var bad = v === "bad";
       demo.setAttribute("data-state", bad ? "bad" : "good");
       tag.textContent = bad ? "body { background: var(--bg) }" : "body { background: transparent }";
-      note.textContent = bad ? "写了不透明的底：画在光晕之上，把它整个盖住" : "没写，透明——这一层什么都不画";
-      announce(bad ? "html和body都写了底色：光晕被body的底盖住" : "底色只写在html：光晕露出来");
+      note.textContent = bad ? "写了不透明的底，画在光晕上面，把光晕全部盖住" : "没写，透明，这一层什么都不画";
+      announce(bad ? "html和body都写了底色，光晕被body的底盖住" : "底色只写在html上，光晕露出来");
     });
   })();
 
@@ -164,16 +164,16 @@
         out.forEach(function (d) { if (d.kept) tile.style.setProperty(d.p, d.v); });
         var v = computedBf(tile);
         var blurred = v && v !== "none" && v.indexOf("blur") >= 0;
-        readEl.innerHTML = "玻璃块此刻的计算值：<code>backdrop-filter: " + esc(v) + "</code>　" +
+        readEl.innerHTML = "玻璃块当前的计算值是<code>backdrop-filter: " + esc(v) + "</code>　" +
           (blurred ? '<span class="m-chip" data-tone="good">糊开了</span>' :
-            '<span class="m-chip" data-tone="bad">没糊：产物里剩下的只有本浏览器不认的那条</span>');
+            '<span class="m-chip" data-tone="bad">没有模糊，产物里只剩本浏览器不认的那条</span>');
         return blurred;
       }
-      readEl.textContent = "玻璃块滚到视口里才套产物。";
+      readEl.textContent = "玻璃块滚到视口里才会用上产物。";
       return null;
     }
-    envEl.innerHTML = "本浏览器：<code>CSS.supports(\"backdrop-filter\", \"blur(1px)\")</code> → <b>" + supports("backdrop-filter", "blur(1px)") +
-      "</b>；<code>CSS.supports(\"-webkit-backdrop-filter\", \"blur(1px)\")</code> → <b>" + supports("-webkit-backdrop-filter", "blur(1px)") + "</b>";
+    envEl.innerHTML = "本浏览器上<code>CSS.supports(\"backdrop-filter\", \"blur(1px)\")</code>返回<b>" + supports("backdrop-filter", "blur(1px)") +
+      "</b>，<code>CSS.supports(\"-webkit-backdrop-filter\", \"blur(1px)\")</code>返回<b>" + supports("-webkit-backdrop-filter", "blur(1px)") + "</b>";
     function changed() {
       var ok = render();
       if (ok === true) announce("产物在玻璃块上糊开了");
@@ -205,22 +205,22 @@
     };
     /* 三类浏览器（示意）：std 认标准写法、wk 认前缀写法 */
     var DEV = { modern: { std: true, wk: false }, ios17: { std: false, wk: true }, old: { std: false, wk: false } };
-    var LOOK = { frost: "磨砂", solid: "兜底：.9实色", bare: ".62，没磨砂也没兜底" };
+    var LOOK = { frost: "磨砂", solid: "兜底，.9实色", bare: ".62，没磨砂也没兜底" };
     var SAY = {
       good: {
-        modern: ["good", "认标准写法，条件不成立，不走兜底：磨砂。"],
-        ios17: ["good", "前缀那条成立，条件不成立，不走兜底：磨砂。"],
-        old: ["good", "两条都不认，条件成立：玻璃提到.9，后面的字透不上来。"]
+        modern: ["good", "认标准写法，条件不成立，不走兜底，显示磨砂。"],
+        ios17: ["good", "前缀那条成立，整个条件不成立，不走兜底，显示磨砂。"],
+        old: ["good", "两条都不认，条件成立，走兜底，玻璃提到.9，后面的字透不上来。"]
       },
       narrow: {
-        modern: ["good", "认标准写法，条件不成立：磨砂（这一类碰巧没事）。"],
-        ios17: ["bad", "误判：只测了标准写法，它不认，条件恒成立——明明糊得出来，却被打成.9的实心白块。"],
-        old: ["good", "条件成立：兜底.9。"]
+        modern: ["good", "认标准写法，条件不成立，显示磨砂（这一类碰巧没事）。"],
+        ios17: ["bad", "误判。只测了标准写法，它不认，条件一直成立，明明做得出磨砂，却变成了.9的实心白块。"],
+        old: ["good", "条件成立，走兜底，玻璃提到.9。"]
       },
       noparen: {
-        modern: ["warn", "整条@supports语法不对、被丢掉；这台本来就糊得出来，看不出问题。"],
-        ios17: ["warn", "整条被丢掉；前缀声明照样生效，还是磨砂，看不出问题。"],
-        old: ["bad", "整条被丢掉，兜底永远不生效：没有磨砂、也没提到.9，.62的玻璃直接压在后面的字上。"]
+        modern: ["warn", "整条@supports语法不对，被丢掉。这类浏览器本来就做得出磨砂，看不出问题。"],
+        ios17: ["warn", "整条被丢掉。前缀声明照样生效，还是磨砂，看不出问题。"],
+        old: ["bad", "整条被丢掉，兜底永远不生效，没有磨砂，也没提到.9，.62的玻璃直接压在后面的字上。"]
       }
     };
     function look(way, d) {
@@ -249,15 +249,15 @@
       var q = tr.getAttribute("data-q");
       var cells = tr.querySelectorAll("td");
       var holds = supports(COND[q]);
-      var kept = "—";
+      var kept = "测不了";
       try {
         if (typeof CSSStyleSheet === "function") {
           var sh = new CSSStyleSheet();
           sh.replaceSync("@supports " + COND[q] + " { .m-x { color: red; } }");
           kept = sh.cssRules.length ? "留下了" : "被丢掉（语法不对）";
         }
-      } catch (e) { kept = "—"; }
-      cells[0].textContent = kept.indexOf("丢") >= 0 ? "—（整条不成立）" : holds ? "成立：走兜底" : "不成立：照常磨砂";
+      } catch (e) { kept = "测不了"; }
+      cells[0].textContent = kept.indexOf("丢") >= 0 ? "不适用，整条被丢掉" : holds ? "成立，走兜底" : "不成立，照常磨砂";
       cells[1].textContent = kept;
     });
   })();
@@ -289,10 +289,10 @@
       meter.style.setProperty("--m-limit", (Math.min(1, LIMIT / max) * 100).toFixed(1) + "%");
       meter.setAttribute("data-over", over ? "true" : "false");
       var tone, text;
-      if (!frost) { tone = "good"; text = "只靠.78的不透明度、不挂磨砂：多长都碰不到纹理上限。"; }
-      else if (!over) { tone = "warn"; text = "没超16384，但挂着磨砂，每次滚动整层要重新光栅化。"; }
-      else { tone = "bad"; text = "超过16384：整层可能被丢掉——岗岗真机上切配色后整栏空白，要等下次滚动才出现。"; }
-      readEl.innerHTML = "<b>" + label + "</b> ≈ <b>" + fmt(px) + "</b>设备像素。" + '<span class="m-chip" data-tone="' + tone + '">' + (tone === "good" ? "没事" : tone === "warn" ? "贵" : "会丢层") + "</span> " + esc(text);
+      if (!frost) { tone = "good"; text = "只靠.78的不透明度，不加磨砂，多长都不会碰到纹理上限。"; }
+      else if (!over) { tone = "warn"; text = "没超过16384，但加了磨砂，每次滚动都要把整层重新绘制。"; }
+      else { tone = "bad"; text = "超过16384，整层可能被丢掉。岗岗在真机上切换配色后整栏空白，要等下次滚动才出现。"; }
+      readEl.innerHTML = "<b>" + label + "</b>约合<b>" + fmt(px) + "</b>设备像素。" + '<span class="m-chip" data-tone="' + tone + '">' + (tone === "good" ? "没事" : tone === "warn" ? "贵" : "会丢层") + "</span> " + esc(text);
       if (say) announce(text);
     }
     range.addEventListener("input", function () { update(false); });
@@ -304,8 +304,8 @@
     var popRead = $("[data-m-where-pop-read]");
     function popUpdate(v, say) {
       pop.setAttribute("data-look", v);
-      var t = v === "glass" ? "半透明的底上，糊开的正文和候选叠在一起，字的底不可预测；跟着打字频繁开合，磨砂的开销落在最高频的动作上。"
-        : "实色底：候选的字只压在一种颜色上，读得清；开合不碰模糊。";
+      var t = v === "glass" ? "半透明的底上，模糊后的正文和候选叠在一起，字的底色没法预测。浮层随打字频繁开合，磨砂的开销正好落在最频繁的操作上。"
+        : "实色底上，候选的字只压在一种颜色上，读得清，开合时也不用算模糊。";
       popRead.textContent = t;
       if (say) announce(t);
     }
@@ -340,10 +340,10 @@
        看不出代价——所以这里不拿本机的数冒充「没显卡那台」。 */
     var BASE = 16.7;
     function refFor(r, off) {
-      if (off) return { ms: BASE, tone: "good", html: "不挂<code>backdrop-filter</code>：<span class=\"m-big\">16.7ms</span>一帧（基线，满60帧）。" };
-      if (r === 0) return { ms: BASE, tone: "good", html: "<code>blur(0)</code>只剩saturate：<span class=\"m-big\">16.7ms</span>——刷刷实测「只留saturate(150%)」就回到满帧。" };
-      var lead = r < 4 ? "1–3px没单独量过；4px已经和24px一样贵：" : "有blur就贵，半径不是关键：";
-      return { ms: 33.3, tone: "bad", html: lead + "<span class=\"m-big\">33.3ms</span>一帧（掉到30帧）——刷刷按压列表行，blur 24px和4px帧间隔中位都是33.3ms；岗岗30px的浮层P95 33.4ms、长帧34–52个。" };
+      if (off) return { ms: BASE, tone: "good", html: "不挂<code>backdrop-filter</code>，<span class=\"m-big\">16.7ms</span>一帧（基线，满60帧）。" };
+      if (r === 0) return { ms: BASE, tone: "good", html: "<code>blur(0)</code>只剩saturate，<span class=\"m-big\">16.7ms</span>一帧。刷刷实测只留saturate(150%)就回到满帧。" };
+      var lead = r < 4 ? "1到3px没有单独测过，4px已经和24px一样慢，" : "只要有blur就慢，半径不是关键，";
+      return { ms: 33.3, tone: "bad", html: lead + "<span class=\"m-big\">33.3ms</span>一帧（掉到30帧）。刷刷按压列表行时，blur 24px和4px的帧间隔中位都是33.3ms，岗岗30px的浮层P95是33.4ms，长帧34到52个。" };
     }
     function showRef() {
       var off = offBtn.getAttribute("aria-pressed") === "true";
@@ -382,7 +382,7 @@
         lastPaint = ts;
         var ds = iv.map(function (x) { return x.d; });
         var longN = ds.filter(function (d) { return d > 25; }).length;
-        liveEl.innerHTML = "整页帧间隔中位 <span class=\"m-big\">" + median(ds).toFixed(1) + "ms</span>，最近1秒长帧（&gt;25ms）<b>" + longN + "</b>个、共" + ds.length + "帧。";
+        liveEl.innerHTML = "整页帧间隔中位<span class=\"m-big\">" + median(ds).toFixed(1) + "ms</span>，最近1秒超过25ms的长帧<b>" + longN + "</b>个，共" + ds.length + "帧。";
       }
       raf = window.requestAnimationFrame(costFrame);
     }
@@ -390,21 +390,21 @@
     function start() {
       if (raf || !shouldRun()) return;
       last = 0; lastPaint = 0; iv = [];
-      liveEl.textContent = "量着……";
+      liveEl.textContent = "正量着";
       raf = window.requestAnimationFrame(costFrame);
     }
     function stop() {
       if (raf) window.cancelAnimationFrame(raf);
       raf = 0;
       dot.style.backgroundColor = "";
-      if (!running) liveEl.textContent = "没在量。打开「玻璃底下有一块在变色」才开始量。";
-      else if (!isLive(spec)) liveEl.textContent = "样例滚出视口，先停着。";
+      if (!running) liveEl.textContent = "没在量。打开上面的变色开关才开始量。";
+      else if (!isLive(spec)) liveEl.textContent = "示例滚出视口，先停着。";
     }
     range.addEventListener("input", applyRadius);
     toggle(runBtn, function (on) {
       running = on;
       if (on) start(); else stop();
-      announce(on ? "开始变色并量帧间隔" : "停了");
+      announce(on ? "开始变色并测量帧间隔" : "已停止");
     });
     toggle(offBtn, function (on) { applyRadius(); announce(on ? "整条backdrop-filter关掉" : "backdrop-filter恢复"); });
     onLive(spec, function (on) { if (on) start(); else stop(); });
@@ -424,9 +424,9 @@
     var say = $("[data-m-tier-say]");
     var T = window.StarTheme || null;
     var SAY = {
-      full: "full：遮罩糊开26px、不压暗；面板.88玻璃＋自己的磨砂。",
-      lite: "lite：遮罩不模糊、压暗淡入；面板不模糊、底提到.97。侧栏的磨砂照旧。",
-      off: "off：同lite，并且侧栏的常驻磨砂也关了，玻璃提到近乎不透明。"
+      full: "full档，遮罩模糊26px，不压暗，面板用.88的玻璃加自己的磨砂。",
+      lite: "lite档，遮罩不模糊，压暗淡入，面板不模糊，底提到.97。侧栏的磨砂照旧。",
+      off: "off档，和lite一样，另外侧栏的常驻磨砂也关掉，玻璃提到接近不透明。"
     };
     function siteTier() {
       if (window.StarShell && typeof window.StarShell.blurTier === "function") return window.StarShell.blurTier();
@@ -446,7 +446,7 @@
       setTier(t);
     }
     follow();
-    radios(seg, function (v) { touched = true; setTier(v); announce("小窗档位：" + SAY[v]); });
+    radios(seg, function (v) { touched = true; setTier(v); announce("小窗换成" + SAY[v]); });
 
     function isOpen() { return win.classList.contains("is-open"); }
     function open() {
@@ -483,7 +483,7 @@
       var gpu = T && T.gpu ? T.gpu() : null;
       prefEl.textContent = (PREF[pref] || pref) + "（data-blur-pref=" + pref + "）";
       nowEl.textContent = TIER[tier] || tier;
-      gpuEl.textContent = gpu === true ? "测过：有显卡" : gpu === false ? "测过：没显卡（软件渲染）" : "还没测过";
+      gpuEl.textContent = gpu === true ? "测过，有显卡" : gpu === false ? "测过，没显卡（软件渲染）" : "还没测过";
       var k = pref === "on" ? "on" : pref === "off" ? "off" : gpu === true ? "gpu" : gpu === false ? "soft" : "none";
       $$("[data-m-tier-flow] li").forEach(function (li) { li.setAttribute("data-on", li.getAttribute("data-k") === k ? "true" : "false"); });
     }
@@ -503,7 +503,7 @@
           if (lose) lose.loseContext();
         }
       } catch (e) { ok = false; }
-      var t = ok ? "拿到了WebGL上下文：有显卡，「自动」会走full。" : "拿不到：软件渲染（没显卡），「自动」会走lite。";
+      var t = ok ? "拿到了WebGL上下文，有显卡，自动档会用full。" : "拿不到上下文，是软件渲染（没显卡），自动档会用lite。";
       probeEl.textContent = t;
       announce(t);
     });
@@ -533,7 +533,7 @@
       bad = on;
       box.setAttribute("data-bad", on ? "true" : "false");
       update();
-      announce(on ? "圆角不跟着乘：零件变大，角还是原来的像素" : "圆角跟着缩放系数一起乘");
+      announce(on ? "圆角不跟着乘，零件变大，角还是原来的像素" : "圆角跟着缩放系数一起乘");
     });
     update();
   })();
@@ -548,16 +548,16 @@
     var cap1 = $("[data-m-sh-cap1]");
     var cap2 = $("[data-m-sh-cap2]");
     var CAP = {
-      warm: ["墙上：挂画投影<code>0 16px 34px -14px</code>暖墨.22", "地毯上：浮起<code>0 8px 20px -10px</code>暖墨.11"],
-      black: ["墙上：同样的投影换成纯黑.22（反例）", "地毯上：纯黑.11（反例）"],
-      night: ["墙上：夜里换黑加深<code>rgba(0,0,0,.55)</code>，发丝线换浅色", "地毯上：浮起档夜里没另写，照旧暖墨.11"]
+      warm: ["墙上，挂画投影<code>0 16px 34px -14px</code>暖墨.22", "地毯上，浮起<code>0 8px 20px -10px</code>暖墨.11"],
+      black: ["墙上，同样的投影换成纯黑.22（反例）", "地毯上，纯黑.11（反例）"],
+      night: ["墙上，夜里换成更深的黑<code>rgba(0,0,0,.55)</code>，细线换浅色", "地毯上，浮起档夜里没有另写，照旧暖墨.11"]
     };
     radios($("[data-m-sh-seg]"), function (v) {
       box.setAttribute("data-mode", v === "night" ? "dark" : "light");
       box.setAttribute("data-ink", v === "black" ? "black" : "warm");
       cap1.innerHTML = CAP[v][0];
       cap2.innerHTML = CAP[v][1];
-      announce(v === "night" ? "夜里：卡纸变夜卡纸、发丝线变浅、投影换黑加深" : v === "black" ? "白天纯黑阴影：压在暖纸上发灰" : "白天暖墨阴影");
+      announce(v === "night" ? "夜里，卡纸换成夜里的卡纸色，细线变浅，投影换成更深的黑" : v === "black" ? "白天纯黑阴影，压在暖纸上发灰" : "白天暖墨阴影");
     });
     function tilt(x, y) {
       box.style.setProperty("--m-tx", String(x));
@@ -599,12 +599,12 @@
       btn.addEventListener("click", function () {
         var flat = btn.getAttribute("data-m-plant-preset") === "flat";
         Object.keys(NAME).forEach(function (k) { setLayer(k, flat ? k === "front" : true); });
-        announce(flat ? "只留前层：扁平图标的样子" : "四层全开");
+        announce(flat ? "只留前层，就是扁平图标的样子" : "四层全开");
       });
     });
     radios($("[data-m-plant-time]", box), function (v) {
       box.setAttribute("data-mode", v);
-      announce(v === "dark" ? "夜里：整体收一档亮度" : "白天");
+      announce(v === "dark" ? "夜里，整体调暗一档" : "白天");
     });
   })();
 
@@ -617,20 +617,20 @@
     var readEl = $("[data-m-root-read]");
     var sayEl = $("[data-m-root-say]");
     var chip = parent.querySelector(".m-root-chip");
-    var TAG = { none: "父框", vt: "父框 · view-transition-name", opacity: "父框 · opacity: .99", filter: "父框 · filter: saturate(100%)" };
+    var TAG = { none: "父框", vt: "父框加了view-transition-name", opacity: "父框加了opacity: .99", filter: "父框加了filter: saturate(100%)" };
     function read() {
       var v = isLive(spec) ? computedBf(chip) : "（滚到这里才挂）";
       readEl.textContent = v;
       var p = parent.getAttribute("data-p");
       sayEl.innerHTML = p === "none"
-        ? '<span class="m-chip" data-tone="good">糊得到</span> 小卡后面的条纹糊开了。'
-        : '<span class="m-chip" data-tone="bad">够不着</span> 小卡的计算值还是<code>' + esc(v) + "</code>，后面的条纹却清清楚楚——父框成了backdrop root，小卡只糊得到父框自己画的那点东西。";
+        ? '<span class="m-chip" data-tone="good">糊得到</span> 小卡后面的条纹被模糊了。'
+        : '<span class="m-chip" data-tone="bad">够不着</span> 小卡的计算值还是<code>' + esc(v) + "</code>，后面的条纹却很清楚。父框成了backdrop root，小卡只能模糊到父框自己画的内容。";
     }
     radios($("[data-m-root-seg]"), function (v) {
       parent.setAttribute("data-p", v);
       tag.textContent = TAG[v];
       read();
-      announce(v === "none" ? "父框什么都不加：小卡糊得到后面" : "父框加了" + TAG[v].replace("父框 · ", "") + "：小卡的磨砂够不着后面");
+      announce(v === "none" ? "父框什么都不加，小卡能模糊到后面" : TAG[v] + "，小卡的磨砂够不到后面");
     });
     onLive(spec, read);
     read();

@@ -98,7 +98,7 @@
 .gl-dot { position: relative; flex: none; width: calc(8 * var(--u)); height: calc(8 * var(--u)); border-radius: 50%; background: var(--c); box-shadow: 0 0 calc(10 * var(--u)) var(--g); }
 .gl-dot::after { content: ""; position: absolute; inset: calc(-6 * var(--u)); border-radius: 50%; }   /* 只剩点时也好点中 */
 /* 字：背面不显示、转到正面渐显；前面互相压着时离得远的那个淡掉（index.js 写 opacity，这里管过渡） */
-/* 长短名（「只动transform/opacity」）截成省略号，全名在下面那行。不挂 will-change：152个点时字再各占一层，
+/* 长短名（「只动transform和opacity」）截成省略号，全名在下面那行。不挂 will-change：152个点时字再各占一层，
    2040软件渲染下合成每帧中位从5.1ms涨到6.5ms（perf.mjs --css A/B）；字只在跨档时变，过渡期间浏览器自己会临时提层 */
 .gl-name { max-width: calc(132 * var(--u)); overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity .25s ease; }
 .gl-pt.is-hover { background: rgba(255,255,255,.14); }

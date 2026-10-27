@@ -22,7 +22,7 @@
  *                 （以后发布到 old/ysevan/tools/star/ 时由发布脚本统一改写成 ../../../，这里不用管）
  *         vw      可选：老页面写死了像素宽、框太窄会被裁时，按这个宽度排版再整体缩进框里
  *         heavy   true＝吃显卡（照 old/网站素材/index.html 的 heavy 标注）：不自动跑，点「运行（吃显卡）」才跑
- *         sound   有声音时写清怎么响（卡上显示「有声音，点了才放：…」）；有声音的不自动跑。
+ *         sound   有声音时写清怎么响（卡上显示「有声音，点了才放。…」）；有声音的不自动跑。
  *                 演示框带 allow="autoplay 'none'"，老页面一打开就自动放的音乐在框里放不出来，这种加 muted: true
  *         online  可选：file:// 下跑不起来的（Construct 2 的两个游戏，图片被当跨域拦下）在双击打开时改用的线上地址；
  *                 http(s) 下一律用 src。有 online 的不自动跑，点了才联网加载
@@ -50,11 +50,11 @@ window.STAR_COLLECTION = [
     name: "remotion-best-practices",
     link: "https://github.com/remotion-dev/skills",
     source: "tools/travel/.agents/skills/remotion-best-practices",
-    what: "Remotion官方的Agent Skill总入口：按任务把AI引到对应的子技能，覆盖新建视频与项目、React写法（时序、转场、字幕、音频、3D、字体等）、地图、音视频处理、渲染、Studio、SaaS集成、查文档和升级。",
+    what: "Remotion官方的Agent Skill总入口，按任务把AI引到对应的子技能，覆盖新建视频和项目、React写法（时序、转场、字幕、音频、3D、字体等）、地图、音视频处理、渲染、Studio、SaaS集成、查文档和升级。",
     why: null,
     tags: ["视频", "Remotion", "React", "Agent Skill"],
     added: "2026-09-27",
-    notes: "版本4.0.529，和travel用的Remotion同版。travel的README把它记为「Remotion官方Skill」，随项目保留提交cf49eff5d4463b33966b6618c83f7295797dd028；travel的AGENTS.md要求改视频合成前先读它的SKILL.md。本身只是一张路由表，下面11个子技能：remotion-create、remotion-markup、remotion-maps、remotion-multimedia、remotion-interactivity、remotion-render、remotion-studio、remotion-captions、remotion-saas、remotion-docs、remotion-upgrade；另带一份给Codex用的agents/openai.yaml。",
+    notes: "版本4.0.529，和travel用的Remotion是同一版。travel的README把它记为「Remotion官方Skill」，随项目保留的版本是cf49eff5d4463b33966b6618c83f7295797dd028。travel的AGENTS.md要求改视频合成之前先读它的SKILL.md。它本身只是一张路由表，下面有11个子技能，分别是remotion-create、remotion-markup、remotion-maps、remotion-multimedia、remotion-interactivity、remotion-render、remotion-studio、remotion-captions、remotion-saas、remotion-docs、remotion-upgrade，另外带一份给Codex用的agents/openai.yaml。",
     demo: {
       type: "flip",
       front: "Remotion官方给AI的写法手册",
@@ -62,8 +62,8 @@ window.STAR_COLLECTION = [
         img: "assets/shots/remotion-travel.webp",
         w: 476,
         h: 600,
-        alt: "travel视频的一帧：杭州示例路线画在OSM底图上",
-        caption: "travel照它写的竖屏旅行视频（杭州示例：OSM底图＋手工示意路线），第420帧的上半截。"
+        alt: "travel视频的一帧，杭州示例路线画在OSM底图上",
+        caption: "travel照它写的竖屏旅行视频，第420帧的上半截。示例路线在杭州，底图用OSM，路线是手工画的示意。"
       }
     }
   },
@@ -75,15 +75,15 @@ window.STAR_COLLECTION = [
     name: "Holo Card Studio",
     link: "https://github.com/EverettFish/holo-card-studio",
     source: "tools/card（git remote里的upstream）",
-    what: "一个Codex Skill：说一句话就做出一张随视角流光溢彩的3D全息闪卡——画好四层图、搭Blender场景、组装成能拖着转和翻面的Three.js网页。",
+    what: "一个Codex Skill，用一句话描述就能做出一张随视角变换光泽的3D全息闪卡。它会画好四层图，搭好Blender场景，再组装成能拖着转、能翻面的Three.js网页。",
     why: null,
     tags: ["3D", "全息卡", "three.js", "Blender", "Codex Skill"],
     added: "2026-09-27",
-    notes: "卡集tools/card的上游，MIT许可，只拉不推（我们的私有仓是Ysevan/Ysevan_card）。拿它做了什么：屋主用它的Skill做了十三张卡的「蓝调幻光·闪卡集」（原有四张，2026-09-23又加了九张），在collection/里另做了自己的画廊——Cover Flow选卡台、苹果液态玻璃风外壳、按压倾斜；页脚写明代码基于holo-card-studio与three.js（MIT）并附许可全文。上游README注明实现教程来自小红书@乌托邦的香蕉。出处：tools/card/README.md开头、tools/card/CLAUDE.md「两个远端，方向不一样」、tools/card/collection/README.md。",
+    notes: "卡集tools/card的上游，MIT许可，只拉取、不推送（我们的私有仓库是Ysevan/Ysevan_card）。屋主用它的Skill做了十三张卡的卡集「蓝调幻光」（原有四张，2026-09-23又加了九张），又在collection目录里另做了自己的画廊，有Cover Flow选卡台、苹果液态玻璃风的外壳和按压倾斜。页脚写明代码基于holo-card-studio和three.js（MIT），并附许可全文。上游README注明实现教程来自小红书@乌托邦的香蕉。出处：tools/card/README.md开头、tools/card/CLAUDE.md「两个远端，方向不一样」、tools/card/collection/README.md。",
     demo: {
       type: "flip",
-      front: "说一句话，做一张3D全息闪卡",
-      back: { img: "assets/shots/holo-card.webp", w: 432, h: 600, alt: "卡集「蓝调幻光」里的一张卡：星轨观测", caption: "屋主用它做的卡集「蓝调幻光」里的一张（星轨观测）封面；这里是平面图，流光要在卡集里拖着转才看得到。" }
+      front: "用一句话做出3D全息闪卡的Skill",
+      back: { img: "assets/shots/holo-card.webp", w: 432, h: 600, alt: "卡集「蓝调幻光」里的一张卡，星轨观测", caption: "屋主用它做的卡集「蓝调幻光」里星轨观测那一张的封面。这里是平面图，卡面的流光要在卡集里拖着转才看得到。" }
     }
   },
 
@@ -94,21 +94,21 @@ window.STAR_COLLECTION = [
     name: "多选筛选标签",
     link: null,
     source: "tools/star/docs/sources/six-components.md",
-    what: "一排可多选的筛选胶囊：选中时长出对勾、底色铺满、相邻让位、数量跳动。",
+    what: "一排可多选的筛选标签，选中时长出对勾、底色铺满，相邻的标签让位，数量跳动着更新。",
     why: null,
     tags: ["交互", "筛选", "FLIP", "aria-pressed"],
     added: "2026-09-27",
-    notes: "按「只升级已有交互、不为套组件造新功能」逐家核对。plan：做了，但只升级手感——全部任务的状态筛选仍是单选（改多选等于改筛选规则，算新功能），选中那枚长出对勾、底色从左铺满、相邻FLIP让位、计数跳一下，一条隐藏的aria-live播报「显示N项」；笔记页标签筛选同样处理但不铺底色。刷刷：一度做在专项练习的题型、难度、混合题库三排，屋主看后觉得不如原来，撤回——要好看，不要更紧凑，以后先出样张再落代码。岗岗：分类是单选切换，没有按分类筛选，不做。小屋：随笔和归档都没有筛选，套上去等于补回被禁掉的标签云和分类导航，不做。old：总览页顶上的分类是锚点不是筛选，不做。卡集：没做。出处：tools/plan/docs/BUSINESS_LOGIC.md「交互组件轮：哪些做了、哪些不做」；tools/shua/design-proposal.md「专项练习的筛选标签：做过，撤回」；tools/gang/design-proposal.md「六个组件的核对表」；Ysevan_web/docs/xiaowu-ui-spec.md「明确不存在的元素」；old/说明.md 2026-09-27两条整理记录。",
+    notes: "按「只升级已有交互、不为套组件造新功能」逐家核对。plan做了，但只升级手感。全部任务的状态筛选仍是单选（改成多选等于改筛选规则，算新功能），选中那枚长出对勾，底色从左铺满，相邻的胶囊用FLIP让位，计数跳一下，另有一条隐藏的aria-live播报「显示N项」。笔记页的标签筛选同样处理，但不铺底色。刷刷一度做在专项练习的题型、难度、混合题库三排上，屋主看后觉得不如原来，撤回了。屋主要的是好看，不是更紧凑，以后先出样张再改代码。岗岗的分类是单选切换，没有按分类筛选，不做。小屋的随笔和归档都没有筛选，套上去等于补回被禁掉的标签云和分类导航，不做。old的总览页顶上的分类是锚点，不是筛选，不做。卡集没做。出处：tools/plan/docs/BUSINESS_LOGIC.md「交互组件轮：哪些做了、哪些不做」；tools/shua/design-proposal.md「专项练习的筛选标签：做过，撤回」；tools/gang/design-proposal.md「六个组件的核对表」；Ysevan_web/docs/xiaowu-ui-spec.md「明确不存在的元素」；old/说明.md 2026-09-27两条整理记录。",
     text: "多选筛选标签：做一排可多选的筛选标签，选中时左侧长出对勾，底色填满宽度平滑撑开，相邻标签同步让位，筛选按钮上的数量跳动更新",
     demo: {
       type: "flip",
-      front: "选中长对勾、底色铺满、邻居让位",
+      front: "选中时长出对勾的多选筛选标签",
       back: {
         img: "assets/shots/ix-filter.webp",
         w: 600,
         h: 269,
-        alt: "交互页筛选标签样例：「收件箱」那枚选中，左侧对勾、底色铺满",
-        caption: "落地的是plan的单选状态筛选（只升级手感）；多选版刷刷做过、屋主看后撤回，交互页也留了档。",
+        alt: "交互页筛选标签样例，「收件箱」那枚选中，左侧有对勾，底色铺满",
+        caption: "实际上线的是plan的单选状态筛选（只升级了手感）。多选版刷刷做过，屋主看后撤回，交互页也留了档。",
         live: "interaction.html#ix-filter"
       }
     }
@@ -119,21 +119,21 @@ window.STAR_COLLECTION = [
     name: "可删除的标签",
     link: null,
     source: "tools/star/docs/sources/six-components.md",
-    what: "输入框里的一组可删除标签：点叉号后缩成圆点消失，后面的依次补位，框跟着变矮。",
+    what: "输入框里的一组可删除标签，点叉号后标签缩成圆点消失，后面的依次补位，输入框跟着变矮。",
     why: null,
     tags: ["交互", "标签", "FLIP", "删除动画"],
     added: "2026-09-27",
-    notes: "按「只升级已有交互、不为套组件造新功能」逐家核对。刷刷：做在搜题框——选中的联想变成框里可删除的标签；删除时底色层缩成真圆点再淡掉（共240ms），后面的标签FLIP依次补位、错峰24ms；框的高度不做动画，补位走完一次性收缩。plan：任务没有标签字段，挪到笔记的标签输入上做（原来是逗号分隔的文本框），点叉号立刻落库，缩点再补位。岗岗、old：没有标签输入，没做。小屋、卡集：没做。出处：tools/shua/design-proposal.md「搜题框的输入联想与标签」；tools/plan/docs/BUSINESS_LOGIC.md「笔记页」「交互组件轮：哪些做了、哪些不做」。",
+    notes: "按「只升级已有交互、不为套组件造新功能」逐家核对。刷刷做在搜题框里，选中的联想变成框里可删除的标签。删除时底色层缩成正圆点再淡掉（共240ms），后面的标签用FLIP依次补位，每枚错开24ms。框的高度不做动画，补位走完后一次收缩到位。plan的任务没有标签字段，挪到笔记的标签输入上做（原来是逗号分隔的文本框），点叉号立刻保存，先缩成圆点再补位。岗岗和old没有标签输入，没做。小屋和卡集也没做。出处：tools/shua/design-proposal.md「搜题框的输入联想与标签」；tools/plan/docs/BUSINESS_LOGIC.md「笔记页」「交互组件轮：哪些做了、哪些不做」。",
     text: "可删除的标签：在输入框里做一组可删除的标签，点击叉号时标签缩成圆点后消失，后续标签依次平滑补位，输入框高度随之收缩",
     demo: {
       type: "flip",
-      front: "点叉号，缩成圆点再消失",
+      front: "点叉号后缩成圆点消失的标签",
       back: {
         img: "assets/shots/ix-tags.webp",
         w: 600,
         h: 153,
-        alt: "交互页可删除标签样例：框里七枚带叉号的标签",
-        caption: "交互页「可删除标签＋联想」：点叉号，底色缩成圆点再没掉，后面的错峰补位，框最后一次收矮。",
+        alt: "交互页可删除标签样例，框里有七枚带叉号的标签",
+        caption: "交互页可删除标签那一条。点叉号后底色缩成圆点消失，后面的标签错开补位，输入框最后一次收矮。",
         live: "interaction.html#ix-tags"
       }
     }
@@ -148,17 +148,17 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["交互", "联想", "combobox", "输入法"],
     added: "2026-09-27",
-    notes: "按「只升级已有交互、不为套组件造新功能」逐家核对。刷刷：做在搜题框，只联想现成的题库名和常用术语，最多8条，浮层左端跟着光标，选中后以标签插进搜索框。plan：挪到笔记标签上做，输入#弹出当前库已有的标签。岗岗：做在顶栏搜索框，边输边出、选中直达；「以标签插入正文」那一半不做，阅读器没有正文。old：首页搜索升级成combobox联想框，Esc先收浮层再清空，同样不做插标签那一半。小屋、卡集：没做。几家回车确认前都先判isComposing，输入法选词的回车不算提交。出处：tools/shua/design-proposal.md「搜题框的输入联想与标签」；tools/plan/docs/BUSINESS_LOGIC.md「笔记页」；tools/gang/design-proposal.md「六个组件的核对表」；old/说明.md「首页搜索联想、素材卡片按压」。",
+    notes: "按「只升级已有交互、不为套组件造新功能」逐家核对。刷刷做在搜题框，只联想现成的题库名和常用术语，最多8条，浮层左端跟着光标，选中后以标签插进搜索框。plan挪到笔记标签上做，输入#弹出当前库已有的标签。岗岗做在顶栏搜索框，边输入边出结果，选中后直接跳转，「以标签插入正文」那一半不做，因为阅读器没有正文。old把首页搜索升级成combobox联想框，按Esc先收起浮层再清空，同样不做插标签那一半。小屋和卡集没做。几家在回车确认前都先判断isComposing，输入法选词的回车不算提交。出处：tools/shua/design-proposal.md「搜题框的输入联想与标签」；tools/plan/docs/BUSINESS_LOGIC.md「笔记页」；tools/gang/design-proposal.md「六个组件的核对表」；old/说明.md「首页搜索联想、素材卡片按压」。",
     text: "输入联想浮层：输入时在光标旁弹出联想列表，随输入实时筛选，选中后以标签形式插入正文，浮层收起",
     demo: {
       type: "flip",
-      front: "边输边弹联想，选中插成标签",
+      front: "输入时弹出的联想浮层",
       back: {
         img: "assets/shots/ix-tags-suggest.webp",
         w: 600,
         h: 486,
         alt: "交互页标签输入框里打了#，下面弹出已有标签的联想浮层",
-        caption: "交互页「可删除标签＋联想」：输入#弹出已有标签，回车插成一枚；只联想不插标签的版本见「联想浮层规矩」。",
+        caption: "交互页可删除标签那一条。输入#弹出已有标签，回车插成一枚。只联想、不插标签的版本见交互页联想浮层规矩一条。",
         live: "interaction.html#ix-tags"
       }
     }
@@ -173,12 +173,12 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["交互", "字号", "吸附", "手机"],
     added: "2026-09-27",
-    notes: "没有项目对口，没做。plan：笔记正文、任务备注有编辑区，但工具条和字号偏好都得新造，桌面上也没有「键盘顶部」；岗岗：没有字号调节，字号靠clamp随窗口和浏览器缩放变化；old：没有正文编辑。刷刷、卡集、小屋的文档里没单独提这一条，代码里也没有可升级的字号控件。出处：tools/plan/docs/BUSINESS_LOGIC.md「交互组件轮：哪些做了、哪些不做」；tools/gang/design-proposal.md「六个组件的核对表」；old/说明.md「首页搜索联想、素材卡片按压」。",
+    notes: "没有对口的项目，没做。plan的笔记正文和任务备注有编辑区，但工具条和字号偏好都得新造，桌面上也没有「键盘顶部」。岗岗没有字号调节，字号靠clamp随窗口和浏览器缩放变化。old没有正文编辑。刷刷、卡集、小屋的文档里没单独提这一条，代码里也没有可以升级的字号控件。出处：tools/plan/docs/BUSINESS_LOGIC.md「交互组件轮：哪些做了、哪些不做」；tools/gang/design-proposal.md「六个组件的核对表」；old/说明.md「首页搜索联想、素材卡片按压」。",
     text: "拨动字号刻度：在键盘顶部加一排横向字号刻度，当前值居中高亮，两侧渐隐，左右拨动时正文字号实时变化，停下后吸附到最近的刻度",
     demo: {
       type: "flip",
-      front: "键盘顶上拨字号，停手吸附",
-      back: { sketch: "font-dial", caption: "没有项目做过：plan、岗岗、old都没有可升级的字号控件，桌面上也没有「键盘顶部」，不为它新造功能。上图是照提示词画的静态示意。" }
+      front: "键盘上方拨动字号的刻度条",
+      back: { sketch: "font-dial", caption: "没有项目做过。plan、岗岗和old都没有可以升级的字号控件，桌面上也没有「键盘顶部」，不为它新造功能。上图是照提示词画的静态示意。" }
     }
   },
   {
@@ -191,17 +191,17 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["交互", "按压反馈", "3D倾斜", "弹簧"],
     added: "2026-09-27",
-    notes: "按「只升级已有交互、不为套组件造新功能」逐家核对。刷刷：做在首页「练习方式」入口行，倾角按行宽压（鼠标最多约1°、触屏约3°），光斑垫在列表底下不放行内；滚动引起的取消160ms直接回位不回弹。卡集：做在Cover Flow正中那张和查看器里的卡，边上最多7°、缩到.96，全息光聚到触点，弹簧复原；画廊里松开才进查看器。old：网站素材总览页卡片（最多5°、缩到97.5%、暖纸色柔光），后来放开到老站本身：书生子白和EV's world的友链卡片、ACGN作品横条、Game页游戏入口（做在提交4702be0当时的页面上；其中书生子白两页和Game页后来在老站整理中移出工作树（old@d216d8f），EV's world两页还在，去向以old/说明.md为准）；链接是#的占位卡片不接。plan：没有任务卡片，整行倾斜会让「按的是哪个」变模糊，不做。岗岗：目录是列表不是卡片，不做。小屋：工具页没有卡片，做成可按压会破掉「恰好一个tab stop」，不做。出处：tools/shua/design-proposal.md「首页入口行的按压反馈」；tools/card/CLAUDE.md「按压」；old/说明.md 2026-09-27两条整理记录；tools/plan/docs/BUSINESS_LOGIC.md「交互组件轮」；Ysevan_web/docs/xiaowu-ui-spec.md「不做按压倾斜」。",
+    notes: "按「只升级已有交互、不为套组件造新功能」逐家核对。刷刷做在首页「练习方式」入口行，倾角按行宽压小（鼠标最多约1°，触屏约3°），光斑垫在列表底下，不放在行内，滚动引起的取消用160ms直接回位，不回弹。卡集做在Cover Flow正中那张和查看器里的卡上，边上最多7°，缩到.96，全息光聚到触点，弹簧复原，在画廊里松手才进查看器。old先做在网站素材总览页的卡片上（最多5°，缩到97.5%，暖纸色柔光），后来放开到老站本身，包括书生子白和EV's world的友链卡片、ACGN作品横条、Game页游戏入口（做在提交4702be0当时的页面上，其中书生子白两页和Game页后来在老站整理中移出工作树（old@d216d8f），EV's world两页还在，去向以old目录下的说明.md为准）。链接是#的占位卡片不接。plan没有任务卡片，整行倾斜会让人分不清按的是哪个，不做。岗岗的目录是列表，不是卡片，不做。小屋工具页上能按的只有打开那一条链接，整张卡做成可按压等于多造一个入口，会破掉「恰好一个tab stop」，不做。出处：tools/shua/design-proposal.md「首页入口行的按压反馈」；tools/card/CLAUDE.md「按压」；old/说明.md 2026-09-27两条整理记录；tools/plan/docs/BUSINESS_LOGIC.md「交互组件轮」；Ysevan_web/docs/xiaowu-ui-spec.md「不做按压倾斜」。",
     text: "按压倾斜卡片：做一张可按压的卡片，按下时朝触点方向轻微倾斜并缩小一点，背后的光斑向触点聚拢，松手弹性复原",
     demo: {
       type: "flip",
-      front: "按哪边哪边沉，松手弹回",
+      front: "按下时朝触点倾斜的卡片",
       back: {
         img: "assets/shots/ix-press.webp",
         w: 600,
         h: 388,
-        alt: "交互页按压倾斜样例：按住卡片左上角，光团聚到那里",
-        caption: "交互页「按压倾斜」：截图是按住卡片左上角那一刻；刷刷、卡集、老站都落了这一条。",
+        alt: "交互页按压倾斜样例，按住卡片左上角，光团聚到那里",
+        caption: "交互页按压倾斜一条，截图是按住卡片左上角的那一刻。刷刷、卡集和老站都做了这一条。",
         live: "interaction.html#ix-press"
       }
     }
@@ -212,16 +212,16 @@ window.STAR_COLLECTION = [
     name: "长按变录音条",
     link: null,
     source: "tools/star/docs/sources/six-components.md",
-    what: "底部双按钮组：长按麦克风横向拉长成带实时波形的录音条，加号转成取消，松手复原。",
+    what: "底部的双按钮组，长按麦克风时横向拉长成带实时波形的录音条，加号转成取消，松手复原。",
     why: null,
     tags: ["交互", "长按", "语音", "手机"],
     added: "2026-09-27",
-    notes: "谁都没做：没有一个项目有语音输入，不为它新造麦克风功能（控制室下发时就定了这一轮谁都不做）。出处：tools/star/docs/sources/six-components.md「四家共同规矩」；tools/plan/docs/BUSINESS_LOGIC.md「交互组件轮」；tools/gang/design-proposal.md「六个组件的核对表」。",
+    notes: "谁都没做。没有一个项目有语音输入，不为它新造麦克风功能（控制室下发时就定了这一轮谁都不做）。出处：tools/star/docs/sources/six-components.md「四家共同规矩」；tools/plan/docs/BUSINESS_LOGIC.md「交互组件轮」；tools/gang/design-proposal.md「六个组件的核对表」。",
     text: "长按变录音条：底部做一个双按钮组，长按麦克风时，按钮组横向拉长成录音条，并显示实时波形，加号旋转成取消，松手复原",
     demo: {
       type: "flip",
-      front: "长按麦克风，拉长成录音条",
-      back: { sketch: "hold-record", caption: "没有项目做过：没有一个项目有语音输入，不为它新造麦克风功能。上图是照提示词画的静态示意。" }
+      front: "长按麦克风拉长成录音条的按钮组",
+      back: { sketch: "hold-record", caption: "没有项目做过。没有一个项目有语音输入，不为它新造麦克风功能。上图是照提示词画的静态示意。" }
     }
   },
 
@@ -236,8 +236,8 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "节日", "国庆", "烟花", "CSS3"],
     added: "2026-09-27",
-    notes: "屋主改编：2019年国庆自己拼装，按钮文案和音乐是屋主加的。",
-    demo: { type: "iframe", src: "../../../网站素材/节日与表白/国庆快乐/国庆快乐.html", vw: 800, sound: "页面里的「国庆节快乐！」按钮放音乐和烟花" }
+    notes: "屋主改编。2019年国庆时屋主自己拼装，按钮文案和音乐是屋主加的。",
+    demo: { type: "iframe", src: "../../../网站素材/节日与表白/国庆快乐/国庆快乐.html", vw: 800, sound: "点页面里的国庆节快乐按钮，会放音乐和烟花" }
   },
   {
     id: "old-christmas-snow",
@@ -249,8 +249,8 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "节日", "圣诞", "CSS3", "CSS 3D"],
     added: "2026-09-27",
-    notes: "屋主改编：加了圣诞歌。原作者不详。",
-    demo: { type: "iframe", src: "../../../网站素材/节日与表白/圣诞雪花/圣诞树.html", vw: 800, sound: "原页面一打开就自动放圣诞歌；演示框不许自动放音，框里听不到", muted: true }
+    notes: "屋主改编，加了圣诞歌。原作者不详。",
+    demo: { type: "iframe", src: "../../../网站素材/节日与表白/圣诞雪花/圣诞树.html", vw: 800, sound: "原页面一打开就自动放圣诞歌，演示框不许自动放音，所以框里听不到", muted: true }
   },
   {
     id: "old-christmas-tree",
@@ -262,7 +262,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "节日", "圣诞", "GSAP", "Canvas 2D"],
     added: "2026-09-27",
-    notes: "屋主改编：2024年12月改了祝福语送人。原作者不详。",
+    notes: "屋主改编，2024年12月改了祝福语送人。原作者不详。",
     demo: { type: "iframe", src: "../../../网站素材/节日与表白/圣诞树/Christmas-line.html", vw: 560, sound: "点一下画面开始画树，同时去网易云取背景音乐（老页面写死的外链）" }
   },
   {
@@ -297,11 +297,11 @@ window.STAR_COLLECTION = [
     name: "生日祝福",
     link: null,
     source: "old/网站素材/节日与表白/生日祝福/index.html",
-    what: "一步步点按钮：开灯、放音乐、挂横幅、放气球、端蛋糕、点蜡烛，最后滚出祝福语。",
+    what: "一步步点按钮，依次开灯、放音乐、挂横幅、放气球、端蛋糕、点蜡烛，最后滚出祝福语。",
     why: null,
     tags: ["老站", "节日", "生日", "jQuery", "CSS3"],
     added: "2026-09-27",
-    notes: "收藏，原作者：AJLoveChina（开源项目AJLoveChina/birthday）。2026-09-25整理时改成直接引用编译好的cake.css，双击打开也能完整跑完。",
+    notes: "收藏，原作者是AJLoveChina（开源项目AJLoveChina/birthday）。2026-09-25整理时改成直接引用编译好的cake.css，双击打开也能完整跑完。",
     demo: { type: "iframe", src: "../../../网站素材/节日与表白/生日祝福/index.html", vw: 640, sound: "一步步点按钮，点到放音乐那一步才响" }
   },
   {
@@ -327,7 +327,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "表白", "爱心", "Canvas 2D"],
     added: "2026-09-27",
-    notes: "收藏，原作者：Johan Karlsson。",
+    notes: "收藏，原作者是Johan Karlsson。",
     demo: { type: "iframe", src: "../../../网站素材/节日与表白/心跳合集/心跳2/index.html" }
   },
   {
@@ -392,8 +392,8 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "表白", "VB6", "Windows"],
     added: "2026-09-27",
-    notes: "收藏，原作者不详。不是网页：Windows的exe程序。",
-    demo: { type: "shot", reason: "没有现场演示：这是VB6写的Windows程序（old/网站素材/节日与表白/表白小程序.exe），浏览器里跑不了；老站也没存它的截图。" }
+    notes: "收藏，原作者不详。它不是网页，是Windows的exe程序。",
+    demo: { type: "shot", reason: "没有现场演示。这是VB6写的Windows程序，浏览器里跑不了，老站也没存它的截图。" }
   },
 
   /* ───────── effect：老站 · 星空宇宙 ───────── */
@@ -408,7 +408,7 @@ window.STAR_COLLECTION = [
     tags: ["老站", "星空", "WebGL", "着色器"],
     added: "2026-09-27",
     notes: "收藏，出自The Art of Code的星空教程。",
-    demo: { type: "iframe", src: "../../../网站素材/特效/星空宇宙/璀璨群星/index.html", heavy: true, note: "老站没标吃显卡；2040软件渲染档实测开着它整页掉到约30帧（量了两次，5秒里都有四到五成的帧超过25ms），所以也改成点了才跑。" }
+    demo: { type: "iframe", src: "../../../网站素材/特效/星空宇宙/璀璨群星/index.html", heavy: true, note: "老站没标吃显卡，但在2040宽的软件渲染测试档实测，开着它整页掉到约30帧（量了两次，5秒里都有四到五成的帧超过25ms），所以也改成点了才运行。" }
   },
   {
     id: "old-hyperspace",
@@ -433,7 +433,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "星空", "three.js", "WebGL"],
     added: "2026-09-27",
-    notes: "收藏，原作者：Kevin Levron。【吃显卡】",
+    notes: "收藏，原作者是Kevin Levron。【吃显卡】",
     demo: { type: "iframe", src: "../../../网站素材/特效/星空宇宙/银河系星云/index.html", heavy: true, vw: 800, note: "可以拖动换视角。" }
   },
   {
@@ -468,11 +468,11 @@ window.STAR_COLLECTION = [
     name: "火焰传送门",
     link: null,
     source: "old/网站素材/特效/星空宇宙/传送门/火焰传送门.html",
-    what: "一圈火花越转越快，像奇异博士开的传送门。",
+    what: "仿电影里奇异博士传送门做的一圈火花，越转越快。",
     why: null,
     tags: ["老站", "星空", "p5.js"],
     added: "2026-09-27",
-    notes: "收藏，原作者不详。old/说明.md里叫「传送门」。",
+    notes: "收藏，原作者不详。old目录下的说明.md里叫它「传送门」。",
     demo: { type: "iframe", src: "../../../网站素材/特效/星空宇宙/传送门/火焰传送门.html", vw: 800 }
   },
   {
@@ -578,7 +578,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "粒子", "烟花", "Babylon.js", "WebGL"],
     added: "2026-09-27",
-    notes: "收藏，原作者不详。【吃显卡】（总览页标了；old/说明.md列的吃显卡名单只有银河系星云、粒子爆炸、喷泉三项。）",
+    notes: "收藏，原作者不详。【吃显卡】（网站素材总览页标了吃显卡，但old目录下的说明.md列的吃显卡名单只有银河系星云、粒子爆炸、喷泉三项。）",
     demo: { type: "iframe", src: "../../../网站素材/特效/粒子/粒子烟火/粒子烟火.html", heavy: true }
   },
 
@@ -658,14 +658,14 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "demo", "64K", "Windows"],
     added: "2026-09-27",
-    notes: "收藏，原作者：Mercury。不是网页：Windows的exe程序（1280×720和1920×1080两个版本），总览页点开看的是同目录的截图。",
+    notes: "收藏，原作者是Mercury。它不是网页，是Windows的exe程序（有1280×720和1920×1080两个版本），网站素材总览页点开看到的是同目录里的截图。",
     demo: {
       type: "shot",
       img: "assets/shots/fermi-paradox.webp",
       w: 600,
       h: 265,
-      alt: "费米悖论demo的画面：红色行星的边缘与城市剪影",
-      reason: "没有现场演示：这是64KB的Windows程序，浏览器里跑不了；图是它同目录自带的截图（old/网站素材/特效/费米悖论-64k-demo/screenshot.png）缩小。"
+      alt: "费米悖论demo的画面，红色行星的边缘和城市剪影",
+      reason: "没有现场演示。这是64KB的Windows程序，浏览器里跑不了。图是它目录里自带的截图screenshot.png缩小的。"
     }
   },
 
@@ -680,7 +680,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "小游戏", "Construct 2"],
     added: "2026-09-27",
-    notes: "收藏，原作者：Piponga（2014），Construct 2商业模板。要用「打开老站」起本地服务器，双击打开会被浏览器以跨域为由拦下图片。",
+    notes: "收藏，原作者是Piponga（2014），用的是Construct 2的商业模板。要用「打开老站」起本地服务器，双击打开时浏览器会以跨域为由拦下图片。",
     demo: { type: "iframe", src: "../../../网站素材/小游戏/打飞机/index.html", online: "https://old.ysevan.com/网站素材/小游戏/打飞机/", sound: "游戏音效，点进游戏才响" }
   },
   {
@@ -746,7 +746,7 @@ window.STAR_COLLECTION = [
     tags: ["老站", "小游戏", "打字", "jQuery"],
     added: "2026-09-27",
     notes: "收藏，原作者不详。缺三张背景图，照样能玩。",
-    demo: { type: "iframe", src: "../../../网站素材/小游戏/金山打字小游戏/index.html", vw: 640, note: "点「开始游戏」后按键盘；键盘要先点一下框里才接得到。" }
+    demo: { type: "iframe", src: "../../../网站素材/小游戏/金山打字小游戏/index.html", vw: 640, note: "点开始游戏按钮后按键盘。要先点一下框里，键盘才接得到。" }
   },
   {
     id: "old-game-center",
@@ -758,14 +758,14 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["老站", "小游戏", "合集"],
     added: "2026-09-27",
-    notes: "收藏，逐个来源未核实；old/说明.md记书生子白站里的小游戏出自CSDN博主海拥的Hexo博客（网页模板里有全站压缩包）。数量：old/game/下共29个（22个单页html，加7个带入口页的文件夹），不算两个随同名html走的素材文件夹（Tamagotchi-Game/、tiaotiaotang/）；old/说明.md在提交4702be0时写的「31个」是把这两个素材文件夹也算进去的数。当年的入口页game/Game.html（提交4702be0时还在，后来在老站整理中移出工作树（old@d216d8f），游戏改从old首页搜索直达）列了28项，指向27个不同页面（「神奇宝贝」和「Pokemon」是同一个文件，另有一项是站点根上的404小恐龙页）；guitar.html、js-drumkit/、心跳6/没挂在入口上。",
+    notes: "收藏，逐个的来源没有核实。old目录下的说明.md记着，书生子白站里的小游戏出自CSDN博主海拥的Hexo博客（网页模板里有全站压缩包）。old/game/下一共29个（22个单页html，加7个带入口页的文件夹），不算两个跟着同名html走的素材文件夹（Tamagotchi-Game和tiaotiaotang）。说明.md在提交4702be0时写的「31个」，是把这两个素材文件夹也算进去的数。当年的入口页game/Game.html（提交4702be0时还在，后来在老站整理中移出工作树（old@d216d8f），游戏改从old首页搜索直达）列了28项，指向27个不同页面（「神奇宝贝」和「Pokemon」是同一个文件，另有一项是站点根上的404小恐龙页）。guitar.html、js-drumkit和心跳6没挂在入口上。",
     demo: {
       type: "iframe",
       src: "../../../game/2048.html",
       vw: 640,
       note: "合集29个，这里放简介里点名的五个。",
       choices: [
-        { label: "2048", src: "../../../game/2048.html", vw: 640, note: "方向键移动方块；先点一下框里。" },
+        { label: "2048", src: "../../../game/2048.html", vw: 640, note: "方向键移动方块，要先点一下框里。" },
         { label: "打地鼠", src: "../../../game/Catch-A-Mole.html", vw: 800, note: "样式表是老页面写死的外链（leonidlebedev.github.io），断网时排版会乱。" },
         { label: "飞翔的恐龙", src: "../../../game/Flappy-Dino.html", vw: 800, note: "空格或点击让恐龙往上飞。" },
         { label: "元素周期表", src: "../../../game/yuansuzhouqibiao/index.html", vw: 800, note: "d3从cdnjs取（老页面写死的外链），断网时出不来。" },
@@ -785,11 +785,11 @@ window.STAR_COLLECTION = [
     name: "老站透明导航栏（书生子白首页）",
     link: null,
     source: "old@4702be0 Blog/Home.html；样例见 interaction.html#ix-oldnav",
-    what: "封面大图顶上一条完全透明的导航：不画底、不描边、不模糊、不加阴影，字靠整张图压的一层60%黑罩看清；品牌和当前页纯白，其余半透明白，右端一颗绿胶囊。",
+    what: "封面大图顶上一条完全透明的导航栏，不画底、不描边、不模糊、不加阴影，文字靠整张图上压的一层60%黑罩看清。品牌和当前页是纯白，其余链接是半透明白，右端有一个绿色胶囊按钮。",
     why: "上面我画框的这个透明背景可以值得我们后面学习使用，可以保存工具架的star里面",
     tags: ["导航栏", "透明", "老站"],
     added: "2026-09-27",
-    notes: "why是屋主原话：2026-09-27屋主，控制室转述（框的是书生子白首页顶上这条导航栏）。约2021年，模板是FREEHTML5.co的Drag & Drop Cards。页面Blog/Home.html后来在老站整理中移出工作树（old@d216d8f），去向以old/说明.md为准；封面原图old/Blog/images/Home2.jpeg还在，交互页的活样例按相对路径引用它，不拷进star（初音图版权属于原画师）。拆解、对比度实测（有黑罩半透明白链接中位4.8–5.2，去掉黑罩只剩2.8–4.0）、坑和与液态玻璃的对照都在交互页「透明导航栏」一条。出处：old@4702be0 Blog/Home.html:48–72；old@4702be0 Blog/css/cards.css:611「NAV STYLE #1」、:954（黑罩）。",
+    notes: "好在哪那一句是屋主原话，2026-09-27屋主说的，控制室转述，框的是书生子白首页顶上这条导航栏。页面约做于2021年，模板是FREEHTML5.co的Drag & Drop Cards。Blog/Home.html后来在老站整理中移出了工作树（old@d216d8f），去向以old目录下的说明.md为准。封面原图old/Blog/images/Home2.jpeg还在，交互页的活样例按相对路径引用它，没有拷进star（初音图的版权属于原画师）。拆解、对比度实测（有黑罩时半透明白链接的中位数是4.8到5.2，去掉黑罩只剩2.8到4.0）、坑以及和液态玻璃的对照，都在交互页透明导航栏那一条里。出处：old@4702be0 Blog/Home.html:48–72；old@4702be0 Blog/css/cards.css:611「NAV STYLE #1」、:954（黑罩）。",
     demo: { type: "link", href: "interaction.html#ix-oldnav", img: "../../../Blog/images/Home2.jpeg", w: 1920, h: 1080, mini: "oldnav" }
   },
 
@@ -804,7 +804,7 @@ window.STAR_COLLECTION = [
     why: null,
     tags: ["弹窗", "动画", "backdrop-filter"],
     added: "2026-10-08",
-    notes: "样例另附四种做法的实测（原样、模糊固定只淡入、不模糊压暗、什么都不加），以及「降级做法」开关；背景模糊过渡在没显卡的机器上最贵。",
+    notes: "样例另附四种做法的实测（原样、模糊固定只淡入、不模糊压暗、什么都不加），还有一个降级做法开关。背景模糊的过渡在没有显卡的机器上开销最大。",
     demo: { type: "link", href: "interaction.html#ix-sheet-frosted", img: "assets/shots/sheet-frosted.webp", w: 337, h: 600 }
   },
   {
@@ -825,7 +825,7 @@ window.STAR_COLLECTION = [
     name: "刻度尺进度弹出（Tick Ruler Sheet）",
     link: null,
     source: "屋主2026-10-08收集，原出处未知；样例见 interaction.html#ix-sheet-ruler",
-    what: "面板滑入后53根周刻度从左到右逐根变深、每根错开1帧，走到今天那根换成强调色停住；点「显示」，被遮住的编号在原地逐字展开、行高不变。",
+    what: "面板滑入后，53根周刻度从左到右逐根变深，每根错开1帧，走到今天那根换成强调色停住。点显示按钮，被遮住的编号在原地逐字展开，行高不变。",
     why: null,
     tags: ["弹窗", "底部面板", "动画"],
     added: "2026-10-08",
@@ -862,7 +862,7 @@ window.STAR_COLLECTION = [
     name: "下拉展开面板（Pull Down Reveal）",
     link: null,
     source: "屋主2026-10-08收集，原出处未知；样例见 interaction.html#ix-sheet-pull",
-    what: "面板从底部弹入落定，下沿留一截把手和一条虚线；往下拖把手，下半张沿虚线分离、跟手下移带2度摆动，过40%松手就展开完整信息，不到就弹回。",
+    what: "面板从底部弹入落定，下沿留一截把手和一条虚线。往下拖把手，下半张沿虚线分离，跟手下移并带2度摆动，过40%松手就展开完整信息，不到就弹回。",
     why: null,
     tags: ["弹窗", "拖动", "手势"],
     added: "2026-10-08",

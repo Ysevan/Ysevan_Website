@@ -160,7 +160,7 @@
         '<div class="l-mrow"><span>背景模糊</span><div class="l-mseg l-mseg-sm"><i class="is-on">自动</i><i>开</i><i>关</i></div></div>' +
         '<div class="l-mver"><span>恢复默认</span><span>v' + (win.STAR_NAV && win.STAR_NAV.version || "0.4.0") + "</span></div>" +   /* 版本号跟外壳 nav.js 的 VERSION 走，免得发版后复制品还写旧号 */
       "</div></aside>";
-    var main = '<div class="l-mmain"><div class="l-mhead"><b>布局与自适应</b><p>工具类是一条玻璃侧栏加内容区，按1440等比放大、900收顶栏、600换底部tab bar。</p></div>' +
+    var main = '<div class="l-mmain"><div class="l-mhead"><b>布局与自适应</b><p>四个工具的版面是一条玻璃侧栏加内容区，以1440为基准等比放大，900以下收成顶栏，600以下换成底部标签栏。</p></div>' +
       (withMain ? '<div class="l-mcards"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><ul class="l-mlist"><li></li><li></li><li></li><li></li></ul>' : "") +
       "</div>";
     return '<div class="l-m" data-m>' + side + main + "</div>";
@@ -201,14 +201,14 @@
           : "外观控件被挤出" + Math.round(below) + "px（导航已经压到0了，侧栏整条兜底能滚）。";
       } else if (mode === "clip") {
         text = below > 0.5
-          ? "外观控件被裁掉" + Math.round(below) + "px，侧栏没有滚动条——看不出这里少了东西，只会以为「没有换色的地方」。"
+          ? "外观控件被裁掉" + Math.round(below) + "px，侧栏没有滚动条，看不出这里少了东西，只会以为没有换颜色的地方。"
           : "这个高度还装得下，再压矮一点看。";
       } else {
         text = sideOver > 0.5
           ? "外观控件在视口下方" + Math.round(below) + "px，要把整条侧栏滚到底才看得见，滚回去又看不见导航顶上。"
           : "这个高度还装得下，再压矮一点看。";
       }
-      read.textContent = "视口1440×" + h + "：" + text;
+      read.textContent = "视口1440×" + h + "，" + text;
       return text;
     }
     function layout() {
@@ -219,7 +219,7 @@
     radios(group, function (b) {
       mode = b.getAttribute("data-sk-mode");
       vp.setAttribute("data-sk", mode);
-      announce(b.textContent + "：" + measure());
+      announce(b.textContent + "，" + measure());
     });
     onBoxWidth(box, layout);
     layout();
@@ -246,7 +246,7 @@
     if (side && getComputedStyle(side).flexDirection === "row") return "top";
     return "side";
   }
-  var FORM_NAME = { side: "左侧栏", top: "顶栏（品牌＋横排导航＋「更多」）", tab: "底部tab bar（顶栏只剩品牌）" };
+  var FORM_NAME = { side: "左侧栏", top: "顶栏（品牌、横排导航和更多按钮）", tab: "底部标签栏（顶栏只剩品牌）" };
 
   /* ================================================================
    * 2. clamp：视口宽 + ⌘+ 缩放，量六个令牌
@@ -291,8 +291,8 @@
       var over = Math.max(0, Math.round(ms.scrollWidth - ms.clientWidth));
       var form = shellForm(vp);
       read.textContent = "视口" + w + "px" + (zoom ? "（1440的窗口按⌘+放大到" + Math.round(zoom * 100) + "%）" : "") +
-        "：标题" + r2(vals.title) + "px、正文" + r2(vals.body) + "px、侧栏" + (form === "side" ? r2(vals.side) + "px" : "收成了顶栏") +
-        "；横向溢出" + over + "px。";
+        "，标题" + r2(vals.title) + "px、正文" + r2(vals.body) + "px、侧栏" + (form === "side" ? r2(vals.side) + "px" : "收成了顶栏") +
+        "，横向溢出" + over + "px。";
       return read.textContent;
     }
     bindRange(range, $("[data-cl-wout]", root), "px", function () { sayLater(update()); });
@@ -355,7 +355,7 @@
     el("line", { x1: x(2088), x2: x(2088), y1: Y1, y2: Y0, "class": "guide" });
     el("polyline", { points: [x(1440), y(1), x(2088), y(1.45), x(2600), y(1.45)].join(" "), "class": "eq" });
     el("polyline", { points: [x(1440), y(1), x(2560), y(1.45), x(2600), y(1.45)].join(" "), "class": "lin" });
-    el("text", { x: x(2140), y: y(1.45) - 8, "class": "lb lb-eq" }, "等比：视口÷1440");
+    el("text", { x: x(2140), y: y(1.45) - 8, "class": "lb lb-eq" }, "等比，视口÷1440");
     el("text", { x: x(2200), y: y(1.32) + 14, "class": "lb lb-lin" }, "线性爬坡（被否）");
     var g1 = el("line", { "class": "guide" });
     var m2 = el("circle", { r: 5, "class": "mk2" });
@@ -367,18 +367,18 @@
       var s = scaleOf(w);
       var wide = w > 900;
       var title = clamp(0.014 * w + 14, 26, 34.16) * s;
-      var body = clamp(0.0015 * w + 12.84, 14, 15) * s;
+      var body = clamp(0.0035 * w + 10, 13, 15) * s;
       var side = wide ? clamp(0.17 * w, 200, 244.8) * s : 0;
       var pagex = clamp(0.03 * w, 16, 43.2) * s;
       var fill = w - side - 2 * pagex;
       var strict = (1440 - 244.8 - 86.4) * s;
       kv(dl, [
-        ["<code>--scale</code>", s.toFixed(3) + (s >= 1.45 ? "（封顶）" : w <= 1440 ? "（≤1440恒为1）" : ""), "视口÷1440，夹在1与1.45之间"],
-        ["侧栏宽", wide ? px(side) : "—", wide ? "1440处244.8×scale" : "≤900收成顶栏"],
+        ["<code>--scale</code>", s.toFixed(3) + (s >= 1.45 ? "（封顶）" : w <= 1440 ? "（1440及以下恒为1）" : ""), "视口÷1440，夹在1与1.45之间"],
+        ["侧栏宽", wide ? px(side) : "没有", wide ? "1440处244.8×scale" : "900以下收成顶栏"],
         ["标题字号", px(title), "1440处34.16×scale"],
         ["正文字号", px(body), "1440处15×scale"],
-        ["内容宽：填满", wide ? px(fill) : px(w - 2 * pagex), "视口−侧栏−左右页边距"],
-        ["内容宽：严格等比", wide && w >= 1440 ? px(strict) : "—", wide && w >= 1440 ? (Math.abs(fill - strict) < 1 ? "和填满一样：没到封顶，两者是同一件事" : "填满多" + Math.round(fill - strict) + "px，只给卡片与列表轨道") : ""]
+        ["内容宽（填满）", wide ? px(fill) : px(w - 2 * pagex), "视口减去侧栏和左右页边距"],
+        ["内容宽（严格等比）", wide && w >= 1440 ? px(strict) : "不适用", wide && w >= 1440 ? (Math.abs(fill - strict) < 1 ? "和填满一样，没到封顶，两者是同一回事" : "填满多" + Math.round(fill - strict) + "px，多的只给卡片和列表轨道") : ""]
       ]);
       var ww = clamp(w, 1440, 2600);
       m1.setAttribute("cx", x(ww)); m1.setAttribute("cy", y(scaleOf(ww)));
@@ -386,8 +386,8 @@
       g1.setAttribute("x1", x(ww)); g1.setAttribute("x2", x(ww)); g1.setAttribute("y1", Y1); g1.setAttribute("y2", Y0);
       var e = scaleOf(ww), l = linOf(ww);
       cap.textContent = w <= 1440
-        ? d.name + "：≤1440两种写法都是1，一个数不变。"
-        : d.name + "：等比" + e.toFixed(3) + "，线性爬坡" + l.toFixed(3) + ((e / l - 1) >= 0.005 ? "，等比要大" + Math.round((e / l - 1) * 100) + "%" : "——这里两种写法几乎一样，差别在1440到2560的中段") + "。";
+        ? d.name + "，1440及以下两种写法都是1，数值不变。"
+        : d.name + "，等比" + e.toFixed(3) + "，线性爬坡" + l.toFixed(3) + ((e / l - 1) >= 0.005 ? "，等比大" + Math.round((e / l - 1) * 100) + "%" : "，这里两种写法几乎一样，差别在1440到2560的中段") + "。";
       if (frame) fitFrame();
       return cap.textContent;
     }
@@ -404,7 +404,7 @@
       var border = box.offsetHeight - box.clientHeight;
       box.style.height = Math.ceil(d.h * k + border) + "px";
       frame.title = "本站色彩页，按" + d.name + "的视口（只看，不能点）";
-      state.textContent = "框里是" + d.name + "的视口，缩到" + Math.round(k * 100) + "%显示；--scale " + scaleOf(d.w).toFixed(3) + "。";
+      state.textContent = "框里是" + d.name + "的视口，缩到" + Math.round(k * 100) + "%显示，--scale " + scaleOf(d.w).toFixed(3) + "。";
     }
     radios(group, function (b) {
       dev = b.getAttribute("data-sc-dev");
@@ -424,7 +424,7 @@
       loadBtn.hidden = true;
       unloadBtn.hidden = false;
       fitFrame();
-      frame.addEventListener("load", function () { announce("已装进来：" + DEVICES[dev].name); });
+      frame.addEventListener("load", function () { announce("已装进来，" + DEVICES[dev].name); });
       unloadBtn.focus();
     });
     unloadBtn.addEventListener("click", function () {
@@ -461,17 +461,17 @@
       try { sup = !!(win.CSS && CSS.supports(kind, "tan(atan2(1px, 1px))")); } catch (e) { sup = false; }
       $("[data-pb-sup]", card).textContent = "CSS.supports('" + kind + "', 'tan(atan2(1px, 1px))') = " + sup;
       var msg;
-      if (kind === "width") msg = hit ? "命中：在这台浏览器上它也判「不支持」，台阶值会盖住公式" : "没命中（这台浏览器很特别，记下来）";
-      else msg = hit ? "命中：这台浏览器真的不认三角函数，走台阶" : "没命中：这台浏览器认三角函数，公式照常";
+      if (kind === "width") msg = hit ? "命中，这台浏览器也判它不支持，台阶值会盖住公式" : "没命中（这台浏览器很特别，记下来）";
+      else msg = hit ? "命中，这台浏览器确实不认三角函数，走台阶" : "没命中，这台浏览器认三角函数，公式照常";
       $("[data-pb-hit]", card).textContent = msg;
     });
     function step(w) { return w >= 2200 ? 1.45 : w >= 2000 ? 1.39 : w >= 1800 ? 1.25 : w >= 1600 ? 1.11 : 1; }
     function update() {
       var w = +range.value;
       var f = scaleOf(w), s = step(w);
-      read.textContent = "视口" + w + "：公式给" + f.toFixed(3) + "，台阶给" + s.toFixed(2) +
+      read.textContent = "视口" + w + "，公式给" + f.toFixed(3) + "，台阶给" + s.toFixed(2) +
         (Math.abs(f - s) > 0.0005 ? "（差" + Math.round(Math.abs(f - s) / f * 1000) / 10 + "%）" : "（一样）") +
-        "。" + (hits.width ? "要是探针写成 width:，这台浏览器拿到的就是台阶" + s.toFixed(2) + "。" : "");
+        "。" + (hits.width ? "要是探针写的是width，这台浏览器拿到的就是台阶" + s.toFixed(2) + "。" : "");
       return read.textContent;
     }
     bindRange(range, $("[data-pb-wout]", root), "px", function () { sayLater(update()); });
@@ -507,7 +507,7 @@
       handle.style.left = (box.offsetWidth) + "px";
       presets.forEach(function (b) { setPressed(b, +b.getAttribute("data-bp-preset") === w); });
       var form = shellForm(vp);
-      read.textContent = "视口" + w + "px：" + FORM_NAME[form] + "。" + (form === "side" ? "宽过900。" : form === "top" ? "601–900这一档。" : "≤600这一档。");
+      read.textContent = "视口" + w + "px，" + FORM_NAME[form] + "。" + (form === "side" ? "宽于900。" : form === "top" ? "601到900这一档。" : "600及以下这一档。");
       if (form !== lastForm && lastForm) announce("变成" + FORM_NAME[form]);
       lastForm = form;
     }
@@ -580,16 +580,16 @@
       });
       var rows = [
         ["顶栏", vp.getAttribute("data-top") === "keep" ? "留着一条56px" : "没有", vp.getAttribute("data-top") === "keep" ? "改前（示意）" : "品牌图标在大标题前"],
-        ["首屏露出", shown + "块", "tab bar上面完整看得见的，到「" + lastName + "」为止"]
+        ["首屏露出", shown + "块", "标签栏上面完整看得见的，到" + lastName + "那一块为止"]
       ];
       if (!sheet.hidden) {
         var row = $("span", sheet);
         var sr = rectIn(sheet, vp);
-        rows.push(["面板高", Math.round(sheet.offsetHeight) + "px", vp.getAttribute("data-panel") === "tb" ? "定高：上沿顶到屏幕顶下8px" : "内容多高就多高，放不下自己滚"]);
+        rows.push(["面板高", Math.round(sheet.offsetHeight) + "px", vp.getAttribute("data-panel") === "tb" ? "定高，上沿顶到屏幕顶下8px" : "内容多高就多高，放不下自己滚"]);
         rows.push(["每一行", Math.round(row.offsetHeight) + "px", vp.getAttribute("data-panel") === "tb" ? "被网格拉高了（该是44）" : "44px触控高"]);
         rows.push(["上沿离屏幕顶", Math.round(sr.top) + "px", ""]);
       } else {
-        rows.push(["「更多」面板", "关着", "点tab bar上的「更多」"]);
+        rows.push(["更多面板", "关着", "点标签栏上的更多"]);
       }
       kv(dl, rows);
     }
@@ -599,7 +599,7 @@
       scrim.hidden = !on;
       more.setAttribute("aria-expanded", on ? "true" : "false");
       measure();
-      if (on) announce("「更多」面板开了：高" + Math.round(sheet.offsetHeight) + "像素，每行" + Math.round($("span", sheet).offsetHeight) + "像素");
+      if (on) announce("更多面板开了，高" + Math.round(sheet.offsetHeight) + "像素，每行" + Math.round($("span", sheet).offsetHeight) + "像素");
     }
     more.addEventListener("click", function () { openSheet(sheet.hidden); });
     scrim.addEventListener("click", function () { openSheet(false); more.focus(); });
@@ -615,7 +615,7 @@
     radios(groups[0], function (b) {
       vp.setAttribute("data-panel", b.getAttribute("data-ph-panel"));
       if (sheet.hidden) openSheet(true); else measure();
-      announce(b.textContent + "：面板高" + Math.round(sheet.offsetHeight) + "像素，每行" + Math.round($("span", sheet).offsetHeight) + "像素");
+      announce(b.textContent + "，面板高" + Math.round(sheet.offsetHeight) + "像素，每行" + Math.round($("span", sheet).offsetHeight) + "像素");
     });
     radios(groups[1], function (b) {
       vp.setAttribute("data-top", b.getAttribute("data-ph-top"));
@@ -649,7 +649,7 @@
       var mode = vp.getAttribute("data-mode-tb");
       kv(dl, [
         ["顶栏高", Math.round(bar.offsetHeight) + "px", mode === "before" ? "改前三行（plan实测167）" : row.hidden ? "两行（plan实测90）" : "搜索展开（plan实测134）"],
-        ["第一条任务", "y = " + y + "px", "plan实测412 → 334"],
+        ["第一条任务", "y = " + y + "px", "plan实测从412提到334"],
         ["焦点环", vp.getAttribute("data-ring") === "two" ? "两圈（修前）" : "一圈", "点进搜索框看"]
       ]);
     }
@@ -672,7 +672,7 @@
     btn.addEventListener("click", function () {
       if (row.hidden) openSearch(); else closeSearch("收起了，没搜");
     });
-    cancel.addEventListener("click", function () { closeSearch("取消：收起了，没搜"); });
+    cancel.addEventListener("click", function () { closeSearch("点了取消，收起了，没搜"); });
     input.addEventListener("keydown", function (e) {
       if (composing(e)) return;       /* 输入法选词的回车不算提交 */
       if (e.key === "Enter") {
@@ -682,7 +682,7 @@
       } else if (e.key === "Escape") {
         e.preventDefault();
         e.stopPropagation();
-        closeSearch("Esc：收起了，没搜");
+        closeSearch("按了Esc，收起了，没搜");
       }
     });
     radios(groups[0], function (b) {
@@ -690,7 +690,7 @@
       vp.setAttribute("data-mode-tb", m);
       if (m === "before" && !row.hidden) { row.hidden = true; btn.setAttribute("aria-expanded", "false"); }
       measure();
-      announce(b.textContent + "：顶栏高" + Math.round(bar.offsetHeight) + "像素");
+      announce(b.textContent + "，顶栏高" + Math.round(bar.offsetHeight) + "像素");
     });
     radios(groups[1], function (b) {
       vp.setAttribute("data-ring", b.getAttribute("data-tb-ring"));
@@ -744,14 +744,14 @@
       kv(dl, [
         ["磁贴区高", Math.round(tilesEl.offsetHeight / s) + "px", before ? "plan实测227" : "plan实测78"],
         ["单块", Math.round(tileH / s) + "px", before ? "plan实测109" : "plan实测35"],
-        ["导航第一项", "距侧栏顶" + Math.round(y / s) + "px", "plan实测 y = 363 → 214（侧栏上面还有别的）"],
+        ["导航第一项", "距侧栏顶" + Math.round(y / s) + "px", "plan实测从y=363提到214（侧栏上面还有别的）"],
         ["逾期", n.overdue > 0 ? n.overdue + "（标红）" : "0（淡下去）", "数字只有逾期不为0时是红的"]
       ]);
     }
     radios(group, function (b) {
       side.setAttribute("data-ti", b.getAttribute("data-ti-mode"));
       measure();
-      announce(b.textContent + "：磁贴区高" + Math.round(tilesEl.offsetHeight / pageScale()) + "像素");
+      announce(b.textContent + "，磁贴区高" + Math.round(tilesEl.offsetHeight / pageScale()) + "像素");
     });
     $$("[data-ti-over]", root).forEach(function (b) {
       b.addEventListener("click", function () {
@@ -816,19 +816,19 @@
       var footR = rectIn(foot, vp);
       var footOk = footR.bottom <= h + 0.5;
       presets.forEach(function (b) { setPressed(b, b.getAttribute("data-cp-preset") === w + "x" + h); });
-      var why = hit === 1 ? "第1条：宽高比" + r2(w / h) + "，大于1.6" : hit === 2 ? "第2条：高" + h + "，不到900" : (w / h).toFixed(2) + "、高" + h + "，两条都不中";
+      var why = hit === 1 ? "第1条，宽高比" + r2(w / h) + "，大于1.6" : hit === 2 ? "第2条，高" + h + "，不到900" : (w / h).toFixed(2) + "、高" + h + "，两条都不中";
       kv(dl, [
         ["媒体查询", hit ? "命中" : "不中", why],
         ["<code>--scale</code>", s.toFixed(3), ""],
         ["导航", over > 0 ? "要滚" + over + "px" : "不用滚", over > 0 ? hidden + "项在导航区外，得滚才看得见" : "最后一项下面还空" + Math.max(0, spare) + "px"],
         ["外观控件", footOk ? "在视口里" : "被挤出视口", mode === "on" ? (hit ? "紧凑排开着" : "这一档不需要收") : "紧凑排关着（改前）"]
       ]);
-      return "视口" + w + "×" + h + "：媒体查询" + (hit ? "命中" : "不中") + "，导航" + (over > 0 ? "要滚" + over + "像素" : "不用滚");
+      return "视口" + w + "×" + h + "，媒体查询" + (hit ? "命中" : "不中") + "，导航" + (over > 0 ? "要滚" + over + "像素" : "不用滚");
     }
     function liveLine() {
       var hitNow = false;
       try { hitNow = win.matchMedia(COMPACT_Q).matches; } catch (e) { hitNow = false; }
-      live.textContent = "这一页此刻：视口" + win.innerWidth + "×" + win.innerHeight + "，紧凑排" + (hitNow ? "命中（侧栏已经收紧）" : "没命中") + "。";
+      live.textContent = "这一页现在的视口是" + win.innerWidth + "×" + win.innerHeight + "，紧凑排" + (hitNow ? "命中（侧栏已经收紧）" : "没命中") + "。";
     }
     bindRange(rw, $("[data-cp-wout]", root), "", function () { sayLater(update()); });
     bindRange(rh, $("[data-cp-hout]", root), "", function () { sayLater(update()); });
@@ -842,7 +842,7 @@
     });
     radios(group, function (b) {
       mode = b.getAttribute("data-cp-mode");
-      announce(b.textContent + "：" + update());
+      announce(b.textContent + "，" + update());
     });
     onBoxWidth(box, update);
     win.addEventListener("resize", batched(liveLine));
@@ -892,7 +892,7 @@
         ["<code>--card-u</code>", r1(cu.u) + "px", cu.by],
         ["离视口底", Math.round(h - cur.bottom) + "px", mode === "new" ? "现行" : "旧写法"]
       ]);
-      return "视口" + w + "×" + h + "：现行长宽比" + now.a.toFixed(3) + "，旧写法" + old.a.toFixed(3) + "；" + cu.by + "在管";
+      return "视口" + w + "×" + h + "，现行长宽比" + now.a.toFixed(3) + "，旧写法" + old.a.toFixed(3) + "，" + cu.by + "在管";
     }
     bindRange(rw, $("[data-ha-wout]", root), "", function () { sayLater(update()); });
     bindRange(rh, $("[data-ha-hout]", root), "", function () { sayLater(update()); });
@@ -907,7 +907,7 @@
     radios(group, function (b) {
       mode = b.getAttribute("data-ha-mode");
       vp.setAttribute("data-ha", mode);
-      announce(b.textContent + "：" + update());
+      announce(b.textContent + "，" + update());
     });
     onBoxWidth(box, update);
     /* 画加载完卡片尺寸不变（width / height 属性先占好了比例），这里只为保险再量一次 */
@@ -938,16 +938,16 @@
       var cr = rectIn(card, vp);
       var stack = vp.getAttribute("data-na") === "stack";
       kv(dl, [
-        ["卡", Math.round(cr.width) + "×" + Math.round(cr.height), stack ? "竖着：画在下面" : "长宽比" + (cr.width / cr.height).toFixed(2)],
+        ["卡", Math.round(cr.width) + "×" + Math.round(cr.height), stack ? "竖着排，画在下面" : "长宽比" + (cr.width / cr.height).toFixed(2)],
         ["巨字", r1(parseFloat(getComputedStyle(big).fontSize)) + "px", "clamp(40.25px, 11.5vw, 84px)"],
         [stack ? "画" : "右半宽", stack ? Math.round(img.offsetWidth) + "×" + Math.round(img.offsetHeight) : Math.round(plate.offsetWidth) + "px", stack ? "被max-height砍到300高，左右全是卡纸" : "clamp(100px, 30vw, 206px)"]
       ]);
-      return "视口" + w + "：卡" + Math.round(cr.width) + "×" + Math.round(cr.height);
+      return "视口" + w + "，卡" + Math.round(cr.width) + "×" + Math.round(cr.height);
     }
     bindRange(range, $("[data-na-wout]", root), "", function () { sayLater(update()); });
     radios(group, function (b) {
       vp.setAttribute("data-na", b.getAttribute("data-na-mode"));
-      announce(b.textContent + "：" + update());
+      announce(b.textContent + "，" + update());
     });
     onBoxWidth(box, update);
     $$("img", vp).forEach(function (im) { im.addEventListener("load", batched(update)); });
@@ -959,10 +959,10 @@
    * ================================================================ */
   var RAIL = [
     { k: "hero", hs: 0, he: 12, name: "门面" },
-    { k: "plan", hs: 52, he: 112, name: "01 · 日程安排" },
-    { k: "shua", hs: 152, he: 192, name: "02 · 刷刷" },
-    { k: "gang", hs: 232, he: 272, name: "03 · 岗岗" },
-    { k: "card", hs: 312, he: 352, name: "04 · card" }
+    { k: "plan", hs: 52, he: 112, name: "日程安排" },
+    { k: "shua", hs: 152, he: 192, name: "刷刷" },
+    { k: "gang", hs: 232, he: 272, name: "岗岗" },
+    { k: "card", hs: 312, he: 352, name: "card" }
   ];
   var RAIL_END = 352, FADE = 32, COPY_FADE = 22, HERO_FADE = 27;
   function smooth(t) { return t * t * (3 - 2 * t); }
@@ -1038,7 +1038,7 @@
       out.textContent = di + "svh";
       range.setAttribute("aria-valuetext", di + "svh");
       var name = RAIL.filter(function (L) { return L.k === bestK; })[0].name;
-      read.textContent = "d = " + di + "svh，接指针的是「" + name + "」。按这套时间表算，整条轨道上最淡的那一刻也还有" + minVal.toFixed(2) + "（d≈" + Math.round(minAt) + "），任何一刻都有一件东西看得见。";
+      read.textContent = "d = " + di + "svh，接收指针的是" + name + "。按这套时间表算，整条轨道上最淡的时候也还有" + minVal.toFixed(2) + "（d约为" + Math.round(minAt) + "），任何时候都有一件东西看得见。";
       if (bestK !== lastActive && lastActive) sayLater("现在是" + name);
       lastActive = bestK;
     }
@@ -1087,23 +1087,23 @@
       else state = (!wide || reduce) ? "vertical" : js ? "stacked-live" : "stacked-dead";
       mini.setAttribute("data-ve", state);
       var q = "增强查询" + (enhanced ? "命中" : "不中") + "。";
-      var text = state === "vertical" ? "竖排页：门面和四件工具都看得见，不钉住、不擦洗。"
-        : state === "stacked-live" ? "叠放：脚本在写进度，往下滚逐层交接（这里停在进度0，只露门面）。"
-        : "叠放但没有脚本：进度永远是0，下面四件的不透明度都是0——这位访客只看得见门面。";
+      var text = state === "vertical" ? "竖排页，门面和四件工具都看得见，不钉住，也不擦洗。"
+        : state === "stacked-live" ? "叠放，脚本在写进度，往下滚时逐层交接（这里停在进度0，只露出门面）。"
+        : "叠放但没有脚本，进度永远是0，下面四件的不透明度都是0，这位访客只看得见门面。";
       read.textContent = q + text;
       return read.textContent;
     }
     Object.keys(env).forEach(function (k) {
       env[k].addEventListener("click", function () {
         setPressed(env[k], !on(k));
-        announce(env[k].textContent + (on(k) ? "：开" : "：关") + "。" + update());
+        announce(env[k].textContent + (on(k) ? "，开" : "，关") + "。" + update());
       });
     });
-    radios(group, function (b) { announce(b.textContent + "：" + update()); });
+    radios(group, function (b) { announce(b.textContent + "，" + update()); });
     var mq = null;
     try { mq = win.matchMedia("(scripting: enabled)"); } catch (e) { mq = null; }
-    if (!mq || mq.media === "not all") live.textContent = "这台浏览器不认 scripting 这个媒体特性：走的就是默认那张竖排页。";
-    else live.textContent = "这台浏览器：(scripting: enabled) " + (mq.matches ? "命中" : "不中") + "。";
+    if (!mq || mq.media === "not all") live.textContent = "这台浏览器不认scripting这个媒体特性，走的就是默认那张竖排页。";
+    else live.textContent = "这台浏览器上，(scripting: enabled) " + (mq.matches ? "命中" : "不中") + "。";
     update();
   }
 
@@ -1132,16 +1132,16 @@
       var cards = $$(".l-no-card", vp);
       var gap = cards.length > 1 ? cards[1].offsetTop - (cards[0].offsetTop + cards[0].offsetHeight) : 0;
       kv(dl, [
-        ["栏数", two ? "两栏" : "一栏", w > 900 ? "宽过900" : "≤900塌成单列"],
+        ["栏数", two ? "两栏" : "一栏", w > 900 ? "宽于900" : "900及以下合成单列"],
         ["左栏宽", Math.round(head.offsetWidth) + "px", two ? "按内容自然宽，280封顶" : "单列时占满"],
-        ["卡与卡", flow ? Math.round(gap) + "px间距" : "—", flow ? "靠间距分隔，没有线" : "旧列表：标题＋摘要＋竖线"]
+        ["卡与卡", flow ? Math.round(gap) + "px间距" : "没有卡片", flow ? "靠间距分隔，没有线" : "旧列表，标题、摘要加竖线"]
       ]);
-      return "视口" + w + "：" + (two ? "两栏" : "一栏") + "，左栏" + Math.round(head.offsetWidth) + "像素";
+      return "视口" + w + "，" + (two ? "两栏" : "一栏") + "，左栏" + Math.round(head.offsetWidth) + "像素";
     }
     bindRange(range, $("[data-no-wout]", root), "", function () { sayLater(update()); });
     radios(group, function (b) {
       vp.setAttribute("data-no", b.getAttribute("data-no-mode"));
-      announce(b.textContent + "：" + update());
+      announce(b.textContent + "，" + update());
     });
     longBtn.addEventListener("click", function () {
       var on = longBtn.getAttribute("aria-pressed") !== "true";
@@ -1159,7 +1159,7 @@
   var ZE_TEXT = {
     short: "离线刷题。",
     mid: "离线刷题，错题自动收进错题本。",
-    long: "离线刷题，错题自动收进错题本；换设备时导出一份备份，到另一台导入就能接着刷，连续刷题的进度也一起带过去。"
+    long: "离线刷题，错题自动收进错题本。换设备时导出一份备份，到另一台导入就能接着刷，连续刷题的进度也一起带过去。"
   };
   function initZero() {
     var root = $('[data-demo="zero"]');
@@ -1177,12 +1177,12 @@
       card.classList.toggle("is-wide", wide.getAttribute("aria-pressed") === "true");
       var hid = Math.max(0, Math.round(card.scrollHeight - card.clientHeight));
       var dh = Math.max(0, Math.round(desc.scrollHeight - desc.clientHeight));
-      if (way === "free") read.textContent = "卡高" + Math.round(card.offsetHeight) + "px：内容多高卡就多高，什么都没藏。";
-      else if (hid || dh) read.textContent = "盒高写死300px：" + (hid ? "内容要" + Math.round(card.scrollHeight) + "px，底下藏掉" + hid + "px；" : "") + (dh ? "说明被截成两行，藏掉" + dh + "px。" : "") + "页面上看不出少了什么。";
-      else read.textContent = "盒高写死300px：这一档刚好装下——换长文案或「字宽一点」再看。";
+      if (way === "free") read.textContent = "卡高" + Math.round(card.offsetHeight) + "px，内容多高卡就多高，什么都没藏。";
+      else if (hid || dh) read.textContent = "盒高写死300px，" + (hid ? "内容要" + Math.round(card.scrollHeight) + "px，底下藏掉" + hid + "px。" : "") + (dh ? "说明被截成两行，藏掉" + dh + "px。" : "") + "页面上看不出少了什么。";
+      else read.textContent = "盒高写死300px，这一档刚好装下，换长文案或者打开字宽一点再看。";
       return read.textContent;
     }
-    groups.forEach(function (g) { radios(g, function (b) { announce(b.textContent + "：" + update()); }); });
+    groups.forEach(function (g) { radios(g, function (b) { announce(b.textContent + "，" + update()); }); });
     wide.addEventListener("click", function () {
       setPressed(wide, wide.getAttribute("aria-pressed") !== "true");
       announce(update());
@@ -1222,7 +1222,7 @@
         return { unit: unit, y: y, d: d, jump: jump };
       });
       var ok1 = r1[0], bad1 = r1[1];
-      $('[data-dv-read="1"]', root).innerHTML = "svh：卡片在屏上y=<b>" + ok1.y + "</b>，时间表d=" + Math.round(ok1.d) + '，<span class="ok">地址栏怎么动都不变</span>。dvh：y=<b>' + bad1.y + "</b>，d=" + Math.round(bad1.d) +
+      $('[data-dv-read="1"]', root).innerHTML = "svh，卡片在屏上y=<b>" + ok1.y + "</b>，时间表d=" + Math.round(ok1.d) + '，<span class="ok">地址栏怎么动都不变</span>。dvh，y=<b>' + bad1.y + "</b>，d=" + Math.round(bad1.d) +
         (bad1.jump ? '，<span class="bad">卡片往下跳了' + (bad1.y - ok1.y) + "px，时间表倒回去" + Math.round(ok1.d - bad1.d) + "svh</span>。" : "（地址栏露着时两边一样，收起来再看）。");
       out.push(bad1.jump ? "①dvh那台卡片跳了" + (bad1.y - ok1.y) + "像素" : "①两边一样");
       /* ② 全屏弹层：高 = 1个单位的100，可见区比它高的部分就是缝 */
@@ -1233,7 +1233,7 @@
         ph.style.setProperty("--gap", gap + "px");
         return gap;
       });
-      $('[data-dv-read="2"]', root).innerHTML = 'dvh：<span class="ok">正好盖满' + vis + "</span>。svh：" +
+      $('[data-dv-read="2"]', root).innerHTML = 'dvh，<span class="ok">正好盖满' + vis + "</span>。svh，" +
         (r2[1] > 0 ? '<span class="bad">底下露出' + r2[1] + "px的缝</span>，看得见后面的页面。" : "地址栏露着时也正好（收起来再看）。");
       out.push(r2[1] > 0 ? "②svh那台底下露缝" + r2[1] + "像素" : "②两边都盖满");
       /* ③ 底部抽屉：高 = min(内容1000, 1个单位的100 − 40)；比可见区高的部分被裁 */
@@ -1245,10 +1245,10 @@
         ph.classList.toggle("is-cut", cut > 0);
         return { h: h, cut: cut };
       });
-      $('[data-dv-read="3"]', root).innerHTML = "svh：抽屉封顶<b>" + r3[0].h + '</b>，<span class="ok">地址栏露着也放得下</span>。vh：封顶' + r3[1].h +
-        (r3[1].cut > 0 ? '，<span class="bad">顶上' + r3[1].cut + "px压在地址栏底下，点不到</span>。" : "（收起时放得下，露着时就被裁）。") + "要是写dvh，抽屉高跟着地址栏" + (DV.SHOW - 40) + "↔" + (DV.HIDE - 40) + "一跳一跳。";
+      $('[data-dv-read="3"]', root).innerHTML = "svh，抽屉封顶<b>" + r3[0].h + '</b>，<span class="ok">地址栏露着也放得下</span>。vh，封顶' + r3[1].h +
+        (r3[1].cut > 0 ? '，<span class="bad">顶上' + r3[1].cut + "px压在地址栏底下，点不到</span>。" : "（收起时放得下，露着时就被裁）。") + "要是写dvh，抽屉高会跟着地址栏在" + (DV.SHOW - 40) + "和" + (DV.HIDE - 40) + "之间来回跳。";
       out.push(r3[1].cut > 0 ? "③vh那台顶上被裁" + r3[1].cut + "像素" : "③两边都放得下");
-      return "可视高" + vis + "：" + out.join("，");
+      return "可视高" + vis + "，" + out.join("，");
     }
     var U = 1.417;
     function calc() {
@@ -1268,9 +1268,9 @@
       $("[data-dv-av]", root).textContent = Math.round(a) + "px";
       $("[data-dv-bv]", root).textContent = Math.round(b) + "px";
       $("[data-dv-cv]", root).textContent = Math.round(c) + "px";
-      calcRead.textContent = "舞台 = min(" + Math.round(a) + ", " + Math.round(b) + ") = " + Math.round(stage) + "px：" +
+      calcRead.textContent = "舞台 = min(" + Math.round(a) + ", " + Math.round(b) + ") = " + Math.round(stage) + "px，" +
         (winA ? "等比项在管，构图和Mac一致" : "可用高度项在管，余量来自结构，任何高度都装得下") +
-        "。写死69svh是" + Math.round(c) + "px，" + (c > b ? "比可用高多" + Math.round(c - b) + "px，出滚动条、上下不对称。" : "这一档恰好装下——工具栏一多就溢出。");
+        "。写死69svh是" + Math.round(c) + "px，" + (c > b ? "比可用高多" + Math.round(c - b) + "px，出滚动条、上下不对称。" : "这一档恰好装下，工具栏一多就会溢出。");
       return calcRead.textContent;
     }
     radios(group, function (b) {
@@ -1298,9 +1298,9 @@
       var where = view.scrollTop < 2 ? "顶" : view.scrollTop >= view.scrollHeight - view.clientHeight - 2 ? "底" : "中间";
       var visible = br.top >= vr.top - 0.5 && br.bottom <= vr.bottom + 0.5;
       var cover = Math.round(Math.max(0, Math.min(br.bottom, lr.bottom) - Math.max(br.top, lr.top)));
-      if (fix) return '滚在' + where + '：<span class="ok">底栏贴着框底</span>' + (where === "底" ? "，到末尾落回原位、不压内容" : "") + "。";
-      if (!visible) return '滚在' + where + '：<span class="bad">底栏不在框里</span>——它贴在面板最底下，滚到底才出现。';
-      return '滚在' + where + '：底栏出现了，<span class="bad">压住最后一项' + cover + "px</span>。";
+      if (fix) return '滚在' + where + '，<span class="ok">底栏贴着框底</span>' + (where === "底" ? "，到末尾落回原位、不压内容" : "") + "。";
+      if (!visible) return '滚在' + where + '，<span class="bad">底栏不在框里</span>，它贴在面板最底下，滚到底才出现。';
+      return '滚在' + where + '，底栏出现了，<span class="bad">压住最后一项' + cover + "px</span>。";
     },
     stretch: function (st, fix) {
       var h = Math.round($(".l-ts-top", st).offsetHeight);
@@ -1310,7 +1310,7 @@
       var col = $(".l-tc-col", st), sg = $(".l-tc-stage", st);
       var avail = col.clientWidth - 20;
       var w = Math.round(sg.offsetWidth);
-      return "舞台宽<b>" + w + "</b> / 可用" + Math.round(avail) + "px" + (w < avail - 1 ? '，<span class="bad">缩成了内容宽</span>' : '，<span class="ok">撑满</span>') + "。";
+      return "舞台宽<b>" + w + "</b>，可用宽" + Math.round(avail) + "px" + (w < avail - 1 ? '，<span class="bad">缩成了内容宽</span>' : '，<span class="ok">撑满</span>') + "。";
     },
     twoauto: function (st) {
       var row = $(".l-tw-row", st), link = $(".l-tw-link", st), cnt = $(".l-tw-count", st);
@@ -1322,11 +1322,11 @@
       var cs = getComputedStyle(img);
       var pl = parseFloat(cs.paddingLeft) || 0;
       var content = img.clientWidth - pl - (parseFloat(cs.paddingRight) || 0);
-      return "图标画出来<b>" + r1(content) + "px</b>宽" + (pl > 0 ? '（padding ' + r1(pl) + "px＝包含块" + Math.round(brand.offsetWidth) + 'px×8%），<span class="bad">压没了</span>' : '（34×84%），<span class="ok">正常</span>') + "。";
+      return "图标画出来<b>" + r1(content) + "px</b>宽" + (pl > 0 ? '（padding ' + r1(pl) + "px，等于包含块" + Math.round(brand.offsetWidth) + 'px的8%），<span class="bad">压没了</span>' : '（34×84%），<span class="ok">正常</span>') + "。";
     },
     input: function (st, fix) {
       var el = fix ? $("textarea", st) : $("input", st);
-      if (!el.value) return "点「填入两行」：第一行当标题、其余进正文。";
+      if (!el.value) return "点填入两行，第一行当标题，其余进正文。";
       var lines = el.value.split("\n");
       var body = lines.slice(1).join("\n");
       return "标题「" + lines[0] + "」，正文" + (body ? "「" + body + '」，<span class="ok">拆开了</span>' : '<span class="bad">是空的</span>（换行被吃掉）') + "。";
@@ -1339,7 +1339,7 @@
     negright: function (st) {
       var page = $(".l-tn-page", st);
       var over = Math.round(page.scrollWidth - page.clientWidth);
-      return over > 0 ? 'scrollWidth被顶大<span class="bad">' + over + "px</span>：框不显示滚动条，可iOS照样能左右拖。" : '<span class="ok">scrollWidth没被顶大</span>。';
+      return over > 0 ? 'scrollWidth被顶大<span class="bad">' + over + "px</span>，框不显示滚动条，但iOS上照样能左右拖。" : '<span class="ok">scrollWidth没被顶大</span>。';
     },
     clipdeco: function (st, fix) {
       var pot = $(fix ? ".l-td-out" : ".l-td-in", st);
@@ -1353,12 +1353,12 @@
       var sr = sheet.getBoundingClientRect(), vr = vpEl.getBoundingClientRect();
       var cut = Math.round(Math.max(0, vr.top - sr.top));
       var scrolls = sheet.scrollHeight > sheet.clientHeight + 1;
-      return cut > 0 ? '面板' + Math.round(sheet.offsetHeight) + 'px高，<span class="bad">上面' + cut + "px在框外</span>，面板自己又不滚——顶上那几行点不到。"
+      return cut > 0 ? '面板' + Math.round(sheet.offsetHeight) + 'px高，<span class="bad">上面' + cut + "px在框外</span>，面板自己又不滚，顶上那几行点不到。"
         : '面板封顶' + Math.round(sheet.offsetHeight) + "px" + (scrolls ? '，<span class="ok">自己能滚</span>，每一行都点得到。' : "。");
     },
     anchor: function (st) {
       var view = $("[data-ta-view]", st);
-      if (!view.__jumped) return "点「跳到第3节」看落点。";
+      if (!view.__jumped) return "点跳到第3节，看落点。";
       var bar = $(".l-ta-bar", st), t = $("[data-ta-target]", st);
       var gap = Math.round(t.getBoundingClientRect().top - bar.getBoundingClientRect().bottom);
       return "第3节离顶栏下沿<b>" + gap + "px</b>" + (gap > 24 ? '，<span class="bad">顶栏高被算了两次</span>（该是20）' : '，<span class="ok">正好</span>') + "。";
@@ -1384,7 +1384,7 @@
         setPressed(btn, fix);
         btn.textContent = fix ? "看反例" : "看修法";
         if (kind === "anchor" && $("[data-ta-view]", st).__jumped) jump(st);
-        announce(title + "：" + (fix ? "修法" : "反例") + "。" + update());
+        announce(title + "，" + (fix ? "修法" : "反例") + "。" + update());
       });
       if (kind === "fixed") $(".l-tf-view", st).addEventListener("scroll", batched(update), { passive: true });
       if (kind === "input") {
@@ -1417,7 +1417,7 @@
   function boot() {
     [initSkeleton, initClamp, initScale, initProbe, initBreakpoints, initPhone, initTopbar, initTiles, initCompact,
       initHall, initNarrow, initRail, initVertical, initNotes, initZero, initDvh, initTraps].forEach(function (fn) {
-      try { fn(); } catch (e) { if (win.console) console.warn("[layout] " + (fn.name || "init") + "没起来：", e); }
+      try { fn(); } catch (e) { if (win.console) console.warn("[layout] " + (fn.name || "init") + "没起来，", e); }
     });
   }
   if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", boot);

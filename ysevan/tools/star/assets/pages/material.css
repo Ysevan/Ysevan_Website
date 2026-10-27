@@ -413,7 +413,7 @@
   .m-table-stack thead { display: none; }
   .m-table-stack tr { padding: 8px 0; border-bottom: 1px solid var(--sep); }
   .m-table-stack th, .m-table-stack td { padding: 2px 0; border: 0; }
-  .m-table-stack td::before { content: attr(data-h) "："; color: var(--label2); }
+  .m-table-stack td::before { content: attr(data-h) "　"; color: var(--label2); }
   .m-plant-art svg { width: min(70%, 200px); }
   .m-glass-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .m-gwin { height: 120px; padding: 8px; }
