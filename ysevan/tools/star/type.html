@@ -275,12 +275,13 @@ body { line-height: 1.72; }</code></pre>
           <div class="tfam-stage" data-tfam-stage>
             <div class="tfam-hero">
               <span class="tfam-big" data-fam="kai" data-rm="fade">工具</span>
-              <span class="tfam-hero-sub" data-fam="sans" data-rm="fade">六件自己做的东西</span>
+              <span class="tfam-hero-sub" data-fam="sans" data-rm="fade">六件小工具</span>
             </div>
+            <span class="tfam-zone" data-fam="serif" data-rm="fade">工作</span>
             <div class="tfam-tool">
               <span class="tfam-name" data-fam="serif" data-rm="fade">刷刷</span>
-              <span class="tfam-say" data-fam="sans" data-rm="fade">银行岗位准入考试的刷题软件，离线也能用。</span>
-              <span class="tfam-spec"><b data-fam="serif" data-rm="fade">4475</b><small data-fam="sans" data-rm="fade">道题</small></span>
+              <span class="tfam-say" data-fam="sans" data-rm="fade">为银行岗位考试准备的练习工具，题库装在手机里。</span>
+              <span class="tfam-spec"><b data-fam="serif" data-rm="fade">4877</b><small data-fam="sans" data-rm="fade">道题</small></span>
             </div>
             <div class="tfam-notes">
               <span class="tfam-arch" data-fam="serif" data-tfam-arch data-rm="fade">以前写的</span>
@@ -364,19 +365,13 @@ hand:  ["var(--font-hand)", "cursive"]</code></pre>
         <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「7.6 随笔正文的排法」、「7.6 随笔正文的排法 › 四个数，只写在一处」（「段间距」）；<code>Ysevan_web/app/globals.css</code>「.xw-note-prose」（「随笔正文的排法」）</p>
       </div>
     </article>
-  </section>
-
-  <!-- ============================ 通用 ============================ -->
-  <section class="group" id="g-common" data-scope="common">
-    <h2 class="group-title">通用</h2>
-    <p class="group-lede">工具和小屋都照这几条做。文案口径和等宽数字来自小屋规格附录里的家族契约，四个工具同样适用。字体栈原来也是，2026-10-25起四个工具改成和刷刷一样，系统UI字体在前。</p>
 
     <!-- 8 字体栈 -->
-    <article class="entry" id="t-stack" data-scope="common" data-toc="中文在前的字体栈">
+    <article class="entry" id="t-stack" data-scope="xiaowu" data-toc="中文在前的字体栈">
       <header class="entry-head">
         <h3>中文字族在前的字体栈</h3>
         <p class="entry-lede">苹方、冬青黑、微软雅黑、思源黑在前，系统UI字体在后，写成<code>"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, sans-serif</code>，配<code>&lt;html lang="zh-CN"&gt;</code>。现在小屋用这一条。plan、card、岗岗和本站原来也是，2026-10-25界面统一时都改成和刷刷一样，系统UI字体在前。</p>
-        <ul class="entry-tags"><li class="scope">通用</li><li>2026-08-26定</li></ul>
+        <ul class="entry-tags"><li class="scope">小屋</li><li>2026-08-26定</li></ul>
       </header>
       <div class="specimen">
         <p class="ty-cap"><b>示例</b>同一段字换三条字体栈，看方向键和中点的变化。排在第一的字体如果有西文字形，西文、数字和符号就都由它画。下面列出这台机器上装没装这几款字，以及中文和西文现在各由哪款字画。</p>
@@ -405,9 +400,15 @@ body {
         <section class="fact"><h4>用在哪</h4><p>小屋用这一条。四个工具现在一致，都照刷刷系统UI在前，plan的变量注释写着「家族里有分歧的一律跟刷刷」。本站的正文也改了，这一条只留给本页几块中文在前的示例用。刷刷原来是登记过的偏离，当时试改成中文在前，Mac上做题页的「↑ ↓ ← →」改由苹方出字，间距不匀，中点「·」也变宽，控制室2026-09-28裁定不改。两条栈在Windows上效果一样，前几个字体都取不到，一律落到微软雅黑，换栈只影响苹果设备。</p></section>
         <section class="fact"><h4>为什么</h4><p>苹方缺字时，应该落到冬青黑、微软雅黑、思源黑，而不是先落到<code>-apple-system</code>这类系统UI字体，否则同一段中文里会混进两套字形。中文界面也不该落到Arial、Helvetica这类西文回退字体上。<code>lang</code>决定标点和断行用哪种字形，zh-CN和zh-TW的引号形状不同。</p></section>
         <section class="fact trap"><h4>坑</h4><p>排在第一的字体决定西文和符号的字形。中文在前时，Mac上的箭头和中点用苹方的全宽字形，系统UI在前时用SF的窄字形。改字体栈以后，要在Mac上看一眼符号多的那几页。</p></section>
-        <p class="source">出处：<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.1 字体」（「正文字体栈」「三条的理由」）；<code>tools/plan/docs/design/SPEC-apple-glass.md:188</code>「字体栈」、<code>:231</code>「字体栈」（「5f. 界面统一」）；<code>tools/plan/app/src/styles/tokens.css:258</code>「家族里有分歧的一律跟刷刷」；<code>tools/shua/design-proposal.md:354</code>「字体栈保持系统 UI 在前」；<code>tools/gang/styles.css:620</code>「body」；<code>tools/shua/styles.css:122</code>「font-family」；<code>tools/star/assets/star.css:198</code>「--font」</p>
+        <p class="source">出处：<code>Ysevan_web@918aa6e docs/xiaowu-ui-spec.md</code>「A.1 字体」（「2026-10-25 起只约束小屋本身」「正文字体栈」「三条的理由」）；<code>tools/plan/docs/design/SPEC-apple-glass.md:188</code>「字体栈」、<code>:231</code>「字体栈」（「5f. 界面统一」）；<code>tools/plan/app/src/styles/tokens.css:258</code>「家族里有分歧的一律跟刷刷」；<code>tools/shua/design-proposal.md:354</code>「字体栈保持系统 UI 在前」；<code>tools/gang/styles.css:620</code>「body」；<code>tools/shua/styles.css:122</code>「font-family」；<code>tools/star/assets/star.css:198</code>「--font」</p>
       </div>
     </article>
+  </section>
+
+  <!-- ============================ 通用 ============================ -->
+  <section class="group" id="g-common" data-scope="common">
+    <h2 class="group-title">通用</h2>
+    <p class="group-lede">工具和小屋都照这几条做。文案口径和等宽数字来自小屋规格附录里的家族契约，四个工具同样适用。字体栈原来也在这一组，2026-10-25起四个工具改成和刷刷一样系统UI字体在前，只剩小屋中文字族在前，那一条挪到了小屋组。</p>
 
     <!-- 9 不引外部字体 -->
     <article class="entry" id="t-nofont" data-scope="common" data-toc="不引外部字体">

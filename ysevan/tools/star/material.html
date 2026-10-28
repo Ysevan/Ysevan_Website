@@ -506,7 +506,7 @@ if (gl) { var lose = gl.getExtension("WEBGL_lose_context"); if (lose) lose.loseC
         <ul class="entry-tags"><li class="scope">小屋</li><li>2026-09-22定</li></ul>
       </header>
       <div class="specimen">
-        <p class="m-cap"><b>示例</b>墙上一张门厅卡，用挂画投影。地毯上一只工具截图框，用浮起档，照2026-10-21以前工具页日程安排那三张界面图的框画，工具页改成三区时这三张图撤了。切到纯黑，看暖纸上的阴影会不会发灰。切到夜里，看细线和投影一起换。拖动倾斜，大投影跟着移动，卡片自己贴边的那层不动。</p>
+        <p class="m-cap"><b>示例</b>墙上一张门厅卡，用挂画投影。旁边一只截图框用附录A.3的浮起档，照2026-10-21以前工具页日程安排那三张界面图的框画，工具页改成三区时这三张图撤了，现在工具页的卡没有卡面，也不带投影。切到纯黑，看暖纸上的阴影会不会发灰。切到夜里，看细线和投影一起换。拖动倾斜，大投影跟着移动，卡片自己贴边的那层不动。</p>
         <div class="m-ctrl">
           <div class="seg m-seg" role="radiogroup" aria-label="阴影的样子" data-m-sh-seg>
             <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="warm">白天，暖墨</button>
@@ -524,7 +524,7 @@ if (gl) { var lose = gl.getExtension("WEBGL_lose_context"); if (lose) lose.loseC
           </figure>
           <figure class="m-sh-rug">
             <div class="m-rug"><div class="m-tool" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
-            <figcaption data-m-sh-cap2>地毯上，浮起<code>0 8px 20px -10px</code>暖墨.11</figcaption>
+            <figcaption data-m-sh-cap2>浮起档<code>0 8px 20px -10px</code>暖墨.11</figcaption>
           </figure>
         </div>
       </div>
@@ -544,9 +544,9 @@ if (gl) { var lose = gl.getExtension("WEBGL_lose_context"); if (lose) lose.loseC
 .dark .set::before { box-shadow: 0 16px 34px -14px rgba(0, 0, 0, 0.55); }
 .dark .plate img  { box-shadow: 0 0 0 1px rgba(231, 225, 208, 0.08); }</code></pre>
         </section>
-        <section class="fact"><h4>为什么</h4><p>纯黑阴影压在暖纸上会发灰。只用两档，不加第三档，鼠标悬停时也不换档。工具卡放在地毯上，门厅卡挂在墙上，所以挂画的投影更深。改<code>box-shadow</code>等于每帧重画一大片34px的模糊，小屋实测掉帧就是因为这个。把投影放到单独的伪元素上，用<code>transform</code>移动，模糊只画一次，之后都交给合成器。</p></section>
+        <section class="fact"><h4>为什么</h4><p>纯黑阴影压在暖纸上会发灰。只用两档，不加第三档，鼠标悬停时也不换档。门厅卡是挂在墙上的画，投影要沉，所以比浮起档深一倍。改<code>box-shadow</code>等于每帧重画一大片34px的模糊，小屋实测掉帧就是因为这个。把投影放到单独的伪元素上，用<code>transform</code>移动，模糊只画一次，之后都交给合成器。</p></section>
         <section class="fact trap"><h4>坑</h4><p>夜里那条选择器的优先级更高，要在821px以上那个媒体查询段里再写一遍按卡片缩放的版本，否则夜里的投影停在固定像素，不跟卡片缩放。色块和画纸各自不加投影，否则接缝处会叠出一道脏印。</p></section>
-        <p class="source">出处：<code>Ysevan_web/app/hall.module.css</code>「.set::before」（「挂画的大投影」）、「.card」（「动box-shadow本身等于每帧重画一大片模糊」）、「夜里的装裱」；<code>Ysevan_web@261fe19 app/projects/tools.module.css</code>「.shotFrame」（「浮起档，暖墨色不用纯黑」），2026-10-21随工具页改三区删掉；<code>Ysevan_web/docs/xiaowu-ui-spec.md</code>「A.3 圆角、阴影、焦点环」（「阴影用暖墨色」）、「4.6.2 数值」（「挂画投影在卡片上」「必须在同一个min-width: 821px段里再写一遍」）</p>
+        <p class="source">出处：<code>Ysevan_web/app/hall.module.css</code>「.set::before」（「挂画的大投影」）、「.card」（「动box-shadow本身等于每帧重画一大片模糊」）、「夜里的装裱」；<code>Ysevan_web@261fe19 app/projects/tools.module.css</code>「.shotFrame」（「浮起档，暖墨色不用纯黑」），2026-10-21随工具页改三区删掉；<code>Ysevan_web@918aa6e docs/xiaowu-ui-spec.md</code>「A.3 圆角、阴影、焦点环」（「阴影用暖墨色」「现在工具卡不带投影」）、「4.6.2 数值」（「挂画投影在卡片上」「这张卡片是挂在墙上的画」「必须在同一个min-width: 821px段里再写一遍」）</p>
       </div>
     </article>
 

@@ -1,10 +1,10 @@
 {
   "name": "设计合集（star）公开静态版",
   "mount": "/ysevan/tools/star/",
-  "sourceCommit": "f49fec1 + copy2.patch（c14fdf44…，未提交）",
-  "generatedAt": "2026-10-27T22:05:03.665Z",
+  "sourceCommit": "7ef641b + v046.patch（8d6c45d5…，未提交）",
+  "generatedAt": "2026-10-27T23:59:18.017Z",
   "files": 64,
-  "totalBytes": 4686986,
+  "totalBytes": 4690596,
   "rewrite": {
     "from": "../../old/",
     "to": "../../../",

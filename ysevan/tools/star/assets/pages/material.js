@@ -548,9 +548,9 @@
     var cap1 = $("[data-m-sh-cap1]");
     var cap2 = $("[data-m-sh-cap2]");
     var CAP = {
-      warm: ["墙上，挂画投影<code>0 16px 34px -14px</code>暖墨.22", "地毯上，浮起<code>0 8px 20px -10px</code>暖墨.11"],
-      black: ["墙上，同样的投影换成纯黑.22（反例）", "地毯上，纯黑.11（反例）"],
-      night: ["墙上，夜里换成更深的黑<code>rgba(0,0,0,.55)</code>，细线换浅色", "地毯上，浮起档夜里没有另写，照旧暖墨.11"]
+      warm: ["墙上，挂画投影<code>0 16px 34px -14px</code>暖墨.22", "浮起档<code>0 8px 20px -10px</code>暖墨.11"],
+      black: ["墙上，同样的投影换成纯黑.22（反例）", "浮起档换成纯黑.11（反例）"],
+      night: ["墙上，夜里换成更深的黑<code>rgba(0,0,0,.55)</code>，细线换浅色", "浮起档夜里没有另写，照旧暖墨.11"]
     };
     radios($("[data-m-sh-seg]"), function (v) {
       box.setAttribute("data-mode", v === "night" ? "dark" : "light");

@@ -624,7 +624,7 @@ favicon 整块圆角方块铺满，rx="229"（边长22.37%，iOS 应用图标比
         <p class="used-here"><span class="used-label">本站用在</span><a href="index.html#spot-chapters">章节目录（总览页）</a></p>
       </header>
       <div class="specimen xw ixts" data-demo="tabstop">
-        <p class="ix-cap ix-cap-xw"><b>示例</b>先点从这里开始，再按Tab走过这张工具卡，计数器会数出Tab在卡上停了几次。切到多个Tab位（反例，示意）再走一遍，图、序号、标题、规格条都成了Tab位。卡上的文字是示例。</p>
+        <p class="ix-cap ix-cap-xw"><b>示例</b>先点从这里开始，再按Tab走过这张工具卡，计数器会数出Tab在卡上停了几次。切到多个Tab位（反例，示意）再走一遍，图、序号、标题、规格小字都成了Tab位。卡上的文字是示例。</p>
         <div class="ixts-top">
           <div class="seg ixts-seg" role="radiogroup" aria-label="卡上哪些东西可聚焦">
             <button type="button" role="radio" aria-checked="true" tabindex="0" data-v="one">一个Tab位（现行）</button>
@@ -636,13 +636,12 @@ favicon 整块圆角方块铺满，rx="229"（边长22.37%，iOS 应用图标比
         <article class="ixts-card" style="--tb:#B4232C;--tbs:rgba(180,35,44,.10)" aria-label="刷刷的工具卡（示例）">
           <div class="ixts-art" data-stop="图" aria-hidden="true"><i></i><i></i><i></i></div>
           <div class="ixts-info">
-            <p class="ixts-no" data-stop="序号">02<span>刷题</span></p>
+            <p class="ixts-no" data-stop="序号">04<span>刷题</span></p>
             <h4 class="ixts-title" data-stop="标题">刷刷</h4>
-            <p class="ixts-desc">离线刷题，错题自动收进错题本。</p>
-            <ul class="ixts-specs" data-stop="规格条">
-              <li><b>799</b><span>题</span></li>
-              <li><b>离线</b><span>可用</span></li>
-              <li><b>本机</b><span>存储</span></li>
+            <p class="ixts-desc">为银行岗位考试准备的练习工具，题库装在手机里。离线也能练，错题自动归档，留待复习。</p>
+            <ul class="ixts-specs" data-stop="规格小字" role="list">
+              <li><b>4877</b>道题</li>
+              <li><b>9</b>个题库</li>
             </ul>
             <a class="ixts-open" href="#ix-xw-tabstop" data-ts-open aria-label="打开刷刷（示例，不跳转）">打开刷刷<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M13 6.5 18.5 12 13 17.5"/></svg></a>
           </div>
@@ -651,13 +650,13 @@ favicon 整块圆角方块铺满，rx="229"（边长22.37%，iOS 应用图标比
       </div>
       <div class="entry-body">
         <section class="fact"><h4>数值和代码</h4><pre><code>&lt;a href="../tools/shua/" aria-label="打开刷刷"&gt;打开刷刷&lt;/a&gt;   &lt;!-- 同一个标签页打开：不带target、rel；href是构建时算好的相对地址 --&gt;
-&lt;!-- 图、规格条、图标：不加 href、不加 tabIndex --&gt;
+&lt;!-- 图、规格小字、图标：不加 href、不加 tabIndex --&gt;
 
 .open { border-radius: 999px; border: 1px solid var(--tool-brand); color: var(--tool-brand);
         transition: background-color .18s ease, color .18s ease; }   /* 不位移、不放大、不换阴影档 */
 .open:hover { background: var(--tool-brand-soft); }
 .open:focus-visible { outline: 2px solid var(--tool-brand); outline-offset: 3px; }</code></pre></section>
-        <section class="fact"><h4>用在哪</h4><p>小屋工具页的三个区，过日子（日程安排、travel、玺院）、上班（刷刷）、做好看的东西（card、设计合集），六件各恰好一个Tab位。本站总览页的章节目录也借了这条，一行一个Tab位。</p></section>
+        <section class="fact"><h4>用在哪</h4><p>小屋工具页的三个区，生活（日程安排、travel、玺院）、工作（刷刷）、创作（card、设计合集），六件各恰好一个Tab位。本站总览页的章节目录也借了这条，一行一个Tab位。</p></section>
         <section class="fact"><h4>为什么</h4><p>否则键盘用户在同一张卡上要按两次Tab。可见文字要包含在可读名里（WCAG 2.5.3）。焦点环用工具的身份色，中性色画的焦点环在暖纸底上看不见。把整张卡做成可按压，等于多造一个入口，所以屋主给的按压倾斜卡片在这一页不做。</p></section>
         <section class="fact trap"><h4>坑</h4><p>2026-10-21以前工具页是五层叠在同一格里，Tab进一个当时不在场的层时，脚本要把页面滚到那一层停留的正中，焦点所在的链接才看得见。那天轨道退役，卡片改成普通的文档流，焦点落到哪张卡，浏览器自己会把它滚进视口，这段脚本就不需要了。</p></section>
         <p class="source">出处：Ysevan_web/docs/xiaowu-ui-spec.md「6.6 无障碍与外链」（「六个工具就是六个 tab stop」「在同一个标签页打开」「不做按压倾斜」「轨道退役之后这两件都不需要了」）、「A.6 工具入口规格（网站侧已落地）」；Ysevan_web/app/projects/tools.module.css「.open」（「打开工具」）</p>

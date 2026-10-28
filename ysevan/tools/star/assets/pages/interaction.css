@@ -784,9 +784,10 @@ button.row:focus-visible { outline-offset: -2px; border-radius: var(--r-md); }
 .ixts-no span { font-weight: 400; color: var(--xw-ink-2); }
 .ixts-title { margin: calc(4 * var(--u)) 0 0; font-size: calc(24 * var(--u)); font-weight: 600; line-height: 1.3; color: var(--xw-ink); }
 .ixts-desc { margin: calc(4 * var(--u)) 0 0; font-size: var(--fs-small); color: var(--xw-ink-body); }
-.ixts-specs { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(10 * var(--u)); max-width: 22em; margin: calc(10 * var(--u)) 0 0; padding: calc(10 * var(--u)) 0 0; border-top: 1px solid var(--xw-line); }
-.ixts-specs b { display: block; font-size: calc(17 * var(--u)); font-weight: 500; line-height: 1.3; color: var(--xw-ink); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
-.ixts-specs span { display: block; font-size: calc(11.5 * var(--u)); letter-spacing: .08em; color: var(--xw-ink-2); }
+/* 规格小字：照小屋 16c05d5 的 .facts，一行几项、每项一个 li，项与项之间不写字符、靠 column-gap 隔开；数字用宋体、和量词之间不留空 */
+.ixts-specs { list-style: none; display: flex; flex-wrap: wrap; column-gap: 1.5em; margin: calc(8 * var(--u)) 0 0; padding: 0; font-size: var(--fs-small); color: var(--xw-ink-2); }
+.ixts-specs li { white-space: nowrap; }
+.ixts-specs b { font-family: "Songti SC", "STSong", "SimSun", serif; font-size: 1.12em; font-weight: 400; letter-spacing: .02em; color: var(--xw-olive-deep); }   /* 不写 tabular-nums：家族规矩写了就要配 --font-num；这里每项一个数、不跳动，宋体数字本来等宽 */
 /* 「打开」：身份色描边与字；夜里垫回白天那张纸（换纸不换色）；hover 只叠一层 background-image，不用 background 简写 */
 .ixts-open {
   display: inline-flex; align-items: center; gap: calc(8 * var(--u)); margin-top: calc(12 * var(--u)); padding: calc(9 * var(--u)) calc(18 * var(--u));

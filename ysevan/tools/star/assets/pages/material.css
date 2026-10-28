@@ -338,7 +338,7 @@
 }
 .m-tool i { display: block; height: calc(8 * var(--u)); border-radius: 4px; background: var(--xw-muted); }
 .m-tool i:first-child { width: 46%; height: calc(10 * var(--u)); background: var(--xw-olive-tint); }
-.m-rug { width: 100%; display: grid; justify-items: center; padding: calc(16 * var(--u)) 0; border-radius: calc(14 * var(--u)); background: var(--xw-muted); }
+.m-rug { width: 100%; display: grid; justify-items: center; padding: calc(16 * var(--u)) 0; border-radius: calc(14 * var(--u)); background: none;   /* 2026-10-28：小屋规格918aa6e不再拿地毯作比，原来这里铺一层雅灰当地毯 */ }
 /* 夜里成对翻（hall.module.css「夜里的装裱」）：卡纸变夜卡纸、墨色发丝线变浅色发丝线、投影换黑加深；工具卡的浮起档夜里没另写，照旧 */
 .m-sh[data-mode="dark"] .m-hcard { border-color: rgba(231,225,208,.11); background: #20232B; box-shadow: 0 1px 2px rgba(0,0,0,.4); }
 .m-sh[data-mode="dark"] .m-hset::before { box-shadow: 0 calc(16 * var(--u)) calc(34 * var(--u)) calc(-14 * var(--u)) rgba(0,0,0,.55); }

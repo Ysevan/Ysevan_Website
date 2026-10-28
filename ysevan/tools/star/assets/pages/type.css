@@ -208,6 +208,7 @@
 .tfam-hero { display: flex; align-items: baseline; flex-wrap: wrap; gap: calc(6 * var(--u)) calc(16 * var(--u)); padding-bottom: calc(10 * var(--u)); border-bottom: 1px solid var(--xw-line); }
 .tfam-big { font-size: calc(54 * var(--u)); line-height: 1.04; letter-spacing: .06em; color: var(--xw-olive-deep); }
 .tfam-hero-sub { font-size: calc(13.5 * var(--u)); letter-spacing: .1em; color: var(--xw-ink-2); }
+.tfam-zone { font-size: calc(19.6 * var(--u)); line-height: 1.2; letter-spacing: .04em; color: var(--xw-ink); }   /* 区名：小屋工具页28px，和工具名46px一起按0.7缩（2026-10-28 跟上小屋16c05d5，区名生活、工作、创作） */
 .tfam-tool { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; gap: calc(6 * var(--u)) calc(16 * var(--u)); }
 .tfam-name { font-size: calc(32 * var(--u)); line-height: 1.1; letter-spacing: .02em; color: var(--xw-ink); }
 .tfam-say { min-width: 0; font-size: calc(14.5 * var(--u)); line-height: 1.8; color: var(--xw-ink-body); }

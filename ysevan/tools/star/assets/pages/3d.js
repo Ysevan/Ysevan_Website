@@ -659,10 +659,12 @@
         }
       } else {
         if (!d.gpu) {
-          o.tier = "精简档"; o.tone = "soft";
-          var r0 = Math.min(d.dpr, 1.5), rc = Math.sqrt(800000 / area);
-          o.r = Math.min(r0, rc); o.rWhy = "min(dpr, 1.5)是" + f2(r0) + "，再按80万像素压到" + f2(rc) + "，两者取小";
-          o.fps = "限30帧（按到期时刻，lib/frame-pacer.ts）"; o.aa = "关（无MSAA）"; o.ptr = "不跟指针"; o.q = "关纸纹、各向异性1、几何同均衡";
+          /* 2026-10-21 起小屋工具页只有软件渲染就在下载场景之前判静态，卡上放静帧海报（小屋规格 6.9.5、6.9.9）。
+             原来按轨道那块793×652的画布算精简档（min(dpr, 1.5)与80万像素取小，986×811），现在走不到了；规格里那组数还留着。 */
+          o.tier = "静态海报"; o.tone = "off"; o.poster = true;
+          o.r = d.dpr; o.rWhy = "不建3D画布，卡上是3D停留帧截下来的静帧海报，按图片原样显示";
+          o.fps = "不出帧"; o.aa = "不用"; o.ptr = "不跟指针"; o.q = "海报就是3D停在那一帧的样子";
+          o.note = "工具页2026-10-21起这样。走进小屋在这台机器上仍走精简档，走动时60万像素，停稳后重画一帧清楚的，见本页的停稳重画一条。";
         } else if (dev === "phone") {
           o.tier = "手机版面（随笔球）"; o.tone = "accent";
           var rp = Math.min(d.dpr, 2), rpc = Math.sqrt(1300000 / area);
@@ -705,7 +707,7 @@
         ["档位", '<span class="td-pill" data-tone="' + o.tone + '">' + esc(o.tier) + "</span>"],
         ["画布", esc(o.slotName)],
         ["像素比", f2(o.r) + "（" + esc(o.rWhy) + "）"],
-        ["绘制缓冲", o.W + "×" + o.H + "，约" + wan(o.W * o.H) + "像素"],
+        ["绘制缓冲", o.poster ? "不建3D画布，没有绘制缓冲" : o.W + "×" + o.H + "，约" + wan(o.W * o.H) + "像素"],
         ["帧率", esc(o.fps)],
         ["抗锯齿", esc(o.aa)],
         ["指针", esc(o.ptr)],
@@ -714,8 +716,10 @@
       if (o.note) rows.push(["另外", esc(o.note)]);
       dl.innerHTML = rows.map(function (r) { return "<div><dt>" + r[0] + "</dt><dd>" + r[1] + "</dd></div>"; }).join("");
       var wh = drawPreview(o.r);
-      cap.textContent = "这一块按像素比" + f2(o.r) + "画成" + wh[0] + "×" + wh[1] + "，再拉伸到同样大小（你这块屏的像素比是" + f2(dpr()) + "）";
-      if (user) announce(DEV[dev].name + "、" + (who === "tools" ? "刷刷岗岗" : "小屋") + "口径，" + o.tier + "，像素比" + f2(o.r) + "，缓冲" + o.W + "×" + o.H);
+      cap.textContent = o.poster
+        ? "这一块按屏幕像素比" + f2(o.r) + "画成" + wh[0] + "×" + wh[1] + "，代表静帧海报，图片按原样显示，不糊（你这块屏的像素比是" + f2(dpr()) + "）"
+        : "这一块按像素比" + f2(o.r) + "画成" + wh[0] + "×" + wh[1] + "，再拉伸到同样大小（你这块屏的像素比是" + f2(dpr()) + "）";
+      if (user) announce(DEV[dev].name + "、" + (who === "tools" ? "刷刷岗岗" : "小屋") + "口径，" + o.tier + (o.poster ? "，不建3D画布" : "，像素比" + f2(o.r) + "，缓冲" + o.W + "×" + o.H));
     }
     radios($("[data-so-dev]", spec), function (v) { dev = v; render(true); });
     radios($("[data-so-who]", spec), function (v) { who = v; render(true); });
