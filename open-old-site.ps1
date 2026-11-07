@@ -14,6 +14,18 @@ Start-Process "http://localhost:$port/index.html"
 while ($listener.IsListening) {
   $ctx = $listener.GetContext()
   $rel = [Uri]::UnescapeDataString($ctx.Request.Url.AbsolutePath).TrimStart('/')
+  if ($rel.TrimEnd('/') -eq 'ysevan/tools/corporate-booking') {
+    if (-not [Net.IPAddress]::IsLoopback($ctx.Request.RemoteEndPoint.Address)) {
+      $ctx.Response.StatusCode = 403
+    } elseif ($ctx.Request.HttpMethod -notin @('GET', 'HEAD')) {
+      $ctx.Response.StatusCode = 405
+      $ctx.Response.AddHeader('Allow', 'GET, HEAD')
+    } else {
+      $ctx.Response.Redirect('http://127.0.0.1:8787/')
+    }
+    $ctx.Response.Close()
+    continue
+  }
   $file = [IO.Path]::GetFullPath((Join-Path $root $rel))
   if (Test-Path $file -PathType Container) { $file = Join-Path $file 'index.html' }
   if ($file.StartsWith($root) -and (Test-Path $file -PathType Leaf)) {
